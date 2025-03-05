@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import "./LoginPage.css";
+import axios from "axios"; // Импортируем axios
+import "./LoginPage.css"; // Подключаем стили
+
 const LoginPage = () => {
   const {
     control,
@@ -8,40 +10,40 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Состояние загрузки
+  const [error, setError] = useState(null); // Состояние ошибки
+
   const onSubmit = async (data) => {
     setLoading(true);
     setError(null);
 
+    // console.log(
+    //   "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    //   data
+    // );
+
     try {
-      const response = await fetch("https://example.com/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      // Используем process.env.REACT_APP_API_URL для формирования URL???????????
+      const response = await axios.post(
+        `${process.env.API_URL}/api/auth/token`,
+        data
+      );
 
-      if (!response.ok) {
-        throw new Error("Ошибка при авторизации");
-      }
+      console.log("Успешная авторизация:", response.data);
 
-      const result = await response.json();
-      console.log("Успешная авторизация:", result);
+      // Сохраняем токен в localStorage
+      localStorage.setItem("token", response.data.token);
 
-      //  токен в localStorage или в состоянии приложения
-      localStorage.setItem("token", result.token);
-
-      // Перенаправление на другую страницу
+      // Перенаправление на другую страницу (например, на главную)
       window.location.href = "/";
     } catch (err) {
-      setError(err.message);
+      // Обрабатываем ошибку
+      setError(err.response?.data?.message || "Ошибка при авторизации");
     } finally {
       setLoading(false);
     }
@@ -53,29 +55,26 @@ const LoginPage = () => {
         <h2>Вход</h2>
         {error && <div className="error-message">{error}</div>}
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="username">Логин</label>{" "}
+          {/* Заменяем email на username */}
           <Controller
-            name="email"
+            name="username"
             control={control}
             rules={{
-              required: "Email обязателен",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Некорректный email",
-              },
+              required: "Логин обязателен",
             }}
             render={({ field }) => (
               <input
                 {...field}
-                type="email"
-                id="email"
-                className={errors.email ? "error" : ""}
+                type="text" // Меняем тип на text
+                id="username"
+                className={errors.username ? "error" : ""}
                 disabled={loading}
               />
             )}
           />
-          {errors.email && (
-            <span className="error-message">{errors.email.message}</span>
+          {errors.username && (
+            <span className="error-message">{errors.username.message}</span>
           )}
         </div>
         <div className="form-group">
@@ -113,3 +112,10 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+// try {
+//   // Используем process.env.REACT_APP_API_URL для формирования URL???????????
+//   const response = await axios.post(
+//     `${process.env.API_URL}/api/auth/token`,
+//     data
+//   );
