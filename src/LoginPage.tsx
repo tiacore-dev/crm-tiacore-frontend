@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
-import "./LoginPage.css"; // Подключаем стили
+import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
+import "./LoginPage.css";
 
 // Типы для данных формы
 type FormData = {
@@ -29,6 +30,7 @@ const LoginPage: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false); // Состояние загрузки
   const [error, setError] = useState<string | null>(null); // Состояние ошибки
+  const navigate = useNavigate(); // Хук для навигации
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -39,14 +41,10 @@ const LoginPage: React.FC = () => {
     try {
       // Отправляем POST-запрос на сервер
       const url = process.env.REACT_APP_API_URL;
-      console.log("url", url);
-
       const response = await axios.post<AuthResponse>(
         `${url}/api/auth/token`,
         data
       );
-
-      console.log("response");
 
       console.log("Успешная авторизация:", response.data);
 
@@ -55,7 +53,7 @@ const LoginPage: React.FC = () => {
       localStorage.setItem("r_token", response.data.r_token);
 
       // Перенаправляем пользователя на главную страницу
-      window.location.href = "/";
+      navigate("/home");
     } catch (err) {
       // Обрабатываем ошибку
       if (axios.isAxiosError(err)) {

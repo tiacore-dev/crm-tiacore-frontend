@@ -1,12 +1,23 @@
 import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginPage from "./LoginPage";
+import HomePage from "./HomePage";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <LoginPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<HomePage />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
