@@ -1,35 +1,45 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import axios from "axios"; // Импортируем axios
+import axios from "axios";
 import "./LoginPage.css"; // Подключаем стили
 
-const LoginPage = () => {
+// Типы для данных формы
+type FormData = {
+  username: string;
+  password: string;
+};
+
+// Тип для ответа от сервера
+type AuthResponse = {
+  token: string;
+  user: {
+    id: number;
+    username: string;
+  };
+};
+
+const LoginPage: React.FC = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  const [loading, setLoading] = useState(false); // Состояние загрузки
-  const [error, setError] = useState(null); // Состояние ошибки
+  const [loading, setLoading] = useState<boolean>(false); // Состояние загрузки
+  const [error, setError] = useState<string | null>(null); // Состояние ошибки
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
     setError(null);
 
-    // console.log(
-    //   "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    //   data
-    // );
-
     try {
-      // Используем process.env.REACT_APP_API_URL для формирования URL???????????
-      const response = await axios.post(
+      // Отправляем POST-запрос на сервер
+      const response = await axios.post<AuthResponse>(
         `${process.env.API_URL}/api/auth/token`,
         data
       );
@@ -39,13 +49,17 @@ const LoginPage = () => {
       // Сохраняем токен в localStorage
       localStorage.setItem("token", response.data.token);
 
-      // Перенаправление на другую страницу (например, на главную)
+      // Перенаправляем пользователя на главную страницу
       window.location.href = "/";
     } catch (err) {
       // Обрабатываем ошибку
-      setError(err.response?.data?.message || "Ошибка при авторизации");
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Ошибка при авторизации");
+      } else {
+        setError("Произошла неизвестная ошибка");
+      }
     } finally {
-      setLoading(false);
+      setLoading(false); // Выключаем состояние загрузки
     }
   };
 
@@ -55,8 +69,7 @@ const LoginPage = () => {
         <h2>Вход</h2>
         {error && <div className="error-message">{error}</div>}
         <div className="form-group">
-          <label htmlFor="username">Логин</label>{" "}
-          {/* Заменяем email на username */}
+          <label htmlFor="username">Логин</label>
           <Controller
             name="username"
             control={control}
@@ -66,7 +79,7 @@ const LoginPage = () => {
             render={({ field }) => (
               <input
                 {...field}
-                type="text" // Меняем тип на text
+                type="text"
                 id="username"
                 className={errors.username ? "error" : ""}
                 disabled={loading}
@@ -84,10 +97,6 @@ const LoginPage = () => {
             control={control}
             rules={{
               required: "Пароль обязателен",
-              minLength: {
-                value: 6,
-                message: "Пароль должен содержать минимум 6 символов",
-              },
             }}
             render={({ field }) => (
               <input
