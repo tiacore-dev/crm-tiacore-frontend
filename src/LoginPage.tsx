@@ -11,11 +11,8 @@ type FormData = {
 
 // Тип для ответа от сервера
 type AuthResponse = {
-  token: string;
-  user: {
-    id: number;
-    username: string;
-  };
+  a_token: string;
+  r_token: string;
 };
 
 const LoginPage: React.FC = () => {
@@ -37,17 +34,25 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    console.log("onSubmit");
+
     try {
       // Отправляем POST-запрос на сервер
+      const url = process.env.REACT_APP_API_URL;
+      console.log("url", url);
+
       const response = await axios.post<AuthResponse>(
-        `${process.env.API_URL}/api/auth/token`,
+        `${url}/api/auth/token`,
         data
       );
+
+      console.log("response");
 
       console.log("Успешная авторизация:", response.data);
 
       // Сохраняем токен в localStorage
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("a_token", response.data.a_token);
+      localStorage.setItem("r_token", response.data.r_token);
 
       // Перенаправляем пользователя на главную страницу
       window.location.href = "/";
@@ -121,10 +126,3 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
-
-// try {
-//   // Используем process.env.REACT_APP_API_URL для формирования URL???????????
-//   const response = await axios.post(
-//     `${process.env.API_URL}/api/auth/token`,
-//     data
-//   );
