@@ -1,0 +1,16 @@
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:80"  # Вы можете оставить это, чтобы тестировать приложение отдельно, но Nginx будет использовать внутреннюю связь
+    restart: always
+    networks:
+      - crm_network
+
+
+networks:
+  crm_network:
+    external: true
