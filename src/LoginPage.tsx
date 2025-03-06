@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "./axiosConfig"; // Используем настроенный axios
+import axios from "axios"; // Импортируем axios для isAxiosError
 import "./LoginPage.css";
 
 // Типы для данных формы
@@ -10,10 +11,10 @@ type FormData = {
   password: string;
 };
 
-// Тип для ответа от сервера
+// Типы для ответа от сервера
 type AuthResponse = {
-  a_token: string;
-  r_token: string;
+  access_token: string;
+  refresh_token: string;
 };
 
 const LoginPage: React.FC = () => {
@@ -41,16 +42,15 @@ const LoginPage: React.FC = () => {
     try {
       // Отправляем POST-запрос на сервер
       const url = process.env.REACT_APP_API_URL;
-      const response = await axios.post<AuthResponse>(
+      const response = await axiosInstance.post<AuthResponse>(
         `${url}/api/auth/token`,
         data
       );
-
       console.log("Успешная авторизация:", response.data);
 
       // Сохраняем токен в localStorage
-      localStorage.setItem("a_token", response.data.a_token);
-      localStorage.setItem("r_token", response.data.r_token);
+      localStorage.setItem("access_token", response.data.access_token);
+      localStorage.setItem("refresh_token", response.data.refresh_token);
 
       // Перенаправляем пользователя на главную страницу
       navigate("/home");
