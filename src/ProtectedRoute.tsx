@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import refreshToken from "./auth"; // Импортируем функцию обновления токена
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
+// import refreshToken from "./auth"; // Импортируем функцию обновления токена
 
 const ProtectedRoute: React.FC = () => {
   const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const checkToken = async () => {
-      const accessToken = localStorage.getItem("access_token");
-      if (!accessToken) {
-        // Если access_token отсутствует, пытаемся обновить токен
-        const newAccessToken = await refreshToken();
-        setIsValidToken(!!newAccessToken);
-      } else {
-        setIsValidToken(true);
-      }
-    };
+  const navigate = useNavigate();
 
-    checkToken();
+  useEffect(() => {
+    // const checkToken = () => {
+    const accessToken = localStorage.getItem("access_token");
+    console.log(accessToken);
+    if (!accessToken) {
+      navigate("/login");
+      // Если access_token отсутствует, пытаемся обновить токен
+      // accessToken = await refreshToken();
+      return; // Пока проверяется токен — ничего не рендерим
+    }
+
+    setIsValidToken(!!accessToken); // Если токен есть — доступ разрешен, иначе нет
+    // };
+
+    // checkToken();
   }, []);
 
   if (isValidToken === null) {
-    return null; // Или индикатор загрузки
+    return null; // Пока проверяется токен — ничего не рендерим
   }
 
-  return isValidToken ? <Outlet /> : <Navigate to="/" />;
+  return isValidToken ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export default ProtectedRoute;

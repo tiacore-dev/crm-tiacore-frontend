@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "./axiosConfig"; // Используем настроенный axios
-import axios from "axios"; // Импортируем axios для isAxiosError
+import { useMutation } from "@tanstack/react-query";
+import axiosInstance from "./axiosConfig";
 import "./LoginPage.css";
 
-// Типы для данных формы
 type FormData = {
   username: string;
   password: string;
 };
 
-// Типы для ответа от сервера
 type AuthResponse = {
   access_token: string;
   refresh_token: string;
@@ -29,63 +27,68 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  const [loading, setLoading] = useState<boolean>(false); // Состояние загрузки
-  const [error, setError] = useState<string | null>(null); // Состояние ошибки
-  const navigate = useNavigate(); // Хук для навигации
+  const navigate = useNavigate();
 
-  const onSubmit = async (data: FormData) => {
-    setLoading(true);
-    setError(null);
-
-    console.log("onSubmit");
-
-    try {
-      // Отправляем POST-запрос на сервер
+  // Используем useMutation для выполнения запроса на авторизацию
+  const loginMutation = useMutation<AuthResponse, Error, FormData>({
+    mutationFn: async (data) => {
       const url = process.env.REACT_APP_API_URL;
-      const response = await axiosInstance.post<AuthResponse>(
-        `${url}/api/auth/token`,
-        data
-      );
-      console.log("Успешная авторизация:", response.data);
-
-      // Сохраняем токен в localStorage
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("refresh_token", response.data.refresh_token);
-
-      // Перенаправляем пользователя на главную страницу
-      navigate("/home");
-    } catch (err) {
-      // Обрабатываем ошибку
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Ошибка при авторизации");
-      } else {
-        setError("Произошла неизвестная ошибка");
+      if (!url) {
+        throw new Error("REACT_APP_API_URL is not defined");
       }
-    } finally {
-      setLoading(false); // Выключаем состояние загрузки
-    }
+
+      try {
+        const response = await axiosInstance.post<AuthResponse>(
+          `${url}/api/auth/token`,
+          data
+        );
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Ошибка при авторизации:", error.message);
+          throw new Error(error.message);
+        } else {
+          console.error("Неизвестная ошибка:", error);
+          throw new Error("Неизвестная ошибка");
+        }
+      }
+    },
+    onSuccess: (data) => {
+      // Сохраняем токены в localStorage
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+      // Перенаправляем на /home
+      navigate("/home");
+    },
+    onError: (error) => {
+      console.error("Ошибка при авторизации:", error);
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    loginMutation.mutate(data); // Выполняем запрос
   };
 
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit(onSubmit)} className="login-form">
         <h2>Вход</h2>
-        {error && <div className="error-message">{error}</div>}
+        {loginMutation.isError && (
+          <div className="error-message">Ошибка при авторизации</div>
+        )}
         <div className="form-group">
           <label htmlFor="username">Логин</label>
           <Controller
             name="username"
             control={control}
-            rules={{
-              required: "Логин обязателен",
-            }}
+            rules={{ required: "Логин обязателен" }}
             render={({ field }) => (
               <input
                 {...field}
                 type="text"
                 id="username"
                 className={errors.username ? "error" : ""}
-                disabled={loading}
+                disabled={loginMutation.isPending}
               />
             )}
           />
@@ -98,16 +101,14 @@ const LoginPage: React.FC = () => {
           <Controller
             name="password"
             control={control}
-            rules={{
-              required: "Пароль обязателен",
-            }}
+            rules={{ required: "Пароль обязателен" }}
             render={({ field }) => (
               <input
                 {...field}
                 type="password"
                 id="password"
                 className={errors.password ? "error" : ""}
-                disabled={loading}
+                disabled={loginMutation.isPending}
               />
             )}
           />
@@ -115,8 +116,12 @@ const LoginPage: React.FC = () => {
             <span className="error-message">{errors.password.message}</span>
           )}
         </div>
-        <button type="submit" className="login-button" disabled={loading}>
-          {loading ? "Загрузка..." : "Войти"}
+        <button
+          type="submit"
+          className="login-button"
+          disabled={loginMutation.isPending}
+        >
+          {loginMutation.isPending ? "Загрузка..." : "Войти"}
         </button>
       </form>
     </div>
