@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate, useLocation } from "react-router-dom";
 // import refreshToken from "./auth"; // Импортируем функцию обновления токена
+import Navbar from "./Navbar"; // Импортируем Navbar
 
 const ProtectedRoute: React.FC = () => {
   const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
-
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,13 +23,20 @@ const ProtectedRoute: React.FC = () => {
     // };
 
     // checkToken();
-  }, []);
+  }, [navigate]);
 
   if (isValidToken === null) {
     return null; // Пока проверяется токен — ничего не рендерим
   }
 
-  return isValidToken ? <Outlet /> : <Navigate to="/" replace />;
+  return isValidToken ? (
+    <>
+      {/* Отображаем Navbar только на защищенных страницах */}
+      <Navbar />
+      <Outlet /> {/* Рендерим дочерние маршруты */}
+    </>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 };
-
 export default ProtectedRoute;

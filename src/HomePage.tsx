@@ -1,36 +1,65 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import refreshToken from "./auth";
 import axiosInstance from "./axiosConfig";
 
-const fetchUserData = async () => {
+const fetchEntityTypes = async () => {
   const url = process.env.REACT_APP_API_URL;
-
   const accessToken = localStorage.getItem("access_token");
-
   const response = await axiosInstance.get(
     `${url}/api/get-all/legal-entity-types`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
     }
   );
   return response.data;
 };
 
+const fetchContractStatuses = async () => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const response = await axiosInstance.get(
+    `${url}/api/get-all/contract-statuses/`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+const fetchUserRoles = async () => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const response = await axiosInstance.get(`${url}/api/get-all/user-roles/`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};
+
 const HomePage: React.FC = () => {
-  // const [shouldFetch, setShouldFetch] = useState(false); //
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["userData"],
-    queryFn: fetchUserData,
-    // enabled: shouldFetch,
+  const { data: entityTypes } = useQuery({
+    queryKey: ["entityTypes"],
+    queryFn: fetchEntityTypes,
   });
 
-  const handleFetchData = () => {
-    // setShouldFetch(true); // Включаем запрос
-    refetch(); // Выполняем запрос
-  };
+  const { data: contractStatuses } = useQuery({
+    queryKey: ["contractStatuses"],
+    queryFn: fetchContractStatuses,
+  });
+
+  const { data: userRoles } = useQuery({
+    queryKey: ["userRoles"],
+    queryFn: fetchUserRoles,
+  });
 
   const tryRefresh = () => {
     refreshToken();
@@ -39,16 +68,9 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <h1>Вы успешно авторизовались!</h1>
-      <button onClick={handleFetchData}> данные?</button>
+      <button onClick={tryRefresh}>Обновить токен</button>
 
-      {data && (
-        <div>
-          <h2>Ваши данные:</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      )}
-
-      <button onClick={tryRefresh}>обновить токен</button>
+      {/* <button onClick={logOut}>Выйти</button> */}
     </div>
   );
 };

@@ -1,0 +1,46 @@
+.navbar {
+  background-color: #06093d;
+  padding: 10px;
+  width: 100%;
+  position: fixed; /* Фиксируем навигацию в верхней части */
+  top: 0;
+  left: 0;
+  /* z-index: 1000; Убедимся, что навигация поверх других элементов */
+}
+
+.navbar-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center; /* Выравниваем элементы по центру */
+}
+
+.navbar-item {
+  margin: 0 10px;
+}
+
+.navbar-link {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.navbar-link:hover {
+  color: #61dafb;
+}
+
+.logout-button {
+  background-color: #ff4d4d; /* Красный цвет для кнопки выхода */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.logout-button:hover {
+  background-color: #ff1a1a; /* Темнее красный при наведении */
+}
