@@ -17,7 +17,7 @@ import BillsPage from "./BillsPage";
 import BankPage from "./BankPage";
 import ActsPage from "./ActsPage";
 import ProtectedRoute from "./ProtectedRoute";
-
+import ServiceDetailsPage from "./ServiceDetailsPage";
 // Создаем клиент React Query
 const queryClient = new QueryClient();
 
@@ -31,6 +31,10 @@ const App: React.FC = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/services" element={<ServicesPage />} />
+            <Route
+              path="/services/:service_id"
+              element={<ServiceDetailsPage />}
+            />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/legal_entities" element={<LegalEntityPage />} />
             <Route path="/contracts" element={<ContractsPage />} />
