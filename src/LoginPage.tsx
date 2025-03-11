@@ -3,7 +3,6 @@ import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "./axiosConfig";
-import "./LoginPage.css";
 
 type FormData = {
   username: string;
@@ -70,13 +69,13 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+    <div className="login_container">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Вход</h2>
         {loginMutation.isError && (
           <div className="error-message">Ошибка при авторизации</div>
         )}
-        <div className="form-group">
+        <div>
           <label htmlFor="username">Логин</label>
           <Controller
             name="username"
@@ -96,7 +95,7 @@ const LoginPage: React.FC = () => {
             <span className="error-message">{errors.username.message}</span>
           )}
         </div>
-        <div className="form-group">
+        <div>
           <label htmlFor="password">Пароль</label>
           <Controller
             name="password"
@@ -116,11 +115,7 @@ const LoginPage: React.FC = () => {
             <span className="error-message">{errors.password.message}</span>
           )}
         </div>
-        <button
-          type="submit"
-          className="login-button"
-          disabled={loginMutation.isPending}
-        >
+        <button type="submit" disabled={loginMutation.isPending}>
           {loginMutation.isPending ? "Загрузка..." : "Войти"}
         </button>
       </form>

@@ -49,7 +49,7 @@ const deleteService = async (service_id: string) => {
 const ServiceDetailsPage: React.FC = () => {
   const { service_id } = useParams<{ service_id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // Используем useQueryClient
+  const queryClient = useQueryClient();
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -127,27 +127,31 @@ const ServiceDetailsPage: React.FC = () => {
     updateMutation.mutate();
   };
   //_______________
-
   return (
     <div>
       <button onClick={() => navigate(-1)}>Вернуться назад</button>
       <h1>Детали услуги:</h1>
+
       {isEditing ? (
-        <div>
-          <label>
-            Название услуги:
-            <input
-              type="text"
-              name="service_name"
-              value={editedData?.service_name}
-              onChange={handleEditChange}
-            />
-          </label>
-          <div>
-            <button onClick={handleSaveEdit}>Сохранить</button>
-            <button onClick={handleCancelEdit}>Отменить</button>
+        <>
+          <div className="modal-overlay" onClick={handleCancelEdit}></div>
+          <div className="edit-modal">
+            <h3>Редактирование услуги</h3>
+            <label>
+              Название услуги:
+              <input
+                type="text"
+                name="service_name"
+                value={editedData?.service_name}
+                onChange={handleEditChange}
+              />
+            </label>
+            <div>
+              <button onClick={handleSaveEdit}>Сохранить</button>
+              <button onClick={handleCancelEdit}>Отменить</button>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         <div>
           <p>
@@ -156,6 +160,7 @@ const ServiceDetailsPage: React.FC = () => {
           <button onClick={() => setIsEditing(true)}>Редактировать</button>
         </div>
       )}
+
       <button onClick={() => setShowConfirm(true)}>Удалить</button>
       {showConfirm && (
         <div

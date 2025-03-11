@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import LoginPage from "./LoginPage";
 import HomePage from "./HomePage";
-// import Navbar from "./Navbar"; // Импортируем компонент навигации
 import UsersPage from "./UsersPage";
 import ServicesPage from "./ServicesPage";
 import LegalEntityPage from "./LegalEntityPage";
@@ -18,6 +17,8 @@ import BankPage from "./BankPage";
 import ActsPage from "./ActsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ServiceDetailsPage from "./ServiceDetailsPage";
+import "./App.css";
+
 // Создаем клиент React Query
 const queryClient = new QueryClient();
 
@@ -25,7 +26,6 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        {/* <Navbar /> */}
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>

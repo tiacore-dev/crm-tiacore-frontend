@@ -33,14 +33,14 @@ const createService = async (newService: { service_name: string }) => {
 
 const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // Используем useQueryClient для обновления данных
+  const queryClient = useQueryClient();
 
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const {
-    data: services,
+    data: services_data,
     isLoading,
     isError,
   } = useQuery({
@@ -52,8 +52,8 @@ const ServicesPage: React.FC = () => {
     mutationFn: createService,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
-      setIsCreating(false); // Закрываем форму создания
-      setNewServiceName(""); // Очищаем поле ввода
+      setIsCreating(false);
+      setNewServiceName("");
     },
     onError: (error) => {
       setErrorMessage("Ошибка при создании услуги");
@@ -61,12 +61,12 @@ const ServicesPage: React.FC = () => {
   });
 
   const handleCreateClick = () => {
-    setIsCreating(true); // Показываем форму создания
+    setIsCreating(true);
   };
 
   const handleCancelCreate = () => {
-    setIsCreating(false); // Скрываем форму создания
-    setNewServiceName(""); // Очищаем поле ввода
+    setIsCreating(false);
+    setNewServiceName("");
   };
 
   const handleCreateService = () => {
@@ -86,33 +86,22 @@ const ServicesPage: React.FC = () => {
   }
 
   const handleRowClick = (service_id: string) => {
-    navigate(`/services/${service_id}`); // Перенаправляем на страницу с service_id
+    navigate(`/services/${service_id}`);
   };
 
   return (
     <div>
-      <button onClick={handleCreateClick}>Создать новую услугу</button>
-      {isCreating && (
-        <div>
-          <input
-            type="text"
-            placeholder="Введите название услуги"
-            value={newServiceName}
-            onChange={(e) => setNewServiceName(e.target.value)}
-          />
-          <button onClick={handleCreateService}>Создать</button>
-          <button onClick={handleCancelCreate}>Отменить</button>
-          {errorMessage && <p>{errorMessage}</p>}
-        </div>
-      )}
       <table>
         <thead>
           <tr>
             <th>Название услуги</th>
+            <th>
+              <button onClick={handleCreateClick}>Создать новую услугу</button>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {services.map((service: any) => (
+          {services_data?.services.map((service: any) => (
             <tr
               key={service.service_id}
               onClick={() => handleRowClick(service.service_id)}
@@ -123,6 +112,24 @@ const ServicesPage: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      {isCreating && (
+        <>
+          <div className="modal-overlay" onClick={handleCancelCreate}></div>
+          <div className="modal">
+            <h3>Создание новой услуги</h3>
+            <input
+              type="text"
+              placeholder="Введите название услуги"
+              value={newServiceName}
+              onChange={(e) => setNewServiceName(e.target.value)}
+            />
+            <button onClick={handleCreateService}>Создать</button>
+            <button onClick={handleCancelCreate}>Отменить</button>
+            {errorMessage && <p>{errorMessage}</p>}
+          </div>
+        </>
+      )}
     </div>
   );
 };

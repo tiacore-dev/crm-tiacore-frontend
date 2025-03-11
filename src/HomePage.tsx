@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import refreshToken from "./auth";
 import axiosInstance from "./axiosConfig";
@@ -7,7 +7,7 @@ const fetchEntityTypes = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(
-    `${url}/api/get-all/legal-entity-types`,
+    `${url}/api/legal-entity-types/all`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -21,22 +21,19 @@ const fetchEntityTypes = async () => {
 const fetchContractStatuses = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.get(
-    `${url}/api/get-all/contract-statuses/`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await axiosInstance.get(`${url}/api/contract-statuses/all`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
   return response.data;
 };
 
 const fetchUserRoles = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.get(`${url}/api/get-all/user-roles/`, {
+  const response = await axiosInstance.get(`${url}/api/user-roles/all`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -65,11 +62,16 @@ const HomePage: React.FC = () => {
     refreshToken();
   };
 
+  // useEffect(() => {
+  //   if (entityTypes) {
+  //     console.log("Данные с сервера:", entityTypes.legal_entity_types);
+  //   }
+  // }, [entityTypes]);
+
   return (
     <div>
       <h1>Вы успешно авторизовались!</h1>
       <button onClick={tryRefresh}>Обновить токен</button>
-
       {/* <button onClick={logOut}>Выйти</button> */}
     </div>
   );
