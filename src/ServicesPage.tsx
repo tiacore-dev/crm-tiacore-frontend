@@ -2,14 +2,27 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "./axiosConfig";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import Breadcrumbs from "./Breadcrumbs";
 
-const fetchServices = async () => {
+const fetchServices = async (
+  search: string,
+  sort_by: string,
+  order: string,
+  page: number,
+  page_size: number
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/services/all`, {
+    params: {
+      search,
+      sort_by,
+      order,
+      page,
+      page_size,
+    },
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -41,13 +54,20 @@ const ServicesPage: React.FC = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const [search, setSearch] = useState(""); //_
+  const [sortBy, setSortBy] = useState("service_name");
+  const [order, setOrder] = useState("asc"); //_
+
   const {
     data: services_data,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["services"],
-    queryFn: fetchServices,
+    queryKey: ["services", currentPage, pageSize, search, sortBy, order],
+    queryFn: () => fetchServices(search, sortBy, order, currentPage, pageSize),
+    // keepPreviousData: true, // Сохраняем предыдущие данные при изменении страницы
   });
 
   const createMutation = useMutation({
@@ -73,12 +93,31 @@ const ServicesPage: React.FC = () => {
   };
 
   const handleCreateService = () => {
-    if (newServiceName.trim()) {
+    if (newServiceName.trim().length >= 3) {
       createMutation.mutate({ service_name: newServiceName });
     } else {
-      toast.error("Название услуги не может быть пустым");
+      toast.error("Название услуги должно содержать минимум 3 символа");
     }
   };
+
+  const handleRowClick = (service_id: string) => {
+    navigate(`/services/${service_id}`);
+  };
+  //_______________________________________________________________________
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleSortChange = (newSortBy: string) => {
+    setSortBy(newSortBy);
+    setOrder(order === "asc" ? "desc" : "asc"); // Переключение порядка сортировки
+  };
+
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(e.target.value);
+  //   setCurrentPage(1); // Сброс страницы при изменении поискового запроса
+  // };
+  //_______________________________________________________________________
 
   if (isLoading) {
     return <div>Загрузка...</div>;
@@ -88,23 +127,34 @@ const ServicesPage: React.FC = () => {
     return <div>Ошибка при загрузке</div>;
   }
 
-  const handleRowClick = (service_id: string) => {
-    navigate(`/services/${service_id}`);
-  };
-
   return (
     <div>
-      <ToastContainer position="top-right" autoClose={3000} />
+      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
       <Breadcrumbs
         paths={[
           { label: "Главная страница", to: "/" },
           { label: "Услуги", to: "/services" },
         ]}
       />
+
+      {/* Поиск */}
+      {/* <div>
+        <input
+          type="text"
+          placeholder="Поиск по услуге"
+          value={search}
+          onChange={handleSearchChange}
+        />
+      </div> */}
+
       <table>
         <thead>
           <tr>
-            <th>Название услуги</th>
+            <th>
+              <button onClick={() => handleSortChange("service_name")}>
+                Название услуги
+              </button>
+            </th>
             <th>
               <button onClick={handleCreateClick}>Создать новую услугу</button>
             </th>
@@ -141,6 +191,23 @@ const ServicesPage: React.FC = () => {
           </div>
         </>
       )}
+
+      {/* Пагинация */}
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Предыдущая
+        </button>
+        <span>Страница {currentPage}</span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={services_data?.services.length < pageSize}
+        >
+          Следующая
+        </button>
+      </div>
     </div>
   );
 };

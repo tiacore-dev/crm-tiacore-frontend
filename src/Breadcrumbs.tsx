@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-// import "./App.css";
 
 interface BreadcrumbsProps {
   paths: { label: string; to: string }[];
@@ -16,7 +15,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ paths }) => {
             ) : (
               <Link to={path.to}>{path.label}</Link>
             )}
-            {index < paths.length - 1 && <span className="separator"> / </span>}
+            {index < paths.length - 1 && <span> / </span>}
           </span>
         ))}
       </div>

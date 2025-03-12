@@ -92,10 +92,10 @@ textarea {
   background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
   z-index: 999; /* Обеспечивает, что затемнение будет под модальным окном */
 }
-
 .breadcrumbs {
-  font-size: 16px;
-  color: black;
+  padding-top: 10px;
+  padding-left: 25px;
+  padding-bottom: 20px;
 }
 
 .breadcrumb-item {

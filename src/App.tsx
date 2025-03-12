@@ -6,6 +6,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
 import LoginPage from "./LoginPage";
 import HomePage from "./HomePage";
 import UsersPage from "./UsersPage";
@@ -28,6 +30,8 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
+        <Toaster position="top-right" />
+
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
