@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"; // Импортируем useQueryClient
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "./axiosConfig";
+// import { AxiosError } from "axios"; // Импортируем AxiosError из axios
+import { toast, ToastContainer } from "react-toastify";
+import Breadcrumbs from "./Breadcrumbs";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const fetchServiceDetails = async (service_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  // try {
   const response = await axiosInstance.get(
     `${url}/api/services/${service_id}`,
     {
@@ -16,6 +22,16 @@ const fetchServiceDetails = async (service_id: string) => {
     }
   );
   return response.data;
+  // } catch (error) {
+  //   const axiosError = error as AxiosError;
+  //   if (axiosError.response && axiosError.response.status === 500) {
+  //     toast.error("Ошибка при загрузке страницы");
+  //     console.log("500");
+  //   } else {
+  //     toast.error("Неизвестная ошибка");
+  //   }
+  //   throw error; // Пробрасываем ошибку дальше
+  // }
 };
 
 const updateService = async (service_id: string, updatedData: any) => {
@@ -54,31 +70,39 @@ const ServiceDetailsPage: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<any>(null);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     data: serviceDetails,
     isLoading,
     isError,
+    // error,
   } = useQuery({
     queryKey: ["serviceDetails", service_id],
     queryFn: () => fetchServiceDetails(service_id!),
     retry: false,
   });
 
+  // useEffect(() => {
+  //   if (isError) {
+  //     toast.error("Ошибка при загрузке данных услуги");
+  //     console.error("Error loading data:", error);
+  //   }
+  // }, [isError, error]);
+
   useEffect(() => {
-    if (serviceDetails) {
+    if (isEditing && serviceDetails) {
       setEditedData(serviceDetails);
     }
-  }, [serviceDetails]);
+  }, [isEditing, serviceDetails]);
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteService(service_id!),
     onSuccess: () => {
+      toast.success("Услуга успешно удалена");
       navigate(-1); // После удаления вернуться назад
     },
     onError: (error) => {
-      setErrorMessage("Ошибка при удалении");
+      toast.error("Ошибка при удалении услуги");
     },
   });
 
@@ -87,9 +111,10 @@ const ServiceDetailsPage: React.FC = () => {
     onSuccess: () => {
       queryClient.setQueryData(["serviceDetails", service_id], editedData);
       setIsEditing(false); // Выключаем режим редактирования после успешного обновления
+      toast.success("Услуга успешно обновлена");
     },
     onError: (error) => {
-      setErrorMessage("Ошибка при обновлении данных");
+      toast.error("Ошибка при обновлении данных");
     },
   });
 
@@ -97,22 +122,22 @@ const ServiceDetailsPage: React.FC = () => {
     return <div>Загрузка...</div>;
   }
 
+  // const showErrorLastTry = () => {
+  //   toast.error("Ошибка при загрузке данных!!!!");
+  // };
+
   if (isError) {
-    return (
-      <div>
-        <p>Ошибка при получении данных</p>
-        <button onClick={() => navigate(-1)}>Вернуться назад</button>
-      </div>
-    );
+    navigate(-1); // После удаления вернуться назад
+    // showErrorLastTry();
+    // return <div>"FIBGRF"</div>; // Возвращаем null???
+    return null;
   }
-  //_______________Delete
 
   const handleDelete = () => {
     setShowConfirm(false);
     deleteMutation.mutate();
   };
 
-  //_______________Edit
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedData({ ...editedData, [name]: value });
@@ -126,62 +151,72 @@ const ServiceDetailsPage: React.FC = () => {
   const handleSaveEdit = () => {
     updateMutation.mutate();
   };
-  //_______________
+
   return (
     <div>
-      <button onClick={() => navigate(-1)}>Вернуться назад</button>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <Breadcrumbs
+        paths={[
+          { label: "Главная страница", to: "/" },
+          { label: "Услуги", to: "/services" },
+          // { label: "service_name", to: "/services/${service_id}" },
+          {
+            label: serviceDetails?.service_name,
+            to: `/services/${service_id}`,
+          },
+        ]}
+      />
       <h1>Детали услуги:</h1>
+      <div>
+        <p>
+          <strong>Название услуги:</strong> {serviceDetails?.service_name}
+        </p>
+        <button onClick={() => setIsEditing(true)}>Редактировать</button>
+      </div>
 
-      {isEditing ? (
+      <button onClick={() => setShowConfirm(true)} className="red-button">
+        Удалить
+      </button>
+
+      {isEditing && (
         <>
           <div className="modal-overlay" onClick={handleCancelEdit}></div>
-          <div className="edit-modal">
+          <div className="modal">
             <h3>Редактирование услуги</h3>
             <label>
               Название услуги:
               <input
                 type="text"
                 name="service_name"
-                value={editedData?.service_name}
+                value={editedData?.service_name || ""}
                 onChange={handleEditChange}
               />
             </label>
             <div>
               <button onClick={handleSaveEdit}>Сохранить</button>
-              <button onClick={handleCancelEdit}>Отменить</button>
+              <button onClick={handleCancelEdit} className="red-button">
+                Отменить
+              </button>
             </div>
           </div>
         </>
-      ) : (
-        <div>
-          <p>
-            <strong>Название услуги:</strong> {serviceDetails?.service_name}
-          </p>
-          <button onClick={() => setIsEditing(true)}>Редактировать</button>
-        </div>
       )}
 
-      <button onClick={() => setShowConfirm(true)}>Удалить</button>
       {showConfirm && (
-        <div
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "white",
-            padding: "20px",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-            textAlign: "center",
-            zIndex: 1000,
-          }}
-        >
-          <p>Вы уверены, что хотите удалить услугу?</p>
-          <button onClick={() => handleDelete()}>Да, удалить</button>
-          <button onClick={() => setShowConfirm(false)}>Отмена</button>
-        </div>
+        <>
+          <div
+            className="modal-overlay"
+            onClick={() => setShowConfirm(false)}
+          ></div>
+          <div className="modal">
+            <p>Вы уверены, что хотите удалить услугу?</p>
+            <button onClick={handleDelete} className="red-button">
+              Да, удалить
+            </button>
+            <button onClick={() => setShowConfirm(false)}>Отмена</button>
+          </div>
+        </>
       )}
-      {errorMessage && <p>{errorMessage}</p>}
     </div>
   );
 };

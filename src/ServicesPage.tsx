@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "./axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Breadcrumbs from "./Breadcrumbs";
 
 const fetchServices = async () => {
   const url = process.env.REACT_APP_API_URL;
@@ -37,7 +40,6 @@ const ServicesPage: React.FC = () => {
 
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     data: services_data,
@@ -54,9 +56,10 @@ const ServicesPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
       setIsCreating(false);
       setNewServiceName("");
+      toast.success("Услуга успешно добавлена");
     },
     onError: (error) => {
-      setErrorMessage("Ошибка при создании услуги");
+      toast.error("Ошибка при добавлении услуги");
     },
   });
 
@@ -73,7 +76,7 @@ const ServicesPage: React.FC = () => {
     if (newServiceName.trim()) {
       createMutation.mutate({ service_name: newServiceName });
     } else {
-      setErrorMessage("Название услуги не может быть пустым");
+      toast.error("Название услуги не может быть пустым");
     }
   };
 
@@ -91,6 +94,13 @@ const ServicesPage: React.FC = () => {
 
   return (
     <div>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <Breadcrumbs
+        paths={[
+          { label: "Главная страница", to: "/" },
+          { label: "Услуги", to: "/services" },
+        ]}
+      />
       <table>
         <thead>
           <tr>
@@ -125,8 +135,9 @@ const ServicesPage: React.FC = () => {
               onChange={(e) => setNewServiceName(e.target.value)}
             />
             <button onClick={handleCreateService}>Создать</button>
-            <button onClick={handleCancelCreate}>Отменить</button>
-            {errorMessage && <p>{errorMessage}</p>}
+            <button onClick={handleCancelCreate} className="red-button">
+              Отменить{" "}
+            </button>
           </div>
         </>
       )}

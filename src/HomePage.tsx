@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import refreshToken from "./auth";
 import axiosInstance from "./axiosConfig";
+import Breadcrumbs from "./Breadcrumbs";
 
 const fetchEntityTypes = async () => {
   const url = process.env.REACT_APP_API_URL;
@@ -70,6 +71,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
+      <Breadcrumbs paths={[{ label: "Главная страница", to: "/" }]} />
       <h1>Вы успешно авторизовались!</h1>
       <button onClick={tryRefresh}>Обновить токен</button>
       {/* <button onClick={logOut}>Выйти</button> */}

@@ -17,6 +17,8 @@ import BankPage from "./BankPage";
 import ActsPage from "./ActsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ServiceDetailsPage from "./ServiceDetailsPage";
+import Breadcrumbs from "./Breadcrumbs";
+
 import "./App.css";
 
 // Создаем клиент React Query

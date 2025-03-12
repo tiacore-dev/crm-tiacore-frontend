@@ -25,46 +25,30 @@ table tbody tr:hover {
   text-decoration: underline;
 }
 
-/* .container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-} */
-
-/* .login-form {
-  display: flex;
-  flex-direction: column;
-} */
-
-/* h1,
-h2,
-h3 {
-  color: #2c3e50;
-} */
-
-/* .page-content {
-  display: flex;
-  flex-direction: column; 
-  justify-content: center;
-  align-items: center; 
-  min-height: 100vh; 
-  padding: 20px;
-  box-sizing: border-box;
-} */
-
 button {
   background-color: white;
   color: #333;
   border: 0.5;
-  padding: 10px 20px;
+  padding: 8px 16px;
   cursor: pointer;
   border-radius: 5px;
-  font-size: 16px;
+  /* font-size: 16px; */
 }
 
 button:hover {
   background-color: #e5e4e4;
+}
+
+.red-button {
+  background-color: #fed5d1;
+  color: rgb(0, 0, 0);
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.red-button:hover {
+  background-color: #ec6b6b;
 }
 
 .error-message {
@@ -83,104 +67,6 @@ textarea {
   margin-bottom: 15px;
 }
 
-/* input:focus,
-select:focus,
-textarea:focus {
-  border-color: #3498db;
-  outline: none;
-} */
-
-/* form {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-} */
-
-/* .form-group {
-  margin-bottom: 15px;
-} */
-
-/* .table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-} */
-
-/* .table th,
-.table td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-} */
-
-/* .table th {
-  background-color: #3498db;
-  color: white;
-} */
-
-/* .table tbody tr:hover {
-  background-color: #f5f5f5;
-} */
-
-/* Стили для формы редактирования и создания */
-/* .form-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-} */
-
-/* .input-group {
-  margin-bottom: 15px;
-} */
-
-/* .input-group input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-} */
-
-/* .input-group button {
-  background-color: #2ecc71;
-  color: white;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  border: none;
-} */
-
-/* .input-group button:hover {
-  background-color: #27ae60;
-} */
-
-/* .cancel-button {
-  background-color: #e74c3c;
-} */
-/* 
-.cancel-button:hover {
-  background-color: #c0392b;
-} */
-
-/* Модальные окна */
-
-/* Модальное окно (форма создания) */
-/* .confirm-modal,
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000; 
-} */
 .confirm-modal,
 .modal,
 .edit-modal {
@@ -197,8 +83,7 @@ textarea:focus {
 }
 
 /* Затемнение фона */
-.modal-overlay,
-.confirm-modal-overlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -208,23 +93,22 @@ textarea:focus {
   z-index: 999; /* Обеспечивает, что затемнение будет под модальным окном */
 }
 
-.confirm-modal button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 5px;
+.breadcrumbs {
+  font-size: 16px;
+  color: black;
 }
 
-.confirm-modal .confirm-button {
-  background-color: #e74c3c;
-  color: white;
+.breadcrumb-item {
+  color: black;
+  display: inline;
 }
 
-.confirm-modal .cancel-button {
-  background-color: #3498db;
-  color: white;
+.breadcrumb-item a {
+  color: #666666;
+  text-decoration: none;
 }
 
-.confirm-modal button:hover {
-  opacity: 0.8;
+.breadcrumb-item a:hover {
+  color: black;
+  text-decoration: underline;
 }
