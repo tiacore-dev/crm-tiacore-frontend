@@ -1,0 +1,100 @@
+// src/api/servicesApi.tsx
+import axiosInstance from "../axiosConfig";
+import toast from "react-hot-toast";
+import { AxiosError } from "axios";
+
+// Функция для получения списка услуг с параметрами
+export const fetchServices = async (
+  search: string,
+  sort_by: string,
+  order: string,
+  page: number,
+  page_size: number
+) => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const response = await axiosInstance.get(`${url}/api/services/all`, {
+    params: {
+      search,
+      sort_by,
+      order,
+      page,
+      page_size,
+    },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};
+
+// Функция для создания новой услуги
+export const createService = async (newService: { service_name: string }) => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const response = await axiosInstance.post(
+    `${url}/api/services/add`,
+    newService,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const fetchServiceDetails = async (service_id: string) => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  try {
+    const response = await axiosInstance.get(
+      `${url}/api/services/${service_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response) {
+      toast.error("Ошибка при загрузке страницы");
+    } else {
+      toast.error("Неизвестная ошибка");
+    }
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+export const updateService = async (service_id: string, updatedData: any) => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const response = await axiosInstance.patch(
+    `${url}/api/services/${service_id}`,
+    updatedData,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const deleteService = async (service_id: string) => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+
+  await axiosInstance.delete(`${url}/api/services/${service_id}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};

@@ -21,8 +21,17 @@ body {
 
 /* Это для изменения цвета строки при наведении */
 table tbody tr:hover {
-  cursor: pointer; /* Курсор указывает на ссылку */
+  cursor: pointer;
   text-decoration: underline;
+}
+
+th:first-child {
+  cursor: pointer;
+  text-decoration: none; /* Убираем подчеркивание */
+}
+
+th:first-child:hover {
+  color: #5f7788;
 }
 
 button {
@@ -52,7 +61,7 @@ button:hover {
 }
 
 .error-message {
-  color: red;
+  color: #666666;
   font-size: 14px;
 }
 

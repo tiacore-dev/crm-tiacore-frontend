@@ -1,66 +1,14 @@
+// src/pages/ServiceDetailsPage.tsx
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "./axiosConfig";
+import {
+  fetchServiceDetails,
+  updateService,
+  deleteService,
+} from "./api/servicesApi"; // Импортируем запросы
 import Breadcrumbs from "./Breadcrumbs";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
-
-const fetchServiceDetails = async (service_id: string) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  try {
-    const response = await axiosInstance.get(
-      `${url}/api/services/${service_id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.log("error", error);
-
-    const axiosError = error as AxiosError;
-    if (axiosError.response) {
-      toast.error("Ошибка при загрузке страницы");
-    } else {
-      toast.error("Неизвестная ошибка");
-    }
-    throw error; // Пробрасываем ошибку дальше
-  }
-};
-
-const updateService = async (service_id: string, updatedData: any) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.patch(
-    `${url}/api/services/${service_id}`,
-    updatedData,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
-
-const deleteService = async (service_id: string) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-
-  await axiosInstance.delete(`${url}/api/services/${service_id}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-};
 
 const ServiceDetailsPage: React.FC = () => {
   const { service_id } = useParams<{ service_id: string }>();
@@ -93,7 +41,7 @@ const ServiceDetailsPage: React.FC = () => {
       toast.success("Услуга успешно удалена");
       navigate(-1);
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Ошибка при удалении услуги");
     },
   });
@@ -105,7 +53,7 @@ const ServiceDetailsPage: React.FC = () => {
       setIsEditing(false);
       toast.success("Услуга успешно обновлена");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Ошибка при обновлении данных");
     },
   });

@@ -1,51 +1,11 @@
+// src/pages/ServicesPage.tsx
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosInstance from "./axiosConfig";
+import { fetchServices, createService } from "./api/servicesApi"; // Импортируем запросы
 import { useNavigate } from "react-router-dom";
-// import "react-toastify/dist/ReactToastify.css";
 import toast from "react-hot-toast";
 import Breadcrumbs from "./Breadcrumbs";
-
-const fetchServices = async (
-  search: string,
-  sort_by: string,
-  order: string,
-  page: number,
-  page_size: number
-) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.get(`${url}/api/services/all`, {
-    params: {
-      search,
-      sort_by,
-      order,
-      page,
-      page_size,
-    },
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-  return response.data;
-};
-
-const createService = async (newService: { service_name: string }) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.post(
-    `${url}/api/services/add`,
-    newService,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
+import Pagination from "./components/Pagination";
 
 const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -55,7 +15,7 @@ const ServicesPage: React.FC = () => {
   const [newServiceName, setNewServiceName] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(20); // Состояние для выбора количества элементов
   const [search, setSearch] = useState(""); //_
   const [sortBy, setSortBy] = useState("service_name");
   const [order, setOrder] = useState("asc"); //_
@@ -67,7 +27,6 @@ const ServicesPage: React.FC = () => {
   } = useQuery({
     queryKey: ["services", currentPage, pageSize, search, sortBy, order],
     queryFn: () => fetchServices(search, sortBy, order, currentPage, pageSize),
-    // keepPreviousData: true, // Сохраняем предыдущие данные при изменении страницы
   });
 
   const createMutation = useMutation({
@@ -78,7 +37,7 @@ const ServicesPage: React.FC = () => {
       setNewServiceName("");
       toast.success("Услуга успешно добавлена");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Ошибка при добавлении услуги");
     },
   });
@@ -103,21 +62,22 @@ const ServicesPage: React.FC = () => {
   const handleRowClick = (service_id: string) => {
     navigate(`/services/${service_id}`);
   };
-  //_______________________________________________________________________
+
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Сбрасываем текущую страницу на первую
+  };
+
+  const totalPages = Math.ceil(services_data?.total / pageSize);
 
   const handleSortChange = (newSortBy: string) => {
     setSortBy(newSortBy);
     setOrder(order === "asc" ? "desc" : "asc"); // Переключение порядка сортировки
   };
-
-  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearch(e.target.value);
-  //   setCurrentPage(1); // Сброс страницы при изменении поискового запроса
-  // };
-  //_______________________________________________________________________
 
   if (isLoading) {
     return <div>Загрузка...</div>;
@@ -129,31 +89,17 @@ const ServicesPage: React.FC = () => {
 
   return (
     <div>
-      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
       <Breadcrumbs
         paths={[
           { label: "Главная страница", to: "/" },
           { label: "Услуги", to: "/services" },
         ]}
       />
-
-      {/* Поиск */}
-      {/* <div>
-        <input
-          type="text"
-          placeholder="Поиск по услуге"
-          value={search}
-          onChange={handleSearchChange}
-        />
-      </div> */}
-
       <table>
         <thead>
           <tr>
-            <th>
-              <button onClick={() => handleSortChange("service_name")}>
-                Название услуги
-              </button>
+            <th onClick={() => handleSortChange("service_name")}>
+              Название услуги
             </th>
             <th>
               <button onClick={handleCreateClick}>Создать новую услугу</button>
@@ -186,28 +132,22 @@ const ServicesPage: React.FC = () => {
             />
             <button onClick={handleCreateService}>Создать</button>
             <button onClick={handleCancelCreate} className="red-button">
-              Отменить{" "}
+              Отменить
             </button>
           </div>
         </>
       )}
 
-      {/* Пагинация */}
-      <div className="pagination">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Предыдущая
-        </button>
-        <span>Страница {currentPage}</span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={services_data?.services.length < pageSize}
-        >
-          Следующая
-        </button>
-      </div>
+      {services_data?.total > pageSize && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={services_data.total}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
+      )}
     </div>
   );
 };
