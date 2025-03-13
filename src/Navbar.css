@@ -8,9 +8,9 @@
 }
 
 .navbar-list {
-  display: flex; /* Включаем flexbox */
-  align-items: center; /* Выравниваем элементы по центру */
-  justify-content: space-between; /* Равномерное распределение */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   list-style: none;
   padding: 0;
   display: flex;

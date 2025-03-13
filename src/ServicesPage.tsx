@@ -17,6 +17,7 @@ import Breadcrumbs from "./Breadcrumbs";
 import SearchBar from "./components/SearchBar";
 import Pagination from "./components/Pagination";
 import CreateServiceModal from "./components/CreateServiceModal";
+import ServiceTable from "./components/ServiceTable";
 
 const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -122,31 +123,13 @@ const ServicesPage: React.FC = () => {
             onTempSearchChange={handleTempSearchChange}
             onSearch={() => handleSearch(tempSearch)}
           />
-          <table>
-            <thead>
-              <tr>
-                <th onClick={() => handleSortChange("service_name")}>
-                  Название услуги
-                </th>
-                <th>
-                  <button onClick={handleCreateClick}>
-                    Создать новую услугу
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {services_data?.services.map((service: any) => (
-                <tr
-                  key={service.service_id}
-                  onClick={() => handleRowClick(service.service_id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>{service.service_name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <button onClick={handleCreateClick}>Создать новую услугу</button>
+
+          <ServiceTable
+            services={services_data?.services}
+            onRowClick={handleRowClick}
+            onSortChange={handleSortChange}
+          />
 
           {isCreating && (
             <CreateServiceModal

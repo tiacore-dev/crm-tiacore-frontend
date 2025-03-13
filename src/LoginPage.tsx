@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "./axiosConfig";
+import "./LoginPage.css";
 
 type FormData = {
   username: string;
