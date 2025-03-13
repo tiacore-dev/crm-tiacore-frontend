@@ -70,12 +70,10 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="pagination">
       {/* Кнопки пагинации */}
       <div className="pagination-buttons">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          {"<"}
-        </button>
+        {/* Кнопка "Назад" отображается только если текущая страница не первая */}
+        {currentPage > 1 && (
+          <button onClick={() => onPageChange(currentPage - 1)}>{"<"}</button>
+        )}
 
         {getPageNumbers().map((page, index) =>
           page === "prevEllipsis" ? (
@@ -105,12 +103,10 @@ const Pagination: React.FC<PaginationProps> = ({
           )
         )}
 
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          {">"}
-        </button>
+        {/* Кнопка "Вперёд" отображается только если текущая страница не последняя */}
+        {currentPage < totalPages && (
+          <button onClick={() => onPageChange(currentPage + 1)}>{">"}</button>
+        )}
       </div>
 
       {/* Выбор количества элементов на странице */}

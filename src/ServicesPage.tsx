@@ -1,24 +1,31 @@
 // src/pages/ServicesPage.tsx
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchServices, createService } from "./api/servicesApi"; // Импортируем запросы
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchServices } from "./api/servicesApi";
+import { useServiceMutations } from "./hooks/useServiceMutations";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./redux/store";
+import {
+  setPage,
+  setPageSize,
+  setSearch,
+  setSort,
+} from "./redux/slices/servicesSlice";
 import toast from "react-hot-toast";
 import Breadcrumbs from "./Breadcrumbs";
 import Pagination from "./components/Pagination";
+import CreateServiceModal from "./components/CreateServiceModal";
 
 const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
+  const { currentPage, pageSize, search, sortBy, order } = useSelector(
+    (state: RootState) => state.services
+  );
 
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20); // Состояние для выбора количества элементов
-  const [search, setSearch] = useState(""); //_
-  const [sortBy, setSortBy] = useState("service_name");
-  const [order, setOrder] = useState("asc"); //_
 
   const {
     data: services_data,
@@ -29,18 +36,15 @@ const ServicesPage: React.FC = () => {
     queryFn: () => fetchServices(search, sortBy, order, currentPage, pageSize),
   });
 
-  const createMutation = useMutation({
-    mutationFn: createService,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["services"] });
-      setIsCreating(false);
-      setNewServiceName("");
-      toast.success("Услуга успешно добавлена");
-    },
-    onError: () => {
-      toast.error("Ошибка при добавлении услуги");
-    },
-  });
+  const { createMutation } = useServiceMutations();
+
+  useEffect(() => {
+    // Сохраняем параметры фильтрации и сортировки в Redux при изменении
+    dispatch(setPage(currentPage));
+    dispatch(setPageSize(pageSize));
+    dispatch(setSearch(search));
+    dispatch(setSort({ sortBy, order }));
+  }, [dispatch, currentPage, pageSize, search, sortBy, order]);
 
   const handleCreateClick = () => {
     setIsCreating(true);
@@ -53,7 +57,15 @@ const ServicesPage: React.FC = () => {
 
   const handleCreateService = () => {
     if (newServiceName.trim().length >= 3) {
-      createMutation.mutate({ service_name: newServiceName });
+      createMutation.mutate(
+        { service_name: newServiceName },
+        {
+          onSuccess: () => {
+            setIsCreating(false);
+            setNewServiceName("");
+          },
+        }
+      );
     } else {
       toast.error("Название услуги должно содержать минимум 3 символа");
     }
@@ -64,27 +76,27 @@ const ServicesPage: React.FC = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+    dispatch(setPage(newPage));
   };
 
   const handlePageSizeChange = (newPageSize: number) => {
-    setPageSize(newPageSize);
-    setCurrentPage(1); // Сбрасываем текущую страницу на первую
+    dispatch(setPageSize(newPageSize));
+  };
+
+  const handleSearch = (searchTerm: string) => {
+    dispatch(setSearch(searchTerm));
+  };
+
+  const handleSortChange = (newSortBy: string) => {
+    dispatch(
+      setSort({ sortBy: newSortBy, order: order === "asc" ? "desc" : "asc" })
+    );
   };
 
   const totalPages = Math.ceil(services_data?.total / pageSize);
 
-  const handleSortChange = (newSortBy: string) => {
-    setSortBy(newSortBy);
-    setOrder(order === "asc" ? "desc" : "asc"); // Переключение порядка сортировки
-  };
-
   if (isLoading) {
     return <div>Загрузка...</div>;
-  }
-
-  if (isError) {
-    return <div>Ошибка при загрузке</div>;
   }
 
   return (
@@ -95,59 +107,65 @@ const ServicesPage: React.FC = () => {
           { label: "Услуги", to: "/services" },
         ]}
       />
-      <table>
-        <thead>
-          <tr>
-            <th onClick={() => handleSortChange("service_name")}>
-              Название услуги
-            </th>
-            <th>
-              <button onClick={handleCreateClick}>Создать новую услугу</button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {services_data?.services.map((service: any) => (
-            <tr
-              key={service.service_id}
-              onClick={() => handleRowClick(service.service_id)}
-              style={{ cursor: "pointer" }}
-            >
-              <td>{service.service_name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {isCreating && (
+      {!isError && (
         <>
-          <div className="modal-overlay" onClick={handleCancelCreate}></div>
-          <div className="modal">
-            <h3>Создание новой услуги</h3>
+          <div>
             <input
               type="text"
-              placeholder="Введите название услуги"
-              value={newServiceName}
-              onChange={(e) => setNewServiceName(e.target.value)}
+              placeholder="Поиск по названию услуги"
+              value={search}
+              onChange={(e) => handleSearch(e.target.value)}
             />
-            <button onClick={handleCreateService}>Создать</button>
-            <button onClick={handleCancelCreate} className="red-button">
-              Отменить
-            </button>
+            <button onClick={() => handleSearch(search)}>Поиск</button>
           </div>
+          <table>
+            <thead>
+              <tr>
+                <th onClick={() => handleSortChange("service_name")}>
+                  Название услуги
+                </th>
+                <th>
+                  <button onClick={handleCreateClick}>
+                    Создать новую услугу
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {services_data?.services.map((service: any) => (
+                <tr
+                  key={service.service_id}
+                  onClick={() => handleRowClick(service.service_id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <td>{service.service_name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {isCreating && (
+            <CreateServiceModal
+              newServiceName={newServiceName}
+              setNewServiceName={setNewServiceName}
+              onCreate={handleCreateService}
+              onCancel={handleCancelCreate}
+            />
+          )}
+
+          {services_data?.total > pageSize && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={services_data.total}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          )}
         </>
       )}
-
-      {services_data?.total > pageSize && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={services_data.total}
-          pageSize={pageSize}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-        />
-      )}
+      {isError && <button onClick={() => navigate(-1)}>Вернуться назад</button>}
     </div>
   );
 };
