@@ -14,6 +14,8 @@ import {
 } from "./redux/slices/servicesSlice";
 import toast from "react-hot-toast";
 import Breadcrumbs from "./Breadcrumbs";
+import SearchBar from "./components/SearchBar";
+
 import Pagination from "./components/Pagination";
 import CreateServiceModal from "./components/CreateServiceModal";
 
@@ -41,12 +43,8 @@ const ServicesPage: React.FC = () => {
   const { createMutation } = useServiceMutations();
 
   useEffect(() => {
-    // Сохраняем параметры фильтрации и сортировки в Redux при изменении
-    dispatch(setPage(currentPage));
-    dispatch(setPageSize(pageSize));
-    dispatch(setSearch(search));
     dispatch(setSort({ sortBy, order }));
-  }, [dispatch, currentPage, pageSize, search, sortBy, order]);
+  }, [dispatch, sortBy, order]);
 
   const handleCreateClick = () => {
     setIsCreating(true);
@@ -115,15 +113,11 @@ const ServicesPage: React.FC = () => {
       />
       {!isError && (
         <>
-          <div>
-            <input
-              type="text"
-              placeholder="Поиск по названию услуги"
-              value={tempSearch}
-              onChange={handleTempSearchChange}
-            />
-            <button onClick={() => handleSearch(tempSearch)}>Поиск</button>
-          </div>
+          <SearchBar
+            tempSearch={tempSearch}
+            onTempSearchChange={handleTempSearchChange}
+            onSearch={() => handleSearch(tempSearch)}
+          />
           <table>
             <thead>
               <tr>
@@ -159,16 +153,14 @@ const ServicesPage: React.FC = () => {
             />
           )}
 
-          {services_data?.total > pageSize && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={services_data.total}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={services_data.total}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </>
       )}
       {isError && <button onClick={() => navigate(-1)}>Вернуться назад</button>}

@@ -1,3 +1,5 @@
+import "./Pagination.css"; // Подключаем CSS
+
 import React from "react";
 
 interface PaginationProps {
@@ -69,50 +71,50 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="pagination">
       {/* Кнопки пагинации */}
-      <div className="pagination-buttons">
-        {/* Кнопка "Назад" отображается только если текущая страница не первая */}
-        {currentPage > 1 && (
-          <button onClick={() => onPageChange(currentPage - 1)}>{"<"}</button>
-        )}
+      {totalItems > pageSize && (
+        <div>
+          {/* Кнопка "Назад" отображается только если текущая страница не первая */}
+          {currentPage > 1 && (
+            <button onClick={() => onPageChange(currentPage - 1)}>{"<"}</button>
+          )}
 
-        {getPageNumbers().map((page, index) =>
-          page === "prevEllipsis" ? (
-            <button
-              key={index}
-              onClick={() => handleEllipsisClick("prev")}
-              className="ellipsis"
-            >
-              ...
-            </button>
-          ) : page === "nextEllipsis" ? (
-            <button
-              key={index}
-              onClick={() => handleEllipsisClick("next")}
-              className="ellipsis"
-            >
-              ...
-            </button>
-          ) : (
-            <button
-              key={index}
-              onClick={() => onPageChange(page as number)}
-              className={currentPage === page ? "active" : ""}
-            >
-              {page}
-            </button>
-          )
-        )}
+          {getPageNumbers().map((page, index) =>
+            page === "prevEllipsis" ? (
+              <button
+                key={index}
+                onClick={() => handleEllipsisClick("prev")}
+                className="ellipsis"
+              >
+                ...
+              </button>
+            ) : page === "nextEllipsis" ? (
+              <button
+                key={index}
+                onClick={() => handleEllipsisClick("next")}
+                className="ellipsis"
+              >
+                ...
+              </button>
+            ) : (
+              <button
+                key={index}
+                onClick={() => onPageChange(page as number)}
+                className={currentPage === page ? "active" : ""}
+              >
+                {page}
+              </button>
+            )
+          )}
 
-        {/* Кнопка "Вперёд" отображается только если текущая страница не последняя */}
-        {currentPage < totalPages && (
-          <button onClick={() => onPageChange(currentPage + 1)}>{">"}</button>
-        )}
-      </div>
-
+          {/* Кнопка "Вперёд" отображается только если текущая страница не последняя */}
+          {currentPage < totalPages && (
+            <button onClick={() => onPageChange(currentPage + 1)}>{">"}</button>
+          )}
+        </div>
+      )}
       {/* Выбор количества элементов на странице */}
       <div className="page-size-selector">
         <label>
-          Элементов на странице:
           <select value={pageSize} onChange={handlePageSizeChange}>
             <option value={10}>10</option>
             <option value={20}>20</option>

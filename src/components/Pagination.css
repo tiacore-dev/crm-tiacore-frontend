@@ -1,0 +1,14 @@
+.pagination {
+  display: flex;
+  align-items: baseline;
+  justify-content: end;
+  gap: 8px; /* Расстояние между полем ввода и кнопкой */
+}
+
+.page-size-selector {
+  /* flex: 1;  */
+  padding: 8px;
+  border-radius: 4px;
+  width: fit-content;
+  /* flex:; */
+}
