@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "./Navbar.css"; // Стили для навигации (опционально)
+import { NavLink, useLocation } from "react-router-dom";
+import "./Navbar.css"; // Стили для навигации
 
 const logOut = () => {
   localStorage.removeItem("access_token");
@@ -9,48 +9,90 @@ const logOut = () => {
 };
 
 const Navbar: React.FC = () => {
+  const location = useLocation();
+
   return (
     <nav className="navbar">
       <ul className="navbar-list">
         <li className="navbar-item">
-          <Link to="/home" className="navbar-link">
+          <NavLink
+            to="/home"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Главная
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/services" className="navbar-link">
+          <NavLink
+            to="/services"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Услуги
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/users" className="navbar-link">
+          <NavLink
+            to="/users"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Пользователи
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/legal_entities" className="navbar-link">
+          <NavLink
+            to="/legal_entities"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Юр. лица
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/contracts" className="navbar-link">
+          <NavLink
+            to="/contracts"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Контракты
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/bank_accounts" className="navbar-link">
+          <NavLink
+            to="/bank_accounts"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Банк
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/bills" className="navbar-link">
+          <NavLink
+            to="/bills"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Счета
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/acts" className="navbar-link">
+          <NavLink
+            to="/acts"
+            className={({ isActive }) =>
+              isActive ? "navbar-link active" : "navbar-link"
+            }
+          >
             Акты
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
           <button onClick={logOut} className="logout-button">

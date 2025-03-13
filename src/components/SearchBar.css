@@ -1,6 +1,6 @@
 .search-bar {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px; /* Расстояние между полем ввода и кнопкой */
 }
 
