@@ -5,6 +5,7 @@ interface CreateServiceModalProps {
   setNewServiceName: (value: string) => void;
   onCreate: () => void;
   onCancel: () => void;
+  isCreatingLoading: boolean; // Новый пропс для состояния загрузки
 }
 
 const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
@@ -12,12 +13,13 @@ const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
   setNewServiceName,
   onCreate,
   onCancel,
+  isCreatingLoading,
 }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !isCreatingLoading) {
         onCreate();
-      } else if (event.key === "Escape") {
+      } else if (event.key === "Escape" && !isCreatingLoading) {
         onCancel();
       }
     };
@@ -26,7 +28,7 @@ const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onCreate, onCancel]);
+  }, [onCreate, onCancel, isCreatingLoading]);
 
   return (
     <>
@@ -38,9 +40,16 @@ const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
           placeholder="Введите название услуги"
           value={newServiceName}
           onChange={(e) => setNewServiceName(e.target.value)}
+          disabled={isCreatingLoading} // Отключаем поле ввода во время загрузки
         />
-        <button onClick={onCreate}>Создать</button>
-        <button onClick={onCancel} className="red-button">
+        <button onClick={onCreate} disabled={isCreatingLoading}>
+          {isCreatingLoading ? "Создание..." : "Создать"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="red-button"
+          disabled={isCreatingLoading}
+        >
           Отменить
         </button>
       </div>
