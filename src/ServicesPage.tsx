@@ -24,6 +24,8 @@ const ServicesPage: React.FC = () => {
     (state: RootState) => state.services
   );
 
+  const [tempSearch, setTempSearch] = useState(""); // Временное состояние для поиска
+
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
 
@@ -83,6 +85,10 @@ const ServicesPage: React.FC = () => {
     dispatch(setPageSize(newPageSize));
   };
 
+  const handleTempSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempSearch(e.target.value); // Обновляем временное состояние поиска
+  };
+
   const handleSearch = (searchTerm: string) => {
     dispatch(setSearch(searchTerm));
   };
@@ -113,10 +119,10 @@ const ServicesPage: React.FC = () => {
             <input
               type="text"
               placeholder="Поиск по названию услуги"
-              value={search}
-              onChange={(e) => handleSearch(e.target.value)}
+              value={tempSearch}
+              onChange={handleTempSearchChange}
             />
-            <button onClick={() => handleSearch(search)}>Поиск</button>
+            <button onClick={() => handleSearch(tempSearch)}>Поиск</button>
           </div>
           <table>
             <thead>
