@@ -1,4 +1,3 @@
-// src/components/SearchBar.tsx
 import React from "react";
 import "./SearchBar.css"; // Подключаем CSS
 
@@ -20,6 +19,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
         placeholder="Поиск по названию услуги"
         value={tempSearch}
         onChange={onTempSearchChange}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onSearch();
+          }
+        }}
       />
       <button onClick={onSearch}>Поиск</button>
     </div>

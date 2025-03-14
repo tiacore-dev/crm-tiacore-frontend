@@ -15,9 +15,10 @@ import {
 import toast from "react-hot-toast";
 import Breadcrumbs from "./Breadcrumbs";
 import SearchBar from "./components/SearchBar";
-import Pagination from "./components/Pagination";
+import Pagination from "./components/Pagination/Pagination";
 import CreateServiceModal from "./components/CreateServiceModal";
 import ServiceTable from "./components/ServiceTable";
+import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
 
 const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,6 +32,14 @@ const ServicesPage: React.FC = () => {
   const [newServiceName, setNewServiceName] = useState("");
   const [isCreatingLoading, setIsCreatingLoading] = useState(false); // Состояние загрузки при создании услуги
 
+  useEffect(() => {
+    dispatch(
+      setBreadcrumbs([
+        { label: "Главная страница", to: "/" },
+        { label: "Услуги", to: "/services" },
+      ])
+    );
+  }, [dispatch]);
   const {
     data: services_data,
     isLoading,
@@ -110,12 +119,6 @@ const ServicesPage: React.FC = () => {
 
   return (
     <div>
-      <Breadcrumbs
-        paths={[
-          { label: "Главная страница", to: "/" },
-          { label: "Услуги", to: "/services" },
-        ]}
-      />
       {!isError && (
         <>
           <SearchBar

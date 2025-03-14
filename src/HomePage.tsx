@@ -8,9 +8,17 @@ import {
   fetchContractStatuses,
   fetchUserRoles,
 } from "./api/homeApi";
+import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
+import { useDispatch } from "react-redux";
+
 // import { fetchEntityTypes, createService } from "./api/servicesApi"; // Импортируем запросы
 
 const HomePage: React.FC = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setBreadcrumbs([{ label: "Главная страница", to: "/" }]));
+  }, [dispatch]);
+
   const { data: entityTypes } = useQuery({
     queryKey: ["entityTypes"],
     queryFn: fetchEntityTypes,
@@ -32,7 +40,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
-      <Breadcrumbs paths={[{ label: "Главная страница", to: "/" }]} />
       {/* {!isError && ( <> */}
       <h1>Вы успешно авторизовались!</h1>
       <button onClick={tryRefresh}>Обновить токен</button>

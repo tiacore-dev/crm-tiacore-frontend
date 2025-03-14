@@ -1,21 +1,25 @@
+// src/components/Breadcrumbs.tsx
+import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
 
-interface BreadcrumbsProps {
-  paths: { label: string; to: string }[];
-}
+const Breadcrumbs: React.FC = () => {
+  const breadcrumbs = useSelector(
+    (state: RootState) => state.breadcrumbs.paths
+  );
 
-const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ paths }) => {
   return (
     <nav aria-label="breadcrumb">
       <div className="breadcrumbs">
-        {paths.map((path, index) => (
+        {breadcrumbs.map((path, index) => (
           <span key={index} className="breadcrumb-item">
-            {index === paths.length - 1 ? (
+            {index === breadcrumbs.length - 1 ? (
               path.label
             ) : (
               <Link to={path.to}>{path.label}</Link>
             )}
-            {index < paths.length - 1 && <span> / </span>}
+            {index < breadcrumbs.length - 1 && <span> / </span>}
           </span>
         ))}
       </div>

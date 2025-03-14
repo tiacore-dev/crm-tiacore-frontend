@@ -5,6 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchServiceDetails } from "./api/servicesApi"; // Импортируем запросы
 import Breadcrumbs from "./Breadcrumbs";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./redux/store";
+import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
 import ServiceDetails from "./components/ServiceDetails"; // Импортируем новый компонент
 import ConfirmDeleteModal from "./components/ConfirmDeleteModal"; // Импортируем модалку удаления
 import EditServiceModal from "./components/EditModals"; // Импортируем модалку редактирования
@@ -23,6 +26,7 @@ const ServiceDetailsPage: React.FC = () => {
   const [editedData, setEditedData] = useState<any>(null);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false); // Состояние загрузки при создании услуги
   const [isDeleteLoading, setIsDeleteLoading] = useState(false); // Состояние загрузки при создании услуги
+  const dispatch = useDispatch();
 
   const {
     data: serviceDetails,
@@ -33,6 +37,18 @@ const ServiceDetailsPage: React.FC = () => {
     queryFn: () => fetchServiceDetails(service_id!),
     retry: false,
   });
+
+  useEffect(() => {
+    if (serviceDetails) {
+      dispatch(
+        setBreadcrumbs([
+          { label: "Главная страница", to: "/" },
+          { label: "Услуги", to: "/services" },
+          { label: serviceDetails.service_name, to: `/services/${service_id}` },
+        ])
+      );
+    }
+  }, [dispatch, serviceDetails, service_id]);
 
   const { updateMutation, deleteMutation } = useServiceMutations(
     service_id!,
@@ -96,16 +112,6 @@ const ServiceDetailsPage: React.FC = () => {
 
   return (
     <div>
-      <Breadcrumbs
-        paths={[
-          { label: "Главная страница", to: "/" },
-          { label: "Услуги", to: "/services" },
-          {
-            label: serviceDetails?.service_name,
-            to: `/services/${service_id}`,
-          },
-        ]}
-      />
       {!isError && (
         <>
           <ServiceDetails
