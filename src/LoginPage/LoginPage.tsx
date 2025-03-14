@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../axiosConfig";
+import toast from "react-hot-toast";
 import "./LoginPage.css";
 
 type FormData = {
@@ -42,12 +43,12 @@ export const LoginPage: React.FC = () => {
           data
         );
         return response.data;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error("Ошибка при авторизации:", error.message);
-          throw new Error(error.message);
+      } catch (error: any) {
+        if (error.response) {
+          const errorMessage =
+            error.response.data.message || "Ошибка при авторизации";
+          throw new Error(errorMessage);
         } else {
-          console.error("Неизвестная ошибка:", error);
           throw new Error("Неизвестная ошибка");
         }
       }
@@ -58,7 +59,7 @@ export const LoginPage: React.FC = () => {
       navigate("/home");
     },
     onError: (error) => {
-      console.error("Ошибка при авторизации:", error);
+      toast.error(error.message);
     },
   });
 
@@ -70,9 +71,6 @@ export const LoginPage: React.FC = () => {
     <div className="login_container">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Вход</h2>
-        {loginMutation.isError && (
-          <div className="error-message">Ошибка при авторизации</div>
-        )}
         <div>
           <label htmlFor="username">Логин</label>
           <Controller
