@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Navbar.css"; // Стили для навигации
 
 const logOut = () => {
@@ -9,8 +9,6 @@ const logOut = () => {
 };
 
 const Navbar: React.FC = () => {
-  const location = useLocation();
-
   return (
     <nav className="navbar">
       <ul className="navbar-list">
@@ -94,7 +92,7 @@ const Navbar: React.FC = () => {
             Акты
           </NavLink>
         </li>
-        <li className="navbar-item">
+        <li className="navbar-item-last">
           <button onClick={logOut} className="logout-button">
             Выйти
           </button>

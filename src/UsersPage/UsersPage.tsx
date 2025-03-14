@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Breadcrumbs from "./Breadcrumbs";
-import { fetchUsers, createUser } from "./api/usersApi"; // Импортируем запросы
+import { useQuery } from "@tanstack/react-query";
+import { fetchUsers } from "../api/usersApi"; // Импортируем запросы
 import { useDispatch } from "react-redux";
-import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
+import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
 const UsersPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);

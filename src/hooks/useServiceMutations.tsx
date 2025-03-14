@@ -8,7 +8,6 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-// Хук для мутаций над одной услугой
 export const useServiceMutations = (
   service_id?: string,
   setIsEditing?: (val: boolean) => void
@@ -28,7 +27,6 @@ export const useServiceMutations = (
           </button>
         </>
       );
-      // navigate(`/services/${data.service_id}`);
     },
     onError: () => {
       toast.error("Ошибка при добавлении услуги");

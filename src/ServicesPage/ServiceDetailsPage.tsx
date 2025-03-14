@@ -1,31 +1,21 @@
-// src/pages/ServiceDetailsPage.tsx
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchServiceDetails } from "./api/servicesApi"; // Импортируем запросы
-import Breadcrumbs from "./Breadcrumbs";
+import { fetchServiceDetails } from "../api/servicesApi"; // Импортируем запросы
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
+import { useDispatch } from "react-redux";
+import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 import ServiceDetails from "./components/ServiceDetails"; // Импортируем новый компонент
-import ConfirmDeleteModal from "./components/ConfirmDeleteModal"; // Импортируем модалку удаления
-import EditServiceModal from "./components/EditModals"; // Импортируем модалку редактирования
-import { useServiceMutations } from "./hooks/useServiceMutations"; // Импортируем мутации
+import ConfirmDeleteModal from "../components/Modals/ConfirmDeleteModal"; // Импортируем модалку удаления
+import EditServiceModal from "./components/ServiceEditModals"; // Импортируем модалку редактирования
+import { useServiceMutations } from "../hooks/useServiceMutations"; // Импортируем мутации
 
 const ServiceDetailsPage: React.FC = () => {
-  // const [breadcrumbs, setBreadcrumbs] = useState([
-  //   { label: "Главная страница", to: "/" },
-  //   { label: "Услуги", to: "/services" },
-  // ]);
-
   const navigate = useNavigate();
   const { service_id } = useParams<{ service_id: string }>();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<any>(null);
-  // const [isUpdateLoading, setIsUpdateLoading] = useState(false); // Состояние загрузки при создании услуги
-  // const [isDeleteLoading, setIsDeleteLoading] = useState(false); // Состояние загрузки при создании услуги
   const dispatch = useDispatch();
 
   const {
@@ -66,17 +56,12 @@ const ServiceDetailsPage: React.FC = () => {
   }
 
   const handleDelete = () => {
-    // setIsDeleteLoading(true); // Устанавливаем состояние загрузки перед удалением
-
     deleteMutation.mutate(undefined, {
       onSuccess: () => {
-        // setIsDeleteLoading(false);
         setShowDeleteConfirm(false);
-        navigate("/services"); // Перенаправляем на список услуг
+        navigate("/services");
       },
-      onError: () => {
-        // setIsDeleteLoading(false);
-      },
+      onError: () => {},
     });
   };
 
@@ -92,19 +77,12 @@ const ServiceDetailsPage: React.FC = () => {
 
   const handleSaveEdit = () => {
     if (editedData?.service_name.trim().length >= 3) {
-      // setIsUpdateLoading(true);
-      // updateMutation.mutate(editedData);
-      //______________________________________________________________
       updateMutation.mutate(editedData, {
         onSuccess: () => {
-          // setIsUpdateLoading(false);
           setIsEditing(false);
         },
-        onError: () => {
-          // setIsUpdateLoading(false);
-        },
+        onError: () => {},
       });
-      //______________________________________________________________
     } else {
       toast.error("Название услуги должно содержать минимум 3 символа");
     }
@@ -114,17 +92,19 @@ const ServiceDetailsPage: React.FC = () => {
     <div>
       {!isError && (
         <>
-          <ServiceDetails
-            serviceName={serviceDetails?.service_name || ""}
-            onEdit={() => setIsEditing(true)}
-          />
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="red-button"
-          >
-            Удалить
-          </button>
-
+          {" "}
+          <div className="main-container">
+            <ServiceDetails
+              serviceName={serviceDetails?.service_name || ""}
+              onEdit={() => setIsEditing(true)}
+            />
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="red-button"
+            >
+              Удалить
+            </button>
+          </div>
           {isEditing && (
             <EditServiceModal
               editedData={editedData}
@@ -134,7 +114,6 @@ const ServiceDetailsPage: React.FC = () => {
               isUpdateLoading={updateMutation.isPending}
             />
           )}
-
           {showDeleteConfirm && (
             <ConfirmDeleteModal
               onConfirm={handleDelete}

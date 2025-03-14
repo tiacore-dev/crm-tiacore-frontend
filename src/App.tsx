@@ -8,22 +8,20 @@ import {
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import LoginPage from "./LoginPage";
-import HomePage from "./HomePage";
-import UsersPage from "./UsersPage";
-import ServicesPage from "./ServicesPage";
-import LegalEntityPage from "./LegalEntityPage";
-import ContractsPage from "./ContractsPage";
-import BillsPage from "./BillsPage";
-import BankPage from "./BankPage";
-import ActsPage from "./ActsPage";
+import LoginPage from "./LoginPage/LoginPage";
+import HomePage from "./HomePage/HomePage";
+import UsersPage from "./UsersPage/UsersPage";
+import ServicesPage from "./ServicesPage/ServicesPage";
+import LegalEntityPage from "./LegalEntityPage/LegalEntityPage";
+import ContractsPage from "./ContractsPage/ContractsPage";
+import BillsPage from "./BillsPage/BillsPage";
+import BankPage from "./BankPage/BankPage";
+import ActsPage from "./ActsPage/ActsPage";
 import ProtectedRoute from "./ProtectedRoute";
-import ServiceDetailsPage from "./ServiceDetailsPage";
-// import Breadcrumbs from "./Breadcrumbs";
+import ServiceDetailsPage from "./ServicesPage/ServiceDetailsPage";
 
 import "./App.css";
 
-// Создаем клиент React Query
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
@@ -48,7 +46,7 @@ const App: React.FC = () => {
             <Route path="/bills" element={<BillsPage />} />
             <Route path="/acts" element={<ActsPage />} />
           </Route>
-          <Route path="*" element={<Navigate to="/home" />} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>
     </QueryClientProvider>

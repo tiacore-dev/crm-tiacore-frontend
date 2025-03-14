@@ -1,6 +1,4 @@
 import axiosInstance from "../axiosConfig";
-// import toast from "react-hot-toast";
-// import { AxiosError } from "axios";
 export const fetchEntityTypes = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

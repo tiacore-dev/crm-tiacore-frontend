@@ -26,11 +26,11 @@ const servicesSlice = createSlice({
     },
     setPageSize: (state, action: PayloadAction<number>) => {
       state.pageSize = action.payload;
-      state.currentPage = 1; // Сброс страницы на первую при изменении размера страницы
+      state.currentPage = 1;
     },
     setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload;
-      state.currentPage = 1; // Сброс страницы на первую при изменении поиска
+      state.currentPage = 1;
     },
     setSort: (
       state,

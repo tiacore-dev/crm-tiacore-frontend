@@ -1,20 +1,20 @@
 import React, { useEffect } from "react";
-import Breadcrumbs from "./Breadcrumbs";
 import { useDispatch } from "react-redux";
-import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
+import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
-const LegalEntityPage: React.FC = () => {
+const BankPage: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
         { label: "Главная страница", to: "/" },
-        { label: "Юрю лица", to: "/legal_entities" },
+        { label: "Банк", to: "/bank_accounts" },
       ])
     );
   }, [dispatch]);
-  return <div>legal_entities</div>;
+
+  return <div>bank_accounts</div>;
 };
 
-export default LegalEntityPage;
+export default BankPage;

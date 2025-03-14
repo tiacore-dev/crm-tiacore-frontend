@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./ServiceModal.css";
+import "../../components/Modals/ModalWindow.css";
 
 interface CreateServiceModalProps {
   newServiceName: string;

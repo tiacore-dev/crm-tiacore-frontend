@@ -14,13 +14,7 @@ const refreshToken = async (): Promise<string | null> => {
       refresh_token: string;
     }>(`${url}/api/auth/refresh`, { refresh_token: r_token });
 
-    // const response = await axiosInstance.post<AuthResponse>(
-    //   `${url}/api/auth/token`,
-    //   data
-    // );
-
     console.log("response", response);
-    // Сохраняем новый access_token в localStorage
     localStorage.setItem("access_token", response.data.access_token);
     localStorage.setItem("refresh_token", response.data.refresh_token);
 

@@ -1,0 +1,53 @@
+/* Стили для Navbar */
+.navbar {
+  background-color: white;
+  display: flex;
+  justify-content: flex-start; /* Выравниваем элементы по левому краю */
+  padding: 0 20px; /* Добавляем отступы по бокам для красоты */
+}
+
+.navbar-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px;
+  display: flex;
+  flex-grow: 1; /* Растягиваем список на всю доступную ширину */
+  align-items: center; /* Выравниваем элементы по вертикали */
+}
+
+.navbar-item {
+  margin-right: 15px; /* Отступ между элементами */
+}
+
+.navbar-item-last {
+  margin-left: auto; /* Перемещает последний элемент вправо */
+}
+
+.navbar-link {
+  color: rgb(41, 41, 41);
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.navbar-link:hover {
+  color: #727272;
+}
+
+.navbar-link.active {
+  color: black;
+  font-size: 18px;
+  text-decoration: 2px #666666 underline;
+}
+
+.logout-button {
+  background-color: #fed5d1;
+  color: rgb(0, 0, 0);
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  /* border: none;  */
+}
+
+.logout-button:hover {
+  background-color: #ec6b6b;
+}

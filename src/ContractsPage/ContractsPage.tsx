@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
+import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
 const ContractsPage: React.FC = () => {
   const dispatch = useDispatch();

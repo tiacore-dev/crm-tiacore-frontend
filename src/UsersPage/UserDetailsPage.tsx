@@ -1,11 +1,8 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
-import Breadcrumbs from "./Breadcrumbs";
+import React from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchUserDetails, updateUser, deleteUser } from "./api/usersApi"; // Импортируем запросы
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserDetails } from "../api/usersApi"; // Импортируем запросы
 
 const UserDetailsPage: React.FC = () => {
   const dispatch = useDispatch();

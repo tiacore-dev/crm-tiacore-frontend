@@ -1,23 +1,22 @@
-// src/pages/ServicesPage.tsx
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchServices } from "./api/servicesApi";
-import { useServiceMutations } from "./hooks/useServiceMutations";
+import { fetchServices } from "../api/servicesApi";
+import { useServiceMutations } from "../hooks/useServiceMutations";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
+import { RootState } from "../redux/store";
 import {
   setPage,
   setPageSize,
   setSearch,
   setSort,
-} from "./redux/slices/servicesSlice";
+} from "../redux/slices/servicesSlice";
 import toast from "react-hot-toast";
-import SearchBar from "./components/SearchBar";
-import Pagination from "./components/Pagination/Pagination";
+import SearchBar from "../components/SearchBar/SearchBar";
+import Pagination from "../components/Pagination/Pagination";
 import CreateServiceModal from "./components/CreateServiceModal";
 import ServiceTable from "./components/ServiceTable";
-import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
+import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
 const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ const ServicesPage: React.FC = () => {
     (state: RootState) => state.services
   );
 
-  const [tempSearch, setTempSearch] = useState(search); // Временное состояние для поиска
+  const [tempSearch, setTempSearch] = useState(search);
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
 
@@ -64,14 +63,12 @@ const ServicesPage: React.FC = () => {
 
   const handleCreateService = () => {
     if (newServiceName.trim().length >= 3) {
-      // setIsCreatingLoading(true); // Устанавливаем состояние загрузки в true
       createMutation.mutate(
         { service_name: newServiceName },
         {
           onSuccess: () => {
             setIsCreating(false);
             setNewServiceName("");
-            // setIsCreatingLoading(false); // Сбрасываем состояние загрузки после успешного создания
           },
           onError: () => {
             // setIsCreatingLoading(false); // Сбрасываем состояние загрузки в случае ошибки
@@ -118,39 +115,39 @@ const ServicesPage: React.FC = () => {
   return (
     <div>
       {!isError && (
-        <>
+        <div>
           <SearchBar
             tempSearch={tempSearch}
             onTempSearchChange={handleTempSearchChange}
             onSearch={() => handleSearch(tempSearch)}
           />
-          <button onClick={handleCreateClick}>Создать новую услугу</button>
+          <div className="main-container">
+            <button onClick={handleCreateClick}>Создать новую услугу</button>
+            <ServiceTable
+              services={services_data?.services}
+              onRowClick={handleRowClick}
+              onSortChange={handleSortChange}
+            />
 
-          <ServiceTable
-            services={services_data?.services}
-            onRowClick={handleRowClick}
-            onSortChange={handleSortChange}
-          />
-
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={services_data.total}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
           {isCreating && (
             <CreateServiceModal
               newServiceName={newServiceName}
               setNewServiceName={setNewServiceName}
               onCreate={handleCreateService}
               onCancel={handleCancelCreate}
-              isCreatingLoading={createMutation.isPending} // Передаем состояние загрузки
+              isCreatingLoading={createMutation.isPending}
             />
           )}
-
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={services_data.total}
-            pageSize={pageSize}
-            onPageChange={handlePageChange}
-            onPageSizeChange={handlePageSizeChange}
-          />
-        </>
+        </div>
       )}
       {isError && <button onClick={() => navigate(-1)}>Вернуться назад</button>}
     </div>

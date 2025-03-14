@@ -1,8 +1,7 @@
 import axios from "axios";
-import refreshToken from "./auth"; // Импортируем функцию обновления токена
+import refreshToken from "./LoginPage/auth"; // Импортируем функцию обновления токена
 
 const axiosInstance = axios.create({});
-// baseURL: process.env.REACT_APP_API_URL
 axiosInstance.interceptors.response.use(
   (response) => response, // Если ответ успешный, просто возвращаем его
   async (error) => {

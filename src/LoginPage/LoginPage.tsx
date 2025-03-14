@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "./axiosConfig";
+import axiosInstance from "../axiosConfig";
 import "./LoginPage.css";
 
 type FormData = {
@@ -29,7 +29,6 @@ const LoginPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // Используем useMutation для выполнения запроса на авторизацию
   const loginMutation = useMutation<AuthResponse, Error, FormData>({
     mutationFn: async (data) => {
       const url = process.env.REACT_APP_API_URL;
@@ -54,10 +53,8 @@ const LoginPage: React.FC = () => {
       }
     },
     onSuccess: (data) => {
-      // Сохраняем токены в localStorage
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
-      // Перенаправляем на /home
       navigate("/home");
     },
     onError: (error) => {
