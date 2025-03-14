@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Breadcrumbs from "./Breadcrumbs";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "./redux/slices/breadcrumbsSlice";
 

@@ -24,8 +24,8 @@ const ServiceDetailsPage: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<any>(null);
-  const [isUpdateLoading, setIsUpdateLoading] = useState(false); // Состояние загрузки при создании услуги
-  const [isDeleteLoading, setIsDeleteLoading] = useState(false); // Состояние загрузки при создании услуги
+  // const [isUpdateLoading, setIsUpdateLoading] = useState(false); // Состояние загрузки при создании услуги
+  // const [isDeleteLoading, setIsDeleteLoading] = useState(false); // Состояние загрузки при создании услуги
   const dispatch = useDispatch();
 
   const {
@@ -66,16 +66,16 @@ const ServiceDetailsPage: React.FC = () => {
   }
 
   const handleDelete = () => {
-    setIsDeleteLoading(true); // Устанавливаем состояние загрузки перед удалением
+    // setIsDeleteLoading(true); // Устанавливаем состояние загрузки перед удалением
 
     deleteMutation.mutate(undefined, {
       onSuccess: () => {
-        setIsDeleteLoading(false);
+        // setIsDeleteLoading(false);
         setShowDeleteConfirm(false);
         navigate("/services"); // Перенаправляем на список услуг
       },
       onError: () => {
-        setIsDeleteLoading(false);
+        // setIsDeleteLoading(false);
       },
     });
   };
@@ -92,16 +92,16 @@ const ServiceDetailsPage: React.FC = () => {
 
   const handleSaveEdit = () => {
     if (editedData?.service_name.trim().length >= 3) {
-      setIsUpdateLoading(true);
+      // setIsUpdateLoading(true);
       // updateMutation.mutate(editedData);
       //______________________________________________________________
       updateMutation.mutate(editedData, {
         onSuccess: () => {
-          setIsUpdateLoading(false);
+          // setIsUpdateLoading(false);
           setIsEditing(false);
         },
         onError: () => {
-          setIsUpdateLoading(false);
+          // setIsUpdateLoading(false);
         },
       });
       //______________________________________________________________
@@ -131,7 +131,7 @@ const ServiceDetailsPage: React.FC = () => {
               onChange={handleEditChange}
               onSave={handleSaveEdit}
               onCancel={handleCancelEdit}
-              isUpdateLoading={isUpdateLoading}
+              isUpdateLoading={updateMutation.isPending}
             />
           )}
 
@@ -139,7 +139,7 @@ const ServiceDetailsPage: React.FC = () => {
             <ConfirmDeleteModal
               onConfirm={handleDelete}
               onCancel={() => setShowDeleteConfirm(false)}
-              isDeleteLoading={isDeleteLoading}
+              isDeleteLoading={deleteMutation.isPending}
             />
           )}
         </>

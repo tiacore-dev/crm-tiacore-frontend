@@ -13,7 +13,6 @@ import {
   setSort,
 } from "./redux/slices/servicesSlice";
 import toast from "react-hot-toast";
-import Breadcrumbs from "./Breadcrumbs";
 import SearchBar from "./components/SearchBar";
 import Pagination from "./components/Pagination/Pagination";
 import CreateServiceModal from "./components/CreateServiceModal";
@@ -30,7 +29,6 @@ const ServicesPage: React.FC = () => {
   const [tempSearch, setTempSearch] = useState(search); // Временное состояние для поиска
   const [isCreating, setIsCreating] = useState(false);
   const [newServiceName, setNewServiceName] = useState("");
-  const [isCreatingLoading, setIsCreatingLoading] = useState(false); // Состояние загрузки при создании услуги
 
   useEffect(() => {
     dispatch(
@@ -66,17 +64,17 @@ const ServicesPage: React.FC = () => {
 
   const handleCreateService = () => {
     if (newServiceName.trim().length >= 3) {
-      setIsCreatingLoading(true); // Устанавливаем состояние загрузки в true
+      // setIsCreatingLoading(true); // Устанавливаем состояние загрузки в true
       createMutation.mutate(
         { service_name: newServiceName },
         {
           onSuccess: () => {
             setIsCreating(false);
             setNewServiceName("");
-            setIsCreatingLoading(false); // Сбрасываем состояние загрузки после успешного создания
+            // setIsCreatingLoading(false); // Сбрасываем состояние загрузки после успешного создания
           },
           onError: () => {
-            setIsCreatingLoading(false); // Сбрасываем состояние загрузки в случае ошибки
+            // setIsCreatingLoading(false); // Сбрасываем состояние загрузки в случае ошибки
           },
         }
       );
@@ -140,7 +138,7 @@ const ServicesPage: React.FC = () => {
               setNewServiceName={setNewServiceName}
               onCreate={handleCreateService}
               onCancel={handleCancelCreate}
-              isCreatingLoading={isCreatingLoading} // Передаем состояние загрузки
+              isCreatingLoading={createMutation.isPending} // Передаем состояние загрузки
             />
           )}
 
