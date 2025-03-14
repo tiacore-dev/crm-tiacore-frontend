@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import "./Breadcrumbs.css";
-const Breadcrumbs: React.FC = () => {
+export const Breadcrumbs: React.FC = () => {
   const breadcrumbs = useSelector(
     (state: RootState) => state.breadcrumbs.paths
   );
@@ -26,5 +26,3 @@ const Breadcrumbs: React.FC = () => {
     </nav>
   );
 };
-
-export default Breadcrumbs;

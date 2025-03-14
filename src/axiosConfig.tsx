@@ -1,7 +1,7 @@
 import axios from "axios";
-import refreshToken from "./LoginPage/auth"; // Импортируем функцию обновления токена
+import { refreshToken } from "./LoginPage/auth"; // Импортируем функцию обновления токена
 
-const axiosInstance = axios.create({});
+export const axiosInstance = axios.create({});
 axiosInstance.interceptors.response.use(
   (response) => response, // Если ответ успешный, просто возвращаем его
   async (error) => {
@@ -26,5 +26,3 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export default axiosInstance;

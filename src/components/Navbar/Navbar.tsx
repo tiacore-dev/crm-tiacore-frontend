@@ -8,7 +8,7 @@ const logOut = () => {
   window.location.href = "/login";
 };
 
-const Navbar: React.FC = () => {
+export const Navbar: React.FC = () => {
   return (
     <nav className="navbar">
       <ul className="navbar-list">
@@ -101,5 +101,3 @@ const Navbar: React.FC = () => {
     </nav>
   );
 };
-
-export default Navbar;

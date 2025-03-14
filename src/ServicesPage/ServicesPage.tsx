@@ -12,13 +12,13 @@ import {
   setSort,
 } from "../redux/slices/servicesSlice";
 import toast from "react-hot-toast";
-import SearchBar from "../components/SearchBar/SearchBar";
-import Pagination from "../components/Pagination/Pagination";
-import CreateServiceModal from "./components/CreateServiceModal";
-import ServiceTable from "./components/ServiceTable";
+import { SearchBar } from "../components/SearchBar/SearchBar";
+import { Pagination } from "../components/Pagination/Pagination";
+import { CreateServiceModal } from "./components/CreateServiceModal";
+import { ServiceTable } from "./components/ServiceTable";
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
-const ServicesPage: React.FC = () => {
+export const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentPage, pageSize, search, sortBy, order } = useSelector(
@@ -153,5 +153,3 @@ const ServicesPage: React.FC = () => {
     </div>
   );
 };
-
-export default ServicesPage;

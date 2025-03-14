@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
-const BillsPage: React.FC = () => {
+export const BillsPage: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -15,5 +15,3 @@ const BillsPage: React.FC = () => {
   }, [dispatch]);
   return <div>bills</div>;
 };
-
-export default BillsPage;

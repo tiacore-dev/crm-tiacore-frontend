@@ -4,7 +4,7 @@ import { fetchUsers } from "../api/usersApi"; // Импортируем запр
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
-const UsersPage: React.FC = () => {
+export const UsersPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20); // Состояние для выбора количества элементов
   const [search, setSearch] = useState(""); //_
@@ -33,5 +33,3 @@ const UsersPage: React.FC = () => {
 
   return <div>users</div>;
 };
-
-export default UsersPage;

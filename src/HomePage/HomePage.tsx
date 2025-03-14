@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import refreshToken from "../LoginPage/auth";
+import { refreshToken } from "../LoginPage/auth";
 import {
   fetchEntityTypes,
   fetchContractStatuses,
@@ -9,7 +9,7 @@ import {
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 
-const HomePage: React.FC = () => {
+export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setBreadcrumbs([{ label: "Главная страница", to: "/" }]));
@@ -35,11 +35,9 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="main-container">
       <h1>Вы успешно авторизовались!</h1>
       <button onClick={tryRefresh}>Обновить токен</button>
     </div>
   );
 };
-
-export default HomePage;

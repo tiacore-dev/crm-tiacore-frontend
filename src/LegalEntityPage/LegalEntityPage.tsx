@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
-const LegalEntityPage: React.FC = () => {
+export const LegalEntityPage: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -15,5 +15,3 @@ const LegalEntityPage: React.FC = () => {
   }, [dispatch]);
   return <div>legal_entities</div>;
 };
-
-export default LegalEntityPage;

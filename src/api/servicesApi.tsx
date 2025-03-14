@@ -1,5 +1,5 @@
 // src/api/servicesApi.tsx
-import axiosInstance from "../axiosConfig";
+import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 

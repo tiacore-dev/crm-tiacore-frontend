@@ -1,7 +1,8 @@
 import "../../components/Table.css";
 
 import React from "react";
-const ServiceTable: React.FC<{
+
+export const ServiceTable: React.FC<{
   services: any[];
   onRowClick: (service_id: string) => void;
   onSortChange: (newSortBy: string) => void;
@@ -27,5 +28,3 @@ const ServiceTable: React.FC<{
     </table>
   );
 };
-
-export default ServiceTable;

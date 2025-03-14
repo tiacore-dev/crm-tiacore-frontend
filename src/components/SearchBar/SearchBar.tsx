@@ -7,7 +7,7 @@ interface SearchBarProps {
   onSearch: () => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
+export const SearchBar: React.FC<SearchBarProps> = ({
   tempSearch,
   onTempSearchChange,
   onSearch,
@@ -29,5 +29,3 @@ const SearchBar: React.FC<SearchBarProps> = ({
     </div>
   );
 };
-
-export default SearchBar;

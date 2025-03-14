@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserDetails } from "../api/usersApi"; // Импортируем запросы
 
-const UserDetailsPage: React.FC = () => {
+export const UserDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const { user_id } = useParams<{ user_id: string }>();
   // const userDetails = useSelector((state: RootState) => state.users.details);

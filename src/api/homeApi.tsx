@@ -1,4 +1,4 @@
-import axiosInstance from "../axiosConfig";
+import { axiosInstance } from "../axiosConfig";
 export const fetchEntityTypes = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

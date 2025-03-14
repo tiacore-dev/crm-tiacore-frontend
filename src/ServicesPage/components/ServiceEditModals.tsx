@@ -8,7 +8,7 @@ interface EditServiceModalProps {
   isUpdateLoading: boolean;
 }
 
-const EditServiceModal: React.FC<EditServiceModalProps> = ({
+export const EditServiceModal: React.FC<EditServiceModalProps> = ({
   editedData,
   onChange,
   onSave,
@@ -61,5 +61,3 @@ const EditServiceModal: React.FC<EditServiceModalProps> = ({
     </>
   );
 };
-
-export default EditServiceModal;

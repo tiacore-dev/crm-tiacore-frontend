@@ -9,7 +9,7 @@ interface CreateServiceModalProps {
   isCreatingLoading: boolean; // Новый пропс для состояния загрузки
 }
 
-const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
+export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
   newServiceName,
   setNewServiceName,
   onCreate,
@@ -57,5 +57,3 @@ const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
     </>
   );
 };
-
-export default CreateServiceModal;

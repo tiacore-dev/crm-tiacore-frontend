@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
 
-const ContractsPage: React.FC = () => {
+export const ContractsPage: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -15,5 +15,3 @@ const ContractsPage: React.FC = () => {
   }, [dispatch]);
   return <div>contracts</div>;
 };
-
-export default ContractsPage;

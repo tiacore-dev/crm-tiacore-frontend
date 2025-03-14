@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const refreshToken = async (): Promise<string | null> => {
+export const refreshToken = async (): Promise<string | null> => {
   const r_token = localStorage.getItem("refresh_token");
   if (!r_token) {
     return null; // Если refresh_token отсутствует, выходим
@@ -26,5 +26,3 @@ const refreshToken = async (): Promise<string | null> => {
     return null;
   }
 };
-
-export default refreshToken;

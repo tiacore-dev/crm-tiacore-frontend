@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../axiosConfig";
+import { axiosInstance } from "../axiosConfig";
 import "./LoginPage.css";
 
 type FormData = {
@@ -15,7 +15,7 @@ type AuthResponse = {
   refresh_token: string;
 };
 
-const LoginPage: React.FC = () => {
+export const LoginPage: React.FC = () => {
   const {
     control,
     handleSubmit,
@@ -120,5 +120,3 @@ const LoginPage: React.FC = () => {
     </div>
   );
 };
-
-export default LoginPage;

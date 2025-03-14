@@ -11,7 +11,7 @@ interface PaginationProps {
   onPageSizeChange: (size: number) => void; // Обработчик изменения pageSize
 }
 
-const Pagination: React.FC<PaginationProps> = ({
+export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   totalItems,
@@ -128,5 +128,3 @@ const Pagination: React.FC<PaginationProps> = ({
     </div>
   );
 };
-
-export default Pagination;

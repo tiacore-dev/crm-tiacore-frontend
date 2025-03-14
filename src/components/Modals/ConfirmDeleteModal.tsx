@@ -6,7 +6,7 @@ interface ConfirmDeleteModalProps {
   isDeleteLoading: boolean;
 }
 
-const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
+export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   onConfirm,
   onCancel,
   isDeleteLoading,
@@ -45,5 +45,3 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
     </>
   );
 };
-
-export default ConfirmDeleteModal;

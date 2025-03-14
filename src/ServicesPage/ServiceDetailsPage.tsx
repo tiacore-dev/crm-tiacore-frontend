@@ -5,12 +5,12 @@ import { fetchServiceDetails } from "../api/servicesApi"; // Импортиру�
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
-import ServiceDetails from "./components/ServiceDetails"; // Импортируем новый компонент
-import ConfirmDeleteModal from "../components/Modals/ConfirmDeleteModal"; // Импортируем модалку удаления
-import EditServiceModal from "./components/ServiceEditModals"; // Импортируем модалку редактирования
+import { ServiceDetails } from "./components/ServiceDetails"; // Импортируем новый компонент
+import { ConfirmDeleteModal } from "../components/Modals/ConfirmDeleteModal"; // Импортируем модалку удаления
+import { EditServiceModal } from "./components/ServiceEditModals"; // Импортируем модалку редактирования
 import { useServiceMutations } from "../hooks/useServiceMutations"; // Импортируем мутации
 
-const ServiceDetailsPage: React.FC = () => {
+export const ServiceDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const { service_id } = useParams<{ service_id: string }>();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -127,5 +127,3 @@ const ServiceDetailsPage: React.FC = () => {
     </div>
   );
 };
-
-export default ServiceDetailsPage;

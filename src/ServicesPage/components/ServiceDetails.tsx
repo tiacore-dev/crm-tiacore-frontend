@@ -5,7 +5,7 @@ interface ServiceDetailsProps {
   onEdit: () => void;
 }
 
-const ServiceDetails: React.FC<ServiceDetailsProps> = ({
+export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
   serviceName,
   onEdit,
 }) => {
@@ -26,5 +26,3 @@ const ServiceDetails: React.FC<ServiceDetailsProps> = ({
     </div>
   );
 };
-
-export default ServiceDetails;
