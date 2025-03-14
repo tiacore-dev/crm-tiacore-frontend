@@ -1,0 +1,13 @@
+.modal input {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.modal button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

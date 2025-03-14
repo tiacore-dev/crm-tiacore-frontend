@@ -5,6 +5,7 @@ interface EditServiceModalProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSave: () => void;
   onCancel: () => void;
+  isUpdateLoading: boolean;
 }
 
 const EditServiceModal: React.FC<EditServiceModalProps> = ({
@@ -12,12 +13,13 @@ const EditServiceModal: React.FC<EditServiceModalProps> = ({
   onChange,
   onSave,
   onCancel,
+  isUpdateLoading,
 }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !isUpdateLoading) {
         onSave();
-      } else if (event.key === "Escape") {
+      } else if (event.key === "Escape" && !isUpdateLoading) {
         onCancel();
       }
     };
@@ -26,7 +28,7 @@ const EditServiceModal: React.FC<EditServiceModalProps> = ({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onSave, onCancel]);
+  }, [onSave, onCancel, isUpdateLoading]);
 
   return (
     <>
@@ -40,11 +42,18 @@ const EditServiceModal: React.FC<EditServiceModalProps> = ({
             name="service_name"
             value={editedData?.service_name || ""}
             onChange={onChange}
+            disabled={isUpdateLoading}
           />
         </label>
         <div>
-          <button onClick={onSave}>Сохранить</button>
-          <button onClick={onCancel} className="red-button">
+          <button onClick={onSave} disabled={isUpdateLoading}>
+            {isUpdateLoading ? "Сохранение..." : "Сохранить"}
+          </button>
+          <button
+            onClick={onCancel}
+            className="red-button"
+            disabled={isUpdateLoading}
+          >
             Отменить
           </button>
         </div>

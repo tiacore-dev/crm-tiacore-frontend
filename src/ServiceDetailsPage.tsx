@@ -5,16 +5,24 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchServiceDetails } from "./api/servicesApi"; // Импортируем запросы
 import Breadcrumbs from "./Breadcrumbs";
 import toast from "react-hot-toast";
+import ServiceDetails from "./components/ServiceDetails"; // Импортируем новый компонент
 import ConfirmDeleteModal from "./components/ConfirmDeleteModal"; // Импортируем модалку удаления
 import EditServiceModal from "./components/EditModals"; // Импортируем модалку редактирования
 import { useServiceMutations } from "./hooks/useServiceMutations"; // Импортируем мутации
 
 const ServiceDetailsPage: React.FC = () => {
+  // const [breadcrumbs, setBreadcrumbs] = useState([
+  //   { label: "Главная страница", to: "/" },
+  //   { label: "Услуги", to: "/services" },
+  // ]);
+
   const navigate = useNavigate();
   const { service_id } = useParams<{ service_id: string }>();
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<any>(null);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false); // Состояние загрузки при создании услуги
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false); // Состояние загрузки при создании услуги
 
   const {
     data: serviceDetails,
@@ -42,8 +50,18 @@ const ServiceDetailsPage: React.FC = () => {
   }
 
   const handleDelete = () => {
-    setShowConfirm(false);
-    deleteMutation.mutate();
+    setIsDeleteLoading(true); // Устанавливаем состояние загрузки перед удалением
+
+    deleteMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsDeleteLoading(false);
+        setShowDeleteConfirm(false);
+        navigate("/services"); // Перенаправляем на список услуг
+      },
+      onError: () => {
+        setIsDeleteLoading(false);
+      },
+    });
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +76,19 @@ const ServiceDetailsPage: React.FC = () => {
 
   const handleSaveEdit = () => {
     if (editedData?.service_name.trim().length >= 3) {
-      updateMutation.mutate(editedData);
+      setIsUpdateLoading(true);
+      // updateMutation.mutate(editedData);
+      //______________________________________________________________
+      updateMutation.mutate(editedData, {
+        onSuccess: () => {
+          setIsUpdateLoading(false);
+          setIsEditing(false);
+        },
+        onError: () => {
+          setIsUpdateLoading(false);
+        },
+      });
+      //______________________________________________________________
     } else {
       toast.error("Название услуги должно содержать минимум 3 символа");
     }
@@ -78,15 +108,14 @@ const ServiceDetailsPage: React.FC = () => {
       />
       {!isError && (
         <>
-          <h1>Детали услуги:</h1>
-          <div>
-            <p>
-              <strong>Название услуги:</strong> {serviceDetails?.service_name}
-            </p>
-            <button onClick={() => setIsEditing(true)}>Редактировать</button>
-          </div>
-
-          <button onClick={() => setShowConfirm(true)} className="red-button">
+          <ServiceDetails
+            serviceName={serviceDetails?.service_name || ""}
+            onEdit={() => setIsEditing(true)}
+          />
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="red-button"
+          >
             Удалить
           </button>
 
@@ -96,13 +125,15 @@ const ServiceDetailsPage: React.FC = () => {
               onChange={handleEditChange}
               onSave={handleSaveEdit}
               onCancel={handleCancelEdit}
+              isUpdateLoading={isUpdateLoading}
             />
           )}
 
-          {showConfirm && (
+          {showDeleteConfirm && (
             <ConfirmDeleteModal
               onConfirm={handleDelete}
-              onCancel={() => setShowConfirm(false)}
+              onCancel={() => setShowDeleteConfirm(false)}
+              isDeleteLoading={isDeleteLoading}
             />
           )}
         </>
