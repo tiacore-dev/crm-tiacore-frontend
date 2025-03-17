@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { refreshToken } from "../LoginPage/auth";
+import { refreshToken } from "../../Pages/LoginPage/auth";
 import {
   fetchEntityTypes,
   fetchContractStatuses,
   fetchUserRoles,
-} from "../api/homeApi";
-import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
+} from "../../api/homeApi";
+import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 
 export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setBreadcrumbs([{ label: "Главная страница", to: "/" }]));
+    dispatch(setBreadcrumbs([{ label: "Главная страница", to: "/home" }]));
   }, [dispatch]);
 
   const { data: entityTypes } = useQuery({

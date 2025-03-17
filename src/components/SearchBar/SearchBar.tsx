@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "./SearchBar.css"; // Подключаем CSS
 
 interface SearchBarProps {
@@ -12,6 +12,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onTempSearchChange,
   onSearch,
 }) => {
+
+  const searchHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  }, [])
+
   return (
     <div className="search-bar">
       <input
@@ -19,11 +26,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         placeholder="Поиск по названию услуги"
         value={tempSearch}
         onChange={onTempSearchChange}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            onSearch();
-          }
-        }}
+        onKeyDown={searchHandler}
       />
       <button onClick={onSearch}>Поиск</button>
     </div>

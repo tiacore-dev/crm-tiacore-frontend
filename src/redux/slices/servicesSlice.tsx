@@ -1,5 +1,5 @@
-// src/redux/slices/servicesSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 interface ServicesState {
   currentPage: number;
@@ -17,7 +17,7 @@ const initialState: ServicesState = {
   order: "asc",
 };
 
-const servicesSlice = createSlice({
+export const servicesSlice = createSlice({
   name: "services",
   initialState,
   reducers: {
@@ -45,4 +45,6 @@ const servicesSlice = createSlice({
 export const { setPage, setPageSize, setSearch, setSort } =
   servicesSlice.actions;
 
-export default servicesSlice.reducer;
+export const servicesReducer = servicesSlice.reducer;
+
+export const servicesSelector = createSelector((state: RootState) => state.services, (services) => services)

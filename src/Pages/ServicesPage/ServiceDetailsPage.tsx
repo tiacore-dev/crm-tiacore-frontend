@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchServiceDetails } from "../api/servicesApi"; // Импортируем запросы
+import { fetchServiceDetails } from "../../api/servicesApi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
-import { ServiceDetails } from "./components/ServiceDetails"; // Импортируем новый компонент
-import { ConfirmDeleteModal } from "../components/Modals/ConfirmDeleteModal"; // Импортируем модалку удаления
-import { EditServiceModal } from "./components/ServiceEditModals"; // Импортируем модалку редактирования
-import { useServiceMutations } from "../hooks/useServiceMutations"; // Импортируем мутации
+import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
+import { ServiceDetails } from "./components/ServiceDetails";
+import { ConfirmDeleteModal } from "../../components/Modals/ConfirmDeleteModal";
+import { EditServiceModal } from "./components/ServiceEditModals";
+import { useServiceMutations } from "../../hooks/services/useServiceMutations";
 
 export const ServiceDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export const ServiceDetailsPage: React.FC = () => {
     if (serviceDetails) {
       dispatch(
         setBreadcrumbs([
-          { label: "Главная страница", to: "/" },
+          { label: "Главная страница", to: "/home" },
           { label: "Услуги", to: "/services" },
           { label: serviceDetails.service_name, to: `/services/${service_id}` },
         ])
@@ -51,11 +51,7 @@ export const ServiceDetailsPage: React.FC = () => {
     }
   }, [isEditing, serviceDetails]);
 
-  if (isLoading) {
-    return <div>Загрузка...</div>;
-  }
-
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     deleteMutation.mutate(undefined, {
       onSuccess: () => {
         setShowDeleteConfirm(false);
@@ -63,19 +59,19 @@ export const ServiceDetailsPage: React.FC = () => {
       },
       onError: () => {},
     });
-  };
+  }, [deleteMutation, navigate]);
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditedData({ ...editedData, [name]: value });
-  };
+    setEditedData((prevData: any) => ({ ...prevData, [name]: value }));
+  }, []);
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditedData(serviceDetails);
     setIsEditing(false);
-  };
+  }, [serviceDetails]);
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = useCallback(() => {
     if (editedData?.service_name.trim().length >= 3) {
       updateMutation.mutate(editedData, {
         onSuccess: () => {
@@ -86,13 +82,16 @@ export const ServiceDetailsPage: React.FC = () => {
     } else {
       toast.error("Название услуги должно содержать минимум 3 символа");
     }
-  };
+  }, [editedData, updateMutation]);
+
+  if (isLoading) {
+    return <div>Загрузка...</div>;
+  }
 
   return (
     <div>
       {!isError && (
         <>
-          {" "}
           <div className="main-container">
             <ServiceDetails
               serviceName={serviceDetails?.service_name || ""}

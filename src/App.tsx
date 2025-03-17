@@ -8,17 +8,17 @@ import {
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import { LoginPage } from "./LoginPage/LoginPage";
-import { HomePage } from "./HomePage/HomePage";
-import { UsersPage } from "./UsersPage/UsersPage";
-import { ServicesPage } from "./ServicesPage/ServicesPage";
-import { LegalEntityPage } from "./LegalEntityPage/LegalEntityPage";
-import { ContractsPage } from "./ContractsPage/ContractsPage";
-import { BillsPage } from "./BillsPage/BillsPage";
-import { BankPage } from "./BankPage/BankPage";
-import { ActsPage } from "./ActsPage/ActsPage";
+import { LoginPage } from "./Pages/LoginPage/LoginPage";
+import { HomePage } from "./Pages/HomePage/HomePage";
+import { UsersPage } from "./Pages/UsersPage/UsersPage";
+import { ServicesPage } from "./Pages/ServicesPage/ServicesPage";
+import { LegalEntityPage } from "./Pages/LegalEntityPage/LegalEntityPage";
+import { ContractsPage } from "./Pages/ContractsPage/ContractsPage";
+import { BillsPage } from "./Pages/BillsPage/BillsPage";
+import { BankPage } from "./Pages/BankPage/BankPage";
+import { ActsPage } from "./Pages/ActsPage/ActsPage";
 import ProtectedRoute from "./ProtectedRoute";
-import { ServiceDetailsPage } from "./ServicesPage/ServiceDetailsPage";
+import { ServiceDetailsPage } from "./Pages/ServicesPage/ServiceDetailsPage";
 
 import "./App.css";
 

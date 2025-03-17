@@ -4,7 +4,7 @@ import {
   createService,
   updateService,
   deleteService,
-} from "../api/servicesApi";
+} from "../../api/servicesApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,8 @@ export const useServiceMutations = (
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  
 
   const createMutation = useMutation({
     mutationFn: createService,
@@ -61,6 +63,7 @@ export const useServiceMutations = (
       toast.error("Ошибка при удалении услуги");
     },
   });
+
 
   return { createMutation, updateMutation, deleteMutation };
 };

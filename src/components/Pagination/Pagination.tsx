@@ -1,6 +1,6 @@
 import "./Pagination.css"; // Подключаем CSS
 
-import React from "react";
+import React, { useMemo } from "react";
 
 interface PaginationProps {
   currentPage: number;
@@ -19,9 +19,14 @@ export const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   onPageSizeChange,
 }) => {
+
   const getPageNumbers = () => {
+    
+    console.log('getPageNumbers')
     const pages = [];
     const maxVisiblePages = 5; // Количество видимых страниц вокруг текущей
+    
+    
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
@@ -68,6 +73,9 @@ export const Pagination: React.FC<PaginationProps> = ({
     onPageSizeChange(newPageSize); // Передаём новое значение pageSize в родительский компонент
   };
 
+  const pageNumbers = useMemo(() => getPageNumbers(), [currentPage, totalPages])
+  // const pageNumbers = getPageNumbers()
+
   return (
     <div className="pagination">
       {/* Кнопки пагинации */}
@@ -78,7 +86,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <button onClick={() => onPageChange(currentPage - 1)}>{"<"}</button>
           )}
 
-          {getPageNumbers().map((page, index) =>
+          {pageNumbers.map((page, index) =>
             page === "prevEllipsis" ? (
               <button
                 key={index}

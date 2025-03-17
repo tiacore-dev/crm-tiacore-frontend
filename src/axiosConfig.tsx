@@ -1,5 +1,5 @@
 import axios from "axios";
-import { refreshToken } from "./LoginPage/auth"; // Импортируем функцию обновления токена
+import { refreshToken } from "./Pages/LoginPage/auth"; // Импортируем функцию обновления токена
 
 export const axiosInstance = axios.create({});
 axiosInstance.interceptors.response.use(

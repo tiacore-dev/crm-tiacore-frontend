@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchUserDetails } from "../api/usersApi"; // Импортируем запросы
+import { fetchUserDetails } from "../../api/usersApi"; // Импортируем запросы
 
 export const UserDetailsPage: React.FC = () => {
   const dispatch = useDispatch();

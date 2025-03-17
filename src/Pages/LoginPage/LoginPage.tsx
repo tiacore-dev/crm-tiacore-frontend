@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "../axiosConfig";
+import { axiosInstance } from "../../axiosConfig";
 import toast from "react-hot-toast";
 import "./LoginPage.css";
 

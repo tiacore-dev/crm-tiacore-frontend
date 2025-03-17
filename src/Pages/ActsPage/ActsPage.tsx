@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setBreadcrumbs } from "../redux/slices/breadcrumbsSlice";
+import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 
 export const ActsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -8,7 +8,7 @@ export const ActsPage: React.FC = () => {
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
-        { label: "Главная страница", to: "/" },
+        { label: "Главная страница", to: "/home" },
         { label: "Акты", to: "/acts" },
       ])
     );
