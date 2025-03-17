@@ -31,7 +31,7 @@ export const fetchUsers = async (
 
 // Функция для создания нового пользователя
 export const createUser = async (newUser: {
-  user_name: string;
+  username: string;
   password: string;
   full_name: string;
   position: string;
@@ -40,7 +40,7 @@ export const createUser = async (newUser: {
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.post(`${url}/api/users/add`, newUser, {
     params: {
-      user_name: null,
+      username: null,
       password: null,
       full_name: null,
       position: null,
