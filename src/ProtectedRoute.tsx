@@ -1,8 +1,8 @@
 // src/components/ProtectedRoute.tsx
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Navbar } from "./components/Navbar/Navbar";
-import { Breadcrumbs } from "./components/Breadcrumbs/Breadcrumbs";
+import { Navbar } from "./components/navbar/navbar";
+import { Breadcrumbs } from "./components/breadcrumbs/breadcrumbs";
 
 const ProtectedRoute: React.FC = () => {
   const navigate = useNavigate();

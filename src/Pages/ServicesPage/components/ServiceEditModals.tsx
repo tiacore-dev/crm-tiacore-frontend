@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Modal, Input, Button } from "antd"; // Импорт компонентов Ant Design
 
 interface EditServiceModalProps {
   editedData: { service_name: string } | null;
@@ -31,33 +32,33 @@ export const EditServiceModal: React.FC<EditServiceModalProps> = ({
   }, [onSave, onCancel, isUpdateLoading]);
 
   return (
-    <>
-      <div className="modal-overlay" onClick={onCancel}></div>
-      <div className="modal">
-        <h3>Редактирование услуги</h3>
-        <label>
-          Название услуги:
-          <input
-            type="text"
-            name="service_name"
-            value={editedData?.service_name || ""}
-            onChange={onChange}
-            disabled={isUpdateLoading}
-          />
-        </label>
-        <div>
-          <button onClick={onSave} disabled={isUpdateLoading}>
-            {isUpdateLoading ? "Сохранение..." : "Сохранить"}
-          </button>
-          <button
-            onClick={onCancel}
-            className="red-button"
-            disabled={isUpdateLoading}
-          >
-            Отменить
-          </button>
-        </div>
-      </div>
-    </>
+    <Modal
+      title="Редактирование услуги"
+      open={true}
+      onOk={onSave}
+      onCancel={onCancel}
+      footer={[
+        <Button key="cancel" onClick={onCancel} disabled={isUpdateLoading}>
+          Отменить
+        </Button>,
+        <Button
+          key="save"
+          type="primary"
+          onClick={onSave}
+          loading={isUpdateLoading}
+          disabled={isUpdateLoading}
+        >
+          {isUpdateLoading ? "Сохранение..." : "Сохранить"}
+        </Button>,
+      ]}
+    >
+      <Input
+        placeholder="Название услуги"
+        name="service_name"
+        value={editedData?.service_name || ""}
+        onChange={onChange}
+        disabled={isUpdateLoading}
+      />
+    </Modal>
   );
 };

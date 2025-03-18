@@ -3,6 +3,13 @@ import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
+export interface IUser {
+  user_id: string;
+  username: string;
+  full_name: string;
+  position: string;
+}
+
 // Функция для получения списка пользователей с параметрами
 export const fetchUsers = async (
   search: string,
@@ -35,16 +42,16 @@ export const createUser = async (newUser: {
   password: string;
   full_name: string;
   position: string;
-}) => {
+}) : Promise<IUser>=> {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.post(`${url}/api/users/add`, newUser, {
-    params: {
-      username: null,
-      password: null,
-      full_name: null,
-      position: null,
-    },
+    // params: {
+    //   username: null,
+    //   password: null,
+    //   full_name: null,
+    //   position: null,
+    // },
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

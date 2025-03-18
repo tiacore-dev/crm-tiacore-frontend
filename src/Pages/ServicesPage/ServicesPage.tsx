@@ -10,12 +10,14 @@ import {
   setSort,
 } from "../../redux/slices/servicesSlice";
 import toast from "react-hot-toast";
-import { SearchBar } from "../../components/SearchBar/SearchBar";
-import { Pagination } from "../../components/Pagination/Pagination";
-import { CreateServiceModal } from "./components/CreateServiceModal";
-import { ServiceTable } from "./components/ServiceTable";
+import { SearchBar } from "../../components/searchBar/searchBar";
+import { Pagination } from "../../components/pagination/pagination";
+import { CreateServiceModal } from "./components/createServiceModal";
+import { ServicesTable } from "./components/servicesTable";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
+import { Button, Spin } from "antd"; // Импорт компонентов Ant Design
+import {BackButton} from "../../components/backButton";
 
 export const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,12 +33,11 @@ export const ServicesPage: React.FC = () => {
     dispatch(
       setBreadcrumbs([
         { label: "Главная страница", to: "/home" },
-        { label: "Услуги", to: "/services" },
+        { label: "Услуги", to: "/services" },  
       ])
     );
   }, [dispatch]);
 
-  
   const { createMutation } = useServiceMutations();
 
   const {
@@ -49,7 +50,7 @@ export const ServicesPage: React.FC = () => {
     setIsCreating(true);
   }, []);
 
-  const handleCancelCreate = useCallback( () => {
+  const handleCancelCreate = useCallback(() => {
     setIsCreating(false);
     setNewServiceName("");
   }, []);
@@ -63,8 +64,7 @@ export const ServicesPage: React.FC = () => {
             setIsCreating(false);
             setNewServiceName("");
           },
-          onError: () => {
-          },
+          onError: () => {},
         }
       );
     } else {
@@ -72,7 +72,7 @@ export const ServicesPage: React.FC = () => {
     }
   }, [newServiceName, createMutation]);
 
-  const handleRowClick = useCallback ((service_id: string) => {
+  const handleRowClick = useCallback((service_id: string) => {
     navigate(`/services/${service_id}`);
   }, [navigate]);
 
@@ -118,7 +118,7 @@ export const ServicesPage: React.FC = () => {
   return (
     <div>
       {isLoading ? (
-        <div>Загрузка...</div>
+        <Spin size="large" className="center-spin" />
       ) : (
         <>
           {!isError && (
@@ -129,13 +129,15 @@ export const ServicesPage: React.FC = () => {
                 onSearch={() => handleSearch(tempSearch)}
               />
               <div className="main-container">
-                <button onClick={handleCreateClick}>Создать новую услугу</button>
-                <ServiceTable
+                <Button type="primary" onClick={handleCreateClick} style={{ marginBottom: 16 }}>
+                  Создать новую услугу
+                </Button>
+                <ServicesTable
                   services={services_data?.services}
                   onRowClick={handleRowClick}
                   onSortChange={handleSortChange}
                 />
-  
+
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
@@ -156,7 +158,9 @@ export const ServicesPage: React.FC = () => {
               )}
             </div>
           )}
-          {isError && <button onClick={() => navigate(-1)}>Вернуться назад</button>}
+          {isError && (
+            <BackButton/>
+          )}
         </>
       )}
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Button, Typography, Table } from "antd"; // Импорт компонентов Ant Design
 
 interface ServiceDetailsProps {
   serviceName: string;
@@ -9,20 +10,28 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
   serviceName,
   onEdit,
 }) => {
+  const columns = [
+    {
+      title: "Название услуги",
+      dataIndex: "serviceName",
+      key: "serviceName",
+    },
+  ];
+
+  const data = [
+    {
+      key: "1",
+      serviceName: serviceName,
+    },
+  ];
+
   return (
     <div>
-      <button onClick={onEdit}>Редактировать</button>
-      <h1>Детали услуги</h1>
-      <table className="details-table">
-        <tbody>
-          <tr>
-            <td>
-              <strong>Название услуги:</strong>
-            </td>
-            <td>{serviceName}</td>
-          </tr>
-        </tbody>
-      </table>
+      <Button type="primary" onClick={onEdit} style={{ marginBottom: 16 }}>
+        Редактировать
+      </Button>
+      <Typography.Title level={3}>Детали услуги</Typography.Title>
+      <Table columns={columns} dataSource={data} pagination={false} />
     </div>
   );
 };

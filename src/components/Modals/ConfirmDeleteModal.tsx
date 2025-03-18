@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Modal, Button } from "antd"; // Импорт компонентов Ant Design
 
 interface ConfirmDeleteModalProps {
   onConfirm: () => void;
@@ -27,21 +28,28 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   }, [onConfirm, onCancel, isDeleteLoading]);
 
   return (
-    <>
-      <div className="modal-overlay" onClick={onCancel}></div>
-      <div className="modal">
-        <p>Вы уверены, что хотите удалить?</p>
-        <button
+    <Modal
+      title="Подтверждение удаления"
+      open={true}
+      onOk={onConfirm}
+      onCancel={onCancel}
+      footer={[
+        <Button key="cancel" onClick={onCancel} disabled={isDeleteLoading}>
+          Отмена
+        </Button>,
+        <Button
+          key="delete"
+          type="primary"
+          danger
           onClick={onConfirm}
-          className="red-button"
+          loading={isDeleteLoading}
           disabled={isDeleteLoading}
         >
           {isDeleteLoading ? "Удаление..." : "Удалить"}
-        </button>
-        <button onClick={onCancel} disabled={isDeleteLoading}>
-          Отмена
-        </button>
-      </div>
-    </>
+        </Button>,
+      ]}
+    >
+      <p>Вы уверены, что хотите удалить?</p>
+    </Modal>
   );
 };

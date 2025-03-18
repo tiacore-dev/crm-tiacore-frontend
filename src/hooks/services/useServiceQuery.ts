@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { fetchServices, IService } from "../../api/servicesApi";
+import { fetchServices, fetchServiceDetails, IService } from "../../api/servicesApi";
 import { servicesSelector } from "../../redux/slices/servicesSlice";
 
 interface useServiceQueryResponse {
@@ -19,3 +19,10 @@ export const useServiceQuery = () => {
       
 }
 
+export const useServiceDetailsQuery = (service_id: string) => {
+    return useQuery({
+        queryKey: ["serviceDetails", service_id],
+        queryFn: () => fetchServiceDetails(service_id),
+        retry: false,
+    })
+}

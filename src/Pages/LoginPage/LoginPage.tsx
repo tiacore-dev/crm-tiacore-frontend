@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../../axiosConfig";
 import toast from "react-hot-toast";
-import "./LoginPage.css";
+import { Button, Form, Input, Typography, Spin } from "antd"; // Импорт компонентов Ant Design
+import "./loginPage.css";
 
 type FormData = {
   username: string;
@@ -69,52 +70,67 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="login_container">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Вход</h2>
-        <div>
-          <label htmlFor="username">Логин</label>
+      <Form
+        layout="vertical"
+        onFinish={handleSubmit(onSubmit)}
+        style={{ maxWidth: 400, margin: "0 auto" }}
+      >
+        <Typography.Title level={2} style={{ textAlign: "center" }}>
+          Вход
+        </Typography.Title>
+
+        {/* Поле для логина */}
+        <Form.Item
+          label="Логин"
+          validateStatus={errors.username ? "error" : ""}
+          help={errors.username?.message}
+        >
           <Controller
             name="username"
             control={control}
             rules={{ required: "Логин обязателен" }}
             render={({ field }) => (
-              <input
+              <Input
                 {...field}
-                type="text"
-                id="username"
-                className={errors.username ? "error" : ""}
+                placeholder="Введите логин"
                 disabled={loginMutation.isPending}
               />
             )}
           />
-          {errors.username && (
-            <span className="error-message">{errors.username.message}</span>
-          )}
-        </div>
-        <div>
-          <label htmlFor="password">Пароль</label>
+        </Form.Item>
+
+        {/* Поле для пароля */}
+        <Form.Item
+          label="Пароль"
+          validateStatus={errors.password ? "error" : ""}
+          help={errors.password?.message}
+        >
           <Controller
             name="password"
             control={control}
             rules={{ required: "Пароль обязателен" }}
             render={({ field }) => (
-              <input
+              <Input.Password
                 {...field}
-                type="password"
-                id="password"
-                className={errors.password ? "error" : ""}
+                placeholder="Введите пароль"
                 disabled={loginMutation.isPending}
               />
             )}
           />
-          {errors.password && (
-            <span className="error-message">{errors.password.message}</span>
-          )}
-        </div>
-        <button type="submit" disabled={loginMutation.isPending}>
-          {loginMutation.isPending ? "Загрузка..." : "Войти"}
-        </button>
-      </form>
+        </Form.Item>
+
+        {/* Кнопка отправки формы */}
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={loginMutation.isPending}
+            block
+          >
+            {loginMutation.isPending ? <Spin size="small" className="center-spin"/> : "Войти"}
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

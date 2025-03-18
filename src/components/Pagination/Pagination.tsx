@@ -1,6 +1,6 @@
-import "./Pagination.css"; // Подключаем CSS
-
-import React, { useMemo } from "react";
+import React from "react";
+import { Pagination as AntPagination, Select } from "antd"; // Импорт компонентов Ant Design
+import "./pagination.css"; // Подключаем CSS
 
 interface PaginationProps {
   currentPage: number;
@@ -19,119 +19,37 @@ export const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   onPageSizeChange,
 }) => {
-
-  const getPageNumbers = () => {
-    
-    console.log('getPageNumbers')
-    const pages = [];
-    const maxVisiblePages = 5; // Количество видимых страниц вокруг текущей
-    
-    
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    // Корректируем startPage, если endPage достиг конца
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    // Добавляем первую страницу
-    if (startPage > 1) {
-      pages.push(1);
-      if (startPage > 2) {
-        pages.push("prevEllipsis"); // Кнопка для шага назад
-      }
-    }
-
-    // Добавляем страницы вокруг текущей
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    // Добавляем последнюю страницу
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        pages.push("nextEllipsis"); // Кнопка для шага вперёд
-      }
-      pages.push(totalPages);
-    }
-
-    return pages;
+  const handlePageSizeChange = (value: number) => {
+    onPageSizeChange(value); // Передаём новое значение pageSize в родительский компонент
   };
-
-  const handleEllipsisClick = (direction: "prev" | "next") => {
-    const step = 5; // Шаг для перехода
-    if (direction === "prev") {
-      onPageChange(Math.max(1, currentPage - step));
-    } else {
-      onPageChange(Math.min(totalPages, currentPage + step));
-    }
-  };
-
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newPageSize = Number(e.target.value);
-    onPageSizeChange(newPageSize); // Передаём новое значение pageSize в родительский компонент
-  };
-
-  const pageNumbers = useMemo(() => getPageNumbers(), [currentPage, totalPages])
-  // const pageNumbers = getPageNumbers()
 
   return (
     <div className="pagination">
-      {/* Кнопки пагинации */}
-      {totalItems > pageSize && (
-        <div>
-          {/* Кнопка "Назад" отображается только если текущая страница не первая */}
-          {currentPage > 1 && (
-            <button onClick={() => onPageChange(currentPage - 1)}>{"<"}</button>
-          )}
+      {/* Компонент Pagination из Ant Design */}
+      <AntPagination
+        current={currentPage}
+        total={totalItems}
+        pageSize={pageSize}
+        onChange={onPageChange}
+        showSizeChanger={false}
+        style={{ marginBottom: 16 }}
+      />
 
-          {pageNumbers.map((page, index) =>
-            page === "prevEllipsis" ? (
-              <button
-                key={index}
-                onClick={() => handleEllipsisClick("prev")}
-                className="ellipsis"
-              >
-                ...
-              </button>
-            ) : page === "nextEllipsis" ? (
-              <button
-                key={index}
-                onClick={() => handleEllipsisClick("next")}
-                className="ellipsis"
-              >
-                ...
-              </button>
-            ) : (
-              <button
-                key={index}
-                onClick={() => onPageChange(page as number)}
-                className={currentPage === page ? "active" : ""}
-              >
-                {page}
-              </button>
-            )
-          )}
-
-          {/* Кнопка "Вперёд" отображается только если текущая страница не последняя */}
-          {currentPage < totalPages && (
-            <button onClick={() => onPageChange(currentPage + 1)}>{">"}</button>
-          )}
-        </div>
-      )}
       {/* Выбор количества элементов на странице */}
       <div className="page-size-selector">
-        <label>
-          <select value={pageSize} onChange={handlePageSizeChange}>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={40}>40</option>
-            <option value={60}>60</option>
-            <option value={80}>80</option>
-            <option value={100}>100</option>
-          </select>
-        </label>
+        {/* <span>Элементов на странице: </span> */}
+        <Select
+          value={pageSize}
+          onChange={handlePageSizeChange}
+          style={{ width: 100 }}
+        >
+          <Select.Option value={10}>10</Select.Option>
+          <Select.Option value={20}>20</Select.Option>
+          <Select.Option value={40}>40</Select.Option>
+          <Select.Option value={60}>60</Select.Option>
+          <Select.Option value={80}>80</Select.Option>
+          <Select.Option value={100}>100</Select.Option>
+        </Select>
       </div>
     </div>
   );

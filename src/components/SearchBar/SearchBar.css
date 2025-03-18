@@ -1,13 +1,8 @@
 .search-bar {
-  margin-inline: 25px;
   display: flex;
   align-items: baseline;
-  gap: 10px; /* Расстояние между полем ввода и кнопкой */
+  margin: 1%;
+  margin-top: 0;
 }
 
-.search-bar input {
-  flex: 1; /* Растягиваем поле ввода */
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+

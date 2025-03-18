@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
-import "./SearchBar.css"; // Подключаем CSS
+import { Input, Button } from "antd"; // Импорт компонентов Ant Design
+import "./searchBar.css"; // Подключаем CSS
 
 interface SearchBarProps {
   tempSearch: string;
@@ -12,23 +13,24 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onTempSearchChange,
   onSearch,
 }) => {
-
   const searchHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       onSearch();
     }
-  }, [])
+  }, [onSearch]);
 
   return (
     <div className="search-bar">
-      <input
-        type="text"
+      <Input
         placeholder="Поиск по названию услуги"
         value={tempSearch}
         onChange={onTempSearchChange}
         onKeyDown={searchHandler}
+        style={{ marginRight: 8 }}
       />
-      <button onClick={onSearch}>Поиск</button>
+      <Button type="primary" onClick={onSearch}>
+        Поиск
+      </Button>
     </div>
   );
 };

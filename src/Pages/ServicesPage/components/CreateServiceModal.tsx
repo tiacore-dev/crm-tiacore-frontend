@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "../../../components/Modals/ModalWindow.css";
+import { Modal, Input, Button } from "antd"; // Импорт компонентов Ant Design
 
 interface CreateServiceModalProps {
   newServiceName: string;
@@ -32,28 +32,32 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({
   }, [onCreate, onCancel, isCreatingLoading]);
 
   return (
-    <>
-      <div className="modal-overlay" onClick={onCancel}></div>
-      <div className="modal">
-        <h3>Создание новой услуги</h3>
-        <input
-          type="text"
-          placeholder="Введите название услуги"
-          value={newServiceName}
-          onChange={(e) => setNewServiceName(e.target.value)}
-          disabled={isCreatingLoading} // Отключаем поле ввода во время загрузки
-        />
-        <button onClick={onCreate} disabled={isCreatingLoading}>
-          {isCreatingLoading ? "Создание..." : "Создать"}
-        </button>
-        <button
-          onClick={onCancel}
-          className="red-button"
+    <Modal
+      title="Создание новой услуги"
+      open={true}
+      onOk={onCreate}
+      onCancel={onCancel}
+      footer={[
+        <Button key="cancel" onClick={onCancel} disabled={isCreatingLoading}>
+          Отменить
+        </Button>,
+        <Button
+          key="create"
+          type="primary"
+          onClick={onCreate}
+          loading={isCreatingLoading}
           disabled={isCreatingLoading}
         >
-          Отменить
-        </button>
-      </div>
-    </>
+          {isCreatingLoading ? "Создание..." : "Создать"}
+        </Button>,
+      ]}
+    >
+      <Input
+        placeholder="Введите название услуги"
+        value={newServiceName}
+        onChange={(e) => setNewServiceName(e.target.value)}
+        disabled={isCreatingLoading}
+      />
+    </Modal>
   );
 };

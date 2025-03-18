@@ -1,72 +1,13 @@
-/* Общие стили для всего проекта */
-body {
-  font-family: "Arial", sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #ffffff;
-  color: #333;
-  justify-content: center;
-  align-items: center;
-}
-
-.main-container {
-  display: grid;
-  margin-inline: 1%;
-  gap: 20px; /* Добавляем отступ между элементами внутри контейнера */
-}
-
-.login_container {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: white;
+.center-spin {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
-button {
-  width: fit-content; /* Кнопка занимает только столько места, сколько нужно */
-  margin: 2px;
-  display: inline-block;
-  background-color: white;
-  color: #333;
-  border: 2px solid grey;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 10px;
-  font-size: 16px;
+
+.main-container{
+  margin: 1%;
+  margin-top: 0;
 }
 
-button:hover {
-  background-color: #e5e4e4;
-}
 
-input,
-select,
-textarea {
-  padding: 8px 16px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 2px solid grey;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.red-button {
-  background-color: #fed5d1;
-  color: rgb(0, 0, 0);
-  padding: 8px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.red-button:hover {
-  background-color: #ec6b6b;
-}
-
-.error-message {
-  color: #666666;
-  font-size: 14px;
-}

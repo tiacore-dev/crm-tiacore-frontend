@@ -1,6 +1,7 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import "./Navbar.css"; // Стили для навигации
+import { NavLink, useNavigate } from "react-router-dom";
+import { Menu, Button } from "antd"; // Импорт компонентов Ant Design
+// import "./Navbar.css"; // Стили для навигации
 
 const logOut = () => {
   localStorage.removeItem("access_token");
@@ -9,95 +10,31 @@ const logOut = () => {
 };
 
 export const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+
+  const items = [
+    { label: "Главная", key: "/home" },
+    { label: "Услуги", key: "/services" },
+    { label: "Пользователи", key: "/users" },
+    { label: "Юр. лица", key: "/legal_entities" },
+    { label: "Контракты", key: "/contracts" },
+    { label: "Банк", key: "/bank_accounts" },
+    { label: "Счета", key: "/bills" },
+    { label: "Акты", key: "/acts" },
+  ];
+
   return (
-    <nav className="navbar">
-      <ul className="navbar-list">
-        <li className="navbar-item">
-          <NavLink
-            to="/home"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Главная
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/services"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Услуги
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/users"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Пользователи
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/legal_entities"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Юр. лица
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/contracts"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Контракты
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/bank_accounts"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Банк
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/bills"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Счета
-          </NavLink>
-        </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/acts"
-            className={({ isActive }) =>
-              isActive ? "navbar-link active" : "navbar-link"
-            }
-          >
-            Акты
-          </NavLink>
-        </li>
-        <li className="navbar-item-last">
-          <button onClick={logOut} className="logout-button">
-            Выйти
-          </button>
-        </li>
-      </ul>
-    </nav>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Menu
+        mode="horizontal"
+        items={items}
+        selectedKeys={[window.location.pathname]}
+        onClick={({ key }) => navigate(key)}
+        style={{ flex: 1, minWidth: 0 }}
+      />
+      <Button type="primary" danger onClick={logOut}>
+        Выйти
+      </Button>
+    </div>
   );
 };

@@ -1,45 +1,12 @@
-/* Общее оформление таблицы */
-.table-container {
-  display: flex;
-  justify-content: center;
-  align-items: left;
-  border-radius: 10px;
-  width: 100%;
-  margin-top: 15px;
-  margin-bottom: 20px;
 
-  font-size: 16px;
+
+.clickable-row:hover {
+  background-color: #f0f0f0;
+    text-decoration: underline;
+    cursor: pointer; 
+  
 }
 
-table {
-  border-collapse: collapse;
-}
-
-th,
-td {
-  margin: 10px;
-  padding: 7px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f4f4f4;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-td {
-  background-color: #f4f4f4;
-}
-/* 
-
-/* Стилизация кнопки сортировки */
-th:hover {
-  background-color: #eaeaea;
-}
-
-th:first-child:hover,
-td:first-child:hover {
-  text-decoration: underline;
+.ant-table-tbody > tr > td {
+  line-height:0.2%; /* Уменьшите line-height для уменьшения высоты строк */
 }
