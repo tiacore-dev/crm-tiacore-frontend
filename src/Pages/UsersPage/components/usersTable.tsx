@@ -8,16 +8,21 @@ export const UsersTable: React.FC<{
   onRowClick: (user_id: string) => void;
   onSortChange: (newSortBy: string) => void;
 }> = ({ users, onRowClick, onSortChange }) => {
+
+  const getPositionLabel = (position: string) => {
+    switch (position) {
+      case "admin":
+        return "Администратор";
+      case "manager":
+        return "Менеджер";
+      case "user":
+        return "Пользователь";
+      default:
+        return position;
+    }
+  };
+
   const columns = [
-    {
-      title: "Логин",
-      dataIndex: "username",
-      key: "username",
-      sorter: true, 
-      onHeaderCell: () => ({
-        onClick: () => onSortChange("username"),
-      }),
-    },
     {
         title: "Имя",
         dataIndex: "full_name",
@@ -27,6 +32,15 @@ export const UsersTable: React.FC<{
           onClick: () => onSortChange("full_name"),
         }),
       },
+    {
+      title: "Логин",
+      dataIndex: "username",
+      key: "username",
+      sorter: true, 
+      onHeaderCell: () => ({
+        onClick: () => onSortChange("username"),
+      }),
+    },
       {
         title: "Позиция",
         dataIndex: "position",
@@ -35,6 +49,7 @@ export const UsersTable: React.FC<{
         onHeaderCell: () => ({
           onClick: () => onSortChange("position"),
         }),
+        render: (position: string) => getPositionLabel(position),
       },
   ];
 

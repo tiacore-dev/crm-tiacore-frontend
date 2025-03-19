@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import {useUserMutations} from "../../hooks/users/useUserMutation"
 import { CreateUserModal } from "./components/createUserModal";
 import { AppDispatch } from "../../redux/store"; // Импортируйте AppDispatch
-import { SearchBar } from "../../components/searchBar/searchBar";
+// import { SearchBar } from "../../components/searchBar/searchBar";
 
 
 import {
@@ -34,7 +34,7 @@ export const UsersPage: React.FC = () => {
     const { createMutation } = useUserMutations();
     //_______________________________
     const { currentPage, pageSize, search, sortBy, order } = useSelector(usersSelector);
-    const [tempSearch, setTempSearch] = useState(search);
+    // const [tempSearch, setTempSearch] = useState(search);
           //_______________________________
   const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -117,19 +117,19 @@ export const UsersPage: React.FC = () => {
       [dispatch]
     );
 
-      const handleTempSearchChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-          setTempSearch(e.target.value); // Обновляем временное состояние поиска
-        },
-        [setTempSearch]
-      );
+      // const handleTempSearchChange = useCallback(
+      //   (e: React.ChangeEvent<HTMLInputElement>) => {
+      //     setTempSearch(e.target.value); // Обновляем временное состояние поиска
+      //   },
+      //   [setTempSearch]
+      // );
 
-        const handleSearch = useCallback(
-          (searchTerm: string) => {
-            setSearch(searchTerm);
-          },
-          [dispatch]
-        );
+        // const handleSearch = useCallback(
+        //   (searchTerm: string) => {
+        //     setSearch(searchTerm);
+        //   },
+        //   [dispatch]
+        // );
 
   const handlePageSizeChange = useCallback(
     (newPageSize: number) => {
@@ -137,8 +137,8 @@ export const UsersPage: React.FC = () => {
     },
     [dispatch]
   );
-    
-    
+  
+  
       
 
   return (<div>
@@ -149,11 +149,11 @@ export const UsersPage: React.FC = () => {
           {!isError && (
 
             <div>
-              <SearchBar
+              {/* <SearchBar
                 tempSearch={tempSearch}
                 onTempSearchChange={handleTempSearchChange}
                 onSearch={() => handleSearch(tempSearch)}
-              />
+              /> */}
               <div className="main-container">
                 <Button type="primary" onClick={handleCreateClick} style={{ marginBottom: 16 }}>
                   Создать пользователя

@@ -45,9 +45,9 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
 
   // Варианты для выпадающего списка "Должность"
   const positionOptions = [
-    { value: "Администратор", label: "Администратор" },
-    { value: "Менеджер", label: "Менеджер" },
-    { value: "Пользователь", label: "Пользователь" },
+    { value: "admin", label: "Администратор" },
+    { value: "manager", label: "Менеджер" },
+    { value: "user", label: "Пользователь" },
   ];
 
   return (

@@ -7,6 +7,10 @@ interface UsersState {
   search: string;
   sortBy: string;
   order: string;
+  filters: {
+    username: string;
+    full_name: string;
+  };
 }
 
 const initialState: UsersState = {
@@ -15,8 +19,11 @@ const initialState: UsersState = {
   search: "",
   sortBy: "username",
   order: "asc",
-};
-
+  filters: {
+    username: "",
+    full_name: "",
+  },};
+// фильтры и пангинация на счета на бэке остальное в клиенте
 export const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -39,10 +46,13 @@ export const usersSlice = createSlice({
       state.sortBy = action.payload.sortBy;
       state.order = action.payload.order;
     },
+    setFilters(state, action: PayloadAction<{ username: string; full_name: string }>) {
+      state.filters = action.payload;
+    },
   },
 });
 
-export const { setPage, setPageSize, setSearch, setSort } =
+export const { setPage, setPageSize, setSearch, setSort, setFilters } =
   usersSlice.actions;
 
 export const usersReducer = usersSlice.reducer;
