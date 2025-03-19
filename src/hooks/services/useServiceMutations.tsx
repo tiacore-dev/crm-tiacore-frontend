@@ -15,8 +15,6 @@ export const useServiceMutations = (
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  
-
   const createMutation = useMutation({
     mutationFn: createService,
     onSuccess: (data) => {
@@ -63,7 +61,6 @@ export const useServiceMutations = (
       toast.error("Ошибка при удалении услуги");
     },
   });
-
 
   return { createMutation, updateMutation, deleteMutation };
 };

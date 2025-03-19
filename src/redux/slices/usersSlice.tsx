@@ -7,23 +7,17 @@ interface UsersState {
   search: string;
   sortBy: string;
   order: string;
-  filters: {
-    username: string;
-    full_name: string;
-  };
+  
 }
 
 const initialState: UsersState = {
   currentPage: 1,
   pageSize: 10,
   search: "",
-  sortBy: "username",
+  sortBy: "full_name",
   order: "asc",
-  filters: {
-    username: "",
-    full_name: "",
-  },};
-// фильтры и пангинация на счета на бэке остальное в клиенте
+};
+
 export const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -46,13 +40,10 @@ export const usersSlice = createSlice({
       state.sortBy = action.payload.sortBy;
       state.order = action.payload.order;
     },
-    setFilters(state, action: PayloadAction<{ username: string; full_name: string }>) {
-      state.filters = action.payload;
-    },
   },
 });
 
-export const { setPage, setPageSize, setSearch, setSort, setFilters } =
+export const { setPage, setPageSize, setSearch, setSort } =
   usersSlice.actions;
 
 export const usersReducer = usersSlice.reducer;

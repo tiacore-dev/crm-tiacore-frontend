@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Input, Button, Form, Select } from "antd"; // Импортируем Form и Select
 
-interface CreateUserModalProps {
+interface UserCreateModalProps {
   newUserName: string;
   newPassword: string;
   newFullName: string;
@@ -15,7 +15,7 @@ interface CreateUserModalProps {
   isCreatingLoading: boolean; // Новый пропс для состояния загрузки
 }
 
-export const CreateUserModal: React.FC<CreateUserModalProps> = ({
+export const UserCreateModal: React.FC<UserCreateModalProps> = ({
   newUserName,
   newPassword,
   newFullName,
@@ -77,7 +77,10 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
           label="Логин пользователя"
           name="username"
           rules={[
-            { required: true, message: "Пожалуйста, введите логин пользователя" },
+            {
+              required: true,
+              message: "Пожалуйста, введите логин пользователя",
+            },
             { min: 3, message: "Логин должен содержать минимум 3 символа" },
           ]}
         >
@@ -127,7 +130,9 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
         <Form.Item
           label="Должность"
           name="position"
-          rules={[{ required: true, message: "Пожалуйста, выберите должность" }]}
+          rules={[
+            { required: true, message: "Пожалуйста, выберите должность" },
+          ]}
         >
           <Select
             placeholder="Выберите должность"

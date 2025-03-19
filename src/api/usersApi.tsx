@@ -12,7 +12,6 @@ export interface IUser {
 
 // Функция для получения списка пользователей с параметрами
 export const fetchUsers = async (
-  search: string,
   sort_by: string,
   order: string,
   page: number,
@@ -22,7 +21,6 @@ export const fetchUsers = async (
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/users/all`, {
     params: {
-      search,
       sort_by,
       order,
       page,

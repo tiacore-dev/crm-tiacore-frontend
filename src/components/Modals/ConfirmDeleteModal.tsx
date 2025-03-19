@@ -29,7 +29,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
 
   return (
     <Modal
-      title="Подтверждение удаления"
+      title=""
       open={true}
       onOk={onConfirm}
       onCancel={onCancel}

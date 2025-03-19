@@ -9,10 +9,10 @@ interface useUserQueryResponse {
 }
 
 export const useUserQuery = () => {
-    const { currentPage, pageSize, search, sortBy, order } = useSelector(usersSelector);
+    const { currentPage, pageSize,  sortBy, order } = useSelector(usersSelector);
     return useQuery<useUserQueryResponse>({
-        queryKey: ["users", currentPage, pageSize, search, sortBy, order],
-        queryFn: () => fetchUsers(search, sortBy, order, currentPage, pageSize),
+        queryKey: ["users", currentPage, pageSize,  sortBy, order],
+        queryFn: () => fetchUsers( sortBy, order, currentPage, pageSize),
       })    
 }
 

@@ -9,21 +9,21 @@ import {
   setSearch,
   setSort,
 } from "../../redux/slices/servicesSlice";
-import toast from "react-hot-toast";
 import { SearchBar } from "../../components/searchBar/searchBar";
 import { Pagination } from "../../components/pagination/pagination";
-import { CreateServiceModal } from "./components/createServiceModal";
+import { ServiceCreateModal } from "./components/serviceCreateModal";
 import { ServicesTable } from "./components/servicesTable";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { Button, Spin } from "antd"; // Импорт компонентов Ant Design
-import {BackButton} from "../../components/backButton";
+import { BackButton } from "../../components/backButton";
 
 export const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { currentPage, pageSize, search, sortBy, order } = useSelector(servicesSelector);
+  const { currentPage, pageSize, search, sortBy, order } =
+    useSelector(servicesSelector);
 
   const [tempSearch, setTempSearch] = useState(search);
   const [isCreating, setIsCreating] = useState(false);
@@ -33,18 +33,14 @@ export const ServicesPage: React.FC = () => {
     dispatch(
       setBreadcrumbs([
         { label: "Главная страница", to: "/home" },
-        { label: "Услуги", to: "/services" },  
+        { label: "Услуги", to: "/services" },
       ])
     );
   }, [dispatch]);
 
   const { createMutation } = useServiceMutations();
 
-  const {
-    data: services_data,
-    isLoading,
-    isError,
-  } = useServiceQuery();
+  const { data: services_data, isLoading, isError } = useServiceQuery();
 
   const handleCreateClick = useCallback(() => {
     setIsCreating(true);
@@ -56,25 +52,24 @@ export const ServicesPage: React.FC = () => {
   }, []);
 
   const handleCreateService = useCallback(() => {
-    if (newServiceName.trim().length >= 3) {
-      createMutation.mutate(
-        { service_name: newServiceName },
-        {
-          onSuccess: () => {
-            setIsCreating(false);
-            setNewServiceName("");
-          },
-          onError: () => {},
-        }
-      );
-    } else {
-      toast.error("Название услуги должно содержать минимум 3 символа");
-    }
+    createMutation.mutate(
+      { service_name: newServiceName },
+      {
+        onSuccess: () => {
+          setIsCreating(false);
+          setNewServiceName("");
+        },
+        onError: () => {},
+      }
+    );
   }, [newServiceName, createMutation]);
 
-  const handleRowClick = useCallback((service_id: string) => {
-    navigate(`/services/${service_id}`);
-  }, [navigate]);
+  const handleRowClick = useCallback(
+    (service_id: string) => {
+      navigate(`/services/${service_id}`);
+    },
+    [navigate]
+  );
 
   const handlePageChange = useCallback(
     (newPage: number) => {
@@ -113,7 +108,9 @@ export const ServicesPage: React.FC = () => {
     [dispatch, order]
   );
 
-  const totalPages = services_data?.total ? Math.ceil(services_data?.total / pageSize) : 0;
+  const totalPages = services_data?.total
+    ? Math.ceil(services_data?.total / pageSize)
+    : 0;
 
   return (
     <div>
@@ -129,7 +126,11 @@ export const ServicesPage: React.FC = () => {
                 onSearch={() => handleSearch(tempSearch)}
               />
               <div className="main-container">
-                <Button type="primary" onClick={handleCreateClick} style={{ marginBottom: 16 }}>
+                <Button
+                  type="primary"
+                  onClick={handleCreateClick}
+                  style={{ marginBottom: 16 }}
+                >
                   Создать новую услугу
                 </Button>
                 <ServicesTable
@@ -148,7 +149,7 @@ export const ServicesPage: React.FC = () => {
                 />
               </div>
               {isCreating && (
-                <CreateServiceModal
+                <ServiceCreateModal
                   newServiceName={newServiceName}
                   setNewServiceName={setNewServiceName}
                   onCreate={handleCreateService}
@@ -158,9 +159,7 @@ export const ServicesPage: React.FC = () => {
               )}
             </div>
           )}
-          {isError && (
-            <BackButton/>
-          )}
+          {isError && <BackButton />}
         </>
       )}
     </div>

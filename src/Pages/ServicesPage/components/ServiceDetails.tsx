@@ -27,11 +27,10 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
 
   return (
     <div>
-      <Button type="primary" onClick={onEdit} style={{ marginBottom: 16 }}>
-        Редактировать
-      </Button>
       <Typography.Title level={3}>Детали услуги</Typography.Title>
       <Table columns={columns} dataSource={data} pagination={false} />
     </div>
   );
 };
+
+//ЗАСУНУТЬ КНОПКУ УДАЛИТЬ В КАРТОЧКУ ПОЛЬЗОВАТЕЛЯ

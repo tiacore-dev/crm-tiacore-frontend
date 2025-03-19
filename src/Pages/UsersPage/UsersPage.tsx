@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUsers } from "../../api/usersApi"; // Импортируем запросы
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import {BackButton} from "../../components/backButton";
+import { BackButton } from "../../components/backButton";
 import { Button, Spin } from "antd"; // Импорт компонентов Ant Design
 import { Pagination } from "../../components/pagination/pagination";
-import { useUserQuery} from "../../hooks/users/useUserQuery";
+import { useUserQuery } from "../../hooks/users/useUserQuery";
 import { UsersTable } from "./components/usersTable";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import {useUserMutations} from "../../hooks/users/useUserMutation"
-import { CreateUserModal } from "./components/createUserModal";
-import { AppDispatch } from "../../redux/store"; // Импортируйте AppDispatch
-// import { SearchBar } from "../../components/searchBar/searchBar";
-
+import { useUserMutations } from "../../hooks/users/useUserMutation";
+import { UserCreateModal } from "./components/userCreateModal";
 
 import {
   usersSelector,
@@ -25,20 +19,19 @@ import {
 } from "../../redux/slices/usersSlice";
 
 export const UsersPage: React.FC = () => {
-
   const [isCreating, setIsCreating] = useState(false);
-    const [newUserName, setNewUserName] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [newFullName, setNewFullName] = useState("");
-    const [newPosition, setNewPosition] = useState("");
-    const { createMutation } = useUserMutations();
-    //_______________________________
-    const { currentPage, pageSize, search, sortBy, order } = useSelector(usersSelector);
-    // const [tempSearch, setTempSearch] = useState(search);
-          //_______________________________
+  const [newUserName, setNewUserName] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newFullName, setNewFullName] = useState("");
+  const [newPosition, setNewPosition] = useState("");
+  const { createMutation } = useUserMutations();
+  //_______________________________
+  const { currentPage, pageSize, search, sortBy, order } =
+    useSelector(usersSelector);
+  //_______________________________
   const dispatch = useDispatch();
-    const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
@@ -48,43 +41,43 @@ export const UsersPage: React.FC = () => {
     );
   }, [dispatch]);
 
-    const {
-      data: users_data,
-      isLoading,
-      isError,
-    } = useUserQuery();
+  const { data: users_data, isLoading, isError } = useUserQuery();
 
-  const handleRowClick = useCallback((user_id: string) => {
-    navigate(`/users/${user_id}`);
-  }, [navigate]);
+  const handleRowClick = useCallback(
+    (user_id: string) => {
+      navigate(`/users/${user_id}`);
+    },
+    [navigate]
+  );
 
-    const handleSortChange = useCallback(
-      (newSortBy: string) => {
-        dispatch(
-          setSort({ sortBy: newSortBy, order: order === "asc" ? "desc" : "asc" })
-        );
-      },
-      [dispatch, order]
-    );
+  const handleSortChange = useCallback(
+    (newSortBy: string) => {
+      dispatch(
+        setSort({ sortBy: newSortBy, order: order === "asc" ? "desc" : "asc" })
+      );
+    },
+    [dispatch, order]
+  );
 
   const handleCreateClick = useCallback(() => {
     setIsCreating(true);
   }, []);
 
   const handleCreateUser = useCallback(() => {
-
-      // console.log("Creating user with data:", {
-      //   username: newUserName,
-      //   password: newPassword,
-      //   full_name: newFullName,
-      //   position: newPosition,
-      // });
-      createMutation.mutate({
+    // console.log("Creating user with data:", {
+    //   username: newUserName,
+    //   password: newPassword,
+    //   full_name: newFullName,
+    //   position: newPosition,
+    // });
+    createMutation.mutate(
+      {
         username: newUserName,
         password: newPassword,
         full_name: newFullName,
         position: newPosition,
-      }, {
+      },
+      {
         onSuccess: (data) => {
           // console.log("User created successfully:", data);
           setIsCreating(false);
@@ -93,43 +86,25 @@ export const UsersPage: React.FC = () => {
           setNewFullName("");
           setNewPosition("");
         },
-        onError: (error) => {
-          // console.error("Error creating user:", error);
-          toast.error("Ошибка при создании пользователя");
-        },
-      });
-
+      }
+    );
   }, [newUserName, newPassword, newFullName, newPosition, createMutation]);
-
-
 
   const handleCancelCreate = useCallback(() => {
     setIsCreating(false);
     setNewUserName("");
   }, []);
 
-  const totalPages = users_data?.total ? Math.ceil(users_data?.total / pageSize) : 0;
+  const totalPages = users_data?.total
+    ? Math.ceil(users_data?.total / pageSize)
+    : 0;
 
-    const handlePageChange = useCallback(
-      (newPage: number) => {
-        dispatch(setPage(newPage));
-      },
-      [dispatch]
-    );
-
-      // const handleTempSearchChange = useCallback(
-      //   (e: React.ChangeEvent<HTMLInputElement>) => {
-      //     setTempSearch(e.target.value); // Обновляем временное состояние поиска
-      //   },
-      //   [setTempSearch]
-      // );
-
-        // const handleSearch = useCallback(
-        //   (searchTerm: string) => {
-        //     setSearch(searchTerm);
-        //   },
-        //   [dispatch]
-        // );
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      dispatch(setPage(newPage));
+    },
+    [dispatch]
+  );
 
   const handlePageSizeChange = useCallback(
     (newPageSize: number) => {
@@ -137,26 +112,22 @@ export const UsersPage: React.FC = () => {
     },
     [dispatch]
   );
-  
-  
-      
 
-  return (<div>
-{isLoading ? (
+  return (
+    <div>
+      {isLoading ? (
         <Spin size="large" className="center-spin" />
       ) : (
         <>
           {!isError && (
-
             <div>
-              {/* <SearchBar
-                tempSearch={tempSearch}
-                onTempSearchChange={handleTempSearchChange}
-                onSearch={() => handleSearch(tempSearch)}
-              /> */}
               <div className="main-container">
-                <Button type="primary" onClick={handleCreateClick} style={{ marginBottom: 16 }}>
-                  Создать пользователя
+                <Button
+                  type="primary"
+                  onClick={handleCreateClick}
+                  style={{ marginBottom: 16 }}
+                >
+                  Добавить пользователя
                 </Button>
                 <UsersTable
                   users={users_data?.users}
@@ -172,9 +143,8 @@ export const UsersPage: React.FC = () => {
                   onPageSizeChange={handlePageSizeChange}
                 />
               </div>
-              {isCreating 
-              && (
-                <CreateUserModal
+              {isCreating && (
+                <UserCreateModal
                   newUserName={newUserName}
                   newPassword={newPassword}
                   newFullName={newFullName}
@@ -187,15 +157,12 @@ export const UsersPage: React.FC = () => {
                   onCancel={handleCancelCreate}
                   isCreatingLoading={createMutation.isPending}
                 />
-              )
-              }
+              )}
             </div>
           )}
-          {isError && (
-            <BackButton/>
-          )}
+          {isError && <BackButton />}
         </>
       )}
     </div>
-    );
+  );
 };
