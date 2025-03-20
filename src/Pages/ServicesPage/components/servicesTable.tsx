@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd"; // Импорт компонентов Ant Design
 import { IService } from "../../../api/servicesApi";
-import "../../../components/table.css"
+import "../../../components/table/table.css";
 
 export const ServicesTable: React.FC<{
   services?: IService[];
@@ -13,7 +13,7 @@ export const ServicesTable: React.FC<{
       title: "Название услуги",
       dataIndex: "service_name",
       key: "service_name",
-      sorter: true, 
+      sorter: true,
       onHeaderCell: () => ({
         onClick: () => onSortChange("service_name"),
       }),
