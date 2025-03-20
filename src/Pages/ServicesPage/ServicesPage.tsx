@@ -15,7 +15,7 @@ import { ServiceCreateModal } from "./components/serviceCreateModal";
 import { ServicesTable } from "./components/servicesTable";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
-import { Button, Spin } from "antd"; // Импорт компонентов Ant Design
+import { Button, Spin } from "antd";
 import { BackButton } from "../../components/backButton";
 
 export const ServicesPage: React.FC = () => {

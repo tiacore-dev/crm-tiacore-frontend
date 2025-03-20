@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Modal, Input, Button, Form, Select } from "antd";
 
 interface UserEditModalProps {
@@ -32,7 +32,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter" && !isUpdateLoading) {
-        form.submit(); // Используем form.submit() вместо onSave
+        form.submit();
       } else if (event.key === "Escape" && !isUpdateLoading) {
         onCancel();
       }

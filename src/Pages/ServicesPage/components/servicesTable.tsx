@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "antd"; // Импорт компонентов Ant Design
+import { Table } from "antd";
 import { IService } from "../../../api/servicesApi";
 import "../../../components/table/table.css";
 
@@ -33,7 +33,7 @@ export const ServicesTable: React.FC<{
         onClick: () => onRowClick(record.service_id),
       })}
       rowClassName="clickable-row"
-      pagination={false} // Отключаем пагинацию
+      pagination={false}
     />
   );
 };

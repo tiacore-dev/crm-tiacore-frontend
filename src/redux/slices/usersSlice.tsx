@@ -7,7 +7,7 @@ interface UsersState {
   search: string;
   sortBy: string;
   order: string;
-  
+  filters: Record<string, any>; // Добавляем поле для хранения фильтров
 }
 
 const initialState: UsersState = {
@@ -16,6 +16,7 @@ const initialState: UsersState = {
   search: "",
   sortBy: "full_name",
   order: "asc",
+  filters: {},
 };
 
 export const usersSlice = createSlice({
@@ -40,12 +41,25 @@ export const usersSlice = createSlice({
       state.sortBy = action.payload.sortBy;
       state.order = action.payload.order;
     },
+    setFilters: (state, action: PayloadAction<Record<string, any>>) => {
+      state.filters = action.payload; // Добавляем действие для установки фильтров
+    },
+    resetState: () => initialState, // Добавляем действие для сброса состояния
   },
 });
 
-export const { setPage, setPageSize, setSearch, setSort } =
-  usersSlice.actions;
+export const {
+  setPage,
+  setPageSize,
+  setSearch,
+  setSort,
+  setFilters,
+  resetState,
+} = usersSlice.actions;
 
 export const usersReducer = usersSlice.reducer;
 
-export const usersSelector = createSelector((state: RootState) => state.users, (users) => users)
+export const usersSelector = createSelector(
+  (state: RootState) => state.users,
+  (users) => users
+);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -64,9 +64,12 @@ export const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    loginMutation.mutate(data); // Выполняем запрос
-  };
+  const onSubmit = useCallback(
+    (data: FormData) => {
+      loginMutation.mutate(data);
+    },
+    [loginMutation]
+  );
 
   return (
     <div className="login_container">
@@ -127,7 +130,11 @@ export const LoginPage: React.FC = () => {
             disabled={loginMutation.isPending}
             block
           >
-            {loginMutation.isPending ? <Spin size="small" className="center-spin"/> : "Войти"}
+            {loginMutation.isPending ? (
+              <Spin size="small" className="center-spin" />
+            ) : (
+              "Войти"
+            )}
           </Button>
         </Form.Item>
       </Form>

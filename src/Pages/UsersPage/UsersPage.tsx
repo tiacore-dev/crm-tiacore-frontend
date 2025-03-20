@@ -2,20 +2,20 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/backButton";
-import { Button, Spin } from "antd"; // Импорт компонентов Ant Design
+import { Button, Spin } from "antd";
 import { Pagination } from "../../components/pagination/pagination";
 import { useUserQuery } from "../../hooks/users/useUserQuery";
 import { UsersTable } from "./components/usersTable";
 import { useNavigate } from "react-router-dom";
 import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserCreateModal } from "./components/userCreateModal";
-
 import {
   usersSelector,
   setPage,
   setPageSize,
   setSearch,
   setSort,
+  setFilters,
 } from "../../redux/slices/usersSlice";
 
 export const UsersPage: React.FC = () => {
@@ -25,10 +25,10 @@ export const UsersPage: React.FC = () => {
   const [newFullName, setNewFullName] = useState("");
   const [newPosition, setNewPosition] = useState("");
   const { createMutation } = useUserMutations();
-  //_______________________________
-  const { currentPage, pageSize, search, sortBy, order } =
+
+  const { currentPage, pageSize, search, sortBy, order, filters } =
     useSelector(usersSelector);
-  //_______________________________
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,13 +63,14 @@ export const UsersPage: React.FC = () => {
     setIsCreating(true);
   }, []);
 
+  const handleFilterChange = useCallback(
+    (newFilters: Record<string, any>) => {
+      dispatch(setFilters(newFilters));
+    },
+    [dispatch]
+  );
+
   const handleCreateUser = useCallback(() => {
-    // console.log("Creating user with data:", {
-    //   username: newUserName,
-    //   password: newPassword,
-    //   full_name: newFullName,
-    //   position: newPosition,
-    // });
     createMutation.mutate(
       {
         username: newUserName,
@@ -79,7 +80,6 @@ export const UsersPage: React.FC = () => {
       },
       {
         onSuccess: (data) => {
-          // console.log("User created successfully:", data);
           setIsCreating(false);
           setNewUserName("");
           setNewPassword("");
@@ -133,6 +133,8 @@ export const UsersPage: React.FC = () => {
                   users={users_data?.users}
                   onRowClick={handleRowClick}
                   onSortChange={handleSortChange}
+                  onFilterChange={handleFilterChange}
+                  filters={filters} // Передаем фильтры в таблицу
                 />
                 <Pagination
                   currentPage={currentPage}
