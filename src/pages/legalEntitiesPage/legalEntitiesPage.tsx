@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 
-export const LegalEntityPage: React.FC = () => {
+export const LegalEntiteisPage: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {

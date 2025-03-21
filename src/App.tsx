@@ -13,7 +13,7 @@ import { HomePage } from "./pages/homePage/homePage";
 import { UsersPage } from "./pages/usersPage/usersPage";
 import { CompaniesPage } from "./pages/companiesPage/companiesPage";
 import { ServicesPage } from "./pages/servicesPage/servicesPage";
-import { LegalEntityPage } from "./pages/legalEntityPage/legalEntityPage";
+import { LegalEntiteisPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
@@ -47,7 +47,7 @@ const App: React.FC = () => {
             <Route path="/users/:user_id" element={<UserDetailsPage />} />
             <Route path="/companies" element={<CompaniesPage />} />
             {/* <Route path="/companies/:company_id" element={<CompanyDetailsPage />} /> */}
-            <Route path="/legal_entities" element={<LegalEntityPage />} />
+            <Route path="/legal_entities" element={<LegalEntiteisPage />} />
             <Route path="/contracts" element={<ContractsPage />} />
             <Route path="/bank_accounts" element={<BankAccountsPage />} />
             <Route path="/bills" element={<BillsPage />} />
