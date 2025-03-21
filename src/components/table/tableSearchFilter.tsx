@@ -51,7 +51,7 @@ export const useTableSearch = <T extends object>() => {
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex as string}`}
+          placeholder={`Поиск`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])

@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import type { TableColumnsType } from "antd";
 import { Table } from "antd";
 import { useTableSearch } from "../../../components/table/tableSearchFilter";
+import { getPositionLabel } from "./userUtils";
 
 export const UsersTable: React.FC<{
   users?: IUser[];
@@ -13,19 +14,6 @@ export const UsersTable: React.FC<{
   filters?: Record<string, any>; // Добавляем пропс для фильтров
 }> = ({ users, onRowClick, onSortChange, onFilterChange, filters }) => {
   const { getColumnSearchProps } = useTableSearch<IUser>();
-
-  const getPositionLabel = (position: string) => {
-    switch (position) {
-      case "admin":
-        return "Администратор";
-      case "manager":
-        return "Менеджер";
-      case "user":
-        return "Пользователь";
-      default:
-        return position;
-    }
-  };
 
   const columns: TableColumnsType<IUser> = [
     {
@@ -75,6 +63,7 @@ export const UsersTable: React.FC<{
       filterSearch: false,
       render: (position: string) => getPositionLabel(position),
       filteredValue: filters?.position || null, // Применяем фильтры из Redux
+      // filterResetText: 'Сбросить',
     },
   ];
 

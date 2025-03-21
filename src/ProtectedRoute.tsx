@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.tsx
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Navbar } from "./components/navbar/navbar";
