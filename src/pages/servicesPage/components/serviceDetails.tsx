@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Typography, Table } from "antd"; // Импорт компонентов Ant Design
+import { Button, Typography, Table } from "antd";
 
 interface ServiceDetailsProps {
   serviceName: string;
@@ -32,5 +32,3 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
     </div>
   );
 };
-
-//ЗАСУНУТЬ КНОПКУ УДАЛИТЬ В КАРТОЧКУ ПОЛЬЗОВАТЕЛЯ

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchUserDetails } from "../../api/usersApi"; // Импортируем запросы
+import { fetchUserDetails } from "../../api/usersApi";
 import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin } from "antd";
@@ -12,13 +12,19 @@ import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserDetails } from "./components/userDetails";
 import { UserEditModal } from "./components/userEditModal";
 
+export interface UserData {
+  username: string;
+  full_name: string;
+  position: string;
+}
+
 export const UserDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const { user_id } = useParams<{ user_id: string }>();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
-  const [editedData, setEditedData] = useState<any>(null);
+  const [editedData, setEditedData] = useState<UserData | null>(null);
 
   const {
     data: userDetails,
@@ -38,10 +44,7 @@ export const UserDetailsPage: React.FC = () => {
     }
   }, [dispatch, userDetails, user_id]);
 
-  const { updateMutation, deleteMutation } = useUserMutations(
-    user_id!
-    // setIsEditing
-  );
+  const { updateMutation, deleteMutation } = useUserMutations(user_id!);
 
   const handleDelete = useCallback(() => {
     deleteMutation.mutate(undefined, {
@@ -59,13 +62,36 @@ export const UserDetailsPage: React.FC = () => {
   }, [userDetails]);
 
   const handleSaveEdit = useCallback(() => {
-    updateMutation.mutate(editedData, {
-      onSuccess: () => {
-        setIsEditing(false);
-      },
-      onError: () => {},
+    if (editedData) {
+      updateMutation.mutate(editedData, {
+        onSuccess: () => {
+          setIsEditing(false);
+          setEditedData(null);
+          // Обновляем данные пользователя после успешного редактирования
+          if (userDetails) {
+            setEditedData({
+              username: userDetails.username,
+              full_name: userDetails.full_name,
+              position: userDetails.position,
+            });
+          }
+        },
+        onError: () => {},
+      });
+    }
+  }, [editedData, updateMutation, userDetails]);
+
+  const handleEditChange = useCallback((field: string, value: string) => {
+    setEditedData((prevData) => {
+      if (prevData) {
+        return {
+          ...prevData,
+          [field]: value,
+        };
+      }
+      return null;
     });
-  }, [editedData, updateMutation]);
+  }, []);
 
   return (
     <div>
@@ -95,10 +121,8 @@ export const UserDetailsPage: React.FC = () => {
               </div>
               {isEditing && (
                 <UserEditModal
-                  editedData={userDetails} // Передаем данные пользователя
-                  onChange={(field, value) =>
-                    setEditedData({ ...editedData, [field]: value })
-                  }
+                  editedData={userDetails}
+                  onChange={handleEditChange}
                   onSave={handleSaveEdit}
                   onCancel={handleCancelEdit}
                   isUpdateLoading={updateMutation.isPending}

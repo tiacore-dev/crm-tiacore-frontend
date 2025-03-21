@@ -1,12 +1,13 @@
 import React, { useEffect, useCallback } from "react";
 import { Modal, Input, Button, Form, Select } from "antd";
+import { UserData } from "../userDetailsPage";
 
 interface UserEditModalProps {
-  editedData: any; // Данные для редактирования
-  onChange: (field: string, value: string) => void; // Функция для обработки изменений
-  onSave: () => void; // Функция для сохранения изменений
-  onCancel: () => void; // Функция для отмены редактирования
-  isUpdateLoading: boolean; // Состояние загрузки
+  editedData: UserData;
+  onChange: (field: string, value: string) => void;
+  onSave: () => void;
+  onCancel: () => void;
+  isUpdateLoading: boolean;
 }
 
 export const UserEditModal: React.FC<UserEditModalProps> = ({
@@ -16,9 +17,8 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
   onCancel,
   isUpdateLoading,
 }) => {
-  const [form] = Form.useForm(); // Хук для управления формой
+  const [form] = Form.useForm();
 
-  // Устанавливаем начальные значения формы при изменении editedData
   useEffect(() => {
     if (editedData) {
       form.setFieldsValue({
@@ -44,12 +44,10 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     };
   }, [onSave, onCancel, isUpdateLoading, form]);
 
-  // Функция, которая вызывается при успешной валидации формы
   const onFinish = () => {
     onSave();
   };
 
-  // Варианты для выпадающего списка "Должность"
   const positionOptions = [
     { value: "admin", label: "Администратор" },
     { value: "manager", label: "Менеджер" },
@@ -60,7 +58,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     <Modal
       title="Редактирование пользователя"
       open={true}
-      onOk={form.submit} // Используем form.submit() для отправки формы
+      onOk={form.submit}
       onCancel={onCancel}
       footer={[
         <Button key="cancel" onClick={onCancel} disabled={isUpdateLoading}>
@@ -69,7 +67,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
         <Button
           key="save"
           type="primary"
-          onClick={form.submit} // Используем form.submit() для отправки формы
+          onClick={form.submit}
           loading={isUpdateLoading}
           disabled={isUpdateLoading}
         >
@@ -78,7 +76,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
       ]}
     >
       <Form form={form} onFinish={onFinish}>
-        {/* Валидация для поля "Логин" */}
         <Form.Item
           name="username"
           label="Логин"
@@ -94,12 +91,11 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           />
         </Form.Item>
 
-        {/* Валидация для поля "Пароль" */}
         <Form.Item
           name="password"
           label="Новый пароль"
           rules={[
-            { required: true, message: "Пожалуйста, введите новый пароль" }, // Пароль обязателен
+            { required: true, message: "Пожалуйста, введите новый пароль" },
             { min: 6, message: "Пароль должен содержать минимум 6 символов" },
           ]}
         >
@@ -110,7 +106,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           />
         </Form.Item>
 
-        {/* Валидация для поля "Ф.И.О." */}
         <Form.Item
           name="full_name"
           label="Ф.И.О."
@@ -126,7 +121,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           />
         </Form.Item>
 
-        {/* Валидация для поля "Должность" */}
         <Form.Item
           name="position"
           label="Должность"

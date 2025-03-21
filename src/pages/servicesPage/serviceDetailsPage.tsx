@@ -10,12 +10,16 @@ import { Button, Spin } from "antd";
 import { BackButton } from "../../components/backButton";
 import { useServiceDetailsQuery } from "../../hooks/services/useServiceQuery";
 
+interface ServiceData {
+  service_name: string;
+}
+
 export const ServiceDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const { service_id } = useParams<{ service_id: string }>();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState<any>(null);
+  const [editedData, setEditedData] = useState<ServiceData | null>(null);
   const dispatch = useDispatch();
 
   const {
@@ -60,7 +64,15 @@ export const ServiceDetailsPage: React.FC = () => {
   const handleEditChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setEditedData((prevData: any) => ({ ...prevData, [name]: value }));
+      setEditedData((prevData) => {
+        if (prevData) {
+          return {
+            ...prevData,
+            [name]: value,
+          };
+        }
+        return null;
+      });
     },
     []
   );
@@ -71,12 +83,14 @@ export const ServiceDetailsPage: React.FC = () => {
   }, [serviceDetails]);
 
   const handleSaveEdit = useCallback(() => {
-    updateMutation.mutate(editedData, {
-      onSuccess: () => {
-        setIsEditing(false);
-      },
-      onError: () => {},
-    });
+    if (editedData) {
+      updateMutation.mutate(editedData, {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+        onError: () => {},
+      });
+    }
   }, [editedData, updateMutation]);
 
   return (
@@ -106,7 +120,7 @@ export const ServiceDetailsPage: React.FC = () => {
               </div>
               {isEditing && (
                 <ServiceEditModal
-                  editedData={editedData} // Передаем данные услуги
+                  editedData={editedData}
                   onChange={handleEditChange}
                   onSave={handleSaveEdit}
                   onCancel={handleCancelEdit}

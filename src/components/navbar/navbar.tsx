@@ -16,6 +16,7 @@ export const Navbar: React.FC = () => {
     { label: "Главная", key: "/home" },
     { label: "Услуги", key: "/services" },
     { label: "Пользователи", key: "/users" },
+    { label: "Компании", key: "/companies" },
     { label: "Юр. лица", key: "/legal_entities" },
     { label: "Контракты", key: "/contracts" },
     { label: "Банк", key: "/bank_accounts" },
@@ -24,7 +25,13 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <Menu
         mode="horizontal"
         items={items}

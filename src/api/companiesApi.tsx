@@ -3,6 +3,12 @@ import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
+export interface ICompany {
+  company_id: string;
+  company_name: string;
+  description: string;
+}
+
 // Функция для получения списка комапний с параметрами
 export const fetchCompanies = async (
   search: string,
@@ -33,17 +39,14 @@ export const fetchCompanies = async (
 export const createCompany = async (newCompany: {
   company_name: string;
   description: string;
-}) => {
+  // }) => {
+}): Promise<ICompany> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.post(
     `${url}/api/companies/add`,
     newCompany,
     {
-      params: {
-        company_name: null,
-        description: null,
-      },
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

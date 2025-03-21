@@ -1,12 +1,9 @@
-
-
 .clickable-row:hover {
   background-color: #f0f0f0;
-    text-decoration: underline;
-    cursor: pointer; 
-  
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .ant-table-tbody > tr > td {
-  line-height:0.2%; /* Уменьшите line-height для уменьшения высоты строк */
+  line-height: 0.2%; /* для уменьшения высоты строк */
 }

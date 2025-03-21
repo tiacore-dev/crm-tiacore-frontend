@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../../axiosConfig";
 import toast from "react-hot-toast";
-import { Button, Form, Input, Typography, Spin } from "antd"; // Импорт компонентов Ant Design
+import { Button, Form, Input, Typography, Spin } from "antd";
 import "./loginPage.css";
 
 type FormData = {
@@ -15,6 +15,14 @@ type FormData = {
 type AuthResponse = {
   access_token: string;
   refresh_token: string;
+};
+
+type ApiError = {
+  response?: {
+    data: {
+      message: string;
+    };
+  };
 };
 
 export const LoginPage: React.FC = () => {
@@ -44,10 +52,11 @@ export const LoginPage: React.FC = () => {
           data
         );
         return response.data;
-      } catch (error: any) {
-        if (error.response) {
+      } catch (error: unknown) {
+        const apiError = error as ApiError;
+        if (apiError.response) {
           const errorMessage =
-            error.response.data.message || "Ошибка при авторизации";
+            apiError.response.data.message || "Ошибка при авторизации";
           throw new Error(errorMessage);
         } else {
           throw new Error("Неизвестная ошибка");
