@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 
-export const BankPage: React.FC = () => {
+export const BankAccountsPage: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
         { label: "Главная страница", to: "/home" },
-        { label: "Банк", to: "/bank_accounts" },
+        { label: "Банковские данные", to: "/bank_accounts" },
       ])
     );
   }, [dispatch]);

@@ -16,7 +16,7 @@ import { ServicesPage } from "./pages/servicesPage/servicesPage";
 import { LegalEntityPage } from "./pages/legalEntityPage/legalEntityPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
-import { BankPage } from "./pages/bankPage/bankPage";
+import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
 import { ActsPage } from "./pages/actsPage/actsPage";
 import ProtectedRoute from "./protectedRoute";
 import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
@@ -49,7 +49,7 @@ const App: React.FC = () => {
             {/* <Route path="/companies/:company_id" element={<CompanyDetailsPage />} /> */}
             <Route path="/legal_entities" element={<LegalEntityPage />} />
             <Route path="/contracts" element={<ContractsPage />} />
-            <Route path="/bank_accounts" element={<BankPage />} />
+            <Route path="/bank_accounts" element={<BankAccountsPage />} />
             <Route path="/bills" element={<BillsPage />} />
             <Route path="/acts" element={<ActsPage />} />
           </Route>
