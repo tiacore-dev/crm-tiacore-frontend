@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Typography, Card } from "antd"; // Импорт компонентов Ant Design
+import { Typography, Card } from "antd"; // Импорт компонентов Ant Design
 import { getPositionLabel } from "./userUtils";
 
 const { Title, Text } = Typography;

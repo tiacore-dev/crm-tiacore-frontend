@@ -11,8 +11,24 @@ export const UsersTable: React.FC<{
   onRowClick: (user_id: string) => void;
   onSortChange: (newSortBy: string) => void;
   onFilterChange: (newFilters: Record<string, any>) => void;
-  filters?: Record<string, any>; // Добавляем пропс для фильтров
-}> = ({ users, onRowClick, onSortChange, onFilterChange, filters }) => {
+  filters?: Record<string, any>;
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+}> = ({
+  users,
+  onRowClick,
+  onSortChange,
+  onFilterChange,
+  filters,
+  currentPage,
+  pageSize,
+  totalItems,
+  onPageChange,
+  onPageSizeChange,
+}) => {
   const { getColumnSearchProps } = useTableSearch<IUser>();
 
   const columns: TableColumnsType<IUser> = [
@@ -62,8 +78,7 @@ export const UsersTable: React.FC<{
       onFilter: (value, record) => record.position.startsWith(value as string),
       filterSearch: false,
       render: (position: string) => getPositionLabel(position),
-      filteredValue: filters?.position || null, // Применяем фильтры из Redux
-      // filterResetText: 'Сбросить',
+      filteredValue: filters?.position || null,
     },
   ];
 
@@ -78,8 +93,21 @@ export const UsersTable: React.FC<{
       if (sorter.field) {
         onSortChange(sorter.field);
       }
+      if (pagination.current !== currentPage) {
+        onPageChange(pagination.current);
+      }
+      if (pagination.pageSize !== pageSize) {
+        onPageSizeChange(pagination.pageSize);
+      }
     },
-    [onFilterChange, onSortChange]
+    [
+      onFilterChange,
+      onSortChange,
+      onPageChange,
+      onPageSizeChange,
+      currentPage,
+      pageSize,
+    ]
   );
 
   return (
@@ -90,7 +118,15 @@ export const UsersTable: React.FC<{
         onClick: () => onRowClick(record.user_id),
       })}
       rowClassName="clickable-row"
-      pagination={false}
+      pagination={{
+        current: currentPage,
+        pageSize: pageSize,
+        total: totalItems,
+        showSizeChanger: true,
+        pageSizeOptions: ["10", "20", "40", "60", "80", "100"],
+        onChange: onPageChange,
+        onShowSizeChange: (current, size) => onPageSizeChange(size),
+      }}
       onChange={handleTableChange}
     />
   );

@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/backButton";
 import { Button, Spin } from "antd";
-import { Pagination } from "../../components/pagination/pagination";
 import { useUserQuery } from "../../hooks/users/useUserQuery";
 import { UsersTable } from "./components/usersTable";
 import { useNavigate } from "react-router-dom";
 import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserCreateModal } from "./components/userCreateModal";
+import { useFilteredUsers } from "../../hooks/users/useFilteredUsers"; // Импортируем хук для фильтрации
+
 import {
   usersSelector,
   setPage,
@@ -42,6 +43,13 @@ export const UsersPage: React.FC = () => {
   }, [dispatch]);
 
   const { data: users_data, isLoading, isError } = useUserQuery();
+  const { filteredUsers, paginatedUsers, totalFilteredCount } =
+    useFilteredUsers({
+      users: users_data?.users,
+      filters,
+      currentPage,
+      pageSize,
+    });
 
   const handleRowClick = useCallback(
     (user_id: string) => {
@@ -95,24 +103,6 @@ export const UsersPage: React.FC = () => {
     setNewUserName("");
   }, []);
 
-  const totalPages = users_data?.total
-    ? Math.ceil(users_data?.total / pageSize)
-    : 0;
-
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      dispatch(setPage(newPage));
-    },
-    [dispatch]
-  );
-
-  const handlePageSizeChange = useCallback(
-    (newPageSize: number) => {
-      dispatch(setPageSize(newPageSize));
-    },
-    [dispatch]
-  );
-
   return (
     <div>
       {isLoading ? (
@@ -129,20 +119,25 @@ export const UsersPage: React.FC = () => {
                 >
                   Добавить пользователя
                 </Button>
+                <Button
+                  onClick={() => handleFilterChange({})}
+                  style={{ marginLeft: 8, marginBottom: 16 }}
+                >
+                  Сбросить фильтры
+                </Button>
                 <UsersTable
-                  users={users_data?.users}
+                  // users={users_data?.users}
+                  users={paginatedUsers} // Используем отфильтрованные и пагинированные данные
                   onRowClick={handleRowClick}
                   onSortChange={handleSortChange}
                   onFilterChange={handleFilterChange}
-                  filters={filters} // Передаем фильтры в таблицу
-                />
-                <Pagination
+                  filters={filters}
                   currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalItems={users_data?.total || 0}
                   pageSize={pageSize}
-                  onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
+                  // totalItems={users_data?.total || 0}
+                  totalItems={totalFilteredCount || 0} // Используем общее количество отфильтрованных пользователей
+                  onPageChange={(page) => dispatch(setPage(page))}
+                  onPageSizeChange={(size) => dispatch(setPageSize(size))}
                 />
               </div>
               {isCreating && (
