@@ -1,5 +1,5 @@
 # Use an official node image as the base
-FROM node:20.11.1 AS build
+FROM node:20 AS build
 
 
 # Set working directory
