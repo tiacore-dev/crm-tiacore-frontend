@@ -92,6 +92,11 @@ export const ServicesPage: React.FC = () => {
     [setTempSearch]
   );
 
+  const handleResetSearch = useCallback(() => {
+    setTempSearch(""); // Сбрасываем временное состояние поиска
+    dispatch(setSearch("")); // Сбрасываем поиск в Redux
+  }, [dispatch]);
+
   const handleSearch = useCallback(
     (searchTerm: string) => {
       dispatch(setSearch(searchTerm));
@@ -124,6 +129,7 @@ export const ServicesPage: React.FC = () => {
                 tempSearch={tempSearch}
                 onTempSearchChange={handleTempSearchChange}
                 onSearch={() => handleSearch(tempSearch)}
+                onResetSearch={handleResetSearch}
               />
               <div className="main-container">
                 <Button

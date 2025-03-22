@@ -6,18 +6,23 @@ interface SearchBarProps {
   tempSearch: string;
   onTempSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch: () => void;
+  onResetSearch: () => void; // Новая пропса для сброса поиска
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   tempSearch,
   onTempSearchChange,
   onSearch,
+  onResetSearch, // Добавляем новую пропсу
 }) => {
-  const searchHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      onSearch();
-    }
-  }, [onSearch]);
+  const searchHandler = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        onSearch();
+      }
+    },
+    [onSearch]
+  );
 
   return (
     <div className="search-bar">
@@ -28,7 +33,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         onKeyDown={searchHandler}
         style={{ marginRight: 8 }}
       />
-      <Button type="primary" onClick={onSearch}>
+      <Button onClick={onResetSearch}>Сбросить</Button> {/* Кнопка сброса */}
+      <Button type="primary" onClick={onSearch} style={{ marginRight: 8 }}>
         Поиск
       </Button>
     </div>

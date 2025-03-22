@@ -2,13 +2,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { servicesReducer } from "./slices/servicesSlice";
 import { usersReducer } from "./slices/usersSlice";
-
+import { companiesReducer } from "./slices/companiesSlice";
 import breadcrumbsReducer from "./slices/breadcrumbsSlice";
 
 export const store = configureStore({
   reducer: {
     services: servicesReducer,
     users: usersReducer,
+    companies: companiesReducer,
     breadcrumbs: breadcrumbsReducer,
   },
 });
