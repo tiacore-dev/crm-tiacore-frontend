@@ -1,16 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  createCompany,
-  updateCompany,
-  deleteCompany,
-} from "../../api/companiesApi";
+  createLegalEntity,
+  updateLegalEntity,
+  deleteLegalEntity,
+} from "../../api/legalEntitiesApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
 
-export const useCompanyMutations = (
-  company_id?: string,
-  company_name?: string,
+export const useLegalEntityMutations = (
+  legal_entity_id?: string,
+  legal_entity_name?: string,
+  inn?: string,
+  kpp?: string,
+  vat_rate?: number,
+  address?: string,
+  entity_type?: string,
+  signer?: string,
+  company?: string,
   description?: string,
   setIsEditing?: (val: boolean) => void
 ) => {
@@ -18,13 +25,15 @@ export const useCompanyMutations = (
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    mutationFn: createCompany,
+    mutationFn: createLegalEntity,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
       toast.success(
         <>
-          Компания успешно добавлена{""}
-          <button onClick={() => navigate(`/companies/${data.company_id}`)}>
+          Информация успешно добавлена{""}
+          <button
+            onClick={() => navigate(`/legalEntities/${data.legal_entity_id}`)}
+          >
             Подробнее
           </button>
         </>
@@ -32,21 +41,19 @@ export const useCompanyMutations = (
     },
     onError: (error: AxiosError) => {
       // Проверяем код ошибки
-      if (error.response?.status === 400) {
-        toast.error("Компания с таким названием уже существует");
-      } else {
-        toast.error("Ошибка при добавлении компании");
-      }
+      toast.error("Ошибка при добавлении компании");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (editedData: any) =>
-      company_id ? updateCompany(company_id, editedData) : Promise.reject(),
+      legal_entity_id
+        ? updateLegalEntity(legal_entity_id, editedData)
+        : Promise.reject(),
     onSuccess: () => {
-      if (company_id) {
+      if (legal_entity_id) {
         queryClient.invalidateQueries({
-          queryKey: ["companyDetails", company_id],
+          queryKey: ["legalEntityDetails", legal_entity_id],
         });
       }
       setIsEditing && setIsEditing(false);
@@ -59,7 +66,7 @@ export const useCompanyMutations = (
 
   const deleteMutation = useMutation({
     mutationFn: () =>
-      company_id ? deleteCompany(company_id) : Promise.reject(),
+      legal_entity_id ? deleteLegalEntity(legal_entity_id) : Promise.reject(),
     onSuccess: () => {
       toast.success("Успешно удалено");
       navigate(-1);

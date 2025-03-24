@@ -69,8 +69,8 @@ export const CompaniesPage: React.FC = () => {
   }, []);
 
   const handleRowClick = useCallback(
-    (service_id: string) => {
-      navigate(`/services/${service_id}`);
+    (company_id: string) => {
+      navigate(`/companies/${company_id}`);
     },
     [navigate]
   );
