@@ -31,17 +31,32 @@ export const fetchTemplates = async (
   return response.data;
 };
 
-// Функция для создания нового
 export const createTemplate = async (
   formData: FormData
 ): Promise<ITemplate> => {
-  const response = await axiosInstance.post("/api/templates/add", formData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return response.data;
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+
+  // console.log("Отправляемые данные:");
+  try {
+    const response = await axiosInstance.post(
+      `${url}/api/templates/add`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response) {
+      toast.error("Ошибка при создании шаблона");
+    }
+    throw error;
+  }
 };
 //получение инфопмации о пользователе
 export const fetchTemplateDetails = async (template_id: string) => {

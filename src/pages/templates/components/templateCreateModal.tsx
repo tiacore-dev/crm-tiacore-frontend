@@ -37,11 +37,15 @@ export const TemplateCreateModal: React.FC<TemplateCreateModalProps> = ({
       formData.append("template_name", values.template_name);
       formData.append("company", values.company);
       formData.append("entity", values.entity);
-      formData.append("file", file);
+      formData.append("file", file as RcFile); // Убеждаемся, что файл добавляется корректно
 
       if (values.description) {
         formData.append("description", values.description);
       }
+
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
 
       createMutation.mutate(formData);
       onCancel();
@@ -98,8 +102,8 @@ export const TemplateCreateModal: React.FC<TemplateCreateModalProps> = ({
           rules={[{ required: true, message: "Пожалуйста, выберите тип" }]}
         >
           <Select>
-            <Select.Option value="act">Акт</Select.Option>
-            <Select.Option value="bill">Счет</Select.Option>
+            <Select.Option value="Act">Акт</Select.Option>
+            <Select.Option value="Bill">Счет</Select.Option>
           </Select>
         </Form.Item>
 
