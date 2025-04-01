@@ -9,6 +9,8 @@ import {
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { Button, Typography, Spin } from "antd"; // Импорт компонентов Ant Design
+import { ILegalEntityType } from "../legalEntitiesPage/components/legalEntityCreateModal";
+import { ILegalEntityTypesResponse } from "../../api/homeApi";
 
 export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -16,15 +18,17 @@ export const HomePage: React.FC = () => {
     dispatch(setBreadcrumbs([{ label: "Главная страница", to: "/home" }]));
   }, [dispatch]);
 
-  const { data: entityTypes, isLoading: isLoadingEntityTypes } = useQuery({
-    queryKey: ["entityTypes"],
-    queryFn: fetchEntityTypes,
-  });
+  const { data: entityTypesResponse, isLoading: isLoadingEntityType } =
+    useQuery<ILegalEntityTypesResponse>({
+      queryKey: ["entityTypes"],
+      queryFn: fetchEntityTypes,
+    });
 
-  const { data: contractStatuses, isLoading: isLoadingContractStatuses } = useQuery({
-    queryKey: ["contractStatuses"],
-    queryFn: fetchContractStatuses,
-  });
+  const { data: contractStatuses, isLoading: isLoadingContractStatuses } =
+    useQuery({
+      queryKey: ["contractStatuses"],
+      queryFn: fetchContractStatuses,
+    });
 
   const { data: userRoles, isLoading: isLoadingUserRoles } = useQuery({
     queryKey: ["userRoles"],
@@ -40,9 +44,7 @@ export const HomePage: React.FC = () => {
       <Typography.Title level={1}>Вы успешно авторизовались!</Typography.Title>
 
       {/* Кнопка для обновления токена */}
-      <Button type="primary" onClick={tryRefresh}>
-        Обновить токен
-      </Button>
+      <Button onClick={tryRefresh}>Обновить токен</Button>
 
       {/* Отображение данных с индикацией загрузки */}
       {/* <div style={{ marginTop: 24 }}>

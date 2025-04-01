@@ -49,7 +49,7 @@ export const ServiceEditModal: React.FC<ServiceEditModalProps> = ({
 
   return (
     <Modal
-      title="Редактирование услуги"
+      title="Редактирование"
       open={true}
       onOk={form.submit} // Используем form.submit() для отправки формы
       onCancel={onCancel}
@@ -59,7 +59,6 @@ export const ServiceEditModal: React.FC<ServiceEditModalProps> = ({
         </Button>,
         <Button
           key="save"
-          type="primary"
           onClick={form.submit} // Используем form.submit() для отправки формы
           loading={isUpdateLoading}
           disabled={isUpdateLoading}
@@ -75,7 +74,7 @@ export const ServiceEditModal: React.FC<ServiceEditModalProps> = ({
             { required: true, message: "Пожалуйста, введите название услуги" },
             {
               min: 3,
-              message: "Название услуги должно содержать минимум 3 символа",
+              message: "Минимум 3 символа",
             },
           ]}
         >

@@ -133,7 +133,6 @@ export const ServicesPage: React.FC = () => {
               />
               <div className="main-container">
                 <Button
-                  type="primary"
                   onClick={handleCreateClick}
                   style={{ marginBottom: 16 }}
                 >

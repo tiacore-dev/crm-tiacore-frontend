@@ -39,7 +39,6 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
         </Button>,
         <Button
           key="delete"
-          type="primary"
           danger
           onClick={onConfirm}
           loading={isDeleteLoading}

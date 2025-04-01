@@ -50,7 +50,6 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
         </Button>,
         <Button
           key="create"
-          type="primary"
           onClick={form.submit} // Используем form.submit() для отправки формы
           loading={isCreatingLoading}
           disabled={isCreatingLoading}
@@ -66,7 +65,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
             { required: true, message: "Пожалуйста, введите название услуги" },
             {
               min: 3,
-              message: "Название услуги должно содержать минимум 3 символа",
+              message: "Минимум 3 символа",
             },
           ]}
         >

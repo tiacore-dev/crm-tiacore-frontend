@@ -20,7 +20,6 @@ export const CustomFilterStyle: React.FC<CustomFilterStyleProps> = ({
     <div style={{ padding: 8 }}>
       <Space>
         <Button
-          type="primary"
           onClick={() => confirm()}
           icon={<SearchOutlined />}
           size="small"

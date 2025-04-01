@@ -18,19 +18,19 @@ export interface ILegalEntity {
 
 // Функция для получения списка пользователей с параметрами
 export const fetchLegalEntities = async (
-  sort_by: string,
-  order: string,
-  page: number,
-  page_size: number
+  currentPage: number,
+  pageSize: number,
+  search_company: string,
+  search_entity_type: string
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
     params: {
-      sort_by,
-      order,
-      page,
-      page_size,
+      currentPage,
+      pageSize,
+      search_company,
+      search_entity_type,
     },
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -101,7 +101,7 @@ export const updateLegalEntity = async (
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.patch(
-    `${url}/api/legal_entities/${legal_entity_id}`,
+    `${url}/api/legal-entities/${legal_entity_id}`,
     updatedData,
     {
       headers: {
@@ -119,7 +119,7 @@ export const deleteLegalEntity = async (legal_entity_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
-  await axiosInstance.delete(`${url}/api/legal_entities/${legal_entity_id}`, {
+  await axiosInstance.delete(`${url}/api/legal-entities/${legal_entity_id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

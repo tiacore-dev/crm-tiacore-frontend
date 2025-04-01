@@ -34,7 +34,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         style={{ marginRight: 8 }}
       />
       <Button onClick={onResetSearch}>Сбросить</Button> {/* Кнопка сброса */}
-      <Button type="primary" onClick={onSearch} style={{ marginRight: 8 }}>
+      <Button onClick={onSearch} style={{ marginRight: 8 }}>
         Поиск
       </Button>
     </div>

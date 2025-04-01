@@ -62,7 +62,6 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({
         </Button>,
         <Button
           key="create"
-          type="primary"
           onClick={onCreate}
           loading={isCreatingLoading}
           disabled={isCreatingLoading}
@@ -81,7 +80,7 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({
               required: true,
               message: "Пожалуйста, введите логин пользователя",
             },
-            { min: 3, message: "Логин должен содержать минимум 3 символа" },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input
@@ -98,7 +97,7 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({
           name="password"
           rules={[
             { required: true, message: "Пожалуйста, введите пароль" },
-            { min: 6, message: "Пароль должен содержать минимум 6 символов" },
+            { min: 6, message: "Минимум 6 символов" },
           ]}
         >
           <Input.Password // Используем Input.Password для скрытия пароля
@@ -115,7 +114,7 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({
           name="fullName"
           rules={[
             { required: true, message: "Пожалуйста, введите Ф.И.О." },
-            { min: 3, message: "Ф.И.О. должно содержать минимум 3 символа" },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input

@@ -18,8 +18,8 @@ export const Navbar: React.FC = () => {
     { label: "Пользователи", key: "/users" },
     { label: "Компании", key: "/companies" },
     { label: "Юр. лица", key: "/legal_entities" },
-    { label: "Контракты", key: "/contracts" },
-    { label: "Банковские данные", key: "/bank_accounts" },
+    { label: "Договоры", key: "/contracts" },
+    { label: "Банковские счета", key: "/bank_accounts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },
   ];

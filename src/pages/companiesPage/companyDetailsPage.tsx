@@ -112,12 +112,9 @@ export const CompanyDetailsPage: React.FC = () => {
           {!isError && (
             <>
               <div className="main-container">
-                <Button type="primary" onClick={openEditModal}>
-                  Редактировать
-                </Button>
+                <Button onClick={openEditModal}>Редактировать</Button>
 
                 <Button
-                  type="primary"
                   danger
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{ margin: 8 }}

@@ -6,7 +6,7 @@ import {
 } from "../../api/legalEntitiesApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
+import { AxiosError } from "axios";
 
 export const useLegalEntityMutations = (
   legal_entity_id?: string,
@@ -28,16 +28,7 @@ export const useLegalEntityMutations = (
     mutationFn: createLegalEntity,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
-      toast.success(
-        <>
-          Информация успешно добавлена{""}
-          <button
-            onClick={() => navigate(`/legalEntities/${data.legal_entity_id}`)}
-          >
-            Подробнее
-          </button>
-        </>
-      );
+      toast.success(<>Информация успешно добавлена{""}</>);
     },
     onError: (error: AxiosError) => {
       // Проверяем код ошибки
@@ -69,7 +60,6 @@ export const useLegalEntityMutations = (
       legal_entity_id ? deleteLegalEntity(legal_entity_id) : Promise.reject(),
     onSuccess: () => {
       toast.success("Успешно удалено");
-      navigate(-1);
     },
     onError: () => {
       toast.error("Ошибка при удалении");

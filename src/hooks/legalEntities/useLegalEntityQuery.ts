@@ -8,18 +8,44 @@ import {
 } from "../../api/legalEntitiesApi";
 import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
 
-interface useLegalEntityQueryResponse {
-  companies: ILegalEntity[];
+// interface ILegalEntitiesResponse {
+//   total: number;
+//   companies: ILegalEntity[];
+// }
+export interface ILegalEntitiesResponse {
   total: number;
+  entities: {
+    legal_entity_id: string;
+    legal_entity_name: string;
+    inn: string;
+    kpp: string;
+    vat_rate: number;
+    address: string;
+    entity_type: string;
+    signer: string;
+    company: string;
+    description: string;
+  }[];
 }
 
 export const useLegalEntityQuery = () => {
-  const { sortBy, order, currentPage, pageSize, filters } = useSelector(
-    legalEntitiesSelector
-  );
-  return useQuery<useLegalEntityQueryResponse>({
-    queryKey: ["legalEntities", sortBy, order, currentPage, pageSize],
-    queryFn: () => fetchLegalEntities(sortBy, order, currentPage, pageSize),
+  const { currentPage, pageSize, searchCompany, searchEntityType } =
+    useSelector(legalEntitiesSelector);
+  return useQuery<ILegalEntitiesResponse>({
+    queryKey: [
+      "legalEntities",
+      currentPage,
+      pageSize,
+      searchCompany,
+      searchEntityType,
+    ],
+    queryFn: () =>
+      fetchLegalEntities(
+        currentPage,
+        pageSize,
+        searchCompany,
+        searchEntityType
+      ),
   });
 };
 

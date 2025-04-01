@@ -56,7 +56,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
 
   return (
     <Modal
-      title="Редактирование пользователя"
+      title="Редактирование"
       open={true}
       onOk={form.submit}
       onCancel={onCancel}
@@ -66,7 +66,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
         </Button>,
         <Button
           key="save"
-          type="primary"
           onClick={form.submit}
           loading={isUpdateLoading}
           disabled={isUpdateLoading}
@@ -81,7 +80,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           label="Логин"
           rules={[
             { required: true, message: "Пожалуйста, введите логин" },
-            { min: 3, message: "Логин должен содержать минимум 3 символа" },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input
@@ -96,7 +95,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           label="Новый пароль"
           rules={[
             { required: true, message: "Пожалуйста, введите новый пароль" },
-            { min: 6, message: "Пароль должен содержать минимум 6 символов" },
+            { min: 6, message: "Минимум 6 символов" },
           ]}
         >
           <Input.Password
@@ -111,7 +110,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           label="Ф.И.О."
           rules={[
             { required: true, message: "Пожалуйста, введите Ф.И.О." },
-            { min: 3, message: "Ф.И.О. должно содержать минимум 3 символа" },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input

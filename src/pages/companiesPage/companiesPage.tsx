@@ -137,7 +137,6 @@ export const CompaniesPage: React.FC = () => {
               />
               <div className="main-container">
                 <Button
-                  type="primary"
                   onClick={handleCreateClick}
                   style={{ marginBottom: 16 }}
                 >

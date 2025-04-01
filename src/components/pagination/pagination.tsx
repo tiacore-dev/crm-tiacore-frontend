@@ -43,12 +43,12 @@ export const Pagination: React.FC<PaginationProps> = ({
           onChange={handlePageSizeChange}
           style={{ width: 100 }}
         >
-          <Select.Option value={10}>10</Select.Option>
-          <Select.Option value={20}>20</Select.Option>
-          <Select.Option value={40}>40</Select.Option>
-          <Select.Option value={60}>60</Select.Option>
-          <Select.Option value={80}>80</Select.Option>
-          <Select.Option value={100}>100</Select.Option>
+          <Select.Option value={10}>10/page</Select.Option>
+          <Select.Option value={20}>20/page</Select.Option>
+          <Select.Option value={40}>40/page</Select.Option>
+          <Select.Option value={60}>60/page</Select.Option>
+          <Select.Option value={80}>80/page</Select.Option>
+          <Select.Option value={100}>100/page</Select.Option>
         </Select>
       </div>
     </div>

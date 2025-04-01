@@ -13,7 +13,7 @@ import { HomePage } from "./pages/homePage/homePage";
 import { UsersPage } from "./pages/usersPage/usersPage";
 import { CompaniesPage } from "./pages/companiesPage/companiesPage";
 import { ServicesPage } from "./pages/servicesPage/servicesPage";
-import { LegalEntiteisPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
+import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
@@ -22,6 +22,7 @@ import ProtectedRoute from "./protectedRoute";
 import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
 import { UserDetailsPage } from "./pages/usersPage/userDetailsPage";
 import { CompanyDetailsPage } from "./pages/companiesPage/companyDetailsPage";
+// import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
 
 import "./App.css";
 import "antd/dist/reset.css"; // Импорт стилей Ant Design
@@ -50,7 +51,7 @@ const App: React.FC = () => {
               path="/companies/:company_id"
               element={<CompanyDetailsPage />}
             />
-            <Route path="/legal_entities" element={<LegalEntiteisPage />} />
+            <Route path="/legal_entities" element={<LegalEntitiesPage />} />
             <Route path="/contracts" element={<ContractsPage />} />
             <Route path="/bank_accounts" element={<BankAccountsPage />} />
             <Route path="/bills" element={<BillsPage />} />

@@ -50,7 +50,7 @@ export const CompanyEditModal: React.FC<CompanyEditModalProps> = ({
 
   return (
     <Modal
-      title="Редактирование информации о компании"
+      title="Редактирование"
       open={true}
       onOk={form.submit}
       onCancel={onCancel}
@@ -60,7 +60,6 @@ export const CompanyEditModal: React.FC<CompanyEditModalProps> = ({
         </Button>,
         <Button
           key="save"
-          type="primary"
           onClick={form.submit}
           loading={isUpdateLoading}
           disabled={isUpdateLoading}
@@ -79,7 +78,7 @@ export const CompanyEditModal: React.FC<CompanyEditModalProps> = ({
             },
             {
               min: 3,
-              message: "Название компании должно содержать минимум 3 символа",
+              message: "Минимум 3 символа",
             },
           ]}
         >
@@ -95,7 +94,7 @@ export const CompanyEditModal: React.FC<CompanyEditModalProps> = ({
           name="description"
           rules={[
             // { required: true, message: "Пожалуйста, введите описание" },
-            { min: 3, message: "Описание должно содержать минимум 3 символа" },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input.TextArea

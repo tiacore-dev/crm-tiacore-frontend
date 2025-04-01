@@ -102,11 +102,10 @@ export const UserDetailsPage: React.FC = () => {
           {!isError && (
             <>
               <div className="main-container">
-                <Button type="primary" onClick={() => setIsEditing(true)}>
+                <Button onClick={() => setIsEditing(true)}>
                   Редактировать
                 </Button>
                 <Button
-                  type="primary"
                   danger
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{ margin: 8 }}

@@ -113,7 +113,6 @@ export const UsersPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Button
-                  type="primary"
                   onClick={handleCreateClick}
                   style={{ marginBottom: 16 }}
                 >
@@ -126,7 +125,6 @@ export const UsersPage: React.FC = () => {
                   Сбросить фильтры
                 </Button>
                 <UsersTable
-                  // users={users_data?.users}
                   users={paginatedUsers} // Используем отфильтрованные и пагинированные данные
                   onRowClick={handleRowClick}
                   onSortChange={handleSortChange}
@@ -134,7 +132,6 @@ export const UsersPage: React.FC = () => {
                   filters={filters}
                   currentPage={currentPage}
                   pageSize={pageSize}
-                  // totalItems={users_data?.total || 0}
                   totalItems={totalFilteredCount || 0} // Используем общее количество отфильтрованных пользователей
                   onPageChange={(page) => dispatch(setPage(page))}
                   onPageSizeChange={(size) => dispatch(setPageSize(size))}

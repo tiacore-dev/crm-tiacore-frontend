@@ -133,12 +133,7 @@ export const LoginPage: React.FC = () => {
 
         {/* Кнопка отправки формы */}
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            disabled={loginMutation.isPending}
-            block
-          >
+          <Button htmlType="submit" disabled={loginMutation.isPending} block>
             {loginMutation.isPending ? (
               <Spin size="small" className="center-spin" />
             ) : (

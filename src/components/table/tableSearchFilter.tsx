@@ -63,7 +63,6 @@ export const useTableSearch = <T extends object>() => {
         />
         <Space>
           <Button
-            type="primary"
             onClick={() =>
               handleSearch(selectedKeys as string[], confirm, dataIndex)
             }

@@ -18,7 +18,14 @@ export const useCompanyQuery = () => {
     useSelector(companiesSelector);
   return useQuery<useCompanyQueryResponse>({
     queryKey: ["companies", search, sortBy, order, currentPage, pageSize],
-    queryFn: () => fetchCompanies(search, sortBy, order, currentPage, pageSize),
+    queryFn: () =>
+      fetchCompanies({
+        search: search,
+        sort_by: sortBy,
+        order: order,
+        page: currentPage,
+        page_size: pageSize,
+      }),
   });
 };
 

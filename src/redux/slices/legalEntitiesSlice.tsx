@@ -4,19 +4,15 @@ import { RootState } from "../store";
 interface LegalEntitiesState {
   currentPage: number;
   pageSize: number;
-  search: string;
-  sortBy: string;
-  order: string;
-  filters: Record<string, any>; // Добавляем поле для хранения фильтров
+  searchCompany: string;
+  searchEntityType: string;
 }
 
 const initialState: LegalEntitiesState = {
   currentPage: 1,
   pageSize: 10,
-  search: "",
-  sortBy: "legal_entity_name",
-  order: "asc",
-  filters: {},
+  searchCompany: "",
+  searchEntityType: "",
 };
 
 export const legalEntitiesSlice = createSlice({
@@ -30,32 +26,20 @@ export const legalEntitiesSlice = createSlice({
       state.pageSize = action.payload;
       state.currentPage = 1;
     },
-    setSearch: (state, action: PayloadAction<string>) => {
-      state.search = action.payload;
+    setSearchCompany: (state, action: PayloadAction<string>) => {
+      state.searchCompany = action.payload;
       state.currentPage = 1;
     },
-    setSort: (
-      state,
-      action: PayloadAction<{ sortBy: string; order: string }>
-    ) => {
-      state.sortBy = action.payload.sortBy;
-      state.order = action.payload.order;
-    },
-    setFilters: (state, action: PayloadAction<Record<string, any>>) => {
-      state.filters = action.payload; // Добавляем действие для установки фильтров
+    setSearchEntityType: (state, action: PayloadAction<string>) => {
+      state.searchEntityType = action.payload;
+      state.currentPage = 1;
     },
     resetState: () => initialState, // Добавляем действие для сброса состояния
   },
 });
 
-export const {
-  setPage,
-  setPageSize,
-  setSearch,
-  setSort,
-  setFilters,
-  resetState,
-} = legalEntitiesSlice.actions;
+export const { setPage, setPageSize, setSearchCompany, setSearchEntityType } =
+  legalEntitiesSlice.actions;
 
 export const legalEntitiesReducer = legalEntitiesSlice.reducer;
 

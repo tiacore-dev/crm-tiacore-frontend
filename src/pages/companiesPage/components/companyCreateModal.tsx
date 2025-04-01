@@ -47,7 +47,6 @@ export const CompanyCreateModal: React.FC<CompanyCreateModalProps> = ({
         </Button>,
         <Button
           key="create"
-          type="primary"
           onClick={onCreate}
           loading={isCreatingLoading}
           disabled={isCreatingLoading}
@@ -66,7 +65,7 @@ export const CompanyCreateModal: React.FC<CompanyCreateModalProps> = ({
               required: true,
               message: "Пожалуйста, введите название компании",
             },
-            { min: 3, message: "Название должно содержать минимум 3 символа" },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input
@@ -81,9 +80,7 @@ export const CompanyCreateModal: React.FC<CompanyCreateModalProps> = ({
         <Form.Item
           label="Описание"
           name="description"
-          rules={[
-            { min: 3, message: "Описание должно содержать минимум 3 символа" },
-          ]}
+          rules={[{ min: 3, message: "Минимум 3 символа" }]}
         >
           <Input
             placeholder="Введите описание"
