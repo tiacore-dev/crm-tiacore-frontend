@@ -23,7 +23,7 @@ import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
 import { UserDetailsPage } from "./pages/usersPage/userDetailsPage";
 import { CompanyDetailsPage } from "./pages/companiesPage/companyDetailsPage";
 // import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
-
+import { TemplatesPage } from "./pages/templates/templatesPage";
 import "./App.css";
 import "antd/dist/reset.css"; // Импорт стилей Ant Design
 
@@ -56,6 +56,7 @@ const App: React.FC = () => {
             <Route path="/bank_accounts" element={<BankAccountsPage />} />
             <Route path="/bills" element={<BillsPage />} />
             <Route path="/acts" element={<ActsPage />} />
+            <Route path="/templates" element={<TemplatesPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

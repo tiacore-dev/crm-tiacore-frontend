@@ -1,11 +1,24 @@
 import React, { useEffect, useMemo } from "react";
 import { Modal, Input, Button, Form, Select } from "antd";
-import { LegalEntityData } from "../legalEntityDetailsPage";
+// import { LegalEntityData } from "../legalEntityDetailsPage";
 import { useQuery } from "@tanstack/react-query";
 import { ICompaniesResponse } from "./legalEntityCreateModal";
 import { fetchCompanies } from "../../../api/companiesApi";
 import { ILegalEntityTypesResponse } from "../../../api/homeApi";
 import { fetchEntityTypes } from "../../../api/homeApi";
+
+interface LegalEntityData {
+  legal_entity_id: string;
+  legal_entity_name: string;
+  inn: string;
+  kpp: string;
+  vat_rate: number;
+  address: string;
+  entity_type: string;
+  signer: string;
+  company: string;
+  description: string;
+}
 
 interface LegalEntityEditModalProps {
   editedData: LegalEntityData;

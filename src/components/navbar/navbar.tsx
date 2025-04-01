@@ -22,6 +22,7 @@ export const Navbar: React.FC = () => {
     { label: "Банковские счета", key: "/bank_accounts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },
+    { label: "Шаблоны", key: "/templates" },
   ];
 
   return (
