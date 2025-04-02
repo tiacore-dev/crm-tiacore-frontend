@@ -31,19 +31,42 @@ export const useTemplateMutations = (
     },
   });
 
+  // const updateMutation = useMutation({
+  //   mutationFn: (editedData: any) =>
+  //     template_id ? updateTemplate(template_id, editedData) : Promise.reject(),
+  //   onSuccess: () => {
+  //     if (template_id) {
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["templateDetails", template_id],
+  //       });
+  //     }
+  //     setIsEditing && setIsEditing(false);
+  //     toast.success("Информация обновлена");
+  //   },
+  //   onError: () => {
+  //     toast.error("Ошибка при обновлении данных");
+  //   },
+  // });
+
   const updateMutation = useMutation({
-    mutationFn: (editedData: any) =>
-      template_id ? updateTemplate(template_id, editedData) : Promise.reject(),
+    mutationFn: async (editedData: FormData | object) => {
+      if (!template_id) return Promise.reject("Нет ID шаблона");
+
+      console.log("Отправляемые данные:", editedData);
+
+      return updateTemplate(template_id, editedData);
+    },
     onSuccess: () => {
       if (template_id) {
         queryClient.invalidateQueries({
           queryKey: ["templateDetails", template_id],
         });
       }
-      setIsEditing && setIsEditing(false);
+      setIsEditing?.(false);
       toast.success("Информация обновлена");
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Ошибка при обновлении:", error);
       toast.error("Ошибка при обновлении данных");
     },
   });

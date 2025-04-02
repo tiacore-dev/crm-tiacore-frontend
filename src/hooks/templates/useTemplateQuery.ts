@@ -29,9 +29,10 @@ export const useTemplateQuery = () => {
 };
 
 export const useTemplateDetailsQuery = (template_id: string) => {
-  return useQuery({
+  return useQuery<ITemplate>({
     queryKey: ["templateDetails", template_id],
     queryFn: () => fetchTemplateDetails(template_id),
-    retry: false,
+    // retry: false,
+    enabled: !!template_id,//??
   });
 };

@@ -81,15 +81,15 @@ export const LegalEntitiesPage: React.FC = () => {
       {
         onSuccess: (data) => {
           setIsCreating(false);
-          setNewLegalEntityName("");
-          setNewINN("");
-          setNewKPP("");
-          setNewVatRate(0);
-          setNewAddress("");
-          setNewEntityType("");
-          setNewSigner("");
-          setNewCompany("");
-          setNewDescription("");
+          // setNewLegalEntityName("");
+          // setNewINN("");
+          // setNewKPP("");
+          // setNewVatRate(0);
+          // setNewAddress("");
+          // setNewEntityType("");
+          // setNewSigner("");
+          // setNewCompany("");
+          // setNewDescription("");
         },
       }
     );

@@ -70,7 +70,10 @@ export const TemplateCreateModal: React.FC<TemplateCreateModalProps> = ({
         <Form.Item
           name="template_name"
           label="Название шаблона"
-          rules={[{ required: true, message: "Пожалуйста, введите название" }]}
+          rules={[
+            { required: true, message: "Пожалуйста, введите название" },
+            { min: 3, message: "Минимум 3 символа" },
+          ]}
         >
           <Input />
         </Form.Item>

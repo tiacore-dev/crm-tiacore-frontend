@@ -4,7 +4,7 @@ import { Modal, Input, Button, Form, Select } from "antd"; // Импортиру
 import { fetchEntityTypes } from "../../../api/homeApi";
 import { ILegalEntityTypesResponse } from "../../../api/homeApi";
 import { fetchCompanies } from "../../../api/companiesApi";
-import { ILegalEntity } from "../../../api/legalEntitiesApi";
+// import { ILegalEntity } from "../../../api/legalEntitiesApi";
 
 export interface ILegalEntityType {
   legal_entity_type_id: string;

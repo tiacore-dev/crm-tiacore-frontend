@@ -94,7 +94,6 @@ export const updateTemplate = async (template_id: string, updatedData: any) => {
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
       },
     }
   );
@@ -124,7 +123,6 @@ export const downloadTemplate = async (template_id: string) => {
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
         },
       }
     );
@@ -132,7 +130,7 @@ export const downloadTemplate = async (template_id: string) => {
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response) {
-      toast.error("Ошибка при загрузке страницы");
+      toast.error("Ошибка при загрузке файла");
     } else {
       toast.error("Неизвестная ошибка");
     }

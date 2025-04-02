@@ -23,7 +23,9 @@ import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
 import { UserDetailsPage } from "./pages/usersPage/userDetailsPage";
 import { CompanyDetailsPage } from "./pages/companiesPage/companyDetailsPage";
 // import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
-import { TemplatesPage } from "./pages/templates/templatesPage";
+import { TemplatesPage } from "./pages/templatesPage/templatesPage";
+import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
+
 import "./App.css";
 import "antd/dist/reset.css"; // Импорт стилей Ant Design
 
@@ -39,24 +41,34 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<HomePage />} />
+            
             <Route path="/services" element={<ServicesPage />} />
             <Route
               path="/services/:service_id"
               element={<ServiceDetailsPage />}
             />
+
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users/:user_id" element={<UserDetailsPage />} />
+
             <Route path="/companies" element={<CompaniesPage />} />
             <Route
               path="/companies/:company_id"
               element={<CompanyDetailsPage />}
             />
             <Route path="/legal_entities" element={<LegalEntitiesPage />} />
+
             <Route path="/contracts" element={<ContractsPage />} />
+
             <Route path="/bank_accounts" element={<BankAccountsPage />} />
+
             <Route path="/bills" element={<BillsPage />} />
+
             <Route path="/acts" element={<ActsPage />} />
+
             <Route path="/templates" element={<TemplatesPage />} />
+            <Route path="/templates/:template_id" element={<TemplateDetailsPage />} />
+
           </Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

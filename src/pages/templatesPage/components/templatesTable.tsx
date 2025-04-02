@@ -22,7 +22,7 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
   companiesData = [],
 }) => {
   //   const queryClient = useQueryClient();
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   //   const { deleteMutation } = useTemplateMutations("", "", "", "", "", "");
 
@@ -40,6 +40,14 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
       title: "Название шаблона",
       dataIndex: "template_name",
       key: "template_name",
+      render: (text: string, record: ITemplate) => (
+        <Button
+          type="link"
+          onClick={() => navigate(`/templates/${record.template_id}`)}
+        >
+          {text}
+        </Button>
+      ),
     },
     {
       title: "Описание",

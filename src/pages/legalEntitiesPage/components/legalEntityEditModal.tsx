@@ -151,7 +151,7 @@ export const LegalEntityEditModal: React.FC<LegalEntityEditModalProps> = ({
           name="kpp"
           label="КПП"
           rules={[
-            { required: true, message: "Пожалуйста, введите КПП" },
+            { required: false, message: "Пожалуйста, введите КПП" },
             { min: 9, message: "Минимум 9 символов" },
             { max: 9, message: "Максимум 9 символов" },
           ]}
