@@ -4,6 +4,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useTemplateMutations } from "../../../hooks/templates/useTemplateMutation";
 import { RcFile } from "antd/es/upload";
 import { ITemplate } from "../../../api/templatesApi";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 interface TemplateEditModalProps {
   visible: boolean;

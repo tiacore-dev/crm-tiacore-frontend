@@ -5,7 +5,10 @@ import { usersReducer } from "./slices/usersSlice";
 import { companiesReducer } from "./slices/companiesSlice";
 import { legalEntitiesReducer } from "./slices/legalEntitiesSlice";
 import { templatesReducer } from "./slices/templatesSlice";
-
+import { contractsReducer } from "./slices/contractsSlise";
+import { bankAccountsReducer } from "./slices/bankAccountsSlice";
+import { billsReducer } from "./slices/billsSlice";
+import { actsReducer } from "./slices/actsSlice";
 import breadcrumbsReducer from "./slices/breadcrumbsSlice";
 
 export const store = configureStore({
@@ -15,7 +18,10 @@ export const store = configureStore({
     companies: companiesReducer,
     legalEntities: legalEntitiesReducer,
     templates: templatesReducer,
-
+    contracts: contractsReducer,
+    bankAccounts: bankAccountsReducer,
+    bills: billsReducer,
+    acts: actsReducer,
     breadcrumbs: breadcrumbsReducer,
   },
 });

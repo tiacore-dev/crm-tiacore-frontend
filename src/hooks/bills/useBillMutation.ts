@@ -1,49 +1,49 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createContract,
-  updateContract,
-  deleteContract,
-} from "../../api/contractsApi";
+import { createBill, updateBill, deleteBill } from "../../api/billsApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 
-export const useContractMutations = (
-  contract_id: string,
-  contract_name: string,
-  contract_date: number,
+export const useBillMutations = (
+  bill_id: string,
+  bank_account: string,
+  bill_number: string,
+  bill_date: number,
+  contract: string,
   buyer: string,
   seller: string,
-  comment: string,
-
-  file: string,
-  status: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    mutationFn: (formData: FormData) => createContract(formData),
+    mutationFn: (newBill: {
+      bill_number: string;
+      bill_date: number;
+      bank_account: string;
+      contract?: string; // Указываем, что поле необязательное
+      buyer: string;
+      seller: string;
+    }) => createBill(newBill),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["contracts"],
-        exact: false, // чтобы удалить все варианты ключей с фильтрами
+        queryKey: ["bills"],
       });
-      toast.success("Контракт успешно добавлен");
+      toast.success("Счет успешно добавлен");
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении контракта");
+      toast.error("Ошибка при добавлении счета");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (editedData: any) =>
-      contract_id ? updateContract(contract_id, editedData) : Promise.reject(),
+      bill_id ? updateBill(bill_id, editedData) : Promise.reject(),
     onSuccess: () => {
-      if (contract_id) {
+      if (bill_id) {
         queryClient.invalidateQueries({
-          queryKey: ["contractDetails", contract_id],
+          queryKey: ["bill", bill_id],
         });
       }
       setIsEditing && setIsEditing(false);
@@ -55,8 +55,7 @@ export const useContractMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
-      contract_id ? deleteContract(contract_id) : Promise.reject(),
+    mutationFn: () => (bill_id ? deleteBill(bill_id) : Promise.reject()),
     onSuccess: () => {
       toast.success("Успешно удалено");
     },

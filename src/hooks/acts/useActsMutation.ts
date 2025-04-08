@@ -1,49 +1,47 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createContract,
-  updateContract,
-  deleteContract,
-} from "../../api/contractsApi";
+import { createAct, updateAct, deleteAct } from "../../api/actsApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 
-export const useContractMutations = (
-  contract_id: string,
-  contract_name: string,
-  contract_date: number,
+export const useActsMutations = (
+  act_id: string,
+  act_number: string,
+  act_date: number,
+  contract: string,
   buyer: string,
   seller: string,
-  comment: string,
-
-  file: string,
-  status: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    mutationFn: (formData: FormData) => createContract(formData),
+    mutationFn: (newAct: {
+      act_number: string;
+      act_date: number;
+      contract?: string; // Указываем, что поле необязательное
+      buyer: string;
+      seller: string;
+    }) => createAct(newAct),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["contracts"],
-        exact: false, // чтобы удалить все варианты ключей с фильтрами
+        queryKey: ["acts"],
       });
-      toast.success("Контракт успешно добавлен");
+      toast.success("Акт успешно добавлен");
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении контракта");
+      toast.error("Ошибка при добавлении акта");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (editedData: any) =>
-      contract_id ? updateContract(contract_id, editedData) : Promise.reject(),
+      act_id ? updateAct(act_id, editedData) : Promise.reject(),
     onSuccess: () => {
-      if (contract_id) {
+      if (act_id) {
         queryClient.invalidateQueries({
-          queryKey: ["contractDetails", contract_id],
+          queryKey: ["act", act_id],
         });
       }
       setIsEditing && setIsEditing(false);
@@ -55,8 +53,7 @@ export const useContractMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
-      contract_id ? deleteContract(contract_id) : Promise.reject(),
+    mutationFn: () => (act_id ? deleteAct(act_id) : Promise.reject()),
     onSuccess: () => {
       toast.success("Успешно удалено");
     },

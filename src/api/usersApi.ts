@@ -2,7 +2,7 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-
+import { useUserQueryResponse } from "../hooks/users/useUserQuery";
 export interface IUser {
   user_id: string;
   username: string;
@@ -10,21 +10,22 @@ export interface IUser {
   position: string;
 }
 
+interface IFetchUsersParams {
+  sort_by?: string;
+  order?: string;
+  page?: number;
+  page_size?: number;
+}
+
 // Функция для получения списка пользователей с параметрами
 export const fetchUsers = async (
-  sort_by: string,
-  order: string,
-  page: number,
-  page_size: number
-) => {
+  params: IFetchUsersParams = {}
+): Promise<useUserQueryResponse> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/users/all`, {
     params: {
-      sort_by,
-      order,
-      page,
-      page_size,
+      ...params,
     },
     headers: {
       Authorization: `Bearer ${accessToken}`,

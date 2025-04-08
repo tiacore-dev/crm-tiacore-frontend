@@ -8,6 +8,7 @@ import { TemplatesTable } from "./components/templatesTable";
 import { fetchCompanies } from "../../api/companiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { TemplateCreateModal } from "./components/templateCreateModal";
+import { PlusOutlined } from "@ant-design/icons";
 
 export const TemplatesPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ export const TemplatesPage: React.FC = () => {
                   onClick={() => setIsModalVisible(true)}
                   style={{ marginBottom: 16 }}
                 >
-                  Добавить шаблон
+                  <PlusOutlined /> Добавить шаблон
                 </Button>
 
                 <TemplatesTable

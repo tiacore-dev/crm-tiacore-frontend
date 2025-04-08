@@ -9,6 +9,7 @@ import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyDetails } from "./components/companyDetails";
 import { CompanyEditModal } from "./components/companyEditModal";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 export interface CompanyData {
   company_name: string;
@@ -112,14 +113,14 @@ export const CompanyDetailsPage: React.FC = () => {
           {!isError && (
             <>
               <div className="main-container">
-                <Button onClick={openEditModal}>Редактировать</Button>
+                <Button onClick={openEditModal}>
+                  {" "}
+                  <EditOutlined />
+                  Редактировать
+                </Button>
 
-                <Button
-                  danger
-                  onClick={() => setShowDeleteConfirm(true)}
-                  style={{ margin: 8 }}
-                >
-                  Удалить
+                <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                  <DeleteOutlined /> Удалить
                 </Button>
 
                 <CompanyDetails

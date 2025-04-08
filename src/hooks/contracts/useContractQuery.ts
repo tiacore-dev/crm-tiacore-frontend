@@ -6,7 +6,7 @@ import {
   fetchContractDetails,
   IContract,
 } from "../../api/contractsApi";
-// import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
+import { contractsSelector } from "../../redux/slices/contractsSlise";
 
 export interface IContractsResponse {
   total: number;
@@ -21,31 +21,26 @@ export interface IContractsResponse {
   }[];
 }
 
-// export const useContractQuery = () => {
-//   // const { buyer, seller, status, page, page_size } =
-//     // useSelector(contarctsSelector);
-//   return useQuery<IContractsResponse>({
-//     queryKey: [
-//       "contracts",
-//       buyer,
-//       seller,
-//       status,
-//       page, page_size,
-//     ],
-//     queryFn: () =>
-//       fetchContracts(
-//         buyer,
-//         seller,
-//         status,
-//         page, page_size
-//       ),
-//   });
-// };
+export const useContractQuery = () => {
+  const { buyer, seller, status, page, page_size } =
+    useSelector(contractsSelector);
+  return useQuery<IContractsResponse>({
+    queryKey: ["contracts", buyer, seller, status, page, page_size],
+    queryFn: () => fetchContracts(buyer, seller, status, page, page_size),
+  });
+};
 
 export const useContractDetailsQuery = (contract_id: string) => {
   return useQuery({
     queryKey: ["contractDetails", contract_id],
     queryFn: () => fetchContractDetails(contract_id),
     retry: false,
+  });
+};
+
+export const useContractsForSelection = () => {
+  return useQuery<IContractsResponse>({
+    queryKey: ["contractsForSelection"],
+    queryFn: () => fetchContracts(undefined, undefined, undefined, 1, 100),
   });
 };

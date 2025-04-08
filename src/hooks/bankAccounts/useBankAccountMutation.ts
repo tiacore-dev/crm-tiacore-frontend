@@ -1,49 +1,48 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  createContract,
-  updateContract,
-  deleteContract,
-} from "../../api/contractsApi";
+  createBankAccount,
+  updateBankAccount,
+  deleteBankAccount,
+} from "../../api/bankAccountsApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 
-export const useContractMutations = (
-  contract_id: string,
-  contract_name: string,
-  contract_date: number,
-  buyer: string,
-  seller: string,
-  comment: string,
-
-  file: string,
-  status: string,
+export const useBankAccountMutations = (
+  bank_account_id: string,
+  legal_entity: string,
+  bank_name: string,
+  account_number: string,
+  bank_bic: string,
+  bank_corr_account: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    mutationFn: (formData: FormData) => createContract(formData),
+    mutationFn: createBankAccount,
     onSuccess: (data) => {
+      // Инвалидируем кэш для списка банковских счетов
       queryClient.invalidateQueries({
-        queryKey: ["contracts"],
-        exact: false, // чтобы удалить все варианты ключей с фильтрами
+        queryKey: ["bank_accounts"],
       });
-      toast.success("Контракт успешно добавлен");
+      toast.success("Банковский счёт успешно добавлен");
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении контракта");
+      toast.error("Ошибка при добавлении банковского счёта");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (editedData: any) =>
-      contract_id ? updateContract(contract_id, editedData) : Promise.reject(),
+      bank_account_id
+        ? updateBankAccount(bank_account_id, editedData)
+        : Promise.reject(),
     onSuccess: () => {
-      if (contract_id) {
+      if (bank_account_id) {
         queryClient.invalidateQueries({
-          queryKey: ["contractDetails", contract_id],
+          queryKey: ["bankAccountDetails", bank_account_id],
         });
       }
       setIsEditing && setIsEditing(false);
@@ -56,7 +55,7 @@ export const useContractMutations = (
 
   const deleteMutation = useMutation({
     mutationFn: () =>
-      contract_id ? deleteContract(contract_id) : Promise.reject(),
+      bank_account_id ? deleteBankAccount(bank_account_id) : Promise.reject(),
     onSuccess: () => {
       toast.success("Успешно удалено");
     },

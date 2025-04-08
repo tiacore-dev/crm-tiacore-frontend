@@ -11,6 +11,7 @@ import { LegalEntityCreateModal } from "./components/legalEntityCreateModal";
 // import { useFilteredUsers } from "../../hooks/users/useFilteredUsers"; // Импортируем хук для фильтрации
 import { useQuery } from "@tanstack/react-query";
 import { fetchCompanies } from "../../api/companiesApi";
+import { PlusOutlined } from "@ant-design/icons";
 
 import {
   legalEntitiesSelector,
@@ -123,7 +124,7 @@ export const LegalEntitiesPage: React.FC = () => {
                   onClick={handleCreateClick}
                   style={{ marginBottom: 16 }}
                 >
-                  Добавить юр. лицо
+                  <PlusOutlined /> Добавить юр. лицо
                 </Button>
 
                 <LegalEntitiesTable

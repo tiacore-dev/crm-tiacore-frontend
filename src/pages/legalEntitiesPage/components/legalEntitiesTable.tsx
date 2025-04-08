@@ -137,39 +137,39 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
         return company?.company_name || record.company;
       },
     },
-    {
-      title: "Описание",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Действия",
-      key: "actions",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="link"
-            onClick={() => {
-              setSelectedRecord(record);
-              setEditedData(record); // Устанавливаем конкретную запись
-              setIsEditing(true);
-            }}
-          >
-            Редактировать
-          </Button>
-          <Button
-            type="link"
-            danger
-            onClick={() => {
-              setSelectedRecord(record);
-              setShowDeleteConfirm(true);
-            }}
-          >
-            Удалить
-          </Button>
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Описание",
+    //   dataIndex: "description",
+    //   key: "description",
+    // },
+    // {
+    //   title: "Действия",
+    //   key: "actions",
+    //   render: (_, record) => (
+    //     <Space size="middle">
+    //       <Button
+    //         type="link"
+    //         onClick={() => {
+    //           setSelectedRecord(record);
+    //           setEditedData(record); // Устанавливаем конкретную запись
+    //           setIsEditing(true);
+    //         }}
+    //       >
+    //         Редактировать
+    //       </Button>
+    //       <Button
+    //         type="link"
+    //         danger
+    //         onClick={() => {
+    //           setSelectedRecord(record);
+    //           setShowDeleteConfirm(true);
+    //         }}
+    //       >
+    //         Удалить
+    //       </Button>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   const handleDelete = useCallback(() => {
@@ -222,7 +222,11 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
       />
       {isEditing && editedData && (
         <LegalEntityEditModal
-          editedData={editedData}
+          editedData={{
+            ...selectedRecord,
+            ...editedData,
+            description: editedData?.description || "", // Обеспечиваем строку по умолчанию
+          }}
           onChange={handleEditChange}
           onSave={handleSaveEdit}
           onCancel={handleCancelEdit}

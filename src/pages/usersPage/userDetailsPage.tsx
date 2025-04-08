@@ -11,6 +11,7 @@ import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserDetails } from "./components/userDetails";
 import { UserEditModal } from "./components/userEditModal";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 export interface UserData {
   username: string;
@@ -103,6 +104,7 @@ export const UserDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Button onClick={() => setIsEditing(true)}>
+                  <EditOutlined />
                   Редактировать
                 </Button>
                 <Button
@@ -110,7 +112,7 @@ export const UserDetailsPage: React.FC = () => {
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{ margin: 8 }}
                 >
-                  Удалить
+                  <DeleteOutlined /> Удалить
                 </Button>
                 <UserDetails
                   userName={userDetails?.username || ""}

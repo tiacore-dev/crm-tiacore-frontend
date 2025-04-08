@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserCreateModal } from "./components/userCreateModal";
 import { useFilteredUsers } from "../../hooks/users/useFilteredUsers"; // Импортируем хук для фильтрации
+import { PlusOutlined } from "@ant-design/icons";
 
 import {
   usersSelector,
@@ -116,7 +117,7 @@ export const UsersPage: React.FC = () => {
                   onClick={handleCreateClick}
                   style={{ marginBottom: 16 }}
                 >
-                  Добавить пользователя
+                  <PlusOutlined /> Добавить пользователя
                 </Button>
                 <Button
                   onClick={() => handleFilterChange({})}

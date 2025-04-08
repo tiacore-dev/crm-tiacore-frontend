@@ -9,6 +9,7 @@ import { useServiceMutations } from "../../hooks/services/useServiceMutations";
 import { Button, Spin } from "antd";
 import { BackButton } from "../../components/backButton";
 import { useServiceDetailsQuery } from "../../hooks/services/useServiceQuery";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 interface ServiceData {
   service_name: string;
@@ -103,6 +104,7 @@ export const ServiceDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Button onClick={() => setIsEditing(true)}>
+                  <EditOutlined />
                   Редактировать
                 </Button>
                 <Button
@@ -110,7 +112,7 @@ export const ServiceDetailsPage: React.FC = () => {
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{ margin: 8 }}
                 >
-                  Удалить
+                  <DeleteOutlined /> Удалить
                 </Button>
                 <ServiceDetails
                   serviceName={serviceDetails?.service_name || ""}

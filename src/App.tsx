@@ -1,4 +1,5 @@
 import React from "react";
+import ProtectedRoute from "./protectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   BrowserRouter as Router,
@@ -10,21 +11,31 @@ import { Toaster } from "react-hot-toast";
 
 import { LoginPage } from "./pages/loginPage/loginPage";
 import { HomePage } from "./pages/homePage/homePage";
+
 import { UsersPage } from "./pages/usersPage/usersPage";
-import { CompaniesPage } from "./pages/companiesPage/companiesPage";
-import { ServicesPage } from "./pages/servicesPage/servicesPage";
-import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
-import { ContractsPage } from "./pages/contractsPage/contractsPage";
-import { BillsPage } from "./pages/billsPage/billsPage";
-import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
-import { ActsPage } from "./pages/actsPage/actsPage";
-import ProtectedRoute from "./protectedRoute";
-import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
 import { UserDetailsPage } from "./pages/usersPage/userDetailsPage";
+
+import { CompaniesPage } from "./pages/companiesPage/companiesPage";
 import { CompanyDetailsPage } from "./pages/companiesPage/companyDetailsPage";
-// import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
+
+import { ServicesPage } from "./pages/servicesPage/servicesPage";
+import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
+
 import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
+
+import { ContractsPage } from "./pages/contractsPage/contractsPage";
+import { ContractDetailsPage } from "./pages/contractsPage/contractDetailsPage";
+
+import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
+import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
+
+import { BillsPage } from "./pages/billsPage/billsPage";
+import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";
+
+import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
+import { ActsPage } from "./pages/actsPage/actsPage";
+// import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
 
 import "./App.css";
 import "antd/dist/reset.css"; // Импорт стилей Ant Design
@@ -41,7 +52,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<HomePage />} />
-            
+
             <Route path="/services" element={<ServicesPage />} />
             <Route
               path="/services/:service_id"
@@ -59,16 +70,27 @@ const App: React.FC = () => {
             <Route path="/legal_entities" element={<LegalEntitiesPage />} />
 
             <Route path="/contracts" element={<ContractsPage />} />
+            <Route
+              path="/contracts/:contract_id"
+              element={<ContractDetailsPage />}
+            />
 
             <Route path="/bank_accounts" element={<BankAccountsPage />} />
+            <Route
+              path="/bank_accounts/:bank_account_id"
+              element={<BankAccountDetailsPage />}
+            />
 
             <Route path="/bills" element={<BillsPage />} />
+            <Route path="/bills/:bill_id" element={<BillDetailsPage />} />
 
             <Route path="/acts" element={<ActsPage />} />
 
             <Route path="/templates" element={<TemplatesPage />} />
-            <Route path="/templates/:template_id" element={<TemplateDetailsPage />} />
-
+            <Route
+              path="/templates/:template_id"
+              element={<TemplateDetailsPage />}
+            />
           </Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

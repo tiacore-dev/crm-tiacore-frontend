@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "../../components/pagination/pagination";
 import { SearchBar } from "../../components/searchBar/searchBar";
+import { PlusOutlined } from "@ant-design/icons";
 
 import {
   companiesSelector,
@@ -140,7 +141,7 @@ export const CompaniesPage: React.FC = () => {
                   onClick={handleCreateClick}
                   style={{ marginBottom: 16 }}
                 >
-                  Добавить компанию
+                  <PlusOutlined /> Добавить компанию
                 </Button>
                 <CompaniesTable
                   companies={companies_data?.companies}

@@ -1,27 +1,31 @@
-// src/api/usersApi.tsx
+// src/api/contractsApi.tsx
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
-export interface ITemplate {
-  template_id: string;
-  template_name: string;
-  description: string;
-  company: string;
-  entity: string;
-  s3_key: string;
+export interface IContract {
+  contract_id: string;
+  contract_name: string;
+  contract_date: number;
+  buyer: string;
+  seller: string;
+  s3_key?: string;
+  file?: string;
+  status: string;
+  comment?: string;
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchTemplates = async (
-  company?: string,
-  search?: string,
+export const fetchContracts = async (
+  buyer?: string,
+  seller?: string,
+  status?: string,
   page?: number,
   page_size?: number
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.get(`${url}/api/templates/all`, {
+  const response = await axiosInstance.get(`${url}/api/contracts/all`, {
     params: {},
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -31,21 +35,20 @@ export const fetchTemplates = async (
   return response.data;
 };
 
-export const createTemplate = async (
+// Функция для создания нового
+export const createContract = async (
   formData: FormData
-): Promise<ITemplate> => {
+): Promise<IContract> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
-  // console.log("Отправляемые данные:");
   try {
     const response = await axiosInstance.post(
-      `${url}/api/templates/add`,
+      `${url}/api/contracts/add`,
       formData,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          // "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -58,13 +61,14 @@ export const createTemplate = async (
     throw error;
   }
 };
-//получение инфопмации о пользователе
-export const fetchTemplateDetails = async (template_id: string) => {
+
+//получение инфопмации
+export const fetchContractDetails = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   try {
     const response = await axiosInstance.get(
-      `${url}/api/templates/${template_id}`,
+      `${url}/api/contracts/${contract_id}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -84,29 +88,30 @@ export const fetchTemplateDetails = async (template_id: string) => {
   }
 };
 
-//изменить данные пользователя
-export const updateTemplate = async (template_id: string, updatedData: any) => {
+//изменить данные
+export const updateContract = async (contract_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.patch(
-    `${url}/api/templates/${template_id}`,
+    `${url}/api/contracts/${contract_id}`,
     updatedData,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
     }
   );
   return response.data;
 };
 
-//удалить данные пользователя
+//удалить данные
 
-export const deleteTemplate = async (template_id: string) => {
+export const deleteContract = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
-  await axiosInstance.delete(`${url}/api/templates/${template_id}`, {
+  await axiosInstance.delete(`${url}/api/contracts/${contract_id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -114,12 +119,12 @@ export const deleteTemplate = async (template_id: string) => {
   });
 };
 
-export const downloadTemplate = async (template_id: string) => {
+export const downloadContract = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   try {
     const response = await axiosInstance.get(
-      `${url}/api/templates/${template_id}/download`,
+      `${url}/api/contracts/${contract_id}/download`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -135,51 +140,5 @@ export const downloadTemplate = async (template_id: string) => {
       toast.error("Неизвестная ошибка");
     }
     throw error; // Пробрасываем ошибку дальше
-  }
-};
-
-//генерация шаблона
-export const generateTemplate = async (
-  template_id: string,
-  entity_id: string,
-  is_pdf: boolean
-) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-
-  try {
-    const response = await axiosInstance.post(
-      `${url}/api/templates/generate`,
-      { template_id, entity_id, is_pdf },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        responseType: "blob", // Указываем, что сервер возвращает бинарные данные
-      }
-    );
-
-    // Создаем ссылку для скачивания файла
-    const blob = new Blob([response.data], {
-      type: response.headers["content-type"],
-    });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.setAttribute(
-      "download",
-      `generated_template.${is_pdf ? "pdf" : "docx"}`
-    );
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    if (axiosError.response) {
-      toast.error("Ошибка при генерации шаблона");
-    } else {
-      toast.error("Неизвестная ошибка");
-    }
-    throw error;
   }
 };

@@ -1,58 +1,63 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { useNavigate } from "react-router-dom";
 import { Button, Spin } from "antd";
-// import { useContractQuery } from "../../hooks/contracts/useContractQuery";
+import { BackButton } from "../../components/backButton";
+import { useContractQuery } from "../../hooks/contracts/useContractQuery";
+import { ContractsTable } from "./components/contractsTable";
+import { ContractCreateModal } from "./components/createContractModal";
+import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
+import { PlusOutlined } from "@ant-design/icons";
 
 export const ContractsPage: React.FC = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  // const { data: contracts_data, isLoading, isError } = useContractQuery();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
         { label: "Главная страница", to: "/home" },
-        { label: "Контаркты", to: "/contracts" },
+        { label: "Договоры", to: "/contracts" },
       ])
     );
   }, [dispatch]);
 
+  const { data: contracts_data, isLoading, isError } = useContractQuery();
+  const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
+
   return (
     <div>
-      {/* {isLoading ? ( */}
-      {/* // <Spin size="large" className="center-spin" /> */}
-      {/* // ) : ( */}
-      <>
-        {/* {!isError && ( */}
-        {/* // <div className="main-container"> */}
-        {/* <Button */}
-        {/* // onClick={handleCreateClick} */}
-        {/* // style={{ marginBottom: 16 }} */}
-        {/* // > */}
-        {/* Создать новую услугу */}
-        {/* </Button> */}
-        {/* <ServicesTable
-                  services={services_data?.services}
-                  onRowClick={handleRowClick}
-                  onSortChange={handleSortChange}
-                /> */}
+      {isLoading ? (
+        <Spin size="large" className="center-spin" />
+      ) : (
+        <>
+          {!isError && (
+            <div>
+              <div className="main-container">
+                <Button
+                  onClick={() => setIsModalVisible(true)}
+                  style={{ marginBottom: 16 }}
+                >
+                  <PlusOutlined /> Добавить договор
+                </Button>
 
-        {/* </div>
-              // {isCreating && ( */}
-        {/* //   // <ServiceCreateModal */}
-        {/* //   //   newServiceName={newServiceName}
-              //   //   setNewServiceName={setNewServiceName}
-              //   //   onCreate={handleCreateService}
-              //   //   onCancel={handleCancelCreate}
-              //   //   isCreatingLoading={createMutation.isPending}
-              //   // />
-              // )}
-          // )} */}
-        {/* {isError && <BackButton />} */}
-      </>
-      {/* )} */}
+                <ContractsTable
+                  data={contracts_data || { total: 0, contracts: [] }}
+                  loading={isLoading}
+                  legalEntitiesData={legalEntitiesResponse?.entities || []}
+                />
+
+                <ContractCreateModal
+                  visible={isModalVisible}
+                  onCancel={() => setIsModalVisible(false)}
+                  legalEntitiesData={legalEntitiesResponse?.entities || []}
+                />
+              </div>
+            </div>
+          )}
+          {isError && <BackButton />}
+        </>
+      )}
     </div>
   );
 };

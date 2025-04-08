@@ -1,37 +1,29 @@
-// src/api/legalEntitiesApi.tsx
+// src/api/bankAccountsApi.tsx
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
-export interface ILegalEntity {
-  legal_entity_id: string;
-  legal_entity_name: string;
-  inn: string;
-  kpp: string;
-  vat_rate: number;
-  address: string;
-  entity_type: string;
-  signer: string;
-  company: string;
-  description: string;
+export interface IBill {
+  bill_id: string;
+  bill_number: string;
+  bill_date: number;
+  bank_account: string;
+  contract?: string;
+  buyer: string;
+  seller: string;
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchLegalEntities = async (
-  currentPage: number,
-  pageSize: number,
-  search_company: string,
-  search_entity_type: string
+export const fetchBills = async (
+  bank_account?: string,
+  contract?: string,
+  page?: number,
+  page_size?: number
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
-    params: {
-      currentPage,
-      pageSize,
-      search_company,
-      search_entity_type,
-    },
+  const response = await axiosInstance.get(`${url}/api/bills/all`, {
+    params: {},
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -41,46 +33,36 @@ export const fetchLegalEntities = async (
 };
 
 // Функция для создания нового
-export const createLegalEntity = async (newLegalEntity: {
-  legal_entity_name: string;
-  inn: string;
-  kpp: string;
-  vat_rate: number;
-  address: string;
-  entity_type: string;
-  signer: string;
-  company: string;
-  description: string;
-}): Promise<ILegalEntity> => {
+export const createBill = async (newBill: {
+  bill_number: string;
+  bill_date: number;
+  bank_account: string;
+  contract?: string;
+  buyer: string;
+  seller: string;
+}): Promise<IBill> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.post(
-    `${url}/api/legal-entities/add`,
-    newLegalEntity,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await axiosInstance.post(`${url}/api/bills/add`, newBill, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
   return response.data;
 };
 
 //получение инфопмации
-export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
+export const fetchBill = async (bill_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   try {
-    const response = await axiosInstance.get(
-      `${url}/api/legal-entities/${legal_entity_id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axiosInstance.get(`${url}/api/bills/${bill_id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -94,14 +76,11 @@ export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
 };
 
 //изменить данные
-export const updateLegalEntity = async (
-  legal_entity_id: string,
-  updatedData: any
-) => {
+export const updateBill = async (bill_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.patch(
-    `${url}/api/legal-entities/${legal_entity_id}`,
+    `${url}/api/bills/${bill_id}`,
     updatedData,
     {
       headers: {
@@ -115,11 +94,11 @@ export const updateLegalEntity = async (
 
 //удалить данные
 
-export const deleteLegalEntity = async (legal_entity_id: string) => {
+export const deleteBill = async (bill_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
-  await axiosInstance.delete(`${url}/api/legal-entities/${legal_entity_id}`, {
+  await axiosInstance.delete(`${url}/api/bills/${bill_id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

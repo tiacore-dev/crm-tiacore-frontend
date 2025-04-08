@@ -11,6 +11,7 @@ import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { TemplateEditModal } from "./components/templateEditModal";
 import { fetchCompanies } from "../../api/companiesApi";
 import { useQuery } from "@tanstack/react-query";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
@@ -93,6 +94,16 @@ export const TemplateDetailsPage: React.FC = () => {
           {!isError && template && (
             <>
               <div className="main-container">
+                <Space style={{ marginBottom: 16 }}>
+                  <Button onClick={handleEditClick}>
+                    {" "}
+                    <EditOutlined />
+                    Редактировать
+                  </Button>
+                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                    <DeleteOutlined /> Удалить
+                  </Button>
+                </Space>
                 <Card title={`Шаблон: ${template.template_name}`}>
                   <Descriptions bordered column={1}>
                     <Descriptions.Item label="Название">
@@ -126,13 +137,6 @@ export const TemplateDetailsPage: React.FC = () => {
                       )}
                     </Descriptions.Item>
                   </Descriptions>
-
-                  <Space style={{ marginTop: 16 }}>
-                    <Button onClick={handleEditClick}>Редактировать</Button>
-                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                      Удалить
-                    </Button>
-                  </Space>
                 </Card>
               </div>
 

@@ -8,24 +8,9 @@ import {
 } from "../../api/legalEntitiesApi";
 import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
 
-// interface ILegalEntitiesResponse {
-//   total: number;
-//   companies: ILegalEntity[];
-// }
 export interface ILegalEntitiesResponse {
   total: number;
-  entities: {
-    legal_entity_id: string;
-    legal_entity_name: string;
-    inn: string;
-    kpp: string;
-    vat_rate: number;
-    address: string;
-    entity_type: string;
-    signer: string;
-    company: string;
-    description: string;
-  }[];
+  entities: ILegalEntity[];
 }
 
 export const useLegalEntityQuery = () => {
@@ -40,12 +25,12 @@ export const useLegalEntityQuery = () => {
       searchEntityType,
     ],
     queryFn: () =>
-      fetchLegalEntities(
-        currentPage,
-        pageSize,
-        searchCompany,
-        searchEntityType
-      ),
+      fetchLegalEntities({
+        page: currentPage,
+        page_size: pageSize,
+        search_company: searchCompany,
+        search_entity_type: searchEntityType,
+      }),
   });
 };
 
@@ -54,5 +39,12 @@ export const useLegalEntityDetailsQuery = (legal_entity_id: string) => {
     queryKey: ["legalEntityDetails", legal_entity_id],
     queryFn: () => fetchLegalEntityDetails(legal_entity_id),
     retry: false,
+  });
+};
+
+export const useLegalEntitiesForSelection = () => {
+  return useQuery<ILegalEntitiesResponse>({
+    queryKey: ["legalEntitiesForSelection"],
+    queryFn: () => fetchLegalEntities({ page: 1, page_size: 100 }),
   });
 };

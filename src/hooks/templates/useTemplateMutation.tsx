@@ -31,23 +31,6 @@ export const useTemplateMutations = (
     },
   });
 
-  // const updateMutation = useMutation({
-  //   mutationFn: (editedData: any) =>
-  //     template_id ? updateTemplate(template_id, editedData) : Promise.reject(),
-  //   onSuccess: () => {
-  //     if (template_id) {
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["templateDetails", template_id],
-  //       });
-  //     }
-  //     setIsEditing && setIsEditing(false);
-  //     toast.success("Информация обновлена");
-  //   },
-  //   onError: () => {
-  //     toast.error("Ошибка при обновлении данных");
-  //   },
-  // });
-
   const updateMutation = useMutation({
     mutationFn: async (editedData: FormData | object) => {
       if (!template_id) return Promise.reject("Нет ID шаблона");

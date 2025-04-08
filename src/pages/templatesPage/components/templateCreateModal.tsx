@@ -43,9 +43,9 @@ export const TemplateCreateModal: React.FC<TemplateCreateModalProps> = ({
         formData.append("description", values.description);
       }
 
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
+      // formData.forEach((value, key) => {
+      //   console.log(key, value);
+      // });
 
       createMutation.mutate(formData);
       onCancel();

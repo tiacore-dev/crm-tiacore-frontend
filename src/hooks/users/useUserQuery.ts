@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { fetchUsers, fetchUserDetails, IUser } from "../../api/usersApi";
 import { usersSelector } from "../../redux/slices/usersSlice";
 
-interface useUserQueryResponse {
+export interface useUserQueryResponse {
   users: IUser[];
   total: number;
 }
@@ -14,7 +14,13 @@ export const useUserQuery = () => {
   return useQuery<useUserQueryResponse>({
     queryKey: ["users", currentPage, pageSize, sortBy, order],
     // queryFn: () => fetchUsers(sortBy, order),
-    queryFn: () => fetchUsers(sortBy, order, 1, 100),
+    queryFn: () =>
+      fetchUsers({
+        sort_by: sortBy,
+        order: order,
+        page: 1,
+        page_size: 100,
+      }),
   });
 };
 
