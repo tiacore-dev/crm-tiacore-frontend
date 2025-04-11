@@ -7,25 +7,18 @@ import {
   ICompany,
 } from "../../api/companiesApi";
 import { companiesSelector } from "../../redux/slices/companiesSlice";
+import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
 
-interface useCompanyQueryResponse {
-  companies: ICompany[];
+export interface useCompanyQueryResponse {
   total: number;
+  companies: ICompany[];
 }
 
 export const useCompanyQuery = () => {
-  const { search, sortBy, order, currentPage, pageSize } =
-    useSelector(companiesSelector);
+  const { page, page_size } = useSelector(companiesSelector);
   return useQuery<useCompanyQueryResponse>({
-    queryKey: ["companies", search, sortBy, order, currentPage, pageSize],
-    queryFn: () =>
-      fetchCompanies({
-        search: search,
-        sort_by: sortBy,
-        order: order,
-        page: currentPage,
-        page_size: pageSize,
-      }),
+    queryKey: ["companies", page, page_size],
+    queryFn: () => fetchCompanies(page, page_size),
   });
 };
 
@@ -34,5 +27,12 @@ export const useCompanyDetailsQuery = (company_id: string) => {
     queryKey: ["companyDetails", company_id],
     queryFn: () => fetchCompanyDetails(company_id),
     retry: false,
+  });
+};
+
+export const useCompaniesForSelection = () => {
+  return useQuery<ICompaniesResponse>({
+    queryKey: ["companiesForSelection"],
+    queryFn: () => fetchCompanies(1, 100),
   });
 };

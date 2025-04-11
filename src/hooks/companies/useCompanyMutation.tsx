@@ -7,10 +7,11 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
+import { Button } from "antd";
 
 export const useCompanyMutations = (
-  company_id?: string,
-  company_name?: string,
+  company_id: string,
+  company_name: string,
   description?: string,
   setIsEditing?: (val: boolean) => void
 ) => {
@@ -23,15 +24,14 @@ export const useCompanyMutations = (
       queryClient.invalidateQueries({ queryKey: ["companies"] });
       toast.success(
         <>
-          Компания успешно добавлена{""}
-          <button onClick={() => navigate(`/companies/${data.company_id}`)}>
+          Компания успешно добавлена{" "}
+          <Button onClick={() => navigate(`/companies/${data.company_id}`)}>
             Подробнее
-          </button>
+          </Button>
         </>
       );
     },
     onError: (error: AxiosError) => {
-      // Проверяем код ошибки
       if (error.response?.status === 400) {
         toast.error("Компания с таким названием уже существует");
       } else {

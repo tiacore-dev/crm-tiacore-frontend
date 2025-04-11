@@ -2,33 +2,19 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { ICompaniesResponse } from "../pages/legalEntitiesPage/components/legalEntityCreateModal";
 
 export interface ICompany {
   company_id: string;
   company_name: string;
-  description: string;
+  description?: string;
 }
 
-// Функция для получения списка комапний с параметрами
-interface IFetchCompaniesParams {
-  search?: string;
-  sort_by?: string;
-  order?: string;
-  page?: number;
-  page_size?: number;
-}
-
-export const fetchCompanies = async (
-  params: IFetchCompaniesParams = {}
-): Promise<ICompaniesResponse> => {
+export const fetchCompanies = async (page: number, page_size: number) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
   const response = await axiosInstance.get(`${url}/api/companies/all`, {
-    params: {
-      ...params,
-    },
+    params: {},
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -40,7 +26,7 @@ export const fetchCompanies = async (
 // Функция для создания новой компании
 export const createCompany = async (newCompany: {
   company_name: string;
-  description: string;
+  description?: string;
 }): Promise<ICompany> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

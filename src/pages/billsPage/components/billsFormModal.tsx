@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Button, message } from "antd";
+import { Modal, Form, Input, Select, Button } from "antd";
 import { useBillMutations } from "../../../hooks/bills/useBillMutation";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { IBankAccount } from "../../../api/bankAccountsApi";
@@ -31,6 +31,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldsLocked, setFieldsLocked] = useState(false);
 
   const { createMutation, updateMutation } = useBillMutations(
     initialData?.bill_id || "",
@@ -42,18 +43,39 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
     initialData?.seller || ""
   );
 
+  const handleContractChange = (contractId: string) => {
+    if (!contractId) {
+      setFieldsLocked(false);
+      return;
+    }
+
+    const selectedContract = contractsData.find(
+      (c) => c.contract_id === contractId
+    );
+    if (selectedContract) {
+      form.setFieldsValue({
+        buyer: selectedContract.buyer,
+        seller: selectedContract.seller,
+      });
+      setFieldsLocked(true);
+    }
+  };
+
   useEffect(() => {
     if (initialData && mode === "edit") {
+      const isLocked = !!initialData.contract;
       form.setFieldsValue({
         bank_account: initialData.bank_account,
         bill_number: initialData.bill_number,
         bill_date: initialData.bill_date ? dayjs(initialData.bill_date) : null,
-        contract: initialData.contract || undefined, // Явно указываем undefined для необязательного поля
+        contract: initialData.contract || undefined,
         buyer: initialData.buyer,
         seller: initialData.seller,
       });
+      setFieldsLocked(isLocked);
     } else {
       form.resetFields();
+      setFieldsLocked(false);
     }
   }, [initialData, mode, form]);
 
@@ -61,12 +83,9 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
-
-      // Преобразуем дату в timestamp
       const formData = {
         ...values,
         bill_date: values.bill_date ? values.bill_date.valueOf() : null,
-        // contract будет включен только если есть значение
       };
 
       if (mode === "create") {
@@ -117,13 +136,19 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
           ]}
         >
           <Select
+            showSearch
+            optionFilterProp="children"
             placeholder="Выберите банковский счет"
-            options={bankAccountsData.map((bank) => ({
-              value: bank.bank_account_id,
-              label: bank.bank_name,
-            }))}
-            // disabled={mode === "edit"} // Можно запретить менять юр. лицо при редактировании
-          />
+          >
+            {bankAccountsData.map((bank) => (
+              <Select.Option
+                key={bank.bank_account_id}
+                value={bank.bank_account_id}
+              >
+                {bank.bank_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
@@ -131,7 +156,6 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
           label="Номер счета"
           rules={[
             { required: true, message: "Пожалуйста, введите номер счета" },
-            { min: 3, message: "Минимальная длина - 3 символа" },
           ]}
         >
           <Input placeholder="Введите номер счета" />
@@ -144,20 +168,27 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
         >
           <DatePicker style={{ width: "100%" }} format="DD.MM.YYYY" />
         </Form.Item>
-        <Form.Item
-          name="contract"
-          label="Контракт (необязательно)"
-          // Убираем правило required
-        >
+
+        <Form.Item name="contract" label="Договор (необязательно)">
           <Select
-            placeholder="Выберите контракт (необязательно)"
-            options={contractsData.map((contract) => ({
-              value: contract.contract_id,
-              label: contract.contract_name,
-            }))}
-            allowClear // Добавляем возможность очистить выбор
-          />
+            showSearch
+            optionFilterProp="children"
+            placeholder="Выберите договор (необязательно)"
+            allowClear
+            onChange={handleContractChange}
+            disabled={fieldsLocked && mode === "edit"}
+          >
+            {contractsData.map((contract) => (
+              <Select.Option
+                key={contract.contract_id}
+                value={contract.contract_id}
+              >
+                {contract.contract_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
+
         <Form.Item
           name="buyer"
           label="Заказчик"
@@ -169,13 +200,22 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
           ]}
         >
           <Select
+            showSearch
+            optionFilterProp="children"
             placeholder="Выберите заказчика"
-            options={legalEntitiesData.map((entity) => ({
-              value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
-            }))}
-          />
+            disabled={fieldsLocked}
+          >
+            {legalEntitiesData.map((entity) => (
+              <Select.Option
+                key={entity.legal_entity_id}
+                value={entity.legal_entity_id}
+              >
+                {entity.legal_entity_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
+
         <Form.Item
           name="seller"
           label="Исполнитель"
@@ -187,12 +227,20 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
           ]}
         >
           <Select
+            showSearch
+            optionFilterProp="children"
             placeholder="Выберите исполнителя"
-            options={legalEntitiesData.map((entity) => ({
-              value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
-            }))}
-          />
+            disabled={fieldsLocked}
+          >
+            {legalEntitiesData.map((entity) => (
+              <Select.Option
+                key={entity.legal_entity_id}
+                value={entity.legal_entity_id}
+              >
+                {entity.legal_entity_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>

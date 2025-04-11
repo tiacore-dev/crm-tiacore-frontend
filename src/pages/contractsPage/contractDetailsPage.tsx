@@ -1,22 +1,28 @@
+//contractDetailsPage
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Card, Descriptions, Space, Spin, Tag } from "antd";
+import { Button, Space, Spin } from "antd";
 import { useContractDetailsQuery } from "../../hooks/contracts/useContractQuery";
 import { useContractMutations } from "../../hooks/contracts/useContractMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/modals/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { downloadContract } from "../../api/contractsApi";
-import { FileOutlined } from "@ant-design/icons";
-import { ContractEditModal } from "./components/contractEditModal";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
-import dayjs from "dayjs";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useContractStatuses } from "../../hooks/base/useBaseQuery";
+import { ContractDetailsCard } from "./components/contractDetailsCard";
+import { ContractFormModal } from "./components/contractFormModal";
 
-interface LegalEntity {
+interface ILegalEntity {
   legal_entity_id: string;
   legal_entity_name: string;
+}
+
+interface IContractStatus {
+  contract_status_id: string;
+  status_name: string;
 }
 
 export const ContractDetailsPage: React.FC = () => {
@@ -34,6 +40,7 @@ export const ContractDetailsPage: React.FC = () => {
   } = useContractDetailsQuery(contract_id || "");
 
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
+  const { data: contractStatusesResponse } = useContractStatuses();
 
   const { deleteMutation } = useContractMutations(
     contract_id || "",
@@ -85,22 +92,19 @@ export const ContractDetailsPage: React.FC = () => {
     }
   };
 
-  const getStatusDisplay = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return "Активен";
-      case "waiting":
-        return "В процессе";
-      default:
-        return status;
-    }
-  };
-
   const getEntityNameById = (id: string | undefined) => {
     return (
       legalEntitiesResponse?.entities.find(
-        (entity: LegalEntity) => entity.legal_entity_id === id
+        (entity: ILegalEntity) => entity.legal_entity_id === id
       )?.legal_entity_name || id
+    );
+  };
+
+  const getContractStatusById = (id: string) => {
+    return (
+      contractStatusesResponse?.contract_statuses.find(
+        (status: IContractStatus) => status.contract_status_id === id
+      )?.status_name || id
     );
   };
 
@@ -127,66 +131,26 @@ export const ContractDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-                {/* <Card title={`Название: ${contract.contract_name}`}> */}
-                <Descriptions bordered column={1}>
-                  <Descriptions.Item label="Название">
-                    {contract.contract_name}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Дата">
-                    {dayjs(contract.contract_date).format("DD.MM.YYYY") || "—"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Исполнитель">
-                    {getEntityNameById(contract.seller)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Заказчик">
-                    {getEntityNameById(contract.buyer)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Файл">
-                    {contract.s3_key ? (
-                      <Button
-                        type="link"
-                        onClick={handleDownload}
-                        loading={downloading}
-                        icon={<FileOutlined />}
-                      >
-                        {contract.s3_key.split("/").pop()}
-                      </Button>
-                    ) : (
-                      "Файл отсутствует"
-                    )}
-                  </Descriptions.Item>
 
-                  <Descriptions.Item label="Статус">
-                    <Tag
-                      color={
-                        contract.status.toLowerCase() === "active"
-                          ? "green"
-                          : "orange"
-                      }
-                    >
-                      {getStatusDisplay(contract.status)}{" "}
-                    </Tag>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Коментарий">
-                    {contract.comment}
-                  </Descriptions.Item>
-                </Descriptions>
-
-                {/* </Card> */}
+                <ContractDetailsCard
+                  contract={contract}
+                  getEntityNameById={getEntityNameById}
+                  getContractStatusById={getContractStatusById}
+                  handleDownload={handleDownload}
+                />
               </div>
 
               {/* Модальное окно редактирования */}
               {showEditModal && (
-                <ContractEditModal
-                  open={showEditModal}
-                  onCancel={() => {
-                    setShowEditModal(false);
-                  }}
+                <ContractFormModal
+                  mode="edit"
+                  visible={showEditModal}
+                  onCancel={() => setShowEditModal(false)}
                   onSuccess={() => {
                     setShowEditModal(false);
                   }}
                   contractData={contract}
-                  entitiesData={legalEntitiesResponse?.entities || []}
+                  legalEntitiesData={legalEntitiesResponse?.entities || []}
                 />
               )}
               {showDeleteConfirm && (

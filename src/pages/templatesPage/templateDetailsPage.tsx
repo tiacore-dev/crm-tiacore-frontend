@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Card, Descriptions, Space, message, Spin } from "antd";
+import { Button, Space, message, Spin } from "antd";
 import { useTemplateDetailsQuery } from "../../hooks/templates/useTemplateQuery";
 import { useTemplateMutations } from "../../hooks/templates/useTemplateMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/modals/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { downloadTemplate } from "../../api/templatesApi";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
-import { TemplateEditModal } from "./components/templateEditModal";
-import { fetchCompanies } from "../../api/companiesApi";
-import { useQuery } from "@tanstack/react-query";
+import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
+import { TemplateFormModal } from "./components/templateFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { TemplateDetailsCard } from "./components/templateDetailsCard";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
@@ -27,11 +27,7 @@ export const TemplateDetailsPage: React.FC = () => {
     refetch,
   } = useTemplateDetailsQuery(template_id || "");
 
-  // Получаем список компаний для выпадающего списка
-  const { data: companiesResponse } = useQuery({
-    queryKey: ["companiesForSelection"],
-    queryFn: () => fetchCompanies({ page: 1, page_size: 100 }),
-  });
+  const { data: companiesResponse } = useCompaniesForSelection();
 
   const { deleteMutation, updateMutation } = useTemplateMutations(
     template_id || "",
@@ -55,12 +51,8 @@ export const TemplateDetailsPage: React.FC = () => {
   }, [template, dispatch, template_id]);
 
   const handleDelete = () => {
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        setShowDeleteConfirm(false);
-        navigate("/templates");
-      },
-    });
+    deleteMutation.mutate();
+    setShowDeleteConfirm(false); // Можно оставить здесь или перенести в onMutate
   };
 
   const handleEditClick = () => {
@@ -71,8 +63,6 @@ export const TemplateDetailsPage: React.FC = () => {
     try {
       if (!template_id) return;
       const downloadUrl = await downloadTemplate(template_id);
-
-      // Создаем скрытую ссылку для скачивания
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = `template_${template_id}`;
@@ -104,50 +94,21 @@ export const TemplateDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-                <Card title={`Шаблон: ${template.template_name}`}>
-                  <Descriptions bordered column={1}>
-                    <Descriptions.Item label="Название">
-                      {template.template_name}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Описание">
-                      {template.description || "Нет описания"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Компания">
-                      {companiesResponse?.companies.find(
-                        (c) => c.company_id === template?.company
-                      )?.company_name || template?.company}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Тип сущности">
-                      {template.entity === "act" ? "Акт" : "Счет"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Файл">
-                      {template.s3_key ? (
-                        <>
-                          <span>{template.s3_key.split("/").pop()}</span>
-                          <Button
-                            type="link"
-                            onClick={handleDownload}
-                            style={{ marginLeft: 8 }}
-                          >
-                            Скачать
-                          </Button>
-                        </>
-                      ) : (
-                        "Файл отсутствует"
-                      )}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Card>
+                <TemplateDetailsCard
+                  template={template}
+                  onDownload={handleDownload}
+                />
               </div>
 
               {/* Модальное окно редактирования */}
               {showEditModal && (
-                <TemplateEditModal
+                <TemplateFormModal
+                  mode="edit"
                   visible={showEditModal}
                   onCancel={() => setShowEditModal(false)}
                   onSuccess={() => {
-                    refetch();
                     setShowEditModal(false);
+                    refetch();
                   }}
                   templateData={template}
                   companiesData={companiesResponse?.companies || []}

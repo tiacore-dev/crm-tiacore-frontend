@@ -21,10 +21,9 @@ export interface ITemplatesResponse {
 }
 
 export const useTemplateQuery = () => {
-  const { company, search, page, page_size } = useSelector(templatesSelector);
   return useQuery<ITemplatesResponse>({
-    queryKey: ["templates", company, search, page, page_size],
-    queryFn: () => fetchTemplates(company, search, page, page_size),
+    queryKey: ["templates"],
+    queryFn: () => fetchTemplates(1, 100),
   });
 };
 
@@ -32,7 +31,6 @@ export const useTemplateDetailsQuery = (template_id: string) => {
   return useQuery<ITemplate>({
     queryKey: ["templateDetails", template_id],
     queryFn: () => fetchTemplateDetails(template_id),
-    // retry: false,
-    enabled: !!template_id,//??
+    enabled: !!template_id, //??
   });
 };

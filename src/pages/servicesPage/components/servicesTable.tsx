@@ -1,39 +1,84 @@
+import { Button, Select, Input, Typography } from "antd";
+import { ColumnType } from "antd/es/table";
 import React from "react";
 import { Table } from "antd";
 import { IService } from "../../../api/servicesApi";
-import "../../../components/table/table.css";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  servicesSelector,
+  setSearch,
+} from "../../../redux/slices/servicesSlice";
+import { setPage, setPageSize } from "../../../redux/slices/servicesSlice";
+interface ServicesTableProps {
+  data: {
+    total: number;
+    services: IService[];
+  };
+  loading: boolean;
+}
 
-export const ServicesTable: React.FC<{
-  services?: IService[];
-  onRowClick: (service_id: string) => void;
-  onSortChange: (newSortBy: string) => void;
-}> = ({ services, onRowClick, onSortChange }) => {
-  const columns = [
-    {
-      title: "Название услуги",
-      dataIndex: "service_name",
-      key: "service_name",
-      sorter: true,
-      onHeaderCell: () => ({
-        onClick: () => onSortChange("service_name"),
-      }),
-    },
-  ];
+export const ServicesTable: React.FC<ServicesTableProps> = ({
+  data = { total: 0, services: [] },
+  loading,
+}) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { search, page, page_size } = useSelector(servicesSelector);
 
-  const data = services?.map((service) => ({
-    key: service.service_id,
-    ...service,
-  }));
+  //   const columns = getCompaniesTableColumns({
+  //     navigate,
+  //     search,
+  //     onSearchChange: (value) => dispatch(setSearch(value)),
+  //   });
+
+  //   const filteredData = data.services.filter((service) => {
+  //     const matchesService = search
+  //       ? service.service_name.toLowerCase().includes(search.toLowerCase())
+  //       : true;
+  //     return matchesService;
+  //   });
+
+  const startIndex = (page - 1) * page_size;
+  const paginatedData = data.services.slice(startIndex, startIndex + page_size);
+  const showPagination = data.total > page_size;
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      onRow={(record) => ({
-        onClick: () => onRowClick(record.service_id),
-      })}
-      rowClassName="clickable-row"
-      pagination={false}
-    />
+    <div>
+      <Table
+        columns={[
+          {
+            title: "Услуга",
+            dataIndex: "service_name",
+            key: "service_name",
+          },
+        ]}
+        dataSource={paginatedData}
+        rowKey="service_id"
+        loading={loading}
+        pagination={
+          showPagination
+            ? {
+                current: page,
+                pageSize: page_size,
+                // total: filteredData.length,
+                total: data.total,
+                showSizeChanger: true,
+                pageSizeOptions: ["1", "10", "20", "50", "100"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего: {total}</Typography.Text>
+                ),
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+              }
+            : false
+        }
+      />
+    </div>
   );
 };

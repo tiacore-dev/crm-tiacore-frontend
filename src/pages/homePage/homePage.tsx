@@ -1,39 +1,22 @@
 import React, { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import { refreshToken } from "../loginPage/auth";
-import {
-  fetchEntityTypes,
-  fetchContractStatuses,
-  fetchUserRoles,
-} from "../../api/homeApi";
+// import {
+//   fetchEntityTypes,
+//   fetchContractStatuses,
+//   fetchUserRoles,
+// } from "../../api/baseApi";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
-import { Button, Typography, Spin } from "antd"; // Импорт компонентов Ant Design
-import { ILegalEntityType } from "../legalEntitiesPage/components/legalEntityCreateModal";
-import { ILegalEntityTypesResponse } from "../../api/homeApi";
+import { Button, Typography } from "antd"; // Импорт компонентов Ant Design
+// import { ILegalEntityType } from "../legalEntitiesPage/components/legalEntityCreateModal";
+// import { ILegalEntityTypesResponse } from "../../api/baseApi";
 
 export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setBreadcrumbs([{ label: "Главная страница", to: "/home" }]));
   }, [dispatch]);
-
-  const { data: entityTypesResponse, isLoading: isLoadingEntityType } =
-    useQuery<ILegalEntityTypesResponse>({
-      queryKey: ["entityTypes"],
-      queryFn: fetchEntityTypes,
-    });
-
-  const { data: contractStatuses, isLoading: isLoadingContractStatuses } =
-    useQuery({
-      queryKey: ["contractStatuses"],
-      queryFn: fetchContractStatuses,
-    });
-
-  const { data: userRoles, isLoading: isLoadingUserRoles } = useQuery({
-    queryKey: ["userRoles"],
-    queryFn: fetchUserRoles,
-  });
 
   const tryRefresh = () => {
     refreshToken();

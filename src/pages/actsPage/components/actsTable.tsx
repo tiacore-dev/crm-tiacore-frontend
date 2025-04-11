@@ -1,13 +1,7 @@
-import { Table, Button, Typography } from "antd";
-// import { IBill } from "../../../api/billsApi";
+import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
 import { IAct } from "../../../api/actsApi";
-
-// import dayjs from "dayjs";
-// import { FileOutlined } from "@ant-design/icons";
-// import { useState } from "react";
-// import { downloadContract } from "../../../api/contractsApi";
+import { getActsTableColumns } from "./atcsTableColumns";
 
 interface ActsTableProps {
   data: {
@@ -23,6 +17,18 @@ interface ActsTableProps {
     contract_id: string;
     contract_name: string;
   }[];
+  currentPage: number;
+  pageSize: number;
+  sortBy?: string;
+  order?: string;
+  filters?: {
+    contract?: string;
+    act_date_from?: number;
+    act_date_to?: number;
+  };
+  onTableChange: (pagination: any, filters: any, sorter: any) => void;
+  onSortChange: (sortBy: string, order: string) => void;
+  onFilterChange: (field: string, value: any) => void;
 }
 
 export const ActsTable: React.FC<ActsTableProps> = ({
@@ -30,58 +36,27 @@ export const ActsTable: React.FC<ActsTableProps> = ({
   loading,
   legalEntitiesData = [],
   contractsData = [],
+  currentPage,
+  pageSize,
+  sortBy,
+  order,
+  filters,
+  onTableChange,
+  onSortChange,
+  onFilterChange,
 }) => {
   const navigate = useNavigate();
 
-  const getLegalEntityName = (legalEntityId: string) => {
-    const legalEntity = legalEntitiesData.find(
-      (c) => c.legal_entity_id === legalEntityId
-    );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
-  };
-
-  const getContractName = (contractId: string) => {
-    const contract = contractsData.find((c) => c.contract_id === contractId);
-    return contract ? contract.contract_name : contractId;
-  };
-
-  const columns = [
-    {
-      title: "Номер акта",
-      dataIndex: "act_number",
-      key: "act_number",
-      render: (text: string, record: IAct) => (
-        <Button type="link" onClick={() => navigate(`/acts/${record.act_id}`)}>
-          {text}
-        </Button>
-      ),
-    },
-    {
-      title: "Дата",
-      dataIndex: "act_date",
-      key: "act_date",
-      render: (date: number) => dayjs(date).format("DD.MM.YYYY"),
-    },
-    {
-      title: "Контракт",
-      dataIndex: "contract",
-      key: "contract",
-      render: (contractId?: string) =>
-        contractId ? getContractName(contractId) : "-", // Показываем прочерк если нет контракта
-    },
-    {
-      title: "Заказчик",
-      dataIndex: "buyer",
-      key: "buyer",
-      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
-    },
-    {
-      title: "Исполнитель",
-      dataIndex: "seller",
-      key: "seller",
-      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
-    },
-  ];
+  const columns = getActsTableColumns({
+    legalEntitiesData,
+    contractsData,
+    navigate,
+    sortBy,
+    order,
+    onSortChange,
+    onFilterChange,
+    filters,
+  });
 
   return (
     <div>
@@ -91,13 +66,16 @@ export const ActsTable: React.FC<ActsTableProps> = ({
         rowKey="act_id"
         loading={loading}
         pagination={{
+          current: currentPage,
+          pageSize: pageSize,
           total: data.total,
           showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50"],
+          pageSizeOptions: ["2", "10", "20", "50"],
           showTotal: (total) => (
             <Typography.Text>Всего: {total}</Typography.Text>
           ),
         }}
+        onChange={onTableChange}
       />
     </div>
   );

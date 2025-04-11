@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface BankAccountsState {
+  account_number: string;
   legal_entity: string;
   bank_name: string;
   page: number;
@@ -9,6 +10,7 @@ interface BankAccountsState {
 }
 
 const initialState: BankAccountsState = {
+  account_number: "",
   legal_entity: "",
   bank_name: "",
   page: 1,
@@ -19,6 +21,10 @@ export const bankAccountsSlice = createSlice({
   name: "bank_accounts",
   initialState,
   reducers: {
+    setAccountNumber: (state, action: PayloadAction<string>) => {
+      state.account_number = action.payload;
+      state.page = 1;
+    },
     setLegalEntity: (state, action: PayloadAction<string>) => {
       state.legal_entity = action.payload;
       state.page = 1;
@@ -38,8 +44,14 @@ export const bankAccountsSlice = createSlice({
   },
 });
 
-export const { setLegalEntity, setBankName, setPage, setPageSize, resetState } =
-  bankAccountsSlice.actions;
+export const {
+  setAccountNumber,
+  setLegalEntity,
+  setBankName,
+  setPage,
+  setPageSize,
+  resetState,
+} = bankAccountsSlice.actions;
 
 export const bankAccountsReducer = bankAccountsSlice.reducer;
 

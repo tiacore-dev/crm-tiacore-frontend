@@ -1,12 +1,7 @@
-import { Table, Button, Typography } from "antd";
-import { IBill } from "../../../api/billsApi";
+import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-
-// import dayjs from "dayjs";
-// import { FileOutlined } from "@ant-design/icons";
-// import { useState } from "react";
-// import { downloadContract } from "../../../api/contractsApi";
+import { IBill } from "../../../api/billsApi";
+import { getBillsTableColumns } from "./billsTableColumns";
 
 interface BillsTableProps {
   data: {
@@ -21,11 +16,25 @@ interface BillsTableProps {
   bankAccountsData?: {
     bank_account_id: string;
     bank_name: string;
+    account_number: string;
   }[];
   contractsData?: {
     contract_id: string;
     contract_name: string;
   }[];
+  currentPage: number;
+  pageSize: number;
+  sortBy?: string;
+  order?: string;
+  filters?: {
+    bank_account?: string;
+    contract?: string;
+    bill_date_from?: number;
+    bill_date_to?: number;
+  };
+  onTableChange: (pagination: any, filters: any, sorter: any) => void;
+  onSortChange: (sortBy: string, order: string) => void;
+  onFilterChange: (field: string, value: any) => void;
 }
 
 export const BillsTable: React.FC<BillsTableProps> = ({
@@ -34,74 +43,28 @@ export const BillsTable: React.FC<BillsTableProps> = ({
   legalEntitiesData = [],
   bankAccountsData = [],
   contractsData = [],
+  currentPage,
+  pageSize,
+  sortBy,
+  order,
+  filters,
+  onTableChange,
+  onSortChange,
+  onFilterChange,
 }) => {
   const navigate = useNavigate();
 
-  const getLegalEntityName = (legalEntityId: string) => {
-    const legalEntity = legalEntitiesData.find(
-      (c) => c.legal_entity_id === legalEntityId
-    );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
-  };
-
-  const getBankAccountName = (bankId: string) => {
-    const bankAccount = bankAccountsData.find(
-      (c) => c.bank_account_id === bankId
-    );
-    return bankAccount ? bankAccount.bank_name : bankId;
-  };
-
-  const getContractName = (contractId: string) => {
-    const contract = contractsData.find((c) => c.contract_id === contractId);
-    return contract ? contract.contract_name : contractId;
-  };
-
-  const columns = [
-    {
-      title: "Номер счета",
-      dataIndex: "bill_number",
-      key: "bill_number",
-      render: (text: string, record: IBill) => (
-        <Button
-          type="link"
-          onClick={() => navigate(`/bills/${record.bill_id}`)}
-        >
-          {text}
-        </Button>
-      ),
-    },
-    {
-      title: "Дата",
-      dataIndex: "bill_date",
-      key: "bill_date",
-      render: (date: number) => dayjs(date).format("DD.MM.YYYY"),
-    },
-    {
-      title: "Банковский счёт",
-      dataIndex: "bank_account",
-      key: "bank_account",
-      render: (bankId: string) => getBankAccountName(bankId),
-    },
-    {
-      title: "Контракт",
-      dataIndex: "contract",
-      key: "contract",
-      render: (contractId?: string) =>
-        contractId ? getContractName(contractId) : "-", // Показываем прочерк если нет контракта
-    },
-    {
-      title: "Заказчик",
-      dataIndex: "buyer",
-      key: "buyer",
-      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
-    },
-    {
-      title: "Исполнитель",
-      dataIndex: "seller",
-      key: "seller",
-      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
-    },
-  ];
+  const columns = getBillsTableColumns({
+    legalEntitiesData,
+    bankAccountsData,
+    contractsData,
+    navigate,
+    sortBy,
+    order,
+    onSortChange,
+    onFilterChange,
+    filters,
+  });
 
   return (
     <div>
@@ -111,6 +74,8 @@ export const BillsTable: React.FC<BillsTableProps> = ({
         rowKey="bill_id"
         loading={loading}
         pagination={{
+          current: currentPage,
+          pageSize: pageSize,
           total: data.total,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50"],
@@ -118,6 +83,7 @@ export const BillsTable: React.FC<BillsTableProps> = ({
             <Typography.Text>Всего: {total}</Typography.Text>
           ),
         }}
+        onChange={onTableChange}
       />
     </div>
   );

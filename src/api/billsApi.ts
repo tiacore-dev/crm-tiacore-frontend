@@ -2,6 +2,7 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import { IBillsQueryParams } from "../hooks/bills/useBillQuery";
 
 export interface IBill {
   bill_id: string;
@@ -14,16 +15,17 @@ export interface IBill {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchBills = async (
-  bank_account?: string,
-  contract?: string,
-  page?: number,
-  page_size?: number
-) => {
+export const fetchBills = async (queryParams: IBillsQueryParams) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+
+  // Создаем копию параметров, удаляя undefined значения
+  const params = Object.fromEntries(
+    Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+  );
+
   const response = await axiosInstance.get(`${url}/api/bills/all`, {
-    params: {},
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -32,7 +34,6 @@ export const fetchBills = async (
   return response.data;
 };
 
-// Функция для создания нового
 export const createBill = async (newBill: {
   bill_number: string;
   bill_date: number;

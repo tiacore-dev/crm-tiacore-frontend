@@ -4,10 +4,16 @@
   align-items: center;
 }
 
-
-.main-container{
+.main-container {
   margin: 1%;
   margin-top: 0;
 }
 
+.ant-table-tbody > tr > td {
+  padding: 4px 8px !important;
+  line-height: 1.2 !important;
+}
 
+.ant-table-thead > tr > th {
+  padding: 8px !important;
+}

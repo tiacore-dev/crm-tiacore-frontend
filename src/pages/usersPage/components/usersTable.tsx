@@ -1,133 +1,148 @@
 import { IUser } from "../../../api/usersApi";
-import "../../../components/table/table.css";
 import React, { useCallback } from "react";
 import type { TableColumnsType } from "antd";
-import { Table } from "antd";
-import { useTableSearch } from "../../../components/table/tableSearchFilter";
-import { getPositionLabel } from "./userUtils";
+import { Button, Input, Table, Typography } from "antd";
+import {
+  usersSelector,
+  setFullName,
+  setPage,
+  setPageSize,
+  setPosition,
+  setUserName,
+} from "../../../redux/slices/usersSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { SearchOutlined } from "@ant-design/icons";
 
-export const UsersTable: React.FC<{
-  users?: IUser[];
-  onRowClick: (user_id: string) => void;
-  onSortChange: (newSortBy: string) => void;
-  onFilterChange: (newFilters: Record<string, any>) => void;
-  filters?: Record<string, any>;
-  currentPage: number;
-  pageSize: number;
-  totalItems: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
-}> = ({
-  users,
-  onRowClick,
-  onSortChange,
-  onFilterChange,
-  filters,
-  currentPage,
-  pageSize,
-  totalItems,
-  onPageChange,
-  onPageSizeChange,
+interface UsersTableProps {
+  data: {
+    total: number;
+    users: IUser[];
+  };
+  loading: boolean;
+}
+
+export const UsersTable: React.FC<UsersTableProps> = ({
+  data = { total: 0, users: [] },
+  loading,
 }) => {
-  const { getColumnSearchProps } = useTableSearch<IUser>();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { username, full_name, position, page, page_size } =
+    useSelector(usersSelector);
 
   const columns: TableColumnsType<IUser> = [
     {
       title: "Имя",
       dataIndex: "full_name",
       key: "full_name",
-      sorter: true,
-      ...getColumnSearchProps("full_name", filters?.full_name),
-      onHeaderCell: () => ({
-        onClick: () => onSortChange("full_name"),
-      }),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      sorter: (a: IUser, b: IUser) => a.full_name.localeCompare(b.full_name),
+      sortDirections: ["ascend", "descend"],
+      render: (text: string, record: IUser) => (
+        <Button
+          type="link"
+          onClick={() => navigate(`/users/${record.user_id}`)}
+        >
+          {text}
+        </Button>
+      ),
+
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Поиск по имени"
+            value={full_name}
+            onChange={(e) => dispatch(setFullName(e.target.value))}
+            style={{ width: 200 }}
+            allowClear
+          />
+        </div>
+      ),
+      filteredValue: full_name ? [full_name] : null,
     },
     {
       title: "Логин",
       dataIndex: "username",
       key: "username",
-      sorter: true,
-      ...getColumnSearchProps("username", filters?.username),
-      onHeaderCell: () => ({
-        onClick: () => onSortChange("username"),
-      }),
-      filterSearch: false,
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      sorter: (a: IUser, b: IUser) => a.username.localeCompare(b.username),
+      sortDirections: ["ascend", "descend"],
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Поиск логину"
+            value={username}
+            onChange={(e) => dispatch(setUserName(e.target.value))}
+            style={{ width: 200 }}
+            allowClear
+          />
+        </div>
+      ),
+      filteredValue: username ? [username] : null,
     },
     {
       title: "Позиция",
       dataIndex: "position",
       key: "position",
-      sorter: true,
-      onHeaderCell: () => ({
-        onClick: () => onSortChange("position"),
-      }),
-      filters: [
-        {
-          text: "Администратор",
-          value: "admin",
-        },
-        {
-          text: "Менеджер",
-          value: "manager",
-        },
-        {
-          text: "Пользователь",
-          value: "user",
-        },
-      ],
-      onFilter: (value, record) => record.position.startsWith(value as string),
-      filterSearch: false,
-      render: (position: string) => getPositionLabel(position),
-      filteredValue: filters?.position || null,
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      sorter: (a: IUser, b: IUser) => a.position.localeCompare(b.position),
+      sortDirections: ["ascend", "descend"],
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Поиск позиции"
+            value={position}
+            onChange={(e) => dispatch(setPosition(e.target.value))}
+            style={{ width: 200 }}
+            allowClear
+          />
+        </div>
+      ),
+      filteredValue: position ? [position] : null,
     },
   ];
 
-  const data = users?.map((user) => ({
-    key: user.user_id,
-    ...user,
-  }));
+  const filteredData = data.users.filter((userOb) => {
+    const matchesUserName = username
+      ? userOb.username.toLowerCase().includes(username.toLowerCase())
+      : true;
+    const matchesFullName = full_name
+      ? userOb.full_name.toLowerCase().includes(full_name.toLowerCase())
+      : true;
+    return matchesUserName && matchesFullName;
+  });
 
-  const handleTableChange = useCallback(
-    (pagination: any, filters: any, sorter: any) => {
-      onFilterChange(filters);
-      if (sorter.field) {
-        onSortChange(sorter.field);
-      }
-      if (pagination.current !== currentPage) {
-        onPageChange(pagination.current);
-      }
-      if (pagination.pageSize !== pageSize) {
-        onPageSizeChange(pagination.pageSize);
-      }
-    },
-    [
-      onFilterChange,
-      onSortChange,
-      onPageChange,
-      onPageSizeChange,
-      currentPage,
-      pageSize,
-    ]
-  );
+  const startIndex = (page - 1) * page_size;
+  const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
+  const showPagination = filteredData.length > page_size;
 
   return (
     <Table
       columns={columns}
-      dataSource={data}
-      onRow={(record) => ({
-        onClick: () => onRowClick(record.user_id),
-      })}
-      rowClassName="clickable-row"
+      dataSource={paginatedData}
+      rowKey="user_id"
+      loading={loading}
       pagination={{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalItems,
+        current: page,
+        pageSize: page_size,
+        total: filteredData.length,
         showSizeChanger: true,
-        pageSizeOptions: ["10", "20", "40", "60", "80", "100"],
-        onChange: onPageChange,
-        onShowSizeChange: (current, size) => onPageSizeChange(size),
+        pageSizeOptions: ["1", "10", "20", "50", "100"],
+        showTotal: (total) => <Typography.Text>Всего: {total}</Typography.Text>,
+        onChange: (newPage, newPageSize) => {
+          if (newPageSize !== page_size) {
+            dispatch(setPageSize(newPageSize));
+          }
+          dispatch(setPage(newPage));
+        },
       }}
-      onChange={handleTableChange}
     />
   );
 };

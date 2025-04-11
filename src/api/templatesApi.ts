@@ -12,13 +12,8 @@ export interface ITemplate {
   s3_key: string;
 }
 
-// Функция для получения списка пользователей с параметрами
-export const fetchTemplates = async (
-  company?: string,
-  search?: string,
-  page?: number,
-  page_size?: number
-) => {
+// Функция для получения списка  с параметрами
+export const fetchTemplates = async (page: number, page_size: number) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/templates/all`, {
@@ -37,7 +32,6 @@ export const createTemplate = async (
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
-  // console.log("Отправляемые данные:");
   try {
     const response = await axiosInstance.post(
       `${url}/api/templates/add`,
@@ -45,7 +39,6 @@ export const createTemplate = async (
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          // "Content-Type": "multipart/form-data",
         },
       }
     );

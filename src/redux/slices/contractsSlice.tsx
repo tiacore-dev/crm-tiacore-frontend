@@ -2,17 +2,25 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface ContractsState {
-  buyer: string;
-  seller: string;
-  status: string;
+  buyer?: string;
+  seller?: string;
+  status?: string;
+  contract_date_to?: number;
+  contract_date_from?: number;
+  sort_by?: string;
+  order?: string;
   page: number;
   page_size: number;
 }
 
 const initialState: ContractsState = {
-  buyer: "",
-  seller: "",
-  status: "",
+  buyer: undefined,
+  seller: undefined,
+  status: undefined,
+  contract_date_to: undefined,
+  contract_date_from: undefined,
+  sort_by: undefined,
+  order: undefined,
   page: 1,
   page_size: 10,
 };
@@ -33,6 +41,22 @@ export const contractsSlice = createSlice({
       state.status = action.payload;
       state.page = 1;
     },
+    setContractDateTo: (state, action: PayloadAction<number>) => {
+      state.contract_date_to = action.payload;
+      state.page = 1;
+    },
+    setContractDateFrom: (state, action: PayloadAction<number>) => {
+      state.contract_date_from = action.payload;
+      state.page = 1;
+    },
+    setSortBy: (state, action: PayloadAction<string>) => {
+      state.sort_by = action.payload;
+      state.page = 1;
+    },
+    setOrder: (state, action: PayloadAction<string>) => {
+      state.order = action.payload;
+      state.page = 1;
+    },
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
@@ -48,6 +72,10 @@ export const {
   setBuyer,
   setSeller,
   setStatus,
+  setContractDateTo,
+  setContractDateFrom,
+  setSortBy,
+  setOrder,
   setPage,
   setPageSize,
   resetState,

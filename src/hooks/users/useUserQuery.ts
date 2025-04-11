@@ -5,22 +5,22 @@ import { fetchUsers, fetchUserDetails, IUser } from "../../api/usersApi";
 import { usersSelector } from "../../redux/slices/usersSlice";
 
 export interface useUserQueryResponse {
-  users: IUser[];
   total: number;
+  users: IUser[];
 }
 
 export const useUserQuery = () => {
-  const { currentPage, pageSize, sortBy, order } = useSelector(usersSelector);
+  const { page, page_size } = useSelector(usersSelector);
   return useQuery<useUserQueryResponse>({
-    queryKey: ["users", currentPage, pageSize, sortBy, order],
-    // queryFn: () => fetchUsers(sortBy, order),
-    queryFn: () =>
-      fetchUsers({
-        sort_by: sortBy,
-        order: order,
-        page: 1,
-        page_size: 100,
-      }),
+    queryKey: ["users"],
+    queryFn: () => fetchUsers(page, page_size),
+  });
+};
+
+export const useUserQueryAll = () => {
+  return useQuery<useUserQueryResponse>({
+    queryKey: ["users_all"],
+    queryFn: () => fetchUsers(1, 100),
   });
 };
 

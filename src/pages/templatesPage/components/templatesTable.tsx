@@ -1,14 +1,20 @@
-import { Table, Space, Button, Typography } from "antd";
+import { Table, Typography } from "antd";
 import { ITemplate } from "../../../api/templatesApi";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useTemplateMutations } from "../../../hooks/templates/useTemplateMutation";
+import { getTemplateColumns } from "./templatesTableColumns";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  templatesSelector,
+  setPage,
+  setPageSize,
+  setSearch,
+  setCompany,
+} from "../../../redux/slices/templatesSlice";
+import { downloadTemplate } from "../../../api/templatesApi";
+import { useState } from "react";
 
 interface TemplatesTableProps {
-  data: {
-    total: number;
-    templates: ITemplate[];
-  };
+  data: ITemplate[];
   loading: boolean;
   companiesData?: {
     company_id: string;
@@ -17,93 +23,82 @@ interface TemplatesTableProps {
 }
 
 export const TemplatesTable: React.FC<TemplatesTableProps> = ({
-  data = { total: 0, templates: [] },
+  data = [],
   loading,
   companiesData = [],
 }) => {
-  //   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { page, page_size, search, company } = useSelector(templatesSelector);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
-  //   const { deleteMutation } = useTemplateMutations("", "", "", "", "", "");
+  const handleDownload = async (template_id: string) => {
+    setDownloadingId(template_id);
+    try {
+      const result = await downloadTemplate(template_id);
+      if (result) {
+        const link = document.createElement("a");
+        link.href = result;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
-  //   const handleEdit = (templateId: string) => {
-  //     navigate(`/templates/${templateId}/edit`);
-  //   };
+  const columns = getTemplateColumns(
+    companiesData,
+    navigate,
+    search,
+    company,
+    (value) => dispatch(setSearch(value)),
+    (value) => dispatch(setCompany(value)),
+    downloadingId,
+    handleDownload
+  );
 
-  //   const handleDelete = (templateId: string) => {
-  //     deleteMutation.mutate();
-  //     queryClient.invalidateQueries({ queryKey: ["templates"] });
-  //   };
+  const filteredData = data.filter((template) => {
+    const matchesSearch = search
+      ? template.template_name.toLowerCase().includes(search.toLowerCase())
+      : true;
+    const matchesCompany = company ? template.company === company : true;
+    return matchesSearch && matchesCompany;
+  });
 
-  const columns = [
-    {
-      title: "Название шаблона",
-      dataIndex: "template_name",
-      key: "template_name",
-      render: (text: string, record: ITemplate) => (
-        <Button
-          type="link"
-          onClick={() => navigate(`/templates/${record.template_id}`)}
-        >
-          {text}
-        </Button>
-      ),
-    },
-    {
-      title: "Описание",
-      dataIndex: "description",
-      key: "description",
-      render: (text: string) => text || "-",
-    },
-    {
-      title: "Компания",
-      dataIndex: "company",
-      key: "company",
-      render: (companyId: string) => {
-        const company = companiesData.find((c) => c.company_id === companyId);
-        return company ? company.company_name : companyId;
-      },
-    },
-    {
-      title: "Сущность",
-      dataIndex: "entity",
-      key: "entity",
-    },
-    // {
-    //   title: "Действия",
-    //   key: "actions",
-    //   render: (_: any, record: ITemplate) => (
-    //     <Space size="middle">
-    //       <Button type="link" onClick={() => handleEdit(record.template_id)}>
-    //         Редактировать
-    //       </Button>
-    //       <Button
-    //         type="link"
-    //         danger
-    //         onClick={() => handleDelete(record.template_id)}
-    //       >
-    //         Удалить
-    //       </Button>
-    //     </Space>
-    //   ),
-    // },
-  ];
+  const startIndex = (page - 1) * page_size;
+  const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
+  const showPagination = filteredData.length > page_size;
 
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={data.templates}
+        dataSource={paginatedData}
         rowKey="template_id"
         loading={loading}
-        pagination={{
-          total: data.total,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50"],
-          showTotal: (total) => (
-            <Typography.Text>Всего шаблонов: {total}</Typography.Text>
-          ),
-        }}
+        pagination={
+          showPagination
+            ? {
+                current: page,
+                pageSize: page_size,
+                total: filteredData.length,
+                showSizeChanger: true,
+                pageSizeOptions: ["1", "10", "20", "50", "100"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего шаблонов: {total}</Typography.Text>
+                ),
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+              }
+            : false
+        }
       />
     </div>
   );

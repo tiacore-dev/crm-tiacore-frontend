@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Button, message } from "antd";
 import { useActsMutations } from "../../../hooks/acts/useActsMutation";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
-import { IBankAccount } from "../../../api/bankAccountsApi";
 import { IAct } from "../../../api/actsApi";
 import { IContract } from "../../../api/contractsApi";
 import { DatePicker } from "antd";
@@ -18,7 +17,7 @@ interface ActModalProps {
   initialData?: IAct | null;
 }
 
-export const ActCreateModal: React.FC<ActModalProps> = ({
+export const ActFormModal: React.FC<ActModalProps> = ({
   visible,
   onCancel,
   legalEntitiesData,
@@ -29,6 +28,7 @@ export const ActCreateModal: React.FC<ActModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldsLocked, setFieldsLocked] = useState(false);
 
   const { createMutation, updateMutation } = useActsMutations(
     initialData?.act_id || "",
@@ -39,8 +39,27 @@ export const ActCreateModal: React.FC<ActModalProps> = ({
     initialData?.seller || ""
   );
 
+  const handleContractChange = (contractId: string) => {
+    if (!contractId) {
+      setFieldsLocked(false);
+      return;
+    }
+
+    const selectedContract = contractsData.find(
+      (c) => c.contract_id === contractId
+    );
+    if (selectedContract) {
+      form.setFieldsValue({
+        buyer: selectedContract.buyer,
+        seller: selectedContract.seller,
+      });
+      setFieldsLocked(true);
+    }
+  };
+
   useEffect(() => {
     if (initialData && mode === "edit") {
+      const isLocked = !!initialData.contract;
       form.setFieldsValue({
         act_number: initialData.act_number,
         act_date: initialData.act_date ? dayjs(initialData.act_date) : null,
@@ -48,8 +67,10 @@ export const ActCreateModal: React.FC<ActModalProps> = ({
         buyer: initialData.buyer,
         seller: initialData.seller,
       });
+      setFieldsLocked(isLocked);
     } else {
       form.resetFields();
+      setFieldsLocked(false);
     }
   }, [initialData, mode, form]);
 
@@ -105,11 +126,11 @@ export const ActCreateModal: React.FC<ActModalProps> = ({
           label="Номер акта"
           rules={[
             { required: true, message: "Пожалуйста, введите номер акта" },
-            { min: 3, message: "Минимальная длина - 3 символа" },
           ]}
         >
           <Input placeholder="Введите номер акта" />
         </Form.Item>
+
         <Form.Item
           name="act_date"
           label="Дата"
@@ -117,45 +138,79 @@ export const ActCreateModal: React.FC<ActModalProps> = ({
         >
           <DatePicker style={{ width: "100%" }} format="DD.MM.YYYY" />
         </Form.Item>
-        <Form.Item name="contract" label="Контракт (необязательно)">
+
+        <Form.Item name="contract" label="Договор (необязательно)">
           <Select
-            placeholder="Выберите контракт (необязательно)"
-            options={contractsData.map((contract) => ({
-              value: contract.contract_id,
-              label: contract.contract_name,
-            }))}
+            showSearch
+            optionFilterProp="children"
+            placeholder="Выберите договор (необязательно)"
             allowClear
-          />
+            onChange={handleContractChange}
+            disabled={fieldsLocked && mode === "edit"}
+          >
+            {contractsData.map((contract) => (
+              <Select.Option
+                key={contract.contract_id}
+                value={contract.contract_id}
+              >
+                {contract.contract_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
+
         <Form.Item
           name="buyer"
           label="Заказчик"
           rules={[
-            { required: true, message: "Пожалуйста, выберите заказчика" },
+            {
+              required: true,
+              message: "Пожалуйста, выберите заказчика",
+            },
           ]}
         >
           <Select
+            showSearch
+            optionFilterProp="children"
             placeholder="Выберите заказчика"
-            options={legalEntitiesData.map((entity) => ({
-              value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
-            }))}
-          />
+            disabled={fieldsLocked}
+          >
+            {legalEntitiesData.map((entity) => (
+              <Select.Option
+                key={entity.legal_entity_id}
+                value={entity.legal_entity_id}
+              >
+                {entity.legal_entity_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
+
         <Form.Item
           name="seller"
           label="Исполнитель"
           rules={[
-            { required: true, message: "Пожалуйста, выберите исполнителя" },
+            {
+              required: true,
+              message: "Пожалуйста, выберите исполнителя",
+            },
           ]}
         >
           <Select
+            showSearch
+            optionFilterProp="children"
             placeholder="Выберите исполнителя"
-            options={legalEntitiesData.map((entity) => ({
-              value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
-            }))}
-          />
+            disabled={fieldsLocked}
+          >
+            {legalEntitiesData.map((entity) => (
+              <Select.Option
+                key={entity.legal_entity_id}
+                value={entity.legal_entity_id}
+              >
+                {entity.legal_entity_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>

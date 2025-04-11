@@ -58,10 +58,12 @@ export const useTemplateMutations = (
     mutationFn: () =>
       template_id ? deleteTemplate(template_id) : Promise.reject(),
     onSuccess: () => {
-      toast.success("Успешно удалено");
+      queryClient.invalidateQueries({ queryKey: ["templates"] });
+      toast.success("Шаблон успешно удален");
+      navigate("/templates");
     },
     onError: () => {
-      toast.error("Ошибка при удалении");
+      toast.error("Ошибка при удалении шаблона");
     },
   });
 

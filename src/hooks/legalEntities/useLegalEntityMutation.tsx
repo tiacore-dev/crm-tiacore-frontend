@@ -9,15 +9,15 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 
 export const useLegalEntityMutations = (
-  legal_entity_id?: string,
-  legal_entity_name?: string,
-  inn?: string,
-  kpp?: string,
-  vat_rate?: number,
-  address?: string,
-  entity_type?: string,
-  signer?: string,
-  company?: string,
+  legal_entity_id: string,
+  legal_entity_name: string,
+  inn: string,
+  kpp: string,
+  vat_rate: number,
+  address: string,
+  entity_type: string,
+  signer: string,
+  company: string,
   description?: string,
   setIsEditing?: (val: boolean) => void
 ) => {
@@ -28,7 +28,7 @@ export const useLegalEntityMutations = (
     mutationFn: createLegalEntity,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
-      toast.success(<>Информация успешно добавлена{""}</>);
+      toast.success("Информация успешно добавлена");
     },
     onError: (error: AxiosError) => {
       // Проверяем код ошибки

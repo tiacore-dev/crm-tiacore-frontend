@@ -15,7 +15,6 @@ export const useContractMutations = (
   buyer: string,
   seller: string,
   comment: string,
-
   file: string,
   status: string,
   setIsEditing?: (val: boolean) => void
@@ -30,26 +29,30 @@ export const useContractMutations = (
         queryKey: ["contracts"],
         exact: false, // чтобы удалить все варианты ключей с фильтрами
       });
-      toast.success("Контракт успешно добавлен");
+      toast.success("Договор успешно добавлен");
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении контракта");
+      toast.error("Ошибка при добавлении договора");
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: (editedData: any) =>
-      contract_id ? updateContract(contract_id, editedData) : Promise.reject(),
+    mutationFn: async (editedData: FormData | object) => {
+      if (!contract_id) return Promise.reject("Нет ID договора");
+      console.log("Отправляемые данные:", editedData);
+      return updateContract(contract_id, editedData);
+    },
     onSuccess: () => {
       if (contract_id) {
         queryClient.invalidateQueries({
           queryKey: ["contractDetails", contract_id],
         });
       }
-      setIsEditing && setIsEditing(false);
+      setIsEditing?.(false);
       toast.success("Информация обновлена");
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Ошибка при обновлении:", error);
       toast.error("Ошибка при обновлении данных");
     },
   });

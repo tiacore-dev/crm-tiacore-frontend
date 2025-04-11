@@ -5,26 +5,14 @@ import { AxiosError } from "axios";
 
 export interface IService {
   service_id: string;
-  name: string;
+  service_name: string;
 }
 // Функция для получения списка услуг с параметрами
-export const fetchServices = async (
-  search: string,
-  sort_by: string,
-  order: string,
-  page: number,
-  page_size: number
-) => {
+export const fetchServices = async (page: number, page_size: number) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/services/all`, {
-    params: {
-      search,
-      sort_by,
-      order,
-      page,
-      page_size,
-    },
+    params: {},
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -34,7 +22,9 @@ export const fetchServices = async (
 };
 
 // Функция для создания новой услуги
-export const createService = async (newService: { service_name: string }): Promise<IService> => {
+export const createService = async (newService: {
+  service_name: string;
+}): Promise<IService> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.post(

@@ -1,28 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { fetchServices, fetchServiceDetails, IService } from "../../api/servicesApi";
+import {
+  fetchServices,
+  fetchServiceDetails,
+  IService,
+} from "../../api/servicesApi";
 import { servicesSelector } from "../../redux/slices/servicesSlice";
 
 interface useServiceQueryResponse {
-    services: IService[],
-    total: number
+  total: number;
+  services: IService[];
 }
 
 export const useServiceQuery = () => {
-    const { currentPage, pageSize, search, sortBy, order } = useSelector(servicesSelector);
+  const { page, page_size } = useSelector(servicesSelector);
 
-    return useQuery<useServiceQueryResponse>({
-        queryKey: ["services", currentPage, pageSize, search, sortBy, order],
-        queryFn: () => fetchServices(search, sortBy, order, currentPage, pageSize),
-      })
-
-      
-}
+  return useQuery<useServiceQueryResponse>({
+    queryKey: ["services", page, page_size],
+    queryFn: () => fetchServices(page, page_size),
+  });
+};
 
 export const useServiceDetailsQuery = (service_id: string) => {
-    return useQuery({
-        queryKey: ["serviceDetails", service_id],
-        queryFn: () => fetchServiceDetails(service_id),
-        retry: false,
-    })
-}
+  return useQuery({
+    queryKey: ["serviceDetails", service_id],
+    queryFn: () => fetchServiceDetails(service_id),
+    retry: false,
+  });
+};

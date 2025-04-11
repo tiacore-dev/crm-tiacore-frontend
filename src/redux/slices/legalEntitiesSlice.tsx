@@ -2,17 +2,19 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface LegalEntitiesState {
-  currentPage: number;
-  pageSize: number;
-  searchCompany: string;
-  searchEntityType: string;
+  search: string;
+  company: string;
+  entity_type: string;
+  page: number;
+  page_size: number;
 }
 
 const initialState: LegalEntitiesState = {
-  currentPage: 1,
-  pageSize: 10,
-  searchCompany: "",
-  searchEntityType: "",
+  search: "",
+  company: "",
+  entity_type: "",
+  page: 1,
+  page_size: 10,
 };
 
 export const legalEntitiesSlice = createSlice({
@@ -20,26 +22,36 @@ export const legalEntitiesSlice = createSlice({
   initialState,
   reducers: {
     setPage: (state, action: PayloadAction<number>) => {
-      state.currentPage = action.payload;
+      state.page = action.payload;
     },
     setPageSize: (state, action: PayloadAction<number>) => {
-      state.pageSize = action.payload;
-      state.currentPage = 1;
+      state.page_size = action.payload;
+      state.page = 1;
     },
-    setSearchCompany: (state, action: PayloadAction<string>) => {
-      state.searchCompany = action.payload;
-      state.currentPage = 1;
+    setSearch: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
+      state.page = 1;
     },
-    setSearchEntityType: (state, action: PayloadAction<string>) => {
-      state.searchEntityType = action.payload;
-      state.currentPage = 1;
+    setCompany: (state, action: PayloadAction<string>) => {
+      state.company = action.payload;
+      state.page = 1;
     },
-    resetState: () => initialState, // Добавляем действие для сброса состояния
+    setEntityType: (state, action: PayloadAction<string>) => {
+      state.entity_type = action.payload;
+      state.page = 1;
+    },
+    resetState: () => initialState,
   },
 });
 
-export const { setPage, setPageSize, setSearchCompany, setSearchEntityType } =
-  legalEntitiesSlice.actions;
+export const {
+  setPage,
+  setPageSize,
+  setSearch,
+  setCompany,
+  setEntityType,
+  resetState,
+} = legalEntitiesSlice.actions;
 
 export const legalEntitiesReducer = legalEntitiesSlice.reducer;
 

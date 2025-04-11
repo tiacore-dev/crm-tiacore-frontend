@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Card, Descriptions, Space, Spin } from "antd";
-import { useBillsQuery } from "../../hooks/bills/useBillQuery";
+import { Button, Space, Spin } from "antd";
 import { useBillQuery } from "../../hooks/bills/useBillQuery";
 import { useBillMutations } from "../../hooks/bills/useBillMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/modals/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
-import dayjs from "dayjs";
-import { BillCreateModal } from "./components/billsCreateModal";
+import { BillCreateModal } from "./components/billsFormModal";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { useBankAccountsForSelection } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { ExportOutlined } from "@ant-design/icons";
+import { BillDetailsCard } from "./components/billDetailsCard";
 
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
@@ -23,9 +20,7 @@ export const BillDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
   const { data: bill, isLoading, isError } = useBillQuery(bill_id || "");
-
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: bankAccountsResponse } = useBankAccountsForSelection();
   const { data: contractsResponse } = useContractsForSelection();
@@ -109,52 +104,13 @@ export const BillDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-                {/* <Card> */}
-                {/* <Descriptions bordered column={1}> */}
-                <Descriptions bordered column={1}>
-                  <Descriptions.Item label="Номер">
-                    {bill.bill_number}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Дата">
-                    {dayjs(bill.bill_date).format("DD.MM.YYYY")}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Банковский счёт">
-                    {bill.bank_account && (
-                      <Link to={`/bank_accounts/${bill.bank_account}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "}
-                    {getBankNameById(bill.bank_account)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Контракт">
-                    {bill.contract && (
-                      <Link to={`/contracts/${bill.contract}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "}
-                    {getContractNameById(bill.contract)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Заказчик">
-                    {/* {bill.buyer && (
-                      <Link to={`/legal_entities/${bill.buyer}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "} */}
-                    {getEntityNameById(bill.buyer)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Исполнитель">
-                    {/* {bill.seller && (
-                      <Link to={`/legal_entities/${bill.seller}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "} */}
-                    {getEntityNameById(bill.seller)}
-                  </Descriptions.Item>
-                </Descriptions>
+
+                <BillDetailsCard
+                  bill={bill}
+                  getEntityNameById={getEntityNameById}
+                  getContractNameById={getContractNameById}
+                  getBankNameById={getBankNameById}
+                />
               </div>
 
               {showEditModal && (

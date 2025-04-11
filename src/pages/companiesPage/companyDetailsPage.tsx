@@ -3,33 +3,33 @@ import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCompanyDetailsQuery } from "../../hooks/companies/useCompanyQuery";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { Button, Spin } from "antd";
-import { BackButton } from "../../components/backButton";
+import { Button, Space, Spin } from "antd";
+import { BackButton } from "../../components/modals/backButton";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
-import { CompanyDetails } from "./components/companyDetails";
-import { CompanyEditModal } from "./components/companyEditModal";
+import { CompanyTable } from "./components/companyDetailsCard";
+import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-export interface CompanyData {
-  company_name: string;
-  description: string;
-}
-
 export const CompanyDetailsPage: React.FC = () => {
-  const dispatch = useDispatch();
-  const { company_id } = useParams<{ company_id: string }>();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
-  const { updateMutation, deleteMutation } = useCompanyMutations(company_id!);
-  const [editedData, setEditedData] = useState<CompanyData | null>(null);
+  const dispatch = useDispatch();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const { company_id } = useParams<{ company_id: string }>();
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const {
     data: companyDetails,
     isLoading,
     isError,
+    refetch,
   } = useCompanyDetailsQuery(company_id!);
+
+  const { deleteMutation, updateMutation } = useCompanyMutations(
+    company_id || "",
+    companyDetails?.company_name || "",
+    companyDetails?.description || ""
+  );
 
   useEffect(() => {
     if (companyDetails) {
@@ -52,57 +52,13 @@ export const CompanyDetailsPage: React.FC = () => {
         setShowDeleteConfirm(false);
         navigate("/companies");
       },
-      onError: () => {},
     });
   }, [deleteMutation, navigate]);
 
-  const handleEditChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
-      setEditedData((prevData) => {
-        if (prevData) {
-          return {
-            ...prevData,
-            [name]: value,
-          };
-        }
-        return null;
-      });
-    },
-    []
-  );
-
-  const handleSaveEdit = useCallback(() => {
-    if (editedData) {
-      updateMutation.mutate(editedData, {
-        onSuccess: () => {
-          setIsEditing(false);
-          setEditedData(null);
-        },
-        onError: () => {},
-      });
-    }
-  }, [editedData, updateMutation]);
-
-  const handleCancelEdit = useCallback(() => {
-    if (companyDetails) {
-      setEditedData({
-        company_name: companyDetails.company_name,
-        description: companyDetails.description,
-      });
-    }
-    setIsEditing(false);
-  }, [companyDetails]);
-
-  const openEditModal = () => {
-    if (companyDetails) {
-      setEditedData({
-        company_name: companyDetails.company_name,
-        description: companyDetails.description,
-      });
-      setIsEditing(true);
-    }
-  };
+  const handleEditSuccess = useCallback(() => {
+    setShowEditModal(false);
+    refetch(); // Обновляем данные после успешного редактирования
+  }, [refetch]);
 
   return (
     <div>
@@ -110,33 +66,40 @@ export const CompanyDetailsPage: React.FC = () => {
         <Spin size="large" className="center-spin" />
       ) : (
         <>
-          {!isError && (
+          {!isError && companyDetails && (
             <>
               <div className="main-container">
-                <Button onClick={openEditModal}>
-                  {" "}
-                  <EditOutlined />
-                  Редактировать
-                </Button>
+                <Space style={{ marginBottom: 16 }}>
+                  <Button
+                    onClick={() => {
+                      setShowEditModal(true);
+                    }}
+                    icon={<EditOutlined />}
+                  >
+                    Редактировать
+                  </Button>
+                  <Button
+                    danger
+                    onClick={() => setShowDeleteConfirm(true)}
+                    icon={<DeleteOutlined />}
+                  >
+                    Удалить
+                  </Button>
+                </Space>
 
-                <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                  <DeleteOutlined /> Удалить
-                </Button>
-
-                <CompanyDetails
-                  companyName={companyDetails?.company_name || ""}
-                  companyDescription={companyDetails?.description || ""}
-                />
+                <CompanyTable data={companyDetails} loading={isLoading} />
               </div>
-              {isEditing && editedData && (
-                <CompanyEditModal
-                  editedData={editedData}
-                  onChange={handleEditChange}
-                  onSave={handleSaveEdit}
-                  onCancel={handleCancelEdit}
-                  isUpdateLoading={updateMutation.isPending}
+
+              {showEditModal && (
+                <CompanyFormModal
+                  visible={showEditModal}
+                  onCancel={() => setShowEditModal(false)}
+                  onSuccess={handleEditSuccess}
+                  mode="edit"
+                  initialData={companyDetails}
                 />
               )}
+
               {showDeleteConfirm && (
                 <ConfirmDeleteModal
                   onConfirm={handleDelete}

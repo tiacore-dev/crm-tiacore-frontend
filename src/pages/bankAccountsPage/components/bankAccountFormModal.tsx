@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Button, message } from "antd";
+import { Modal, Form, Input, Select, Button } from "antd";
 import { useBankAccountMutations } from "../../../hooks/bankAccounts/useBankAccountMutation";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { IBankAccount } from "../../../api/bankAccountsApi";
@@ -94,25 +94,19 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          name="legal_entity"
-          label="Юридическое лицо"
+          name="account_number"
+          label="Номер счета"
           rules={[
+            { required: true, message: "Пожалуйста, введите номер счета" },
+            { len: 20, message: "Номер счета должен содержать 20 символов" },
             {
-              required: true,
-              message: "Пожалуйста, выберите юридическое лицо",
+              pattern: /^\d+$/,
+              message: "Поле должно содержать только цифры",
             },
           ]}
         >
-          <Select
-            placeholder="Выберите юридическое лицо"
-            options={legalEntitiesData.map((entity) => ({
-              value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
-            }))}
-            // disabled={mode === "edit"} // Можно запретить менять юр. лицо при редактировании
-          />
+          <Input placeholder="Введите номер счета (20 символов)" />
         </Form.Item>
-
         <Form.Item
           name="bank_name"
           label="Название банка"
@@ -124,16 +118,25 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
         >
           <Input placeholder="Введите название банка" />
         </Form.Item>
-
         <Form.Item
-          name="account_number"
-          label="Номер счета"
-          rules={[
-            { required: true, message: "Пожалуйста, введите номер счета" },
-            { len: 20, message: "Номер счета должен содержать 20 символов" },
-          ]}
+          name="legal_entity"
+          label="Юридическое лицо"
+          rules={[{ required: true, message: "Пожалуйста, выберите юр. лицо" }]}
         >
-          <Input placeholder="Введите номер счета (20 символов)" />
+          <Select
+            showSearch
+            optionFilterProp="children"
+            placeholder="Выберите юр. лицо"
+          >
+            {legalEntitiesData.map((entity) => (
+              <Select.Option
+                key={entity.legal_entity_id}
+                value={entity.legal_entity_id}
+              >
+                {entity.legal_entity_name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
@@ -142,9 +145,21 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
           rules={[
             { required: true, message: "Пожалуйста, введите БИК банка" },
             { len: 9, message: "БИК банка должен содержать 9 символов" },
+            {
+              pattern: /^\d+$/,
+              message: "Поле должно содержать только цифры",
+            },
           ]}
         >
-          <Input placeholder="Введите БИК банка (9 символов)" />
+          <Input
+            placeholder="Введите БИК банка (9 символов)"
+            // onChange={(e) => {
+            //   // Оставляем только цифры
+            //   const value = e.target.value.replace(/\D/g, "");
+            //   form.setFieldsValue({ bank_bic: value });
+            // }}
+            // maxLength={9} // Ограничиваем максимальную длину
+          />
         </Form.Item>
 
         <Form.Item
@@ -159,9 +174,21 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
               len: 20,
               message: "Корреспондентский счет должен содержать 20 символов",
             },
+            {
+              pattern: /^\d+$/,
+              message: "Поле должно содержать только цифры",
+            },
           ]}
         >
-          <Input placeholder="Введите корреспондентский счет (20 символов)" />
+          <Input
+            placeholder="Введите корреспондентский счет (20 символов)"
+            // onChange={(e) => {
+            //   // Оставляем только цифры
+            //   const value = e.target.value.replace(/\D/g, "");
+            //   form.setFieldsValue({ bank_corr_account: value });
+            // }}
+            // maxLength={20} // Ограничиваем максимальную длину
+          />
         </Form.Item>
       </Form>
     </Modal>

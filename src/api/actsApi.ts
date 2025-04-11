@@ -2,6 +2,7 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import { IActsQueryParams } from "../hooks/acts/useActsQuery";
 
 export interface IAct {
   act_id: string;
@@ -13,15 +14,17 @@ export interface IAct {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchActs = async (
-  contract?: string,
-  page?: number,
-  page_size?: number
-) => {
+export const fetchActs = async (queryParams: IActsQueryParams) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+
+  // Создаем копию параметров, удаляя undefined значения
+  const params = Object.fromEntries(
+    Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+  );
+
   const response = await axiosInstance.get(`${url}/api/acts/all`, {
-    params: {},
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -54,7 +57,7 @@ export const fetchAct = async (act_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   try {
-    const response = await axiosInstance.get(`${url}/api/bills/${act_id}`, {
+    const response = await axiosInstance.get(`${url}/api/acts/${act_id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

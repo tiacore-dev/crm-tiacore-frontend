@@ -19,7 +19,7 @@ import { CompaniesPage } from "./pages/companiesPage/companiesPage";
 import { CompanyDetailsPage } from "./pages/companiesPage/companyDetailsPage";
 
 import { ServicesPage } from "./pages/servicesPage/servicesPage";
-import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
+// import { ServiceDetailsPage } from "./pages/servicesPage/serviceDetailsPage";
 
 import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
@@ -33,9 +33,11 @@ import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDeta
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";
 
-import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
 import { ActsPage } from "./pages/actsPage/actsPage";
-// import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
+import { ActDetailsPage } from "./pages/actsPage/actDetailsPage";
+
+import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
+import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
 
 import "./App.css";
 import "antd/dist/reset.css"; // Импорт стилей Ant Design
@@ -54,10 +56,10 @@ const App: React.FC = () => {
             <Route path="/home" element={<HomePage />} />
 
             <Route path="/services" element={<ServicesPage />} />
-            <Route
+            {/* <Route
               path="/services/:service_id"
               element={<ServiceDetailsPage />}
-            />
+            /> */}
 
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users/:user_id" element={<UserDetailsPage />} />
@@ -68,6 +70,10 @@ const App: React.FC = () => {
               element={<CompanyDetailsPage />}
             />
             <Route path="/legal_entities" element={<LegalEntitiesPage />} />
+            <Route
+              path="/legal_entities/:legal_entity_id"
+              element={<LegalEntityDetailsPage />}
+            />
 
             <Route path="/contracts" element={<ContractsPage />} />
             <Route
@@ -85,6 +91,7 @@ const App: React.FC = () => {
             <Route path="/bills/:bill_id" element={<BillDetailsPage />} />
 
             <Route path="/acts" element={<ActsPage />} />
+            <Route path="/acts/:act_id" element={<ActDetailsPage />} />
 
             <Route path="/templates" element={<TemplatesPage />} />
             <Route

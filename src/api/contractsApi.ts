@@ -2,6 +2,7 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import { IContractsQueryParams } from "../hooks/contracts/useContractQuery";
 
 export interface IContract {
   contract_id: string;
@@ -16,17 +17,16 @@ export interface IContract {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchContracts = async (
-  buyer?: string,
-  seller?: string,
-  status?: string,
-  page?: number,
-  page_size?: number
-) => {
+export const fetchContracts = async (queryParams: IContractsQueryParams) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+
+  const params = Object.fromEntries(
+    Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+  );
+
   const response = await axiosInstance.get(`${url}/api/contracts/all`, {
-    params: {},
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export const createContract = async (
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response) {
-      toast.error("Ошибка при создании шаблона");
+      toast.error("Ошибка при создании договора");
     }
     throw error;
   }
@@ -92,16 +92,17 @@ export const fetchContractDetails = async (contract_id: string) => {
 export const updateContract = async (contract_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+
   const response = await axiosInstance.patch(
     `${url}/api/contracts/${contract_id}`,
     updatedData,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
       },
     }
   );
+
   return response.data;
 };
 

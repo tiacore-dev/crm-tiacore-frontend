@@ -1,51 +1,23 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/modals/backButton";
 import { Button, Spin } from "antd";
 import { useLegalEntityQuery } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
-import { useNavigate } from "react-router-dom";
-import { useLegalEntityMutations } from "../../hooks/legalEntities/useLegalEntityMutation";
-import { LegalEntityCreateModal } from "./components/legalEntityCreateModal";
-// import { useFilteredUsers } from "../../hooks/users/useFilteredUsers"; // Импортируем хук для фильтрации
-import { useQuery } from "@tanstack/react-query";
-import { fetchCompanies } from "../../api/companiesApi";
+import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { PlusOutlined } from "@ant-design/icons";
-
-import {
-  legalEntitiesSelector,
-  legalEntitiesSlice,
-  setPage,
-  setPageSize,
-  setSearchCompany,
-  setSearchEntityType,
-} from "../../redux/slices/legalEntitiesSlice";
+import { useEntityTypes } from "../../hooks/base/useBaseQuery";
+import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
+import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
+import { Space } from "antd";
+import { ClearOutlined } from "@ant-design/icons";
+import { resetState } from "../../redux/slices/legalEntitiesSlice";
 
 export const LegalEntitiesPage: React.FC = () => {
-  const [isCreating, setIsCreating] = useState(false);
-  const [newLegalEntityName, setNewLegalEntityName] = useState("");
-  const [newINN, setNewINN] = useState("");
-  const [newKPP, setNewKPP] = useState("");
-  const [newVatRate, setNewVatRate] = useState<number>(0);
-  const [newAddress, setNewAddress] = useState("");
-  const [newEntityType, setNewEntityType] = useState("");
-  const [newSigner, setNewSigner] = useState("");
-  const [newCompany, setNewCompany] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-
-  const { createMutation } = useLegalEntityMutations();
-
-  const { currentPage, pageSize, searchCompany, searchEntityType } =
-    useSelector(legalEntitiesSelector);
-
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
-  const { data: companiesResponse } = useQuery({
-    queryKey: ["companiesForSelection"],
-    queryFn: () => fetchCompanies({ page: 1, page_size: 100 }),
-  });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { search, company, entity_type } = useSelector(legalEntitiesSelector);
 
   useEffect(() => {
     dispatch(
@@ -56,60 +28,19 @@ export const LegalEntitiesPage: React.FC = () => {
     );
   }, [dispatch]);
 
+  const { data: companiesResponse } = useCompaniesForSelection();
+
   const {
     data: legal_entities_data,
     isLoading,
     isError,
   } = useLegalEntityQuery();
 
-  const handleCreateClick = useCallback(() => {
-    setIsCreating(true);
-  }, []);
+  const { data: legalEntityTypes } = useEntityTypes();
 
-  const handleCreateLegalEntity = useCallback(() => {
-    createMutation.mutate(
-      {
-        legal_entity_name: newLegalEntityName,
-        inn: newINN,
-        kpp: newKPP,
-        vat_rate: newVatRate,
-        address: newAddress,
-        entity_type: newEntityType,
-        signer: newSigner,
-        company: newCompany,
-        description: newDescription,
-      },
-      {
-        onSuccess: (data) => {
-          setIsCreating(false);
-          // setNewLegalEntityName("");
-          // setNewINN("");
-          // setNewKPP("");
-          // setNewVatRate(0);
-          // setNewAddress("");
-          // setNewEntityType("");
-          // setNewSigner("");
-          // setNewCompany("");
-          // setNewDescription("");
-        },
-      }
-    );
-  }, [
-    newLegalEntityName,
-    newINN,
-    newKPP,
-    newVatRate,
-    newAddress,
-    newEntityType,
-    newSigner,
-    newCompany,
-    newDescription,
-    createMutation,
-  ]);
-
-  const handleCancelCreate = useCallback(() => {
-    setIsCreating(false);
-  }, []);
+  const handleResetFilters = () => {
+    dispatch(resetState());
+  };
 
   return (
     <div>
@@ -120,44 +51,36 @@ export const LegalEntitiesPage: React.FC = () => {
           {!isError && (
             <div>
               <div className="main-container">
-                <Button
-                  onClick={handleCreateClick}
-                  style={{ marginBottom: 16 }}
-                >
-                  <PlusOutlined /> Добавить юр. лицо
-                </Button>
+                <Space style={{ marginBottom: 16 }}>
+                  <Button
+                    onClick={() => setIsModalVisible(true)}
+                    icon={<PlusOutlined />}
+                  >
+                    Добавить юр. лицо
+                  </Button>
+                  <Button
+                    onClick={handleResetFilters}
+                    icon={<ClearOutlined />}
+                    disabled={!search && !company && !entity_type}
+                  >
+                    Сбросить фильтры
+                  </Button>
+                </Space>
 
                 <LegalEntitiesTable
                   data={legal_entities_data || { total: 0, entities: [] }}
                   loading={isLoading}
-                  companiesData={companiesResponse?.companies || []} // Добавьте эту строку
+                  legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                  companiesData={companiesResponse?.companies || []}
                 />
               </div>
-              {isCreating && (
-                <LegalEntityCreateModal
-                  newLegalEntityName={newLegalEntityName}
-                  newINN={newINN}
-                  newKPP={newKPP}
-                  newVatRate={newVatRate}
-                  newAddress={newAddress}
-                  newEntityType={newEntityType}
-                  newSigner={newSigner}
-                  newCompany={newCompany}
-                  newDescription={newDescription}
-                  setNewLegalEntityName={setNewLegalEntityName}
-                  setNewINN={setNewINN}
-                  setNewKPP={setNewKPP}
-                  setNewVatRate={setNewVatRate}
-                  setNewAddress={setNewAddress}
-                  setNewEntityType={setNewEntityType}
-                  setNewSigner={setNewSigner}
-                  setNewCompany={setNewCompany}
-                  setNewDescription={setNewDescription}
-                  onCreate={handleCreateLegalEntity}
-                  onCancel={handleCancelCreate}
-                  isCreatingLoading={createMutation.isPending}
-                />
-              )}
+              <LegalEntityFormModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                companiesDate={companiesResponse?.companies || []}
+                mode="create"
+              />
             </div>
           )}
           {isError && <BackButton />}

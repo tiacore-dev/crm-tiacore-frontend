@@ -1,10 +1,17 @@
-import { Table, Button, Typography, Tag } from "antd";
-import { IContract } from "../../../api/contractsApi";
+import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-import { FileOutlined } from "@ant-design/icons";
+import { IContract } from "../../../api/contractsApi";
 import { useState } from "react";
 import { downloadContract } from "../../../api/contractsApi";
+import { getContractsTableColumns } from "./contractsTableColumns";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  contractsSelector,
+  setPage,
+  setPageSize,
+  setSortBy,
+  setOrder,
+} from "../../../redux/slices/contractsSlice";
 
 interface ContractsTableProps {
   data: {
@@ -16,22 +23,38 @@ interface ContractsTableProps {
     legal_entity_id: string;
     legal_entity_name: string;
   }[];
+  contractStatusesData?: {
+    contract_status_id: string;
+    status_name: string;
+  }[];
+  onSortChange?: (sortBy: string, order: string) => void;
+  onFilterChange?: (field: string, value: any) => void;
+  filters?: {
+    buyer?: string;
+    seller?: string;
+    status?: string;
+    contract_date_from?: number;
+    contract_date_to?: number;
+  };
+  sortBy?: string;
+  order?: string;
 }
 
 export const ContractsTable: React.FC<ContractsTableProps> = ({
   data = { total: 0, contracts: [] },
   loading,
   legalEntitiesData = [],
+  contractStatusesData = [],
+  onSortChange,
+  onFilterChange,
+  filters,
+  sortBy,
+  order,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { page, page_size } = useSelector(contractsSelector);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-
-  const getLegalEntityName = (legalEntityId: string) => {
-    const legalEntity = legalEntitiesData.find(
-      (c) => c.legal_entity_id === legalEntityId
-    );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
-  };
 
   const handleDownload = async (contract_id: string) => {
     setDownloadingId(contract_id);
@@ -40,7 +63,7 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
       if (result) {
         const link = document.createElement("a");
         link.href = result;
-        link.download = ""; // Можно указать имя файла, если известно
+        link.download = "";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -52,92 +75,28 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
     }
   };
 
-  const getStatusDisplay = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return "Активен";
-      case "waiting":
-        return "В процессе";
-      default:
-        return status;
-    }
+  const handleSort = (sortBy: string, order: string) => {
+    dispatch(setSortBy(sortBy));
+    dispatch(setOrder(order));
+    if (onSortChange) onSortChange(sortBy, order);
   };
 
-  const columns = [
-    {
-      title: "Название",
-      dataIndex: "contract_name",
-      key: "contract_name",
-      render: (text: string, record: IContract) => (
-        <Button
-          type="link"
-          onClick={() => navigate(`/contracts/${record.contract_id}`)}
-        >
-          {text}
-        </Button>
-      ),
-    },
-    {
-      title: "Дата",
-      dataIndex: "contract_date",
-      key: "contract_date",
-      render: (date: number) => {
-        if (!date || isNaN(date)) return "-";
-        return dayjs(date).format("DD.MM.YYYY");
-      },
-    },
-    {
-      title: "Заказчик",
-      dataIndex: "buyer",
-      key: "buyer",
-      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
-    },
-    {
-      title: "Исполнитель",
-      dataIndex: "seller",
-      key: "seller",
-      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
-    },
-    {
-      title: "Статус",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => {
-        const displayStatus = getStatusDisplay(status);
-        return (
-          <Tag color={status.toLowerCase() === "active" ? "green" : "orange"}>
-            {displayStatus}
-          </Tag>
-        );
-      },
-    },
-    {
-      title: "Файл",
-      dataIndex: "s3_key",
-      key: "s3_key",
-      render: (_: string, record: IContract) => {
-        if (!record.s3_key) return "-";
-        const fileName = record.s3_key.split("/").pop() || "Файл";
+  const handleFilter = (field: string, value: any) => {
+    if (onFilterChange) onFilterChange(field, value);
+  };
 
-        return (
-          <Button
-            type="link"
-            onClick={() => handleDownload(record.contract_id)}
-            loading={downloadingId === record.contract_id}
-            icon={<FileOutlined />}
-          >
-            {fileName}
-          </Button>
-        );
-      },
-    },
-    {
-      title: "Комментарий",
-      dataIndex: "comment",
-      key: "comment",
-      render: (comment: string) => comment || "-",
-    },
-  ];
+  const columns = getContractsTableColumns({
+    legalEntitiesData,
+    contractStatusesData,
+    navigate,
+    handleDownload,
+    downloadingId,
+    sortBy,
+    order,
+    onSortChange: handleSort,
+    onFilterChange: handleFilter,
+    filters,
+  });
 
   return (
     <div>
@@ -147,12 +106,20 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
         rowKey="contract_id"
         loading={loading}
         pagination={{
+          current: page,
+          pageSize: page_size,
           total: data.total,
           showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50"],
+          pageSizeOptions: ["2", "10", "20", "50", "100"],
           showTotal: (total) => (
             <Typography.Text>Всего: {total}</Typography.Text>
           ),
+          onChange: (newPage, newPageSize) => {
+            if (newPageSize !== page_size) {
+              dispatch(setPageSize(newPageSize));
+            }
+            dispatch(setPage(newPage));
+          },
         }}
       />
     </div>

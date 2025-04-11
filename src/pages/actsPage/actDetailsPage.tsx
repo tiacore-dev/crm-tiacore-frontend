@@ -3,17 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Descriptions, Space, Spin } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
 import { useActsMutations } from "../../hooks/acts/useActsMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/modals/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import dayjs from "dayjs";
-import { ActCreateModal } from "./components/actsCreateModal";
+import { ActFormModal } from "./components/actsFormModal";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { ExportOutlined } from "@ant-design/icons";
+import { ActDetailsDescriptions } from "./components/actDetailsCard";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -67,6 +66,7 @@ export const ActDetailsPage: React.FC = () => {
       )?.legal_entity_name || id
     );
   };
+
   const getContractNameById = (id: string | undefined) => {
     return (
       contractsResponse?.contracts.find(
@@ -85,12 +85,7 @@ export const ActDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => {
-                      setShowEditModal(true);
-                    }}
-                  >
-                    {" "}
+                  <Button onClick={() => setShowEditModal(true)}>
                     <EditOutlined />
                     Редактировать
                   </Button>
@@ -98,53 +93,15 @@ export const ActDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-                {/* <Card> */}
-                {/* <Descriptions bordered column={1}> */}
-                <Descriptions.Item label="Номер">
-                  {act.act_number}
-                </Descriptions.Item>
-                <Descriptions.Item label="Дата">
-                  {dayjs(act.act_date).format("DD.MM.YYYY")}{" "}
-                </Descriptions.Item>
-                <Descriptions bordered column={1}>
-                  <Descriptions.Item label="Номер">
-                    {act.act_number}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Дата">
-                    {dayjs(act.act_date).format("DD.MM.YYYY")}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Контракт">
-                    {act.contract && (
-                      <Link to={`/contracts/${act.contract}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "}
-                    {getContractNameById(act.contract)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Заказчик">
-                    {/* {act.buyer && (
-                      <Link to={`/legal_entities/${act.buyer}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "} */}
-                    {getEntityNameById(act.buyer)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Исполнитель">
-                    {/* {act.seller && (
-                      <Link to={`/legal_entities/${act.seller}`}>
-                        <ExportOutlined />
-                      </Link>
-                    )}
-                    {"  "} */}
-                    {getEntityNameById(act.seller)}
-                  </Descriptions.Item>
-                </Descriptions>
+                <ActDetailsDescriptions
+                  act={act}
+                  getEntityNameById={getEntityNameById}
+                  getContractNameById={getContractNameById}
+                />
               </div>
 
               {showEditModal && (
-                <ActCreateModal
+                <ActFormModal
                   visible={showEditModal}
                   onCancel={() => setShowEditModal(false)}
                   legalEntitiesData={legalEntitiesResponse?.entities || []}

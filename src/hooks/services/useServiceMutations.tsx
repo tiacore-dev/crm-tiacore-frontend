@@ -9,7 +9,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const useServiceMutations = (
-  service_id?: string,
+  service_id: string,
+  service_name: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
@@ -19,14 +20,7 @@ export const useServiceMutations = (
     mutationFn: createService,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
-      toast.success(
-        <>
-          Услуга успешно добавлена{""}
-          <button onClick={() => navigate(`/services/${data.service_id}`)}>
-            Подробнее
-          </button>
-        </>
-      );
+      toast.success(<>Услуга успешно добавлена{""}</>);
     },
     onError: () => {
       toast.error("Ошибка при добавлении услуги");
@@ -55,7 +49,7 @@ export const useServiceMutations = (
       service_id ? deleteService(service_id) : Promise.reject(),
     onSuccess: () => {
       toast.success("Услуга успешно удалена");
-      navigate(-1);
+      // navigate(-1);
     },
     onError: () => {
       toast.error("Ошибка при удалении услуги");

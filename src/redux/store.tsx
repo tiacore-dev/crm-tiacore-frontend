@@ -5,7 +5,7 @@ import { usersReducer } from "./slices/usersSlice";
 import { companiesReducer } from "./slices/companiesSlice";
 import { legalEntitiesReducer } from "./slices/legalEntitiesSlice";
 import { templatesReducer } from "./slices/templatesSlice";
-import { contractsReducer } from "./slices/contractsSlise";
+import { contractsReducer } from "./slices/contractsSlice";
 import { bankAccountsReducer } from "./slices/bankAccountsSlice";
 import { billsReducer } from "./slices/billsSlice";
 import { actsReducer } from "./slices/actsSlice";
