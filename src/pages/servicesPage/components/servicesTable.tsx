@@ -11,6 +11,7 @@ import {
   setSearch,
 } from "../../../redux/slices/servicesSlice";
 import { setPage, setPageSize } from "../../../redux/slices/servicesSlice";
+
 interface ServicesTableProps {
   data: {
     total: number;
@@ -26,19 +27,6 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { search, page, page_size } = useSelector(servicesSelector);
-
-  //   const columns = getCompaniesTableColumns({
-  //     navigate,
-  //     search,
-  //     onSearchChange: (value) => dispatch(setSearch(value)),
-  //   });
-
-  //   const filteredData = data.services.filter((service) => {
-  //     const matchesService = search
-  //       ? service.service_name.toLowerCase().includes(search.toLowerCase())
-  //       : true;
-  //     return matchesService;
-  //   });
 
   const startIndex = (page - 1) * page_size;
   const paginatedData = data.services.slice(startIndex, startIndex + page_size);
@@ -62,7 +50,6 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
             ? {
                 current: page,
                 pageSize: page_size,
-                // total: filteredData.length,
                 total: data.total,
                 showSizeChanger: true,
                 pageSizeOptions: ["1", "10", "20", "50", "100"],

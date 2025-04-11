@@ -53,7 +53,7 @@ export const UsersPage: React.FC = () => {
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}
-                    disabled={!username && !full_name && !!position}
+                    disabled={!username && !full_name && !position}
                   >
                     Сбросить фильтры
                   </Button>
