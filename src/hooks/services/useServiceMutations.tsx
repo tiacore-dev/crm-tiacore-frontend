@@ -7,6 +7,7 @@ import {
 } from "../../api/servicesApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Button } from "antd";
 
 export const useServiceMutations = (
   service_id: string,
@@ -20,7 +21,17 @@ export const useServiceMutations = (
     mutationFn: createService,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
-      toast.success(<>Услуга успешно добавлена{""}</>);
+      toast.success(
+        <div>
+          Услуга успешно добавлена{" "}
+          <Button
+            type="link"
+            onClick={() => navigate(`/services/${data.service_id}`)}
+          >
+            Подробнее
+          </Button>
+        </div>
+      );
     },
     onError: () => {
       toast.error("Ошибка при добавлении услуги");

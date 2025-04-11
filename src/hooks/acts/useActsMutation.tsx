@@ -1,48 +1,55 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createBankAccount,
-  updateBankAccount,
-  deleteBankAccount,
-} from "../../api/bankAccountsApi";
+import { createAct, updateAct, deleteAct } from "../../api/actsApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Button } from "antd";
 
-export const useBankAccountMutations = (
-  bank_account_id: string,
-  legal_entity: string,
-  bank_name: string,
-  account_number: string,
-  bank_bic: string,
-  bank_corr_account: string,
+export const useActsMutations = (
+  act_id: string,
+  act_number: string,
+  act_date: number,
+  contract: string,
+  buyer: string,
+  seller: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    mutationFn: createBankAccount,
+    mutationFn: (newAct: {
+      act_number: string;
+      act_date: number;
+      contract?: string; // Указываем, что поле необязательное
+      buyer: string;
+      seller: string;
+    }) => createAct(newAct),
     onSuccess: (data) => {
-      // Инвалидируем кэш для списка банковских счетов
       queryClient.invalidateQueries({
-        queryKey: ["bank_accounts"],
+        queryKey: ["acts"],
       });
-      toast.success("Банковский счёт успешно добавлен");
+      toast.success(
+        <div>
+          Акт успешно добавлен{" "}
+          <Button type="link" onClick={() => navigate(`/acts/${data.act_id}`)}>
+            Подробнее
+          </Button>
+        </div>
+      );
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении банковского счёта");
+      toast.error("Ошибка при добавлении акта");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (editedData: any) =>
-      bank_account_id
-        ? updateBankAccount(bank_account_id, editedData)
-        : Promise.reject(),
+      act_id ? updateAct(act_id, editedData) : Promise.reject(),
     onSuccess: () => {
-      if (bank_account_id) {
+      if (act_id) {
         queryClient.invalidateQueries({
-          queryKey: ["bankAccountDetails", bank_account_id],
+          queryKey: ["act", act_id],
         });
       }
       setIsEditing && setIsEditing(false);
@@ -54,8 +61,7 @@ export const useBankAccountMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
-      bank_account_id ? deleteBankAccount(bank_account_id) : Promise.reject(),
+    mutationFn: () => (act_id ? deleteAct(act_id) : Promise.reject()),
     onSuccess: () => {
       toast.success("Успешно удалено");
     },

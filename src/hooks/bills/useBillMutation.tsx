@@ -3,6 +3,7 @@ import { createBill, updateBill, deleteBill } from "../../api/billsApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Button } from "antd";
 
 export const useBillMutations = (
   bill_id: string,
@@ -30,7 +31,17 @@ export const useBillMutations = (
       queryClient.invalidateQueries({
         queryKey: ["bills"],
       });
-      toast.success("Счет успешно добавлен");
+      toast.success(
+        <div>
+          Счет успешно добавлен{" "}
+          <Button
+            type="link"
+            onClick={() => navigate(`/bills/${data.bill_id}`)}
+          >
+            Подробнее
+          </Button>
+        </div>
+      );
     },
     onError: (error: AxiosError) => {
       toast.error("Ошибка при добавлении счета");

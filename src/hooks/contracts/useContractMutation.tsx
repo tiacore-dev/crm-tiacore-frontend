@@ -7,6 +7,7 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Button } from "antd";
 
 export const useContractMutations = (
   contract_id: string,
@@ -29,7 +30,17 @@ export const useContractMutations = (
         queryKey: ["contracts"],
         exact: false, // чтобы удалить все варианты ключей с фильтрами
       });
-      toast.success("Договор успешно добавлен");
+      toast.success(
+        <div>
+          Договор успешно добавлен{" "}
+          <Button
+            type="link"
+            onClick={() => navigate(`/contracts/${data.contract_id}`)}
+          >
+            Подробнее
+          </Button>
+        </div>
+      );
     },
     onError: (error: AxiosError) => {
       toast.error("Ошибка при добавлении договора");

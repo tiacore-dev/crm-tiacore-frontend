@@ -7,6 +7,7 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Button } from "antd";
 
 export const useTemplateMutations = (
   template_id: string,
@@ -24,7 +25,17 @@ export const useTemplateMutations = (
     mutationFn: (formData: FormData) => createTemplate(formData), // Обновлено для FormData
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["templates"] });
-      toast.success("Шаблон успешно добавлен");
+      toast.success(
+        <div>
+          Шаблон успешно добавлен{" "}
+          <Button
+            type="link"
+            onClick={() => navigate(`/templates/${data.template_id}`)}
+          >
+            Подробнее
+          </Button>
+        </div>
+      );
     },
     onError: (error: AxiosError) => {
       toast.error("Ошибка при добавлении шаблона");

@@ -1,32 +1,39 @@
-// src/hooks/useServiceMutations.tsx
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUser, updateUser, deleteUser } from "../../api/usersApi";
+import {
+  createBankAccount,
+  updateBankAccount,
+  deleteBankAccount,
+} from "../../api/bankAccountsApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
+import { AxiosError } from "axios";
 import { Button } from "antd";
 
-export const useUserMutations = (
-  user_id?: string,
-  username?: string,
-  password?: string,
-  full_name?: string,
-  position?: string,
+export const useBankAccountMutations = (
+  bank_account_id: string,
+  legal_entity: string,
+  bank_name: string,
+  account_number: string,
+  bank_bic: string,
+  bank_corr_account: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    mutationFn: createUser,
+    mutationFn: createBankAccount,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      // Инвалидируем кэш для списка банковских счетов
+      queryClient.invalidateQueries({
+        queryKey: ["bank_accounts"],
+      });
       toast.success(
         <div>
-          Пользователь успешно добавлен{" "}
+          Банковский счет успешно добавлен{" "}
           <Button
             type="link"
-            onClick={() => navigate(`/users/${data.user_id}`)}
+            onClick={() => navigate(`/bank_accounts/${data.bank_account_id}`)}
           >
             Подробнее
           </Button>
@@ -34,22 +41,19 @@ export const useUserMutations = (
       );
     },
     onError: (error: AxiosError) => {
-      // Проверяем код ошибки
-      if (error.response?.status === 400) {
-        toast.error("Пользователь с таким логином уже существует");
-      } else {
-        toast.error("Ошибка при добавлении пользователя");
-      }
+      toast.error("Ошибка при добавлении банковского счёта");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (editedData: any) =>
-      user_id ? updateUser(user_id, editedData) : Promise.reject(),
+      bank_account_id
+        ? updateBankAccount(bank_account_id, editedData)
+        : Promise.reject(),
     onSuccess: () => {
-      if (user_id) {
+      if (bank_account_id) {
         queryClient.invalidateQueries({
-          queryKey: ["userDetails", user_id],
+          queryKey: ["bankAccountDetails", bank_account_id],
         });
       }
       setIsEditing && setIsEditing(false);
@@ -61,10 +65,10 @@ export const useUserMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => (user_id ? deleteUser(user_id) : Promise.reject()),
+    mutationFn: () =>
+      bank_account_id ? deleteBankAccount(bank_account_id) : Promise.reject(),
     onSuccess: () => {
       toast.success("Успешно удалено");
-      navigate(-1);
     },
     onError: () => {
       toast.error("Ошибка при удалении");

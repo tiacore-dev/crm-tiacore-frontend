@@ -7,6 +7,7 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Button } from "antd";
 
 export const useLegalEntityMutations = (
   legal_entity_id: string,
@@ -28,7 +29,17 @@ export const useLegalEntityMutations = (
     mutationFn: createLegalEntity,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
-      toast.success("Информация успешно добавлена");
+      toast.success(
+        <div>
+          Юр. лицо успешно добавлено{" "}
+          <Button
+            type="link"
+            onClick={() => navigate(`/legal_entities/${data.legal_entity_id}`)}
+          >
+            Подробнее
+          </Button>
+        </div>
+      );
     },
     onError: (error: AxiosError) => {
       // Проверяем код ошибки
