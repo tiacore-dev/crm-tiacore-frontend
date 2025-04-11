@@ -1,4 +1,4 @@
-//companyUseQuery.ts
+//UsetemplateQuery.ts
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import {
@@ -23,7 +23,7 @@ export interface ITemplatesResponse {
 export const useTemplateQuery = () => {
   return useQuery<ITemplatesResponse>({
     queryKey: ["templates"],
-    queryFn: () => fetchTemplates(1, 100),
+    queryFn: fetchTemplates,
   });
 };
 

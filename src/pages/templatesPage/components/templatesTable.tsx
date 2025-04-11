@@ -60,6 +60,7 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     handleDownload
   );
 
+  // Фильтрация данных на клиенте
   const filteredData = data.filter((template) => {
     const matchesSearch = search
       ? template.template_name.toLowerCase().includes(search.toLowerCase())
@@ -68,9 +69,9 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     return matchesSearch && matchesCompany;
   });
 
+  // Пагинация на клиенте
   const startIndex = (page - 1) * page_size;
   const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
-  const showPagination = filteredData.length > page_size;
 
   return (
     <div>
@@ -79,26 +80,22 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
         dataSource={paginatedData}
         rowKey="template_id"
         loading={loading}
-        pagination={
-          showPagination
-            ? {
-                current: page,
-                pageSize: page_size,
-                total: filteredData.length,
-                showSizeChanger: true,
-                pageSizeOptions: ["1", "10", "20", "50", "100"],
-                showTotal: (total) => (
-                  <Typography.Text>Всего шаблонов: {total}</Typography.Text>
-                ),
-                onChange: (newPage, newPageSize) => {
-                  if (newPageSize !== page_size) {
-                    dispatch(setPageSize(newPageSize));
-                  }
-                  dispatch(setPage(newPage));
-                },
-              }
-            : false
-        }
+        pagination={{
+          current: page,
+          pageSize: page_size,
+          total: filteredData.length, // Общее количество после фильтрации
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "50", "100"],
+          showTotal: (total) => (
+            <Typography.Text>Всего шаблонов: {total}</Typography.Text>
+          ),
+          onChange: (newPage, newPageSize) => {
+            if (newPageSize !== page_size) {
+              dispatch(setPageSize(newPageSize));
+            }
+            dispatch(setPage(newPage));
+          },
+        }}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+//templatestablecolumns
 import { Button, Input, Select } from "antd";
 import { ColumnType } from "antd/es/table";
 import { ITemplate } from "../../../api/templatesApi";

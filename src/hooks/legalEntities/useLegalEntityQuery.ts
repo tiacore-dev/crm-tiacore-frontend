@@ -14,10 +14,9 @@ export interface ILegalEntitiesResponse {
 }
 
 export const useLegalEntityQuery = () => {
-  const { page, page_size } = useSelector(legalEntitiesSelector);
   return useQuery<ILegalEntitiesResponse>({
-    queryKey: ["legalEntities", page, page_size],
-    queryFn: () => fetchLegalEntities(page, page_size),
+    queryKey: ["legalEntities"],
+    queryFn: fetchLegalEntities,
   });
 };
 
@@ -32,6 +31,6 @@ export const useLegalEntityDetailsQuery = (legal_entity_id: string) => {
 export const useLegalEntitiesForSelection = () => {
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntitiesForSelection"],
-    queryFn: () => fetchLegalEntities(1, 100),
+    queryFn: () => fetchLegalEntities(),
   });
 };

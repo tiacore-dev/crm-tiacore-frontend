@@ -14,10 +14,9 @@ export interface IBankAccountsResponse {
 }
 
 export const useBankAccountQuery = () => {
-  const { page, page_size } = useSelector(bankAccountsSelector);
   return useQuery<IBankAccountsResponse>({
-    queryKey: ["bank_accounts", page, page_size],
-    queryFn: () => fetchBankAccounts(page, page_size),
+    queryKey: ["bank_accounts"],
+    queryFn: fetchBankAccounts,
   });
 };
 
@@ -32,6 +31,6 @@ export const useBankcAccountDetailsQuery = (bank_account_id: string) => {
 export const useBankAccountsForSelection = () => {
   return useQuery<IBankAccountsResponse>({
     queryKey: ["bankAccountsForSelection"],
-    queryFn: () => fetchBankAccounts(1, 100),
+    queryFn: () => fetchBankAccounts(),
   });
 };

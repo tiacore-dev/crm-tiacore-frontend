@@ -16,17 +16,12 @@ export interface ILegalEntity {
   description?: string;
 }
 
-// interface IFetchLegalEntitiesParams {
-//   page?: number;
-//   page_size?: number;
-// }
-
 // Функция для получения списка пользователей с параметрами
-export const fetchLegalEntities = async (page: number, page_size: number) => {
+export const fetchLegalEntities = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
-    params: {},
+    params: { page: 1, page_size: 100 },
 
     headers: {
       Authorization: `Bearer ${accessToken}`,

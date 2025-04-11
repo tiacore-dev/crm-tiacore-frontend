@@ -1,3 +1,4 @@
+//bankaccountstablecolumns
 import { Button, Select, Input } from "antd";
 import { ColumnType } from "antd/es/table";
 import { IBankAccount } from "../../../api/bankAccountsApi";

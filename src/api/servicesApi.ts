@@ -8,11 +8,14 @@ export interface IService {
   service_name: string;
 }
 // Функция для получения списка услуг с параметрами
-export const fetchServices = async (page: number, page_size: number) => {
+export const fetchServices = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/services/all`, {
-    params: {},
+    params: {
+      page: 1,
+      page_size: 100, // Большое число, чтобы получить все данные
+    },
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

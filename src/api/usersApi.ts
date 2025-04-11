@@ -10,19 +10,12 @@ export interface IUser {
   position: string;
 }
 
-// interface IFetchUsersParams {
-//   sort_by?: string;
-//   order?: string;
-//   page?: number;
-//   page_size?: number;
-// }
-
 // Функция для получения списка пользователей с параметрами
-export const fetchUsers = async (page: number, page_size: number) => {
+export const fetchUsers = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.get(`${url}/api/users/all`, {
-    params: {},
+    params: { page: 1, page_size: 100 },
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

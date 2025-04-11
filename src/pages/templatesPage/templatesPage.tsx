@@ -1,3 +1,4 @@
+//templatespage
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
@@ -11,11 +12,10 @@ import { TemplateFormModal } from "./components/templateFormModal";
 import { templatesSelector } from "../../redux/slices/templatesSlice";
 import { useSelector } from "react-redux";
 import { resetState } from "../../redux/slices/templatesSlice"; // Импорт нового действия
-
 export const TemplatesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { company, search, page, page_size } = useSelector(templatesSelector);
+  const { search, company } = useSelector(templatesSelector);
 
   useEffect(() => {
     dispatch(
@@ -32,6 +32,9 @@ export const TemplatesPage: React.FC = () => {
   const handleResetFilters = () => {
     dispatch(resetState());
   };
+
+  // Проверяем, есть ли активные фильтры
+  const hasActiveFilters = search || company;
 
   return (
     <div>
@@ -52,7 +55,7 @@ export const TemplatesPage: React.FC = () => {
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}
-                    disabled={!search && !company}
+                    disabled={!hasActiveFilters}
                   >
                     Сбросить фильтры
                   </Button>
@@ -63,6 +66,7 @@ export const TemplatesPage: React.FC = () => {
                   loading={isLoading}
                   companiesData={companiesResponse?.companies || []}
                 />
+
                 <TemplateFormModal
                   mode="create"
                   visible={isModalVisible}

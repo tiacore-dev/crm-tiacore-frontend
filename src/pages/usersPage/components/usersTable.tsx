@@ -1,5 +1,5 @@
 import { IUser } from "../../../api/usersApi";
-import React, { useCallback } from "react";
+import React from "react";
 import type { TableColumnsType } from "antd";
 import { Button, Input, Table, Typography } from "antd";
 import {
@@ -49,7 +49,6 @@ export const UsersTable: React.FC<UsersTableProps> = ({
           {text}
         </Button>
       ),
-
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Input
@@ -109,19 +108,26 @@ export const UsersTable: React.FC<UsersTableProps> = ({
     },
   ];
 
-  const filteredData = data.users.filter((userOb) => {
-    const matchesUserName = username
-      ? userOb.username.toLowerCase().includes(username.toLowerCase())
+  // Фильтрация данных
+  const filteredData = data.users.filter((user) => {
+    const matchesUsername = username
+      ? user.username.toLowerCase().includes(username.toLowerCase())
       : true;
     const matchesFullName = full_name
-      ? userOb.full_name.toLowerCase().includes(full_name.toLowerCase())
+      ? user.full_name.toLowerCase().includes(full_name.toLowerCase())
       : true;
-    return matchesUserName && matchesFullName;
+    const matchesPosition = position
+      ? user.position.toLowerCase().includes(position.toLowerCase())
+      : true;
+
+    return matchesUsername && matchesFullName && matchesPosition;
   });
 
-  const startIndex = (page - 1) * page_size;
-  const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
-  const showPagination = filteredData.length > page_size;
+  // Пагинация данных
+  const paginatedData = filteredData.slice(
+    (page - 1) * page_size,
+    page * page_size
+  );
 
   return (
     <Table
@@ -132,9 +138,9 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       pagination={{
         current: page,
         pageSize: page_size,
-        total: filteredData.length,
+        total: filteredData.length, // Общее количество после фильтрации
         showSizeChanger: true,
-        pageSizeOptions: ["1", "10", "20", "50", "100"],
+        pageSizeOptions: ["10", "20", "50", "100"],
         showTotal: (total) => <Typography.Text>Всего: {total}</Typography.Text>,
         onChange: (newPage, newPageSize) => {
           if (newPageSize !== page_size) {

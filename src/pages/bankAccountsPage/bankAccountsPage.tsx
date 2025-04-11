@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
+import { Button, Space, Spin } from "antd";
 import { BackButton } from "../../components/modals/backButton";
-import { Button, Spin, Space } from "antd";
-import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
-import { BankAccountsTable } from "./components/bankAccountsTable";
-import { BankAccountCreateModal } from "./components/bankAccountFormModal";
-import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
+import { BankAccountsTable } from "./components/bankAccountsTable";
+import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
+import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
 import {
   bankAccountsSelector,
   resetState,
 } from "../../redux/slices/bankAccountsSlice";
-import { useSelector } from "react-redux";
 
 export const BankAccountsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { legal_entity, bank_name, page, page_size } =
+  const { account_number, legal_entity, bank_name } =
     useSelector(bankAccountsSelector);
 
   useEffect(() => {
@@ -29,17 +27,15 @@ export const BankAccountsPage: React.FC = () => {
     );
   }, [dispatch]);
 
-  const {
-    data: bank_accounts_data,
-    isLoading,
-    isError,
-  } = useBankAccountQuery();
-
+  const { data: bankAccountsData, isLoading, isError } = useBankAccountQuery();
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
 
   const handleResetFilters = () => {
     dispatch(resetState());
   };
+
+  const hasActiveFilters =
+    account_number !== "" || legal_entity !== "" || bank_name !== "";
 
   return (
     <div>
@@ -54,28 +50,18 @@ export const BankAccountsPage: React.FC = () => {
                   onClick={() => setIsModalVisible(true)}
                   icon={<PlusOutlined />}
                 >
-                  Добавить банковский счёт
+                  Добавить банковский счет
                 </Button>
-                <Button
-                  onClick={handleResetFilters}
-                  icon={<ClearOutlined />}
-                  disabled={!legal_entity && !bank_name}
-                >
-                  Сбросить фильтры
-                </Button>
+                {hasActiveFilters && (
+                  <Button onClick={handleResetFilters} icon={<ClearOutlined />}>
+                    Сбросить фильтры
+                  </Button>
+                )}
               </Space>
-
               <BankAccountsTable
-                data={bank_accounts_data || { total: 0, bank_accounts: [] }}
+                data={bankAccountsData || { total: 0, bank_accounts: [] }}
                 loading={isLoading}
                 legalEntitiesData={legalEntitiesResponse?.entities || []}
-              />
-
-              <BankAccountCreateModal
-                visible={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
-                legalEntitiesData={legalEntitiesResponse?.entities || []}
-                mode="create"
               />
             </div>
           )}

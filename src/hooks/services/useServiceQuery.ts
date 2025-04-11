@@ -1,23 +1,20 @@
+//useservicequery
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import {
-  fetchServices,
   fetchServiceDetails,
+  fetchServices,
   IService,
 } from "../../api/servicesApi";
-import { servicesSelector } from "../../redux/slices/servicesSlice";
 
-interface useServiceQueryResponse {
+interface IServicesResponse {
   total: number;
   services: IService[];
 }
 
 export const useServiceQuery = () => {
-  const { page, page_size } = useSelector(servicesSelector);
-
-  return useQuery<useServiceQueryResponse>({
-    queryKey: ["services", page, page_size],
-    queryFn: () => fetchServices(page, page_size),
+  return useQuery<IServicesResponse>({
+    queryKey: ["services"],
+    queryFn: fetchServices, // Загружаем все данные один раз
   });
 };
 

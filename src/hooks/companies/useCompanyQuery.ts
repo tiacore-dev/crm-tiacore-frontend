@@ -15,10 +15,9 @@ export interface useCompanyQueryResponse {
 }
 
 export const useCompanyQuery = () => {
-  const { page, page_size } = useSelector(companiesSelector);
   return useQuery<useCompanyQueryResponse>({
-    queryKey: ["companies", page, page_size],
-    queryFn: () => fetchCompanies(page, page_size),
+    queryKey: ["companies"],
+    queryFn: fetchCompanies,
   });
 };
 
@@ -32,7 +31,7 @@ export const useCompanyDetailsQuery = (company_id: string) => {
 
 export const useCompaniesForSelection = () => {
   return useQuery<ICompaniesResponse>({
-    queryKey: ["companiesForSelection"],
-    queryFn: () => fetchCompanies(1, 100),
+    queryKey: ["companiesForSelection"], //??????
+    queryFn: () => fetchCompanies(),
   });
 };

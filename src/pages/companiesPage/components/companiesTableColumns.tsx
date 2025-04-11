@@ -5,13 +5,13 @@ import { NavigateFunction } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 
 interface CompaniesTableColumnsProps {
-  navigate: NavigateFunction;
+  navigate: NavigateFunction; // Добавляем navigate в интерфейс
   search: string;
   onSearchChange: (value: string) => void;
 }
 
 export const getCompaniesTableColumns = ({
-  navigate,
+  navigate, // Получаем navigate из пропсов
   search,
   onSearchChange,
 }: CompaniesTableColumnsProps): ColumnType<ICompany>[] => {
@@ -25,7 +25,6 @@ export const getCompaniesTableColumns = ({
       ),
       sorter: (a: ICompany, b: ICompany) =>
         a.company_name.localeCompare(b.company_name),
-      // sortDirections: ["asc", "desc"],
       render: (text: string, record: ICompany) => (
         <Button
           type="link"
@@ -45,12 +44,12 @@ export const getCompaniesTableColumns = ({
           />
         </div>
       ),
-      filteredValue: search ? [search] : null,
     },
     {
       title: "Описание",
       dataIndex: "description",
       key: "description",
+      render: (text: string) => text || "-",
     },
   ];
 };

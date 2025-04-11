@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/modals/backButton";
 import { Button, Spin } from "antd";
-import { useLegalEntityQuery } from "../../hooks/legalEntities/useLegalEntityQuery";
+import {
+  useLegalEntitiesForSelection,
+  useLegalEntityQuery,
+} from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { PlusOutlined } from "@ant-design/icons";
@@ -34,7 +37,7 @@ export const LegalEntitiesPage: React.FC = () => {
     data: legal_entities_data,
     isLoading,
     isError,
-  } = useLegalEntityQuery();
+  } = useLegalEntitiesForSelection();
 
   const { data: legalEntityTypes } = useEntityTypes();
 
