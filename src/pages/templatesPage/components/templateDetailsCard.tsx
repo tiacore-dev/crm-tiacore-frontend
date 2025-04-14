@@ -23,13 +23,13 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
         {template.template_name}
       </Descriptions.Item>
       <Descriptions.Item label="Компания">
+        {getCompanyNameById(template?.company, companiesResponse?.companies) ||
+          template?.company}{" "}
         {template?.company && (
           <Link to={`/companies/${template?.company}`}>
             <ExportOutlined />
           </Link>
-        )}{" "}
-        {getCompanyNameById(template?.company, companiesResponse?.companies) ||
-          template?.company}
+        )}
       </Descriptions.Item>
       <Descriptions.Item label="Тип">
         {template.entity === "act" ? "Акт" : "Счет"}
@@ -37,6 +37,7 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
       <Descriptions.Item label="Файл">
         {template.s3_key ? (
           <Space>
+            <span>{template.s3_key.split("/").pop()}</span>
             <DownloadOutlined
               onClick={onDownload}
               style={{
@@ -45,7 +46,6 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
               }}
               title="Скачать"
             />
-            <span>{template.s3_key.split("/").pop()}</span>
           </Space>
         ) : (
           "Файл отсутствует"

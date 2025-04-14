@@ -1,17 +1,11 @@
+//contractsTable.tsx
 import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { IContract } from "../../../api/contractsApi";
 import { useState } from "react";
 import { downloadContract } from "../../../api/contractsApi";
 import { getContractsTableColumns } from "./contractsTableColumns";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  contractsSelector,
-  setPage,
-  setPageSize,
-  setSortBy,
-  setOrder,
-} from "../../../redux/slices/contractsSlice";
+import { useDispatch } from "react-redux";
 
 interface ContractsTableProps {
   data: {
@@ -27,8 +21,10 @@ interface ContractsTableProps {
     contract_status_id: string;
     status_name: string;
   }[];
-  onSortChange?: (sortBy: string, order: string) => void;
-  onFilterChange?: (field: string, value: any) => void;
+  currentPage: number;
+  pageSize: number;
+  sortBy?: string;
+  order?: string;
   filters?: {
     buyer?: string;
     seller?: string;
@@ -36,8 +32,9 @@ interface ContractsTableProps {
     contract_date_from?: number;
     contract_date_to?: number;
   };
-  sortBy?: string;
-  order?: string;
+  onTableChange: (pagination: any, filters: any, sorter: any) => void;
+  onSortChange: (sortBy: string, order: string) => void;
+  onFilterChange: (field: string, value: any) => void;
 }
 
 export const ContractsTable: React.FC<ContractsTableProps> = ({
@@ -45,15 +42,17 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
   loading,
   legalEntitiesData = [],
   contractStatusesData = [],
-  onSortChange,
-  onFilterChange,
-  filters,
+  currentPage,
+  pageSize,
   sortBy,
   order,
+  filters,
+  onTableChange,
+  onSortChange,
+  onFilterChange,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { page, page_size } = useSelector(contractsSelector);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const handleDownload = async (contract_id: string) => {
@@ -75,16 +74,6 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
     }
   };
 
-  const handleSort = (sortBy: string, order: string) => {
-    dispatch(setSortBy(sortBy));
-    dispatch(setOrder(order));
-    if (onSortChange) onSortChange(sortBy, order);
-  };
-
-  const handleFilter = (field: string, value: any) => {
-    if (onFilterChange) onFilterChange(field, value);
-  };
-
   const columns = getContractsTableColumns({
     legalEntitiesData,
     contractStatusesData,
@@ -93,8 +82,8 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
     downloadingId,
     sortBy,
     order,
-    onSortChange: handleSort,
-    onFilterChange: handleFilter,
+    onSortChange,
+    onFilterChange,
     filters,
   });
 
@@ -106,21 +95,16 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
         rowKey="contract_id"
         loading={loading}
         pagination={{
-          current: page,
-          pageSize: page_size,
+          current: currentPage,
+          pageSize: pageSize,
           total: data.total,
           showSizeChanger: true,
           pageSizeOptions: ["2", "10", "20", "50", "100"],
           showTotal: (total) => (
             <Typography.Text>Всего: {total}</Typography.Text>
           ),
-          onChange: (newPage, newPageSize) => {
-            if (newPageSize !== page_size) {
-              dispatch(setPageSize(newPageSize));
-            }
-            dispatch(setPage(newPage));
-          },
         }}
+        onChange={onTableChange}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+//contractsPage.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
@@ -24,18 +25,6 @@ import {
 } from "../../redux/slices/contractsSlice";
 
 export const ContractsPage: React.FC = () => {
-  const dispatch = useDispatch();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  useEffect(() => {
-    dispatch(
-      setBreadcrumbs([
-        { label: "Главная страница", to: "/home" },
-        { label: "Договоры", to: "/contracts" },
-      ])
-    );
-  }, [dispatch]);
-
   const {
     seller,
     status,
@@ -47,6 +36,18 @@ export const ContractsPage: React.FC = () => {
     order,
     sort_by,
   } = useSelector(contractsSelector);
+
+  const dispatch = useDispatch();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    dispatch(
+      setBreadcrumbs([
+        { label: "Главная страница", to: "/home" },
+        { label: "Договоры", to: "/contracts" },
+      ])
+    );
+  }, [dispatch]);
 
   const {
     data: contracts_data,
@@ -67,10 +68,32 @@ export const ContractsPage: React.FC = () => {
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractStatusesResponse } = useContractStatuses();
 
-  const handleSortChange = (sortBy: string, newOrder: string) => {
-    dispatch(setSortBy(sortBy));
-    dispatch(setOrder(newOrder));
-  };
+  const handleTableChange = useCallback(
+    (pagination: any, _filters: any, sorter: any) => {
+      if (pagination.current !== page) {
+        dispatch(setPage(pagination.current));
+      }
+      if (pagination.pageSize !== page_size) {
+        dispatch(setPageSize(pagination.pageSize));
+      }
+
+      if (sorter && sorter.field && sorter.order) {
+        const newSortBy = sorter.field;
+        const newOrder = sorter.order === "ascend" ? "asc" : "desc";
+        dispatch(setSortBy(newSortBy));
+        dispatch(setOrder(newOrder));
+      }
+    },
+    [dispatch, page, page_size]
+  );
+
+  const handleSortChange = useCallback(
+    (sortBy: string, newOrder: string) => {
+      dispatch(setSortBy(sortBy));
+      dispatch(setOrder(newOrder));
+    },
+    [dispatch]
+  );
 
   const handleFilterChange = (field: string, value: any) => {
     switch (field) {
@@ -93,22 +116,6 @@ export const ContractsPage: React.FC = () => {
         break;
     }
   };
-
-  const handleTableChange = useCallback(
-    (pagination: any, _filters: any, sorter: any) => {
-      if (pagination.current !== page) {
-        dispatch(setPage(pagination.current));
-      }
-      if (pagination.pageSize !== page_size) {
-        dispatch(setPageSize(pagination.pageSize));
-      }
-      if (sorter.field) {
-        dispatch(setSortBy(sorter.field));
-        dispatch(setOrder(sorter.order === "ascend" ? "asc" : "desc"));
-      }
-    },
-    [dispatch, page, page_size]
-  );
 
   const handleResetFilters = () => {
     dispatch(resetState());
@@ -154,8 +161,10 @@ export const ContractsPage: React.FC = () => {
                   contractStatusesData={
                     contractStatusesResponse?.contract_statuses || []
                   }
-                  onSortChange={handleSortChange}
-                  onFilterChange={handleFilterChange}
+                  currentPage={page}
+                  pageSize={page_size}
+                  sortBy={sort_by}
+                  order={order}
                   filters={{
                     buyer,
                     seller,
@@ -163,8 +172,9 @@ export const ContractsPage: React.FC = () => {
                     contract_date_from,
                     contract_date_to,
                   }}
-                  sortBy={sort_by}
-                  order={order}
+                  onTableChange={handleTableChange}
+                  onSortChange={handleSortChange}
+                  onFilterChange={handleFilterChange}
                 />
 
                 <ContractFormModal

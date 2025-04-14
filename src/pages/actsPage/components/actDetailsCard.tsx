@@ -23,31 +23,31 @@ export const ActDetailsDescriptions: React.FC<ActDetailsDescriptionsProps> = ({
         {dayjs(act.act_date).format("DD.MM.YYYY")}
       </Descriptions.Item>
       <Descriptions.Item label="Договор">
+        {getContractNameById(act.contract) || "—"}
+        {"  "}
         {act.contract && (
           <Link to={`/contracts/${act.contract}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {getContractNameById(act.contract) || "—"}
       </Descriptions.Item>
       <Descriptions.Item label="Заказчик">
+        {getEntityNameById(act.buyer)}
+        {"  "}
         {act.buyer && (
           <Link to={`/legal_entities/${act.buyer}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {getEntityNameById(act.buyer)}
       </Descriptions.Item>
       <Descriptions.Item label="Исполнитель">
+        {getEntityNameById(act.seller)}
+        {"  "}
         {act.seller && (
           <Link to={`/legal_entities/${act.seller}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {getEntityNameById(act.seller)}
       </Descriptions.Item>
     </Descriptions>
   );

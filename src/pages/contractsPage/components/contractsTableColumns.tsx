@@ -1,3 +1,4 @@
+//contractsTableColumns.tsx
 import { Button, Tag, Select, DatePicker } from "antd";
 import { ColumnType } from "antd/es/table";
 import { IContract } from "../../../api/contractsApi";
@@ -271,7 +272,6 @@ export const getContractsTableColumns = ({
       title: "Комментарий",
       dataIndex: "comment",
       key: "comment",
-      render: (comment: string) => comment || "-",
     },
   ];
 };

@@ -24,15 +24,15 @@ export const BankAccountDetailsDescriptions: React.FC<
         {bank_account.bank_name}
       </Descriptions.Item>
       <Descriptions.Item label="Юр. лицо">
+        {legalEntitiesData?.find(
+          (entity) => entity.legal_entity_id === bank_account.legal_entity
+        )?.legal_entity_name || bank_account.legal_entity}
+        {"  "}
         {bank_account.legal_entity && (
           <Link to={`/legal_entities/${bank_account.legal_entity}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {legalEntitiesData?.find(
-          (entity) => entity.legal_entity_id === bank_account.legal_entity
-        )?.legal_entity_name || bank_account.legal_entity}
       </Descriptions.Item>
       <Descriptions.Item label="БИК">{bank_account.bank_bic}</Descriptions.Item>
       <Descriptions.Item label="Корреспондентский счет">

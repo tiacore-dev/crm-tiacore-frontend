@@ -49,13 +49,13 @@ export const LegalEntityDetailsCard: React.FC<LegalEntityDetailsCardProps> = ({
         {legal_entity.address}
       </Descriptions.Item>
       <Descriptions.Item label="Компания">
+        {getCompanyName(legal_entity.company)}
+        {"  "}
         {legal_entity.company && (
           <Link to={`/companies/${legal_entity.company}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {getCompanyName(legal_entity.company)}
       </Descriptions.Item>
       <Descriptions.Item label="Подписавшая сторона">
         {legal_entity.signer}

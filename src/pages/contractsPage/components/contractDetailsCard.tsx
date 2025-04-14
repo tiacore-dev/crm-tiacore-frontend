@@ -28,22 +28,22 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
         {dayjs(contract.contract_date).format("DD.MM.YYYY") || "—"}
       </Descriptions.Item>
       <Descriptions.Item label="Заказчик">
+        {getEntityNameById(contract.buyer)}
+        {"  "}
         {contract.buyer && (
           <Link to={`/legal_entities/${contract.buyer}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {getEntityNameById(contract.buyer)}
       </Descriptions.Item>
       <Descriptions.Item label="Исполнитель">
+        {getEntityNameById(contract.seller)}
+        {"  "}
         {contract.seller && (
           <Link to={`/legal_entities/${contract.seller}`}>
             <ExportOutlined />
           </Link>
         )}
-        {"  "}
-        {getEntityNameById(contract.seller)}
       </Descriptions.Item>
       <Descriptions.Item label="Статус">
         <Tag
@@ -60,6 +60,7 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
       <Descriptions.Item label="Файл">
         {contract.s3_key ? (
           <Space>
+            <span>{contract.s3_key.split("/").pop()}</span>
             <DownloadOutlined
               onClick={handleDownload}
               style={{
@@ -68,7 +69,6 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
               }}
               title="Скачать"
             />
-            <span>{contract.s3_key.split("/").pop()}</span>
           </Space>
         ) : (
           "Файл отсутствует"

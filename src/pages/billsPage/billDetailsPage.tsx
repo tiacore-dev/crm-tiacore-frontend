@@ -13,7 +13,10 @@ import { useBankAccountsForSelection } from "../../hooks/bankAccounts/useBankAcc
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { BillDetailsCard } from "./components/billDetailsCard";
-import { createMemoizedHelpers } from "../../utils/infoById";
+import {
+  createMemoizedHelpers,
+  getBankAccountNumberById,
+} from "../../utils/infoById";
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
@@ -61,13 +64,17 @@ export const BillDetailsPage: React.FC = () => {
     });
   };
 
-  const { getEntityNameById, getContractNameById, getBankNameById } =
-    createMemoizedHelpers(
-      legalEntitiesResponse?.entities,
-      contractsResponse?.contracts,
-      bankAccountsResponse?.bank_accounts,
-      companiesResponse?.companies
-    );
+  const {
+    getEntityNameById,
+    getContractNameById,
+    getBankAccountNumberById,
+    getBankNameById,
+  } = createMemoizedHelpers(
+    legalEntitiesResponse?.entities,
+    contractsResponse?.contracts,
+    bankAccountsResponse?.bank_accounts,
+    companiesResponse?.companies
+  );
 
   return (
     <div>
@@ -98,6 +105,7 @@ export const BillDetailsPage: React.FC = () => {
                   getEntityNameById={getEntityNameById}
                   getContractNameById={getContractNameById}
                   getBankNameById={getBankNameById}
+                  getBankNumberById={getBankAccountNumberById}
                 />
               </div>
 
