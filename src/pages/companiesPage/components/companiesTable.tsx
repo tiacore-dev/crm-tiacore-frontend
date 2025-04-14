@@ -25,24 +25,19 @@ export const CompaniesTable: React.FC<CompaniesTableProps> = ({
   const dispatch = useDispatch();
   const { search, page, page_size } = useSelector(companiesSelector);
   const navigate = useNavigate();
+
   // Фильтрация данных
   const filteredData = data.companies.filter((company) => {
     if (!search) return true;
     return company.company_name.toLowerCase().includes(search.toLowerCase());
   });
 
-  // Пагинация данных
-  const paginatedData = filteredData.slice(
-    (page - 1) * page_size,
-    page * page_size
-  );
-
   const columns = getCompaniesTableColumns({
-    navigate, // Передаем navigate в колонки
+    navigate,
     search,
     onSearchChange: (value) => {
       dispatch(setSearch(value));
-      dispatch(setPage(1));
+      dispatch(setPage(1)); // Сбрасываем на первую страницу при новом поиске
     },
   });
 
@@ -50,13 +45,13 @@ export const CompaniesTable: React.FC<CompaniesTableProps> = ({
     <div>
       <Table
         columns={columns}
-        dataSource={paginatedData}
+        dataSource={filteredData} // Передаем все отфильтрованные данные
         rowKey="company_id"
         loading={loading}
         pagination={{
           current: page,
           pageSize: page_size,
-          total: filteredData.length, // Используем количество отфильтрованных элементов
+          total: filteredData.length,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
           showTotal: (total) => (

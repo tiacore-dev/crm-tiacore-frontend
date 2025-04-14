@@ -2,6 +2,7 @@ import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { IAct } from "../../../api/actsApi";
 import { getActsTableColumns } from "./atcsTableColumns";
+import { useMemo } from "react";
 
 interface ActsTableProps {
   data: {
@@ -47,16 +48,29 @@ export const ActsTable: React.FC<ActsTableProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const columns = getActsTableColumns({
-    legalEntitiesData,
-    contractsData,
-    navigate,
-    sortBy,
-    order,
-    onSortChange,
-    onFilterChange,
-    filters,
-  });
+  const columns = useMemo(
+    () =>
+      getActsTableColumns({
+        legalEntitiesData,
+        contractsData,
+        navigate,
+        sortBy,
+        order,
+        onSortChange,
+        onFilterChange,
+        filters,
+      }),
+    [
+      legalEntitiesData,
+      contractsData,
+      navigate,
+      sortBy,
+      order,
+      onSortChange,
+      onFilterChange,
+      filters,
+    ]
+  );
 
   return (
     <div>

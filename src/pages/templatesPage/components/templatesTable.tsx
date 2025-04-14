@@ -60,7 +60,7 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     handleDownload
   );
 
-  // Фильтрация данных на клиенте
+  // 1. Фильтрация данных
   const filteredData = data.filter((template) => {
     const matchesSearch = search
       ? template.template_name.toLowerCase().includes(search.toLowerCase())
@@ -69,21 +69,22 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     return matchesSearch && matchesCompany;
   });
 
-  // Пагинация на клиенте
+  const processedData = [...filteredData];
+
   const startIndex = (page - 1) * page_size;
-  const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
+  const paginatedData = processedData.slice(startIndex, startIndex + page_size);
 
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={paginatedData}
+        dataSource={processedData}
         rowKey="template_id"
         loading={loading}
         pagination={{
           current: page,
           pageSize: page_size,
-          total: filteredData.length, // Общее количество после фильтрации
+          total: filteredData.length,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
           showTotal: (total) => (

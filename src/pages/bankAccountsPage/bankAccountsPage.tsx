@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { BankAccountsTable } from "./components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
@@ -11,6 +11,7 @@ import {
   bankAccountsSelector,
   resetState,
 } from "../../redux/slices/bankAccountsSlice";
+import { BankAccountCreateModal } from "./components/bankAccountFormModal";
 
 export const BankAccountsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -52,16 +53,28 @@ export const BankAccountsPage: React.FC = () => {
                 >
                   Добавить банковский счет
                 </Button>
-                {hasActiveFilters && (
-                  <Button onClick={handleResetFilters} icon={<ClearOutlined />}>
-                    Сбросить фильтры
-                  </Button>
-                )}
+                <Button
+                  disabled={!hasActiveFilters}
+                  onClick={handleResetFilters}
+                  icon={<ClearOutlined />}
+                >
+                  Сбросить фильтры
+                </Button>
               </Space>
               <BankAccountsTable
                 data={bankAccountsData || { total: 0, bank_accounts: [] }}
                 loading={isLoading}
                 legalEntitiesData={legalEntitiesResponse?.entities || []}
+              />
+
+              <BankAccountCreateModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                legalEntitiesData={legalEntitiesResponse?.entities || []}
+                onSuccess={() => {
+                  setIsModalVisible(false);
+                }}
+                mode="create"
               />
             </div>
           )}

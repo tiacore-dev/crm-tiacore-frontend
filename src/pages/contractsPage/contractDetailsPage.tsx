@@ -1,10 +1,9 @@
-//contractDetailsPage
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useContractDetailsQuery } from "../../hooks/contracts/useContractQuery";
 import { useContractMutations } from "../../hooks/contracts/useContractMutation";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -14,16 +13,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useContractStatuses } from "../../hooks/base/useBaseQuery";
 import { ContractDetailsCard } from "./components/contractDetailsCard";
 import { ContractFormModal } from "./components/contractFormModal";
-
-interface ILegalEntity {
-  legal_entity_id: string;
-  legal_entity_name: string;
-}
-
-interface IContractStatus {
-  contract_status_id: string;
-  status_name: string;
-}
+import { getEntityNameById, getContractStatusById } from "../../utils/infoById";
 
 export const ContractDetailsPage: React.FC = () => {
   const { contract_id } = useParams<{ contract_id: string }>();
@@ -92,19 +82,14 @@ export const ContractDetailsPage: React.FC = () => {
     }
   };
 
-  const getEntityNameById = (id: string | undefined) => {
-    return (
-      legalEntitiesResponse?.entities.find(
-        (entity: ILegalEntity) => entity.legal_entity_id === id
-      )?.legal_entity_name || id
-    );
+  const getEntityName = (id: string | undefined) => {
+    return getEntityNameById(id, legalEntitiesResponse?.entities) || id;
   };
 
-  const getContractStatusById = (id: string) => {
+  const getStatusName = (id: string) => {
     return (
-      contractStatusesResponse?.contract_statuses.find(
-        (status: IContractStatus) => status.contract_status_id === id
-      )?.status_name || id
+      getContractStatusById(id, contractStatusesResponse?.contract_statuses) ||
+      id
     );
   };
 
@@ -123,7 +108,6 @@ export const ContractDetailsPage: React.FC = () => {
                       setShowEditModal(true);
                     }}
                   >
-                    {" "}
                     <EditOutlined />
                     Редактировать
                   </Button>
@@ -134,13 +118,12 @@ export const ContractDetailsPage: React.FC = () => {
 
                 <ContractDetailsCard
                   contract={contract}
-                  getEntityNameById={getEntityNameById}
-                  getContractStatusById={getContractStatusById}
+                  getEntityNameById={getEntityName}
+                  getContractStatusById={getStatusName}
                   handleDownload={handleDownload}
                 />
               </div>
 
-              {/* Модальное окно редактирования */}
               {showEditModal && (
                 <ContractFormModal
                   mode="edit"

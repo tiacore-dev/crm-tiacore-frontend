@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, message, Spin } from "antd";
 import { useTemplateDetailsQuery } from "../../hooks/templates/useTemplateQuery";
 import { useTemplateMutations } from "../../hooks/templates/useTemplateMutation";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { downloadTemplate } from "../../api/templatesApi";

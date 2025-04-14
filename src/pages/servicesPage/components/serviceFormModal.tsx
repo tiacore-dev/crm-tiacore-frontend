@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Form } from "antd"; // Импорт компонентов Ant Design
+import { Modal, Input, Button, Form } from "antd";
 import { IService } from "../../../api/servicesApi";
 import { useServiceMutations } from "../../../hooks/services/useServiceMutations";
 
@@ -8,7 +8,7 @@ interface ServiceCreateModalProps {
   onCancel: () => void;
   onSuccess?: () => void;
   mode?: "create" | "edit";
-  initialData?: IService | null; // Новый пропс для состояния загрузки
+  initialData?: IService | null;
 }
 
 export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
@@ -18,7 +18,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
   mode = "create",
   initialData = null,
 }) => {
-  const [form] = Form.useForm(); // Хук для управления формой
+  const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { createMutation, updateMutation } = useServiceMutations(
@@ -61,7 +61,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
     <Modal
       title={mode === "create" ? "Добавить услугу" : "Редактировать услугу"}
       open={visible}
-      onOk={form.submit} // Используем form.submit() для отправки формы
+      onOk={form.submit}
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>

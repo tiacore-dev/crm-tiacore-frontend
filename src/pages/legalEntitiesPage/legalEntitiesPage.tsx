@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { Button, Spin } from "antd";
 import {
   useLegalEntitiesForSelection,

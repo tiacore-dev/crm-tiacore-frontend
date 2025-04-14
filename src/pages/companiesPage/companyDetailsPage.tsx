@@ -4,10 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCompanyDetailsQuery } from "../../hooks/companies/useCompanyQuery";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
-import { CompanyTable } from "./components/companyDetailsCard";
+import { CompanyCard } from "./components/companyDetailsCard"; // Изменен импорт
 import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
@@ -59,7 +59,6 @@ export const CompanyDetailsPage: React.FC = () => {
     setShowEditModal(false);
     refetch(); // Обновляем данные после успешного редактирования
   }, [refetch]);
-
   return (
     <div>
       {isLoading ? (
@@ -86,10 +85,9 @@ export const CompanyDetailsPage: React.FC = () => {
                     Удалить
                   </Button>
                 </Space>
-
-                <CompanyTable data={companyDetails} loading={isLoading} />
+                <CompanyCard data={companyDetails} loading={isLoading} />{" "}
+                {/* Изменено на CompanyCard */}
               </div>
-
               {showEditModal && (
                 <CompanyFormModal
                   visible={showEditModal}

@@ -6,12 +6,15 @@ import { IBankAccount } from "../../../api/bankAccountsApi";
 
 interface BankAccountDetailsDescriptionsProps {
   bank_account: IBankAccount;
-  getEntityNameById: (id: string | undefined) => string | undefined;
+  legalEntitiesData?: {
+    legal_entity_id: string;
+    legal_entity_name: string;
+  }[];
 }
 
 export const BankAccountDetailsDescriptions: React.FC<
   BankAccountDetailsDescriptionsProps
-> = ({ bank_account, getEntityNameById }) => {
+> = ({ bank_account, legalEntitiesData }) => {
   return (
     <Descriptions bordered column={1}>
       <Descriptions.Item label="Номер">
@@ -27,7 +30,9 @@ export const BankAccountDetailsDescriptions: React.FC<
           </Link>
         )}
         {"  "}
-        {getEntityNameById(bank_account.legal_entity)}
+        {legalEntitiesData?.find(
+          (entity) => entity.legal_entity_id === bank_account.legal_entity
+        )?.legal_entity_name || bank_account.legal_entity}
       </Descriptions.Item>
       <Descriptions.Item label="БИК">{bank_account.bank_bic}</Descriptions.Item>
       <Descriptions.Item label="Корреспондентский счет">

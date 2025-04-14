@@ -92,6 +92,9 @@ export const getLegalEntitiesTableColumns = ({
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
+      sorter: (a: ILegalEntity, b: ILegalEntity) =>
+        getCompanyName(a.company).localeCompare(getCompanyName(b.company)),
+      sortDirections: ["ascend", "descend"],
       render: getCompanyName,
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
@@ -121,12 +124,16 @@ export const getLegalEntitiesTableColumns = ({
       dataIndex: "inn",
       key: "inn",
       width: 150,
+      sorter: (a: ILegalEntity, b: ILegalEntity) => a.inn.localeCompare(b.inn),
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "КПП",
       dataIndex: "kpp",
       key: "kpp",
       width: 130,
+      sorter: (a: ILegalEntity, b: ILegalEntity) => a.kpp.localeCompare(b.kpp),
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Ставка НДС",
@@ -134,17 +141,25 @@ export const getLegalEntitiesTableColumns = ({
       key: "vat_rate",
       render: (vat_rate) => `${vat_rate}%`,
       width: 110,
+      sorter: (a: ILegalEntity, b: ILegalEntity) => a.vat_rate - b.vat_rate,
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Адрес",
       dataIndex: "address",
       key: "address",
       ellipsis: true,
+      sorter: (a: ILegalEntity, b: ILegalEntity) =>
+        a.address.localeCompare(b.address),
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Подписавший",
       dataIndex: "signer",
       key: "signer",
+      sorter: (a: ILegalEntity, b: ILegalEntity) =>
+        a.signer.localeCompare(b.signer),
+      sortDirections: ["ascend", "descend"],
     },
   ];
 };

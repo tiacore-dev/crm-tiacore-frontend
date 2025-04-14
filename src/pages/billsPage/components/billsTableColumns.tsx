@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { SortOrder } from "antd/es/table/interface";
 import { SearchOutlined, CalendarOutlined } from "@ant-design/icons";
-
+import {
+  getEntityNameById,
+  getBankNameById,
+  getBankAccountNumberById,
+  getContractNameById,
+} from "../../../utils/infoById";
 interface BillsTableColumnsProps {
   legalEntitiesData: {
     legal_entity_id: string;
@@ -44,32 +49,17 @@ export const getBillsTableColumns = ({
   onFilterChange,
   filters,
 }: BillsTableColumnsProps): ColumnType<IBill>[] => {
-  const getLegalEntityName = (legalEntityId: string): string => {
-    const legalEntity = legalEntitiesData.find(
-      (c) => c.legal_entity_id === legalEntityId
-    );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
-  };
+  const getContractName = (contractId: string) =>
+    getContractNameById(contractId, contractsData) || contractId;
 
-  const getBankAccountNumber = (bankId: string): string => {
-    const bankAccount = bankAccountsData.find(
-      (c) => c.bank_account_id === bankId
-    );
-    return bankAccount ? bankAccount.account_number : bankId;
-  };
+  const getLegalEntityName = (legalEntityId: string) =>
+    getEntityNameById(legalEntityId, legalEntitiesData) || legalEntityId;
 
-  const getBankAccountName = (bankId: string): string => {
-    const bankAccount = bankAccountsData.find(
-      (c) => c.bank_account_id === bankId
-    );
-    return bankAccount ? bankAccount.bank_name : bankId;
-  };
+  const getBankAccountName = (bankId: string) =>
+    getBankNameById(bankId, bankAccountsData) || bankId;
 
-  const getContractName = (contractId?: string): string => {
-    if (!contractId) return "-";
-    const contract = contractsData.find((c) => c.contract_id === contractId);
-    return contract ? contract.contract_name : contractId;
-  };
+  const getBankAccountNumber = (bankId: string) =>
+    getBankAccountNumberById(bankId, bankAccountsData) || bankId;
 
   const handleSortChange = (key: string) => {
     if (!onSortChange) return;
@@ -184,7 +174,7 @@ export const getBillsTableColumns = ({
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Select
-            style={{ width: 200 }}
+            style={{ width: 300 }}
             placeholder="Выберите счет"
             allowClear
             showSearch

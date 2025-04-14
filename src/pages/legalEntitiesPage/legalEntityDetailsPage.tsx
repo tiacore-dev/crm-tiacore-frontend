@@ -6,7 +6,7 @@ import { useLegalEntityMutations } from "../../hooks/legalEntities/useLegalEntit
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { useEntityTypes } from "../../hooks/base/useBaseQuery";
@@ -46,7 +46,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
       dispatch(
         setBreadcrumbs([
           { label: "Главная страница", to: "/home" },
-          { label: "Банковские счета", to: "/legal_entities" },
+          { label: "Юридические лица", to: "/legal_entities" },
           {
             label: legal_entity.legal_entity_name,
             to: `/legal_entities/${legal_entity_id}`,

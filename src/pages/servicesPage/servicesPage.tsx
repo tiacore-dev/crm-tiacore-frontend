@@ -11,9 +11,10 @@ import {
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { Button, Space, Spin } from "antd";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { ServicesTable } from "./components/servicesTable";
+import { ServiceCreateModal } from "./components/serviceFormModal";
 
 export const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,9 +32,6 @@ export const ServicesPage: React.FC = () => {
   }, [dispatch]);
 
   const { data: services_data, isLoading, isError } = useServiceQuery();
-  const handleResetFilters = () => {
-    dispatch(resetState());
-  };
 
   return (
     <div>
@@ -42,25 +40,25 @@ export const ServicesPage: React.FC = () => {
       ) : (
         <>
           {!isError && (
-            <div className="main-container">
-              <Space style={{ marginBottom: 16 }}>
-                <Button
-                  onClick={() => setIsModalVisible(true)}
-                  icon={<PlusOutlined />}
-                >
-                  Добавить новую услугу
-                </Button>
-                <Button
-                  onClick={handleResetFilters}
-                  icon={<ClearOutlined />}
-                  disabled={!search}
-                >
-                  Сбросить фильтры
-                </Button>
-              </Space>
-              <ServicesTable
-                data={services_data || { total: 0, services: [] }}
-                loading={isLoading}
+            <div>
+              <div className="main-container">
+                <Space style={{ marginBottom: 16 }}>
+                  <Button
+                    onClick={() => setIsModalVisible(true)}
+                    icon={<PlusOutlined />}
+                  >
+                    Добавить новую услугу
+                  </Button>
+                </Space>
+                <ServicesTable
+                  data={services_data || { total: 0, services: [] }}
+                  loading={isLoading}
+                />
+              </div>
+              <ServiceCreateModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                mode="create"
               />
             </div>
           )}

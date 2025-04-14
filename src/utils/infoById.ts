@@ -1,0 +1,88 @@
+import { ILegalEntity } from "../api/legalEntitiesApi";
+import { IContract } from "../api/contractsApi";
+import { IBankAccount } from "../api/bankAccountsApi";
+import { ICompany } from "../api/companiesApi";
+
+export const getEntityNameById = (
+  id: string | undefined,
+  entities: { legal_entity_id: string; legal_entity_name: string }[] | undefined
+): string | undefined => {
+  if (!id || !entities) return undefined;
+  return entities.find((entity) => entity.legal_entity_id === id)
+    ?.legal_entity_name;
+};
+
+export const getContractStatusById = (
+  id: string | undefined,
+  statuses: { contract_status_id: string; status_name: string }[] | undefined
+): string | undefined => {
+  if (!id || !statuses) return undefined;
+  return statuses.find((status) => status.contract_status_id === id)
+    ?.status_name;
+};
+
+export const getContractNameById = (
+  id: string | undefined,
+  contracts: { contract_id: string; contract_name: string }[] | undefined
+): string | undefined => {
+  if (!id || !contracts) return undefined;
+  return contracts.find((contract) => contract.contract_id === id)
+    ?.contract_name;
+};
+
+export const getBankNameById = (
+  id: string | undefined,
+  bankAccounts: { bank_account_id: string; bank_name: string }[] | undefined
+): string | undefined => {
+  if (!id || !bankAccounts) return undefined;
+  return bankAccounts.find((bank) => bank.bank_account_id === id)?.bank_name;
+};
+
+export const getBankAccountNumberById = (
+  id: string | undefined,
+  bankAccounts:
+    | { bank_account_id: string; account_number: string }[]
+    | undefined
+): string | undefined => {
+  if (!id || !bankAccounts) return undefined;
+  return bankAccounts.find((bank) => bank.bank_account_id === id)
+    ?.account_number;
+};
+
+export const getCompanyNameById = (
+  id: string | undefined,
+  companies: { company_id: string; company_name: string }[] | undefined
+): string | undefined => {
+  if (!id || !companies) return undefined;
+  return companies.find((company) => company.company_id === id)?.company_name;
+};
+
+export const createMemoizedHelpers = (
+  entities: ILegalEntity[] | undefined,
+  contracts: IContract[] | undefined,
+  bankAccounts: IBankAccount[] | undefined,
+  companies: ICompany[] | undefined
+) => {
+  const memoizedGetEntityNameById = (id: string | undefined) =>
+    getEntityNameById(id, entities);
+
+  const memoizedGetContractNameById = (id: string | undefined) =>
+    getContractNameById(id, contracts);
+
+  const memoizedGetBankNameById = (id: string | undefined) =>
+    getBankNameById(id, bankAccounts);
+
+  const memoizedGetBankAccountNumberById = (id: string | undefined) =>
+    getBankAccountNumberById(id, bankAccounts);
+
+  const memoizedGetCompanyNameById = (id: string | undefined) =>
+    getCompanyNameById(id, companies);
+
+  return {
+    getEntityNameById: memoizedGetEntityNameById,
+    getContractNameById: memoizedGetContractNameById,
+    getBankNameById: memoizedGetBankNameById,
+    getBankAccountNumberById: memoizedGetBankAccountNumberById,
+    getCompanyNameById: memoizedGetCompanyNameById,
+  };
+};

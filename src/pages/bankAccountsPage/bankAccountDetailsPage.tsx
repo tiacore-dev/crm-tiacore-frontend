@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useBankcAccountDetailsQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useBankAccountMutations } from "../../hooks/bankAccounts/useBankAccountMutation";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -60,14 +60,6 @@ export const BankAccountDetailsPage: React.FC = () => {
     });
   };
 
-  const getEntityNameById = (id: string | undefined) => {
-    return (
-      legalEntitiesResponse?.entities.find(
-        (entity) => entity.legal_entity_id === id
-      )?.legal_entity_name || id
-    );
-  };
-
   return (
     <div>
       {isLoading ? (
@@ -93,22 +85,20 @@ export const BankAccountDetailsPage: React.FC = () => {
 
                 <BankAccountDetailsDescriptions
                   bank_account={bank_account}
-                  getEntityNameById={getEntityNameById}
+                  legalEntitiesData={legalEntitiesResponse?.entities}
                 />
               </div>
 
-              {showEditModal && (
-                <BankAccountCreateModal
-                  visible={showEditModal}
-                  onCancel={() => setShowEditModal(false)}
-                  legalEntitiesData={legalEntitiesResponse?.entities || []}
-                  onSuccess={() => {
-                    setShowEditModal(false);
-                  }}
-                  mode="edit"
-                  initialData={bank_account}
-                />
-              )}
+              <BankAccountCreateModal
+                visible={showEditModal}
+                onCancel={() => setShowEditModal(false)}
+                legalEntitiesData={legalEntitiesResponse?.entities || []}
+                onSuccess={() => {
+                  setShowEditModal(false);
+                }}
+                mode="edit"
+                initialData={bank_account}
+              />
               {showDeleteConfirm && (
                 <ConfirmDeleteModal
                   onConfirm={handleDelete}

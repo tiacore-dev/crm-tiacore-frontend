@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 import { Spin, Button, Space } from "antd";
 import { CompanyFormModal } from "./components/companyFormModal";

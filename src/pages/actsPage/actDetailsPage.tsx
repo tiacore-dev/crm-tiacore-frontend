@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Descriptions, Space, Spin } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
 import { useActsMutations } from "../../hooks/acts/useActsMutation";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -50,30 +50,36 @@ export const ActDetailsPage: React.FC = () => {
     }
   }, [act, dispatch, act_id]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     deleteMutation.mutate(undefined, {
       onSuccess: () => {
         setShowDeleteConfirm(false);
         navigate("/acts");
       },
     });
-  };
+  }, [deleteMutation, navigate]);
 
-  const getEntityNameById = (id: string | undefined) => {
-    return (
-      legalEntitiesResponse?.entities.find(
-        (entity) => entity.legal_entity_id === id
-      )?.legal_entity_name || id
-    );
-  };
+  const getEntityNameById = useMemo(
+    () => (id: string | undefined) => {
+      return (
+        legalEntitiesResponse?.entities.find(
+          (entity) => entity.legal_entity_id === id
+        )?.legal_entity_name || id
+      );
+    },
+    [legalEntitiesResponse]
+  );
 
-  const getContractNameById = (id: string | undefined) => {
-    return (
-      contractsResponse?.contracts.find(
-        (contract) => contract.contract_id === id
-      )?.contract_name || id
-    );
-  };
+  const getContractNameById = useMemo(
+    () => (id: string | undefined) => {
+      return (
+        contractsResponse?.contracts.find(
+          (contract) => contract.contract_id === id
+        )?.contract_name || id
+      );
+    },
+    [contractsResponse]
+  );
 
   return (
     <div>

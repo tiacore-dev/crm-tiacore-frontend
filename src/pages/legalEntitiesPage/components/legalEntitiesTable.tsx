@@ -52,7 +52,7 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
     onEntityTypeChange: (value) => dispatch(setEntityType(value)),
   });
 
-  // Фильтрация данных
+  // 1. Фильтрация данных
   const filteredData = data.entities.filter((entity) => {
     const matchesSearch = search
       ? entity.legal_entity_name.toLowerCase().includes(search.toLowerCase())
@@ -64,15 +64,11 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
     return matchesSearch && matchesCompany && matchesEntityType;
   });
 
-  // Пагинация
-  const startIndex = (page - 1) * page_size;
-  const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
-
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={paginatedData}
+        dataSource={filteredData} // Передаем все отфильтрованные данные
         rowKey="legal_entity_id"
         loading={loading}
         pagination={{

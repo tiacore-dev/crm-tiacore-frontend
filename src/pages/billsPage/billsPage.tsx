@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { Button, Spin, Space } from "antd"; // Добавляем Space для группировки кнопок
 import { useBillsQuery } from "../../hooks/bills/useBillQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";

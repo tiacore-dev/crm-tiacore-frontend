@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useBillQuery } from "../../hooks/bills/useBillQuery";
 import { useBillMutations } from "../../hooks/bills/useBillMutation";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -13,7 +13,8 @@ import { useBankAccountsForSelection } from "../../hooks/bankAccounts/useBankAcc
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { BillDetailsCard } from "./components/billDetailsCard";
-
+import { createMemoizedHelpers } from "../../utils/infoById";
+import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export const BillDetailsPage: React.FC = () => {
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: bankAccountsResponse } = useBankAccountsForSelection();
   const { data: contractsResponse } = useContractsForSelection();
+  const { data: companiesResponse } = useCompaniesForSelection();
 
   const { deleteMutation } = useBillMutations(
     bill_id || "",
@@ -59,27 +61,13 @@ export const BillDetailsPage: React.FC = () => {
     });
   };
 
-  const getEntityNameById = (id: string | undefined) => {
-    return (
-      legalEntitiesResponse?.entities.find(
-        (entity) => entity.legal_entity_id === id
-      )?.legal_entity_name || id
+  const { getEntityNameById, getContractNameById, getBankNameById } =
+    createMemoizedHelpers(
+      legalEntitiesResponse?.entities,
+      contractsResponse?.contracts,
+      bankAccountsResponse?.bank_accounts,
+      companiesResponse?.companies
     );
-  };
-  const getBankNameById = (id: string | undefined) => {
-    return (
-      bankAccountsResponse?.bank_accounts.find(
-        (bank) => bank.bank_account_id === id
-      )?.bank_name || id
-    );
-  };
-  const getContractNameById = (id: string | undefined) => {
-    return (
-      contractsResponse?.contracts.find(
-        (contract) => contract.contract_id === id
-      )?.contract_name || id
-    );
-  };
 
   return (
     <div>

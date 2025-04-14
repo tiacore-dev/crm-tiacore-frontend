@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Menu, Button } from "antd"; // Импорт компонентов Ant Design
 // import "./Navbar.css"; // Стили для навигации
 
@@ -40,7 +40,12 @@ export const Navbar: React.FC = () => {
         onClick={({ key }) => navigate(key)}
         style={{ flex: 1, minWidth: 0 }}
       />
-      <Button type="primary" danger onClick={logOut}>
+      <Button
+        type="primary"
+        danger
+        onClick={logOut}
+        style={{ marginRight: "16px" }}
+      >
         Выйти
       </Button>
     </div>

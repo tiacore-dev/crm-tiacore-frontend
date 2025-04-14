@@ -4,6 +4,7 @@ import { DownloadOutlined, ExportOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { ITemplate } from "../../../api/templatesApi";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
+import { getCompanyNameById } from "../../../utils/infoById";
 
 interface TemplateDetailsCardProps {
   template: ITemplate;
@@ -15,12 +16,6 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
   onDownload,
 }) => {
   const { data: companiesResponse } = useCompaniesForSelection();
-  const getCompanyNameById = (id: string | undefined) => {
-    return (
-      companiesResponse?.companies.find((c) => c.company_id === id)
-        ?.company_name || id
-    );
-  };
 
   return (
     <Descriptions bordered column={1}>
@@ -33,7 +28,8 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
             <ExportOutlined />
           </Link>
         )}{" "}
-        {getCompanyNameById(template?.company)}
+        {getCompanyNameById(template?.company, companiesResponse?.companies) ||
+          template?.company}
       </Descriptions.Item>
       <Descriptions.Item label="Тип">
         {template.entity === "act" ? "Акт" : "Счет"}

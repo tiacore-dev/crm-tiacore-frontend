@@ -1,9 +1,9 @@
-//bankaccountstablecolumns
 import { Button, Select, Input } from "antd";
 import { ColumnType } from "antd/es/table";
 import { IBankAccount } from "../../../api/bankAccountsApi";
 import { NavigateFunction } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
+import { getEntityNameById } from "../../../utils/infoById"; // Добавить импорт
 
 interface BankAccountsTableColumnsProps {
   legalEntitiesData: {
@@ -18,6 +18,7 @@ interface BankAccountsTableColumnsProps {
   onBankNameChange: (value: string) => void;
   onAccountNumberChange: (value: string) => void;
 }
+
 export const getBankAccountsTableColumns = ({
   legalEntitiesData,
   navigate,
@@ -28,13 +29,6 @@ export const getBankAccountsTableColumns = ({
   onBankNameChange,
   onAccountNumberChange,
 }: BankAccountsTableColumnsProps): ColumnType<IBankAccount>[] => {
-  const getLegalEntityName = (legalEntityId: string): string => {
-    const legalEntity = legalEntitiesData.find(
-      (c) => c.legal_entity_id === legalEntityId
-    );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
-  };
-
   return [
     {
       title: "Номер счёта",
@@ -74,7 +68,18 @@ export const getBankAccountsTableColumns = ({
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
-      render: getLegalEntityName,
+      sorter: (a: IBankAccount, b: IBankAccount) => {
+        const nameA =
+          getEntityNameById(a.legal_entity, legalEntitiesData) ||
+          a.legal_entity;
+        const nameB =
+          getEntityNameById(b.legal_entity, legalEntitiesData) ||
+          b.legal_entity;
+        return nameA.localeCompare(nameB);
+      },
+      sortDirections: ["ascend", "descend"],
+      render: (legalEntityId: string) =>
+        getEntityNameById(legalEntityId, legalEntitiesData) || legalEntityId,
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Select
@@ -105,6 +110,9 @@ export const getBankAccountsTableColumns = ({
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
+      sorter: (a: IBankAccount, b: IBankAccount) =>
+        a.bank_name.localeCompare(b.bank_name),
+      sortDirections: ["ascend", "descend"],
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Input
@@ -118,15 +126,5 @@ export const getBankAccountsTableColumns = ({
       ),
       filteredValue: bankName ? [bankName] : null,
     },
-    // {
-    //   title: "БИК",
-    //   dataIndex: "bank_bic",
-    //   key: "bank_bic",
-    // },
-    // {
-    //   title: "Корреспондентский счет",
-    //   dataIndex: "bank_corr_account",
-    //   key: "bank_corr_account",
-    // },
   ];
 };

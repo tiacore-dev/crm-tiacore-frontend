@@ -5,14 +5,7 @@ import { ITemplate } from "../../../api/templatesApi";
 import { NavigateFunction } from "react-router-dom";
 import { FileOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
-
-const getCompanyNameById = (
-  companies: { company_id: string; company_name: string }[],
-  companyId: string
-): string => {
-  const companyObj = companies.find((c) => c.company_id === companyId);
-  return companyObj ? companyObj.company_name : companyId;
-};
+import { getCompanyNameById } from "../../../utils/infoById";
 
 export const getTemplateColumns = (
   companiesData: { company_id: string; company_name: string }[] = [],
@@ -35,7 +28,6 @@ export const getTemplateColumns = (
       sorter: (a: ITemplate, b: ITemplate) =>
         a.template_name.localeCompare(b.template_name),
       sortDirections: ["ascend", "descend"],
-
       render: (text: string, record: ITemplate) => (
         <Button
           type="link"
@@ -65,7 +57,7 @@ export const getTemplateColumns = (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
       render: (companyId: string) =>
-        getCompanyNameById(companiesData, companyId),
+        getCompanyNameById(companyId, companiesData) || companyId,
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Select
@@ -93,7 +85,8 @@ export const getTemplateColumns = (
       title: "Тип",
       dataIndex: "entity",
       key: "entity",
-      sorter: true,
+      sorter: (a: ITemplate, b: ITemplate) => a.entity.localeCompare(b.entity),
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Файл",

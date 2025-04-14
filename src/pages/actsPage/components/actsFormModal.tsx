@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Button, message } from "antd";
 import { useActsMutations } from "../../../hooks/acts/useActsMutation";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
@@ -39,42 +39,28 @@ export const ActFormModal: React.FC<ActModalProps> = ({
     initialData?.seller || ""
   );
 
-  const handleContractChange = (contractId: string) => {
-    if (!contractId) {
-      setFieldsLocked(false);
-      return;
-    }
+  const handleContractChange = useCallback(
+    (contractId: string) => {
+      if (!contractId) {
+        setFieldsLocked(false);
+        return;
+      }
 
-    const selectedContract = contractsData.find(
-      (c) => c.contract_id === contractId
-    );
-    if (selectedContract) {
-      form.setFieldsValue({
-        buyer: selectedContract.buyer,
-        seller: selectedContract.seller,
-      });
-      setFieldsLocked(true);
-    }
-  };
+      const selectedContract = contractsData.find(
+        (c) => c.contract_id === contractId
+      );
+      if (selectedContract) {
+        form.setFieldsValue({
+          buyer: selectedContract.buyer,
+          seller: selectedContract.seller,
+        });
+        setFieldsLocked(true);
+      }
+    },
+    [contractsData, form]
+  );
 
-  useEffect(() => {
-    if (initialData && mode === "edit") {
-      const isLocked = !!initialData.contract;
-      form.setFieldsValue({
-        act_number: initialData.act_number,
-        act_date: initialData.act_date ? dayjs(initialData.act_date) : null,
-        contract: initialData.contract || undefined,
-        buyer: initialData.buyer,
-        seller: initialData.seller,
-      });
-      setFieldsLocked(isLocked);
-    } else {
-      form.resetFields();
-      setFieldsLocked(false);
-    }
-  }, [initialData, mode, form]);
-
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
@@ -98,7 +84,32 @@ export const ActFormModal: React.FC<ActModalProps> = ({
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [
+    form,
+    mode,
+    initialData,
+    createMutation,
+    updateMutation,
+    onCancel,
+    onSuccess,
+  ]);
+
+  useEffect(() => {
+    if (initialData && mode === "edit") {
+      const isLocked = !!initialData.contract;
+      form.setFieldsValue({
+        act_number: initialData.act_number,
+        act_date: initialData.act_date ? dayjs(initialData.act_date) : null,
+        contract: initialData.contract || undefined,
+        buyer: initialData.buyer,
+        seller: initialData.seller,
+      });
+      setFieldsLocked(isLocked);
+    } else {
+      form.resetFields();
+      setFieldsLocked(false);
+    }
+  }, [initialData, mode, form]);
 
   return (
     <Modal
@@ -146,7 +157,6 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             placeholder="Выберите договор (необязательно)"
             allowClear
             onChange={handleContractChange}
-            disabled={fieldsLocked && mode === "edit"}
           >
             {contractsData.map((contract) => (
               <Select.Option

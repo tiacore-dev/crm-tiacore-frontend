@@ -123,22 +123,16 @@ export const UsersTable: React.FC<UsersTableProps> = ({
     return matchesUsername && matchesFullName && matchesPosition;
   });
 
-  // Пагинация данных
-  const paginatedData = filteredData.slice(
-    (page - 1) * page_size,
-    page * page_size
-  );
-
   return (
     <Table
       columns={columns}
-      dataSource={paginatedData}
+      dataSource={filteredData} // Передаем все отфильтрованные данные
       rowKey="user_id"
       loading={loading}
       pagination={{
         current: page,
         pageSize: page_size,
-        total: filteredData.length, // Общее количество после фильтрации
+        total: filteredData.length,
         showSizeChanger: true,
         pageSizeOptions: ["10", "20", "50", "100"],
         showTotal: (total) => <Typography.Text>Всего: {total}</Typography.Text>,

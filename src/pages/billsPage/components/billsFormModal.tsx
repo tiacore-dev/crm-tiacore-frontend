@@ -176,7 +176,6 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             placeholder="Выберите договор (необязательно)"
             allowClear
             onChange={handleContractChange}
-            disabled={fieldsLocked && mode === "edit"}
           >
             {contractsData.map((contract) => (
               <Select.Option

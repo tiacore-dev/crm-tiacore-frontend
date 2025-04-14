@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin, Space } from "antd";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { useContractQuery } from "../../hooks/contracts/useContractQuery";
 import { ContractsTable } from "./components/contractsTable";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -93,6 +93,22 @@ export const ContractsPage: React.FC = () => {
         break;
     }
   };
+
+  const handleTableChange = useCallback(
+    (pagination: any, _filters: any, sorter: any) => {
+      if (pagination.current !== page) {
+        dispatch(setPage(pagination.current));
+      }
+      if (pagination.pageSize !== page_size) {
+        dispatch(setPageSize(pagination.pageSize));
+      }
+      if (sorter.field) {
+        dispatch(setSortBy(sorter.field));
+        dispatch(setOrder(sorter.order === "ascend" ? "asc" : "desc"));
+      }
+    },
+    [dispatch, page, page_size]
+  );
 
   const handleResetFilters = () => {
     dispatch(resetState());

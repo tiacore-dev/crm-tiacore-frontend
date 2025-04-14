@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { Button, Spin, Space } from "antd"; // Добавляем Space для группировки кнопок
 import { useActsQuery } from "../../hooks/acts/useActsQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -58,46 +58,57 @@ export const ActsPage: React.FC = () => {
   });
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractsResponse } = useContractsForSelection();
+  const handleTableChange = useCallback(
+    (pagination: any) => {
+      if (pagination.current !== page) {
+        dispatch(setPage(pagination.current));
+      }
+      if (pagination.pageSize !== page_size) {
+        dispatch(setPageSize(pagination.pageSize));
+      }
+    },
+    [dispatch, page, page_size]
+  );
 
-  const handleTableChange = (pagination: any) => {
-    if (pagination.current !== page) {
-      dispatch(setPage(pagination.current));
-    }
-    if (pagination.pageSize !== page_size) {
-      dispatch(setPageSize(pagination.pageSize));
-    }
-  };
+  const handleSortChange = useCallback(
+    (sortBy: string, newOrder: string) => {
+      dispatch(setSortBy(sortBy));
+      dispatch(setOrder(newOrder));
+    },
+    [dispatch]
+  );
 
-  const handleSortChange = (sortBy: string, newOrder: string) => {
-    dispatch(setSortBy(sortBy));
-    dispatch(setOrder(newOrder));
-  };
+  const handleFilterChange = useCallback(
+    (field: string, value: any) => {
+      switch (field) {
+        case "contract":
+          dispatch(setContract(value || undefined));
+          break;
+        case "act_date_from":
+          dispatch(setDateFrom(value || undefined));
+          break;
+        case "act_date_to":
+          dispatch(setDateTo(value || undefined));
+          break;
+        default:
+          break;
+      }
+    },
+    [dispatch]
+  );
 
-  const handleFilterChange = (field: string, value: any) => {
-    switch (field) {
-      case "contract":
-        dispatch(setContract(value || undefined));
-        break;
-      case "act_date_from":
-        dispatch(setDateFrom(value || undefined));
-        break;
-      case "act_date_to":
-        dispatch(setDateTo(value || undefined));
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     dispatch(resetState());
-  };
+  }, [dispatch]);
 
-  const hasActiveFilters =
-    contract !== undefined ||
-    act_date_from !== undefined ||
-    act_date_to !== undefined ||
-    sort_by !== undefined;
+  const hasActiveFilters = useMemo(
+    () =>
+      contract !== undefined ||
+      act_date_from !== undefined ||
+      act_date_to !== undefined ||
+      sort_by !== undefined,
+    [contract, act_date_from, act_date_to, sort_by]
+  );
 
   return (
     <div>

@@ -10,7 +10,7 @@ import {
   message,
   DatePicker,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useContractMutations } from "../../../hooks/contracts/useContractMutation";
 import { RcFile } from "antd/es/upload";
 import { IContract } from "../../../api/contractsApi";
@@ -28,7 +28,7 @@ interface ContractFormModalProps {
   onCancel: () => void;
   onSuccess: () => void;
   legalEntitiesData: { legal_entity_id: string; legal_entity_name: string }[];
-  contractData?: IContract; // Required only for edit mode
+  contractData?: IContract;
 }
 
 export const ContractFormModal: React.FC<ContractFormModalProps> = ({
@@ -41,6 +41,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [file, setFile] = useState<RcFile | null>(null);
+  const [removeExistingFile, setRemoveExistingFile] = useState(false);
   const queryClient = useQueryClient();
 
   const { createMutation, updateMutation } = useContractMutations(
@@ -71,12 +72,21 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
         form.resetFields();
       }
       setFile(null);
+      setRemoveExistingFile(false);
     }
   }, [visible, mode, contractData, form]);
 
   const beforeUpload = (file: RcFile) => {
     setFile(file);
+    setRemoveExistingFile(false);
     return false;
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    if (mode === "edit") {
+      setRemoveExistingFile(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -106,6 +116,10 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
 
       if (file) {
         formData.append("file", file);
+      }
+
+      if (mode === "edit" && removeExistingFile) {
+        formData.append("remove_file", "true");
       }
 
       if (mode === "create") {
@@ -155,10 +169,25 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
   }, [ContractStatusesResponse]);
 
   const getFileExtra = () => {
-    if (mode === "edit" && !file) {
+    if (
+      mode === "edit" &&
+      !file &&
+      !removeExistingFile &&
+      contractData?.s3_key
+    ) {
       return (
-        "Текущий файл: " +
-        (contractData?.s3_key?.split("/").pop() || "Нет файла")
+        <div>
+          Текущий файл: {contractData?.s3_key?.split("/").pop() || "Нет файла"}
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => setRemoveExistingFile(true)}
+            style={{ marginLeft: 8 }}
+          >
+            Удалить
+          </Button>
+        </div>
       );
     }
     return null;
@@ -268,16 +297,13 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
             options={statusOptions}
           />
         </Form.Item>
-        <Form.Item
-          label="Файл"
-          extra={getFileExtra()}
-          required={mode === "create"}
-        >
+        <Form.Item label="Файл" extra={getFileExtra()}>
           <Upload
             beforeUpload={beforeUpload}
             maxCount={1}
             accept=".doc,.docx,.xls,.xlsx,.pdf"
             fileList={file ? [file] : []}
+            onRemove={handleRemoveFile}
           >
             <Button icon={<UploadOutlined />}>
               {mode === "create" ? "Выберите файл" : "Выберите новый файл"}

@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 
 export const useServiceMutations = (
-  service_id: string,
-  service_name: string,
+  service_id: string = "",
+  service_name: string = "",
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
@@ -21,17 +21,7 @@ export const useServiceMutations = (
     mutationFn: createService,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
-      toast.success(
-        <div>
-          Услуга успешно добавлена{" "}
-          <Button
-            type="link"
-            onClick={() => navigate(`/services/${data.service_id}`)}
-          >
-            Подробнее
-          </Button>
-        </div>
-      );
+      toast.success(<div>Услуга успешно добавлена </div>);
     },
     onError: () => {
       toast.error("Ошибка при добавлении услуги");
@@ -49,6 +39,7 @@ export const useServiceMutations = (
       }
       setIsEditing && setIsEditing(false);
       toast.success("Услуга успешно обновлена");
+      queryClient.invalidateQueries({ queryKey: ["services"] });
     },
     onError: () => {
       toast.error("Ошибка при обновлении данных");
@@ -56,11 +47,10 @@ export const useServiceMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
-      service_id ? deleteService(service_id) : Promise.reject(),
+    mutationFn: (id: string) => deleteService(id),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
       toast.success("Услуга успешно удалена");
-      // navigate(-1);
     },
     onError: () => {
       toast.error("Ошибка при удалении услуги");

@@ -45,7 +45,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
     onBankNameChange: (value) => dispatch(setBankName(value)),
   });
 
-  // Клиентская фильтрация
+  // 1. Фильтрация данных
   const filteredData = data.bank_accounts.filter((account) => {
     const matchesAccountNumber = account_number
       ? account.account_number
@@ -61,15 +61,14 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
     return matchesAccountNumber && matchesLegalEntity && matchesBankName;
   });
 
-  // Клиентская пагинация
-  const startIndex = (page - 1) * page_size;
-  const paginatedData = filteredData.slice(startIndex, startIndex + page_size);
+  // 2. Сортировка будет выполняться Ant Table автоматически через sorter в колонках
+  // 3. Пагинация обрабатывается Ant Table автоматически при правильном dataSource
 
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={paginatedData}
+        dataSource={filteredData} // Передаем все отфильтрованные данные
         rowKey="bank_account_id"
         loading={loading}
         pagination={{

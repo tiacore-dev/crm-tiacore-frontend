@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin, Space } from "antd"; // Добавлен Space для группировки кнопок
-import { BackButton } from "../../components/modals/backButton";
+import { BackButton } from "../../components/backButton";
 import { useTemplateQuery } from "../../hooks/templates/useTemplateQuery";
 import { TemplatesTable } from "./components/templatesTable";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons"; // Добавлен ClearOutlined
