@@ -5,7 +5,7 @@ import { BackButton } from "../../components/backButton";
 import { Button, Spin } from "antd";
 import {
   useLegalEntitiesForSelection,
-  useLegalEntityQuery,
+  // useLegalEntityQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";

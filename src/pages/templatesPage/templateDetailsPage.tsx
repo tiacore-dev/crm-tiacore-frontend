@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Space, message, Spin } from "antd";
 import { useTemplateDetailsQuery } from "../../hooks/templates/useTemplateQuery";
 import { useTemplateMutations } from "../../hooks/templates/useTemplateMutation";
@@ -15,7 +15,6 @@ import { TemplateDetailsCard } from "./components/templateDetailsCard";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);

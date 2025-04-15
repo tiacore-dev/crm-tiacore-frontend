@@ -2,7 +2,6 @@
 import { useQuery } from "@tanstack/react-query";
 // import { useSelector } from "react-redux";
 import { fetchUsers, fetchUserDetails, IUser } from "../../api/usersApi";
-import { usersSelector } from "../../redux/slices/usersSlice";
 
 export interface useUserQueryResponse {
   total: number;

@@ -71,8 +71,8 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
 
   const processedData = [...filteredData];
 
-  const startIndex = (page - 1) * page_size;
-  const paginatedData = processedData.slice(startIndex, startIndex + page_size);
+  // const startIndex = (page - 1) * page_size;
+  // const paginatedData = processedData.slice(startIndex, startIndex + page_size);
 
   return (
     <div>

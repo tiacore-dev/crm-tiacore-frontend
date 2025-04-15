@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/backButton";
@@ -28,7 +28,7 @@ export const UsersPage: React.FC = () => {
 
   const { data: users_data, isLoading, isError } = useUserQueryAll();
 
-  const { data: userRolesResponse } = useUserRoles();
+  // const { data: userRolesResponse } = useUserRoles();
 
   const handleResetFilters = () => {
     dispatch(resetState());

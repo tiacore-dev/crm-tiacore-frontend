@@ -1,7 +1,6 @@
 // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
-import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { IBillDetailsResponse } from "../hooks/billDetails/billDetailQuery";
 
 export interface IBillDetail {
   bill_detail_id: string; //uuid4
@@ -12,16 +11,23 @@ export interface IBillDetail {
 }
 
 // Функция для получения списка с параметрами
-export const fetchBillDetails = async () => {
+export const fetchBillDetails = async (params?: { bill?: string }) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const response = await axiosInstance.get(`${url}/api/bill-details/all`, {
-    params: { page: 1, page_size: 100 },
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await axiosInstance.get<IBillDetailsResponse>(
+    `${url}/api/bill-details/all`,
+    {
+      params: {
+        ...params,
+        page: 1,
+        page_size: 100,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return response.data;
 };
 

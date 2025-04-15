@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Input, Button, Form, InputNumber, Select } from "antd";
-import { IActDetail } from "../../../api/actDetailsApi";
-import { useActDetailMutations } from "../../../hooks/actDetails/actDetailMutation";
+import { IBillDetail } from "../../../api/billDetailsApi";
+import { useBillDetailMutations } from "../../../hooks/billDetails/billDetailMutation";
 import { useServiceQuery } from "../../../hooks/services/useServiceQuery";
 
-interface ActDetailFormModalProps {
+interface BillDetailFormModalProps {
   visible: boolean;
   onCancel: () => void;
-  actId: string; // ID акта, к которому относится деталь
+  billId: string; // ID акта, к которому относится деталь
   onSuccess?: () => void;
   mode?: "create" | "edit";
-  initialData?: IActDetail | null;
+  initialData?: IBillDetail | null;
 }
 
-export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
+export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
   visible,
   onCancel,
-  actId,
+  billId,
   onSuccess,
   mode = "create",
   initialData = null,
@@ -25,9 +25,9 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: servicesResponse } = useServiceQuery();
 
-  const { createMutation, updateMutation } = useActDetailMutations(
-    initialData?.act_detail_id || "",
-    initialData?.act || actId,
+  const { createMutation, updateMutation } = useBillDetailMutations(
+    initialData?.bill_detail_id || "",
+    initialData?.bill || billId,
     initialData?.service || "",
     initialData?.quantity || 0,
     initialData?.summ || 0
@@ -43,10 +43,10 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
     } else {
       form.resetFields();
       form.setFieldsValue({
-        act: actId,
+        bill: billId,
       });
     }
-  }, [initialData, mode, form, actId]);
+  }, [initialData, mode, form, billId]);
 
   const handleSubmit = async () => {
     try {
@@ -56,12 +56,12 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
       if (mode === "create") {
         await createMutation.mutateAsync({
           ...values,
-          act: actId,
+          bill: billId,
         });
-      } else if (mode === "edit" && initialData?.act_detail_id) {
+      } else if (mode === "edit" && initialData?.bill_detail_id) {
         await updateMutation.mutateAsync({
           ...values,
-          act_detail_id: initialData.act_detail_id,
+          bill_detail_id: initialData.bill_detail_id,
         });
       }
 
@@ -97,7 +97,7 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
       width={700}
     >
       <Form form={form} layout="vertical">
-        <Form.Item name="act" hidden>
+        <Form.Item name="bill" hidden>
           <Input type="hidden" />
         </Form.Item>
 

@@ -5,7 +5,7 @@ import { IContract } from "../../../api/contractsApi";
 import { useState } from "react";
 import { downloadContract } from "../../../api/contractsApi";
 import { getContractsTableColumns } from "./contractsTableColumns";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 
 interface ContractsTableProps {
   data: {
@@ -52,7 +52,7 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
   onFilterChange,
 }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const handleDownload = async (contract_id: string) => {

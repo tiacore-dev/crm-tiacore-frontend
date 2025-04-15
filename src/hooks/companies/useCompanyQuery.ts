@@ -1,12 +1,10 @@
 //companyUseQuery.ts
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import {
   fetchCompanies,
   fetchCompanyDetails,
   ICompany,
 } from "../../api/companiesApi";
-import { companiesSelector } from "../../redux/slices/companiesSlice";
 import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
 
 export interface useCompanyQueryResponse {

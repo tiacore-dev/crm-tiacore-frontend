@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Descriptions, Space, Spin, Modal } from "antd";
+import { Button, Space, Spin } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
 import { useActsMutations } from "../../hooks/acts/useActsMutation";
 import { BackButton } from "../../components/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
-import dayjs from "dayjs";
 import { ActFormModal } from "./components/actsFormModal";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
@@ -16,9 +15,7 @@ import { ActDetailsDescriptions } from "./components/actDetailsCard";
 import { useActDetailsQuery } from "../../hooks/actDetails/actDetailQuery";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { ActDetailsTable } from "./components/actDetailsTable";
-import { useActDetailMutations } from "../../hooks/actDetails/actDetailMutation";
-import { ActDetailFormModal } from "./components/actDetailsFormModal";
-import { IActDetail } from "../../api/actDetailsApi";
+import { createMemoizedHelpers } from "../../utils/infoById";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -26,10 +23,6 @@ export const ActDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [editingDetail, setEditingDetail] = useState<IActDetail | null>(null);
-  const [confirmDeleteDetail, setConfirmDeleteDetail] = useState(false);
-  const [deletingDetailId, setDeletingDetailId] = useState<string | null>(null);
 
   const { data: act, isLoading, isError } = useActQuery(act_id || "");
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
@@ -57,14 +50,6 @@ export const ActDetailsPage: React.FC = () => {
     act?.seller || ""
   );
 
-  const { deleteMutation: deleteDetailMutation } = useActDetailMutations(
-    "",
-    "",
-    "",
-    0,
-    0
-  );
-
   useEffect(() => {
     if (act) {
       dispatch(
@@ -89,47 +74,11 @@ export const ActDetailsPage: React.FC = () => {
     });
   }, [deleteMutation, navigate]);
 
-  const handleEditDetail = (detail: IActDetail) => {
-    setEditingDetail(detail);
-    setShowDetailModal(true);
-  };
-
-  // const handleDeleteDetail = (detailId: string) => {
-  //   setDeletingDetailId(detailId);
-  //   setConfirmDeleteDetail(true);
-  // };
-
-  // const confirmDetailDelete = () => {
-  //   if (deletingDetailId) {
-  //     deleteDetailMutation.mutate(deletingDetailId, {
-  //       onSuccess: () => {
-  //         setConfirmDeleteDetail(false);
-  //         setDeletingDetailId(null);
-  //       },
-  //     });
-  //   }
-  // };
-
-  const getEntityNameById = useMemo(
-    () => (id: string | undefined) => {
-      return (
-        legalEntitiesResponse?.entities.find(
-          (entity) => entity.legal_entity_id === id
-        )?.legal_entity_name || id
-      );
-    },
-    [legalEntitiesResponse]
-  );
-
-  const getContractNameById = useMemo(
-    () => (id: string | undefined) => {
-      return (
-        contractsResponse?.contracts.find(
-          (contract) => contract.contract_id === id
-        )?.contract_name || id
-      );
-    },
-    [contractsResponse]
+  const { getEntityNameById, getContractNameById } = createMemoizedHelpers(
+    legalEntitiesResponse?.entities,
+    contractsResponse?.contracts,
+    undefined,
+    undefined
   );
 
   return (
@@ -150,22 +99,19 @@ export const ActDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
+
                 <ActDetailsDescriptions
                   act={act}
                   getEntityNameById={getEntityNameById}
                   getContractNameById={getContractNameById}
                 />
-
+              </div>
+              <div className="main-container">
                 <ActDetailsTable
                   data={actDetails || { total: 0, act_details: [] }}
                   loading={isLoadingDetails}
                   servicesData={servicesData}
-                  onAddDetail={() => {
-                    setEditingDetail(null);
-                    setShowDetailModal(true);
-                  }}
-                  onEdit={handleEditDetail}
-                  // onDelete={handleDeleteDetail}
+                  actId={act_id || ""}
                 />
               </div>
 
@@ -183,19 +129,6 @@ export const ActDetailsPage: React.FC = () => {
                 />
               )}
 
-              {showDetailModal && (
-                <ActDetailFormModal
-                  visible={showDetailModal}
-                  onCancel={() => setShowDetailModal(false)}
-                  actId={act_id || ""}
-                  onSuccess={() => {
-                    setShowDetailModal(false);
-                  }}
-                  mode={editingDetail ? "edit" : "create"}
-                  initialData={editingDetail}
-                />
-              )}
-
               {showDeleteConfirm && (
                 <ConfirmDeleteModal
                   onConfirm={handleDelete}
@@ -203,17 +136,6 @@ export const ActDetailsPage: React.FC = () => {
                   isDeleteLoading={deleteMutation.isPending}
                 />
               )}
-
-              {/* {confirmDeleteDetail && (
-                <ConfirmDeleteModal
-                  onConfirm={confirmDetailDelete}
-                  onCancel={() => {
-                    setConfirmDeleteDetail(false);
-                    setDeletingDetailId(null);
-                  }}
-                  isDeleteLoading={deleteDetailMutation.isPending}
-                />
-              )} */}
             </>
           )}
           {isError && <BackButton />}

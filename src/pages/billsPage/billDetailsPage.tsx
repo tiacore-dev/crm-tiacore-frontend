@@ -13,11 +13,11 @@ import { useBankAccountsForSelection } from "../../hooks/bankAccounts/useBankAcc
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { BillDetailsCard } from "./components/billDetailsCard";
-import {
-  createMemoizedHelpers,
-  getBankAccountNumberById,
-} from "../../utils/infoById";
+import { createMemoizedHelpers } from "../../utils/infoById";
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
+import { useServiceQuery } from "../../hooks/services/useServiceQuery";
+import { useBillDetailsQuery } from "../../hooks/billDetails/billDetailQuery";
+import { BillDetailsTable } from "./components/billDetailsTable";
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
   const navigate = useNavigate();
@@ -29,6 +29,19 @@ export const BillDetailsPage: React.FC = () => {
   const { data: bankAccountsResponse } = useBankAccountsForSelection();
   const { data: contractsResponse } = useContractsForSelection();
   const { data: companiesResponse } = useCompaniesForSelection();
+  const { data: servicesResponse } = useServiceQuery();
+
+  const servicesData =
+    servicesResponse?.services.map((service) => ({
+      service_id: service.service_id,
+      service_name: service.service_name,
+    })) || [];
+
+  const {
+    data: billDetails,
+    isLoading: isLoadingDetails,
+    isError: isErrorDetails,
+  } = useBillDetailsQuery(bill_id);
 
   const { deleteMutation } = useBillMutations(
     bill_id || "",
@@ -108,7 +121,14 @@ export const BillDetailsPage: React.FC = () => {
                   getBankNumberById={getBankAccountNumberById}
                 />
               </div>
-
+              <div className="main-container">
+                <BillDetailsTable
+                  data={billDetails || { total: 0, bill_details: [] }}
+                  loading={isLoadingDetails}
+                  servicesData={servicesData}
+                  billId={bill_id || ""}
+                />
+              </div>
               {showEditModal && (
                 <BillCreateModal
                   visible={showEditModal}

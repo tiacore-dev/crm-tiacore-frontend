@@ -35,11 +35,10 @@ export const useBillDetailMutations = (
         ? updateBillDetail(bill_detail_id, editedData)
         : Promise.reject(),
     onSuccess: () => {
-      if (bill_detail_id) {
-        queryClient.invalidateQueries({
-          queryKey: ["billDetail", bill_detail_id],
-        });
-      }
+      queryClient.invalidateQueries({
+        queryKey: ["billDetails"],
+      });
+
       setIsEditing && setIsEditing(false);
       toast.success("Информация обновлена");
     },
@@ -49,9 +48,10 @@ export const useBillDetailMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
-      bill_detail_id ? deleteBillDetail(bill_detail_id) : Promise.reject(),
+    mutationFn: (bill_detail_id: string) => deleteBillDetail(bill_detail_id),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["billDetails"] });
+
       toast.success("Успешно удалено");
     },
     onError: () => {

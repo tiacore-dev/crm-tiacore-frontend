@@ -1,12 +1,10 @@
 //companyUseQuery.ts
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import {
   fetchLegalEntities,
   fetchLegalEntityDetails,
   ILegalEntity,
 } from "../../api/legalEntitiesApi";
-import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
 
 export interface ILegalEntitiesResponse {
   total: number;

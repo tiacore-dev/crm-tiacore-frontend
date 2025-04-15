@@ -1,7 +1,5 @@
 // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
-import toast from "react-hot-toast";
-import { AxiosError } from "axios";
 import { IActDetailsResponse } from "../hooks/actDetails/actDetailQuery";
 
 export interface IActDetail {

@@ -1,12 +1,10 @@
 //bankAccountsUseQuery.ts
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import {
   fetchBankAccounts,
   fetchBankAccountDetails,
   IBankAccount,
 } from "../../api/bankAccountsApi";
-import { bankAccountsSelector } from "../../redux/slices/bankAccountsSlice";
 
 export interface IBankAccountsResponse {
   total: number;

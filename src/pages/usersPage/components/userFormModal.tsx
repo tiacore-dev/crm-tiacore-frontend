@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Button } from "antd";
+import { Modal, Form, Input, Button } from "antd";
 import { useUserMutations } from "../../../hooks/users/useUserMutation";
 import { IUser } from "../../../api/usersApi";
 

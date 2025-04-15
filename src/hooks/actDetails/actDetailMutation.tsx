@@ -35,11 +35,6 @@ export const useActDetailMutations = (
         ? updateActDetail(act_detail_id, editedData)
         : Promise.reject(),
     onSuccess: () => {
-      // if (act_detail_id) {
-      //   queryClient.invalidateQueries({
-      //     queryKey: ["actDetail", act_detail_id],
-      //   });
-      // }
       queryClient.invalidateQueries({ queryKey: ["actDetails"] });
 
       setIsEditing && setIsEditing(false);
@@ -51,9 +46,10 @@ export const useActDetailMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
-      act_detail_id ? deleteActDetail(act_detail_id) : Promise.reject(),
+    mutationFn: (act_detail_id: string) => deleteActDetail(act_detail_id),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["actDetails"] });
+
       toast.success("Успешно удалено");
     },
     onError: () => {

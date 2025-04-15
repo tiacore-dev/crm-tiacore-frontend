@@ -1,5 +1,6 @@
 import { Table, Typography, Dropdown, Button, Menu, Space } from "antd";
-import { IActDetail } from "../../../api/actDetailsApi";
+import { IBillDetail } from "../../../api/billDetailsApi";
+// import { useNavigate } from "react-router-dom";
 import { getServiceNameById } from "../../../utils/infoById";
 import {
   DeleteOutlined,
@@ -8,52 +9,50 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { useActDetailMutations } from "../../../hooks/actDetails/actDetailMutation";
+import { useBillDetailMutations } from "../../../hooks/billDetails/billDetailMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
-import { ActDetailFormModal } from "./actDetailsFormModal";
+import { BillDetailFormModal } from "./billDetailsFormModal";
 
-interface IActDetailsTableProps {
+interface IBillDetailsTableProps {
   data: {
     total: number;
-    act_details: IActDetail[];
+    bill_details: IBillDetail[];
   };
   loading: boolean;
   servicesData?: {
     service_id: string;
     service_name: string;
   }[];
-  actId: string;
+  billId: string;
 }
 
-export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
-  data = { total: 0, act_details: [] },
+export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
+  data = { total: 0, bill_details: [] },
   loading,
   servicesData = [],
-  actId = "",
+  billId = "",
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [selectedActDetail, setSelectedActDetail] = useState<IActDetail | null>(
-    null
-  );
-  const { deleteMutation } = useActDetailMutations("", "", "", 0, 0, () => {});
-  const [editingActDetail, setEditingActDetail] = useState<IActDetail | null>(
-    null
-  );
+  const [selectedBillDetail, setSelectedBillDetail] =
+    useState<IBillDetail | null>(null);
+  const { deleteMutation } = useBillDetailMutations("", "", "", 0, 0, () => {});
+  const [editingBillDetail, setEditingBillDetail] =
+    useState<IBillDetail | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleEdit = (actDetail: IActDetail) => {
-    setEditingActDetail(actDetail);
+  const handleEdit = (billDetail: IBillDetail) => {
+    setEditingBillDetail(billDetail);
     setIsModalVisible(true);
   };
 
-  const handleDelete = (actDetail: IActDetail) => {
-    setSelectedActDetail(actDetail);
+  const handleDelete = (billDetail: IBillDetail) => {
+    setSelectedBillDetail(billDetail);
     setShowDeleteConfirm(true);
   };
 
   const confirmDelete = () => {
-    if (selectedActDetail) {
-      deleteMutation.mutate(selectedActDetail.act_detail_id, {
+    if (selectedBillDetail) {
+      deleteMutation.mutate(selectedBillDetail.bill_detail_id, {
         onSuccess: () => {
           setShowDeleteConfirm(false);
         },
@@ -62,23 +61,23 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   };
 
   const handleAddDetail = () => {
-    setEditingActDetail(null);
+    setEditingBillDetail(null);
     setIsModalVisible(true);
   };
 
-  const menu = (actDetail: IActDetail) => (
+  const menu = (billDetail: IBillDetail) => (
     <Menu>
       <Menu.Item
         key="edit"
         icon={<EditOutlined />}
-        onClick={() => handleEdit(actDetail)}
+        onClick={() => handleEdit(billDetail)}
       >
         Редактировать
       </Menu.Item>
       <Menu.Item
         key="delete"
         icon={<DeleteOutlined />}
-        onClick={() => handleDelete(actDetail)}
+        onClick={() => handleDelete(billDetail)}
         danger
       >
         Удалить
@@ -96,7 +95,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
           {getServiceNameById(serviceId, servicesData) || serviceId}
         </div>
       ),
-      sorter: (a: IActDetail, b: IActDetail) => {
+      sorter: (a: IBillDetail, b: IBillDetail) => {
         const nameA = getServiceNameById(a.service, servicesData) || a.service;
         const nameB = getServiceNameById(b.service, servicesData) || b.service;
         return nameA.localeCompare(nameB);
@@ -119,13 +118,13 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
           {`${value.toLocaleString()} ₽`}
         </div>
       ),
-      sorter: (a: IActDetail, b: IActDetail) => a.summ - b.summ,
+      sorter: (a: IBillDetail, b: IBillDetail) => a.summ - b.summ,
     },
     {
       title: "",
       key: "actions",
       width: 100,
-      render: (record: IActDetail) => (
+      render: (record: IBillDetail) => (
         <Dropdown overlay={menu(record)} trigger={["click"]}>
           <Button
             type="text"
@@ -148,7 +147,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         }}
       >
         <Typography.Title level={4} style={{ margin: 0 }}>
-          Детали акта
+          Детали счета
         </Typography.Title>
         <Button
           type="primary"
@@ -160,8 +159,8 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       </div>
       <Table
         columns={columns}
-        dataSource={data.act_details}
-        rowKey="act_detail_id"
+        dataSource={data.bill_details}
+        rowKey="bill_detail_id"
         loading={loading}
         pagination={false}
         style={{ margin: 0 }}
@@ -169,19 +168,17 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         bordered={false}
         showHeader={true}
       />{" "}
-      <ActDetailFormModal
+      <BillDetailFormModal
         visible={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
-          setEditingActDetail(null);
+          setEditingBillDetail(null);
         }}
-        actId={actId}
-        mode={editingActDetail ? "edit" : "create"}
-        initialData={editingActDetail}
+        billId={billId}
+        mode={editingBillDetail ? "edit" : "create"}
+        initialData={editingBillDetail}
         onSuccess={() => {
           setIsModalVisible(false);
-          // Здесь можно добавить инвалидацию запроса:
-          // queryClient.invalidateQueries({ queryKey: ["actDetails"] });
         }}
       />
       {showDeleteConfirm && (

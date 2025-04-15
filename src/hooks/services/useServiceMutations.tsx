@@ -6,8 +6,6 @@ import {
   deleteService,
 } from "../../api/servicesApi";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
 
 export const useServiceMutations = (
   service_id: string = "",
@@ -15,7 +13,6 @@ export const useServiceMutations = (
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const createMutation = useMutation({
     mutationFn: createService,

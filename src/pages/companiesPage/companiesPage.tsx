@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/backButton";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
