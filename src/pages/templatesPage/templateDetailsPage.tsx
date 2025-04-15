@@ -12,6 +12,7 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { TemplateFormModal } from "./components/templateFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { TemplateDetailsCard } from "./components/templateDetailsCard";
+import { GenerateTemplateButton } from "./components/generateTemplateButton";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
@@ -92,6 +93,10 @@ export const TemplateDetailsPage: React.FC = () => {
                   <Button danger onClick={() => setShowDeleteConfirm(true)}>
                     <DeleteOutlined /> Удалить
                   </Button>
+                  <GenerateTemplateButton
+                    templateId={template_id || ""}
+                    entityType={template?.entity === "act" ? "act" : "bill"}
+                  />
                 </Space>
                 <TemplateDetailsCard
                   template={template}

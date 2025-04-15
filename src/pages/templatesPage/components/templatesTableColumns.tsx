@@ -87,6 +87,16 @@ export const getTemplateColumns = (
       key: "entity",
       sorter: (a: ITemplate, b: ITemplate) => a.entity.localeCompare(b.entity),
       sortDirections: ["ascend", "descend"],
+      render: (entity: string) => {
+        switch (entity) {
+          case "act":
+            return "Акт";
+          case "bill":
+            return "Счёт";
+          default:
+            return entity; // На случай, если будут другие значения
+        }
+      },
     },
     {
       title: "Файл",

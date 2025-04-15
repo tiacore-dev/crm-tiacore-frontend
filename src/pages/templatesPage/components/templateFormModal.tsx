@@ -177,8 +177,8 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
           rules={[{ required: true, message: "Пожалуйста, выберите тип" }]}
         >
           <Select placeholder="Выберете тип">
-            <Select.Option value="Акт">Акт</Select.Option>
-            <Select.Option value="Счет">Счет</Select.Option>
+            <Select.Option value="act">Акт</Select.Option>
+            <Select.Option value="bill">Счет</Select.Option>
           </Select>
         </Form.Item>
 
