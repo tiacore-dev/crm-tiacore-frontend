@@ -87,7 +87,7 @@ export const CompanyDetailsPage: React.FC = () => {
                   </Button>
                 </Space>
                 <CompanyCard data={companyDetails} loading={isLoading} />{" "}
-                <RelationsTable companyId={company_id} />
+                {/* <RelationsTable companyId={company_id} /> */}
               </div>
               {showEditModal && (
                 <CompanyFormModal

@@ -78,7 +78,7 @@ export const UserDetailsPage: React.FC = () => {
                 </Space>
 
                 <UserDetailsCard userDetails={userDetails} />
-                <RelationsTable userId={user_id} />
+                {/* <RelationsTable userId={user_id} /> */}
               </div>
 
               {showEditModal && (
