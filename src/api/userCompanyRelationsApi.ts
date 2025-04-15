@@ -10,7 +10,7 @@ export interface IUserCompanyRelation {
 }
 
 // Функция для получения списка с параметрами
-export const fetchUserCompanyRelations = async (params?: {
+export const fetchUserCompanyRelations = async (params: {
   user?: string;
   company?: string;
 }) => {

@@ -4,7 +4,7 @@ import { generateTemplate } from "../../../api/templatesApi";
 import { useActsQuery } from "../../../hooks/acts/useActsQuery";
 import { useBillsQuery } from "../../../hooks/bills/useBillQuery";
 import dayjs from "dayjs";
-
+import { FileSyncOutlined } from "@ant-design/icons";
 interface GenerateTemplateButtonProps {
   templateId: string;
   entityType: "act" | "bill";
@@ -58,7 +58,9 @@ export const GenerateTemplateButton: React.FC<GenerateTemplateButtonProps> = ({
 
   return (
     <>
-      <Button onClick={openModal}>Сгенерировать</Button>
+      <Button onClick={openModal} icon={<FileSyncOutlined />}>
+        Сгенерировать
+      </Button>
       <Modal
         title="Сгенерировать документ"
         open={isModalOpen}

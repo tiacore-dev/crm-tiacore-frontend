@@ -10,7 +10,7 @@ import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyCard } from "./components/companyDetailsCard"; // Изменен импорт
 import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { RelationsTable } from "../../components/relationsTable";
+import { UserCompanyRelationsTable } from "../../components/relationsTable";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -85,10 +85,22 @@ export const CompanyDetailsPage: React.FC = () => {
                   >
                     Удалить
                   </Button>
-                </Space>
-                <CompanyCard data={companyDetails} loading={isLoading} />{" "}
-                {/* <RelationsTable companyId={company_id} /> */}
-              </div>
+                </Space>{" "}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "24px",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div style={{ flex: "0 0 300px" }}>
+                    <CompanyCard data={companyDetails} loading={isLoading} />{" "}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <UserCompanyRelationsTable companyId={company_id} />
+                  </div>
+                </div>
+              </div>{" "}
               {showEditModal && (
                 <CompanyFormModal
                   visible={showEditModal}
@@ -98,7 +110,6 @@ export const CompanyDetailsPage: React.FC = () => {
                   initialData={companyDetails}
                 />
               )}
-
               {showDeleteConfirm && (
                 <ConfirmDeleteModal
                   onConfirm={handleDelete}

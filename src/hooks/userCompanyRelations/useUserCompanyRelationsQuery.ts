@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import {
   fetchUserCompanyRelations,
   IUserCompanyRelation,
@@ -14,13 +14,26 @@ export interface IUserCompanyRelationsResponse {
   relations: IUserCompanyRelation[];
 }
 
-export const useUserCompanyRelationsDetailsQuery = (
+export const useUserRelationsQuery = (
   userId?: string,
-  companyId?: string
+  options?: UseQueryOptions<IUserCompanyRelationsResponse>
 ) => {
   return useQuery<IUserCompanyRelationsResponse>({
-    queryKey: ["userCompanyRelationsDetails", userId, companyId], // Ключ кэша включает actId
-    queryFn: () =>
-      fetchUserCompanyRelations({ user: userId, company: companyId }), // передаём параметры правильно
+    queryKey: ["userRelations", userId],
+    queryFn: () => fetchUserCompanyRelations({ user: userId }),
+    enabled: !!userId,
+    ...options,
+  });
+};
+
+export const useCompanyRelationsQuery = (
+  companyId?: string,
+  options?: UseQueryOptions<IUserCompanyRelationsResponse>
+) => {
+  return useQuery<IUserCompanyRelationsResponse>({
+    queryKey: ["companyRelations", companyId],
+    queryFn: () => fetchUserCompanyRelations({ company: companyId }),
+    enabled: !!companyId,
+    ...options,
   });
 };

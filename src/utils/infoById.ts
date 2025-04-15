@@ -2,6 +2,14 @@ import { ILegalEntity } from "../api/legalEntitiesApi";
 import { IContract } from "../api/contractsApi";
 import { IBankAccount } from "../api/bankAccountsApi";
 import { ICompany } from "../api/companiesApi";
+import { IUser } from "../api/usersApi"; // убедись, что путь верный
+
+export const getUserNameById = (
+  userId: string,
+  users?: IUser[]
+): string | undefined => {
+  return users?.find((user) => user.user_id === userId)?.full_name;
+};
 
 export const getEntityNameById = (
   id: string | undefined,

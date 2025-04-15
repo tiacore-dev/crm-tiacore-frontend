@@ -10,7 +10,7 @@ import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserDetailsCard } from "./components/userDetails";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { UserFormModal } from "./components/userFormModal";
-import { RelationsTable } from "../../components/relationsTable";
+import { UserCompanyRelationsTable } from "../../components/relationsTable";
 
 export const UserDetailsPage: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
@@ -76,9 +76,20 @@ export const UserDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-
-                <UserDetailsCard userDetails={userDetails} />
-                {/* <RelationsTable userId={user_id} /> */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "24px",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div style={{ flex: "0 0 300px" }}>
+                    <UserDetailsCard userDetails={userDetails} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <UserCompanyRelationsTable userId={user_id} />
+                  </div>
+                </div>
               </div>
 
               {showEditModal && (

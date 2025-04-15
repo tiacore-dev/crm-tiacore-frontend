@@ -7,7 +7,7 @@ import {
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
-export const useBillDetailMutations = (
+export const useUserCompanyRelationsMutations = (
   user_company_id: string,
   user_id: string,
   company_id: string,
@@ -43,9 +43,9 @@ export const useBillDetailMutations = (
       setIsEditing && setIsEditing(false);
       toast.success("Информация обновлена");
     },
-    onError: () => {
-      toast.error("Ошибка при обновлении данных");
-    },
+    // onError: () => {
+    //   toast.error("Ошибка при обновлении данных");
+    // },
   });
 
   const deleteMutation = useMutation({
