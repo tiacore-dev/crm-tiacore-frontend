@@ -57,6 +57,14 @@ export const getCompanyNameById = (
   return companies.find((company) => company.company_id === id)?.company_name;
 };
 
+export const getServiceNameById = (
+  id: string | undefined,
+  services: { service_id: string; service_name: string }[] | undefined
+): string | undefined => {
+  if (!id || !services) return undefined;
+  return services.find((service) => service.service_id === id)?.service_name;
+};
+
 export const createMemoizedHelpers = (
   entities: ILegalEntity[] | undefined,
   contracts: IContract[] | undefined,

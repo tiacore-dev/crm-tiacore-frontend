@@ -2,51 +2,41 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { IActDetailsResponse } from "../hooks/actDetails/actDetailQuery";
 
-export interface IActDetail {
-  act_detail_id: string; //uuid4
-  act: string; //uuid4
+export interface IBillDetail {
+  bill_detail_id: string; //uuid4
+  bill: string; //uuid4
   service: string; //uuid4
   quantity: number;
   summ: number;
 }
 
 // Функция для получения списка с параметрами
-export const fetchActDetails = async (params?: { act?: string }) => {
+export const fetchBillDetails = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-
-  const response = await axiosInstance.get<IActDetailsResponse>(
-    `${url}/api/act-details/all`,
-    {
-      params: {
-        ...params,
-        page: 1,
-        page_size: 100,
-      },
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-
+  const response = await axiosInstance.get(`${url}/api/bill-details/all`, {
+    params: { page: 1, page_size: 100 },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
   return response.data;
 };
 
 // Функция для создания нового
-export const createActDetail = async (newActDetail: {
-  act: string; //uuid4
+export const createBillDetail = async (newBillDetail: {
+  bill: string; //uuid4
   service: string; //uuid4
   quantity: number;
   summ: number;
-}): Promise<IActDetail> => {
+}): Promise<IBillDetail> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.post(
-    `${url}/api/act-details/add`,
-    newActDetail,
+    `${url}/api/bill-details/add`,
+    newBillDetail,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -58,14 +48,14 @@ export const createActDetail = async (newActDetail: {
 };
 
 //изменить данные
-export const updateActDetail = async (
-  act_detail_id: string,
+export const updateBillDetail = async (
+  bill_detail_id: string,
   updatedData: any
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.patch(
-    `${url}/api/act-details/${act_detail_id}`,
+    `${url}/api/bill-details/${bill_detail_id}`,
     updatedData,
     {
       headers: {
@@ -79,11 +69,11 @@ export const updateActDetail = async (
 
 //удалить данные
 
-export const deleteActDetail = async (act_detail_id: string) => {
+export const deleteBillDetail = async (bill_detail_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
 
-  await axiosInstance.delete(`${url}/api/act-details/${act_detail_id}`, {
+  await axiosInstance.delete(`${url}/api/bill-details/${bill_detail_id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

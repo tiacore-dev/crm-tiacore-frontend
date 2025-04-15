@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Descriptions, Space, Spin } from "antd";
+import { Button, Descriptions, Space, Spin, Modal } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
 import { useActsMutations } from "../../hooks/acts/useActsMutation";
 import { BackButton } from "../../components/backButton";
@@ -13,6 +13,12 @@ import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegal
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ActDetailsDescriptions } from "./components/actDetailsCard";
+import { useActDetailsQuery } from "../../hooks/actDetails/actDetailQuery";
+import { useServiceQuery } from "../../hooks/services/useServiceQuery";
+import { ActDetailsTable } from "./components/actDetailsTable";
+import { useActDetailMutations } from "../../hooks/actDetails/actDetailMutation";
+import { ActDetailFormModal } from "./components/actDetailsFormModal";
+import { IActDetail } from "../../api/actDetailsApi";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -20,11 +26,27 @@ export const ActDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [editingDetail, setEditingDetail] = useState<IActDetail | null>(null);
+  const [confirmDeleteDetail, setConfirmDeleteDetail] = useState(false);
+  const [deletingDetailId, setDeletingDetailId] = useState<string | null>(null);
 
   const { data: act, isLoading, isError } = useActQuery(act_id || "");
-
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractsResponse } = useContractsForSelection();
+  const { data: servicesResponse } = useServiceQuery();
+
+  const servicesData =
+    servicesResponse?.services.map((service) => ({
+      service_id: service.service_id,
+      service_name: service.service_name,
+    })) || [];
+
+  const {
+    data: actDetails,
+    isLoading: isLoadingDetails,
+    isError: isErrorDetails,
+  } = useActDetailsQuery(act_id);
 
   const { deleteMutation } = useActsMutations(
     act_id || "",
@@ -33,6 +55,14 @@ export const ActDetailsPage: React.FC = () => {
     act?.contract || "",
     act?.buyer || "",
     act?.seller || ""
+  );
+
+  const { deleteMutation: deleteDetailMutation } = useActDetailMutations(
+    "",
+    "",
+    "",
+    0,
+    0
   );
 
   useEffect(() => {
@@ -58,6 +88,27 @@ export const ActDetailsPage: React.FC = () => {
       },
     });
   }, [deleteMutation, navigate]);
+
+  const handleEditDetail = (detail: IActDetail) => {
+    setEditingDetail(detail);
+    setShowDetailModal(true);
+  };
+
+  // const handleDeleteDetail = (detailId: string) => {
+  //   setDeletingDetailId(detailId);
+  //   setConfirmDeleteDetail(true);
+  // };
+
+  // const confirmDetailDelete = () => {
+  //   if (deletingDetailId) {
+  //     deleteDetailMutation.mutate(deletingDetailId, {
+  //       onSuccess: () => {
+  //         setConfirmDeleteDetail(false);
+  //         setDeletingDetailId(null);
+  //       },
+  //     });
+  //   }
+  // };
 
   const getEntityNameById = useMemo(
     () => (id: string | undefined) => {
@@ -104,6 +155,18 @@ export const ActDetailsPage: React.FC = () => {
                   getEntityNameById={getEntityNameById}
                   getContractNameById={getContractNameById}
                 />
+
+                <ActDetailsTable
+                  data={actDetails || { total: 0, act_details: [] }}
+                  loading={isLoadingDetails}
+                  servicesData={servicesData}
+                  onAddDetail={() => {
+                    setEditingDetail(null);
+                    setShowDetailModal(true);
+                  }}
+                  onEdit={handleEditDetail}
+                  // onDelete={handleDeleteDetail}
+                />
               </div>
 
               {showEditModal && (
@@ -119,6 +182,20 @@ export const ActDetailsPage: React.FC = () => {
                   initialData={act}
                 />
               )}
+
+              {showDetailModal && (
+                <ActDetailFormModal
+                  visible={showDetailModal}
+                  onCancel={() => setShowDetailModal(false)}
+                  actId={act_id || ""}
+                  onSuccess={() => {
+                    setShowDetailModal(false);
+                  }}
+                  mode={editingDetail ? "edit" : "create"}
+                  initialData={editingDetail}
+                />
+              )}
+
               {showDeleteConfirm && (
                 <ConfirmDeleteModal
                   onConfirm={handleDelete}
@@ -126,6 +203,17 @@ export const ActDetailsPage: React.FC = () => {
                   isDeleteLoading={deleteMutation.isPending}
                 />
               )}
+
+              {/* {confirmDeleteDetail && (
+                <ConfirmDeleteModal
+                  onConfirm={confirmDetailDelete}
+                  onCancel={() => {
+                    setConfirmDeleteDetail(false);
+                    setDeletingDetailId(null);
+                  }}
+                  isDeleteLoading={deleteDetailMutation.isPending}
+                />
+              )} */}
             </>
           )}
           {isError && <BackButton />}
