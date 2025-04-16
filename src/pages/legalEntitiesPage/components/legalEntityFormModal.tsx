@@ -162,13 +162,13 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
         </Form.Item>
         <Form.Item
           name="address"
-          label="Адресс"
+          label="Адрес"
           rules={[
-            { required: true, message: "Пожалуйста, введите адресс" },
+            { required: true, message: "Пожалуйста, введите адрес" },
             { min: 5, message: "Минимум 5 символов" },
           ]}
         >
-          <Input placeholder="Введите адресс" />
+          <Input placeholder="Введите адрес" />
         </Form.Item>
         <Form.Item
           name="entity_type"

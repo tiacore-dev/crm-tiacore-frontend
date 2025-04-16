@@ -37,9 +37,9 @@ export const fetchUserCompanyRelations = async (params: {
 
 // Функция для создания нового
 export const createUserCompanyRelation = async (newUserCompanyRelation: {
-  user_id: string;
-  company_id: string;
-  role_id: string;
+  user: string;
+  company: string;
+  role: string;
 }): Promise<IUserCompanyRelation> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

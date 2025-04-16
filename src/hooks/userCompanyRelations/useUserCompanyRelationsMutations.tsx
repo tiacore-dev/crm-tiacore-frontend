@@ -19,13 +19,11 @@ export const useUserCompanyRelationsMutations = (
   const createMutation = useMutation({
     mutationFn: createUserCompanyRelation,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["userCompanyRelationsDetails"],
-      });
-      toast.success(<div>Успешно добавлено </div>);
+      queryClient.invalidateQueries({ queryKey: ["userRelations"] });
+      queryClient.invalidateQueries({ queryKey: ["companyRelations"] });
+      toast.success("Информация добавлена");
     },
     onError: (error: AxiosError) => {
-      // Проверяем код ошибки
       toast.error("Ошибка при добавлении");
     },
   });
@@ -36,26 +34,22 @@ export const useUserCompanyRelationsMutations = (
         ? updateUserCompanyRelation(user_company_id, editedData)
         : Promise.reject(),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["userCompanyRelationsDetails"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["userRelations"] });
+      queryClient.invalidateQueries({ queryKey: ["companyRelations"] });
       setIsEditing && setIsEditing(false);
       toast.success("Информация обновлена");
     },
-    // onError: () => {
-    //   toast.error("Ошибка при обновлении данных");
-    // },
+    onError: () => {
+      toast.error("Ошибка при обновлении данных");
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (user_company_id: string) =>
       deleteUserCompanyRelation(user_company_id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["userCompanyRelationsDetails"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["userRelations"] });
+      queryClient.invalidateQueries({ queryKey: ["companyRelations"] });
       toast.success("Успешно удалено");
     },
     onError: () => {
