@@ -37,6 +37,7 @@ interface UserCompanyRelationsTableProps {
   userId?: string;
   companyId?: string;
 }
+
 export const UserCompanyRelationsTable = ({
   userId,
   companyId,
@@ -76,13 +77,6 @@ export const UserCompanyRelationsTable = ({
     () => {}
   );
 
-  // Проверяем состояние загрузки
-  const isTotalLoading =
-    isLoading || rolesLoading || companiesLoading || usersLoading;
-
-  // Проверяем наличие данных
-  const hasData = data?.relations && data.relations.length > 0;
-
   const handleCreate = () => {
     setEditingRelation(null);
     setIsEditModalVisible(true);
@@ -99,8 +93,11 @@ export const UserCompanyRelationsTable = ({
   };
 
   const handleSuccess = () => {
-    if (userId) userRelations.refetch();
-    else if (companyId) companyRelations.refetch();
+    if (userId) {
+      userRelations.refetch();
+    } else if (companyId) {
+      companyRelations.refetch();
+    }
     setIsEditModalVisible(false);
     setEditingRelation(null);
   };
@@ -108,7 +105,9 @@ export const UserCompanyRelationsTable = ({
   const confirmDelete = () => {
     if (selectedRelation) {
       deleteMutation.mutate(selectedRelation.user_company_id, {
-        onSuccess: () => setShowDeleteConfirm(false),
+        onSuccess: () => {
+          setShowDeleteConfirm(false);
+        },
       });
     }
   };
@@ -180,50 +179,32 @@ export const UserCompanyRelationsTable = ({
     return getCompanyNameById(companyId, companiesData?.companies) || companyId;
   };
 
-  if (isTotalLoading) {
-    return <Spin size="large" />;
-  }
-
-  if (isError) {
-    return <Text type="danger">Ошибка при загрузке данных</Text>;
-  }
-
-  if (!hasData) {
-    return (
-      <>
-        <Table
-          columns={columns}
-          // dataSource={data.relations}
-          rowKey="user_company_id"
-          pagination={false}
-        />
-        <Button
-          icon={<PlusOutlined />}
-          onClick={handleCreate}
-          style={{ marginTop: 16 }}
-        >
-          Добавить
-        </Button>
-      </>
-    );
-  }
+  const isTotalLoading =
+    isLoading || rolesLoading || companiesLoading || usersLoading;
 
   return (
     <>
-      <Table
-        columns={columns}
-        dataSource={data.relations}
-        rowKey="user_company_id"
-        pagination={false}
-      />
-
-      <Button
-        icon={<PlusOutlined />}
-        onClick={handleCreate}
-        style={{ marginTop: 16 }}
-      >
-        Добавить
-      </Button>
+      {isTotalLoading ? (
+        <Spin size="large" />
+      ) : isError ? (
+        <Text type="danger">Ошибка при загрузке данных</Text>
+      ) : (
+        <>
+          <Table
+            columns={columns}
+            dataSource={data?.relations || []} // Пустой массив, если relations нет
+            rowKey="user_company_id"
+            pagination={false}
+          />
+          <Button
+            icon={<PlusOutlined />}
+            onClick={handleCreate}
+            style={{ marginTop: 16 }}
+          >
+            Добавить
+          </Button>
+        </>
+      )}
 
       {showDeleteConfirm && (
         <ConfirmDeleteModal
@@ -236,7 +217,10 @@ export const UserCompanyRelationsTable = ({
       {isEditModalVisible && (
         <RelationFormModal
           visible={isEditModalVisible}
-          onCancel={() => setIsEditModalVisible(false)}
+          onCancel={() => {
+            setIsEditModalVisible(false);
+            setEditingRelation(null);
+          }}
           onSuccess={handleSuccess}
           mode={editingRelation ? "edit" : "create"}
           initialData={editingRelation}

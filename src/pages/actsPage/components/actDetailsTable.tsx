@@ -124,7 +124,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     {
       title: "",
       key: "actions",
-      width: 100,
+      width: 48,
       render: (record: IActDetail) => (
         <Dropdown overlay={menu(record)} trigger={["click"]}>
           <Button
