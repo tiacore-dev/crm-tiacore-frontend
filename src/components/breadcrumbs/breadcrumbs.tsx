@@ -9,17 +9,14 @@ export const Breadcrumbs: React.FC = () => {
     (state: RootState) => state.breadcrumbs.paths
   );
 
-  return (
-    <Breadcrumb style={{ margin: "1%" }}>
-      {breadcrumbs.map((path, index) => (
-        <Breadcrumb.Item key={index}>
-          {index === breadcrumbs.length - 1 ? (
-            path.label
-          ) : (
-            <Link to={path.to}>{path.label}</Link>
-          )}
-        </Breadcrumb.Item>
-      ))}
-    </Breadcrumb>
-  );
+  const breadcrumbItems = breadcrumbs.map((path, index) => ({
+    title:
+      index === breadcrumbs.length - 1 ? (
+        path.label
+      ) : (
+        <Link to={path.to}>{path.label}</Link>
+      ),
+  }));
+
+  return <Breadcrumb style={{ margin: "1%" }} items={breadcrumbItems} />;
 };
