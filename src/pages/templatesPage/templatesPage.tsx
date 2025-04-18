@@ -12,10 +12,13 @@ import { TemplateFormModal } from "./components/templateFormModal";
 import { templatesSelector } from "../../redux/slices/templatesSlice";
 import { useSelector } from "react-redux";
 import { resetState } from "../../redux/slices/templatesSlice"; // Импорт нового действия
+import { RootState } from "../../redux/store";
 export const TemplatesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { search, company } = useSelector(templatesSelector);
+  const { search, company } = useSelector(
+    (state: RootState) => state.templates
+  );
 
   useEffect(() => {
     dispatch(

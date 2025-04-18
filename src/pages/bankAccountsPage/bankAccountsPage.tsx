@@ -12,12 +12,14 @@ import {
   resetState,
 } from "../../redux/slices/bankAccountsSlice";
 import { BankAccountCreateModal } from "./components/bankAccountFormModal";
+import { RootState } from "../../redux/store";
 
 export const BankAccountsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { account_number, legal_entity, bank_name } =
-    useSelector(bankAccountsSelector);
+  const { account_number, legal_entity, bank_name } = useSelector(
+    (state: RootState) => state.bankAccounts
+  );
 
   useEffect(() => {
     dispatch(

@@ -20,6 +20,7 @@ import {
   resetState,
   actsSelector,
 } from "../../redux/slices/actsSlice";
+import { RootState } from "../../redux/store";
 
 export const ActsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ export const ActsPage: React.FC = () => {
     contract,
     act_date_from,
     act_date_to,
-  } = useSelector(actsSelector);
+  } = useSelector((state: RootState) => state.acts);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {

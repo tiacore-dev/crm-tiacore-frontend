@@ -29,16 +29,19 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        username: initialData.username,
-        full_name: initialData.full_name,
-        position: initialData.position,
-      });
-    } else {
-      form.resetFields();
+    if (visible) {
+      // Добавляем проверку на visible
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          username: initialData.username,
+          full_name: initialData.full_name,
+          position: initialData.position,
+        });
+      } else {
+        form.resetFields();
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]); // Добавляем visible в зависимости
 
   const handleSubmit = async () => {
     try {
@@ -84,9 +87,9 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         </Button>,
       ]}
       width={700}
+      destroyOnClose // Добавляем для корректного сброса формы
     >
       <Form form={form} layout="vertical">
-        {/* Валидация для поля "Логин" */}
         <Form.Item
           label="Логин пользователя"
           name="username"
@@ -122,7 +125,6 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         >
           <Input placeholder="Введите Ф.И.О." />
         </Form.Item>
-
         <Form.Item
           label="Должность"
           name="position"

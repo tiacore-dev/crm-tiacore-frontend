@@ -9,13 +9,15 @@ import { UserFormModal } from "./components/userFormModal";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { useUserRoles } from "../../hooks/base/useBaseQuery";
 import { usersSelector, resetState } from "../../redux/slices/usersSlice";
+import { RootState } from "../../redux/store";
 
 export const UsersPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { username, full_name, position, page, page_size } =
-    useSelector(usersSelector);
+  const { username, full_name, position, page, page_size } = useSelector(
+    (state: RootState) => state.users
+  );
 
   useEffect(() => {
     dispatch(

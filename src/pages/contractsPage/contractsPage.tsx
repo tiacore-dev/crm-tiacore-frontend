@@ -23,6 +23,7 @@ import {
   resetState,
   contractsSelector,
 } from "../../redux/slices/contractsSlice";
+import { RootState } from "../../redux/store";
 
 export const ContractsPage: React.FC = () => {
   const {
@@ -35,7 +36,7 @@ export const ContractsPage: React.FC = () => {
     contract_date_to,
     order,
     sort_by,
-  } = useSelector(contractsSelector);
+  } = useSelector((state: RootState) => state.contracts);
 
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { fetchBill, fetchBills, IBill } from "../../api/billsApi";
-import { billsSelector } from "../../redux/slices/billsSlice";
+import { RootState } from "../../redux/store";
 
 export interface IBillsResponse {
   total: number;
@@ -29,7 +29,7 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
     page_size,
     sort_by,
     order,
-  } = useSelector(billsSelector);
+  } = useSelector((state: RootState) => state.bills);
 
   // Создаем объект параметров, включая только те, которые имеют значение
   const buildQueryParams = () => {

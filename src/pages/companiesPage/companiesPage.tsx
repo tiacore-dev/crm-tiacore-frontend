@@ -12,11 +12,14 @@ import {
   companiesSelector,
   resetState,
 } from "../../redux/slices/companiesSlice";
+import { RootState } from "../../redux/store";
 
 export const CompaniesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { search, page, page_size } = useSelector(companiesSelector);
+  const { search, page, page_size } = useSelector(
+    (state: RootState) => state.companies
+  );
 
   useEffect(() => {
     dispatch(

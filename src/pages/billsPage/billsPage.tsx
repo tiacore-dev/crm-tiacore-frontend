@@ -22,6 +22,7 @@ import {
   setDateTo,
   resetState,
 } from "../../redux/slices/billsSlice";
+import { RootState } from "../../redux/store";
 
 export const BillsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ export const BillsPage: React.FC = () => {
     contract,
     bill_date_from,
     bill_date_to,
-  } = useSelector(billsSelector);
+  } = useSelector((state: RootState) => state.bills);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {

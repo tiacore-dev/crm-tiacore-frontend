@@ -62,22 +62,26 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
   };
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      const isLocked = !!initialData.contract;
-      form.setFieldsValue({
-        bank_account: initialData.bank_account,
-        bill_number: initialData.bill_number,
-        bill_date: initialData.bill_date ? dayjs(initialData.bill_date) : null,
-        contract: initialData.contract || undefined,
-        buyer: initialData.buyer,
-        seller: initialData.seller,
-      });
-      setFieldsLocked(isLocked);
-    } else {
-      form.resetFields();
-      setFieldsLocked(false);
+    if (visible) {
+      if (initialData && mode === "edit") {
+        const isLocked = !!initialData.contract;
+        form.setFieldsValue({
+          bank_account: initialData.bank_account,
+          bill_number: initialData.bill_number,
+          bill_date: initialData.bill_date
+            ? dayjs(initialData.bill_date)
+            : null,
+          contract: initialData.contract || undefined,
+          buyer: initialData.buyer,
+          seller: initialData.seller,
+        });
+        setFieldsLocked(isLocked);
+      } else {
+        form.resetFields();
+        setFieldsLocked(false);
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {

@@ -112,25 +112,21 @@ export const UserCompanyRelationsTable = ({
     }
   };
 
-  const menu = (relation: IUserCompanyRelation) => (
-    <Menu>
-      <Menu.Item
-        key="edit"
-        icon={<EditOutlined />}
-        onClick={() => handleEdit(relation)}
-      >
-        Редактировать
-      </Menu.Item>
-      <Menu.Item
-        key="delete"
-        icon={<DeleteOutlined />}
-        onClick={() => handleDelete(relation)}
-        danger
-      >
-        Удалить
-      </Menu.Item>
-    </Menu>
-  );
+  const getMenuItems = (relation: IUserCompanyRelation) => [
+    {
+      key: "edit",
+      icon: <EditOutlined />,
+      label: "Редактировать",
+      onClick: () => handleEdit(relation),
+    },
+    {
+      key: "delete",
+      icon: <DeleteOutlined />,
+      label: "Удалить",
+      danger: true,
+      onClick: () => handleDelete(relation),
+    },
+  ];
 
   const columns = [
     {
@@ -159,7 +155,7 @@ export const UserCompanyRelationsTable = ({
       key: "actions",
       width: 48,
       render: (_: any, record: IUserCompanyRelation) => (
-        <Dropdown overlay={menu(record)} trigger={["click"]}>
+        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
           <Button
             type="text"
             icon={<MoreOutlined />}

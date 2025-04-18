@@ -27,14 +27,16 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        service_name: initialData.service_name,
-      });
-    } else {
-      form.resetFields();
+    if (visible) {
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          service_name: initialData.service_name,
+        });
+      } else {
+        form.resetFields();
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {
@@ -61,7 +63,6 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
     <Modal
       title={mode === "create" ? "Добавить услугу" : "Редактировать услугу"}
       open={visible}
-      onOk={form.submit}
       onCancel={onCancel}
       footer={[
         <Button key="back" onClick={onCancel}>
@@ -77,6 +78,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
         </Button>,
       ]}
       width={700}
+      destroyOnClose
     >
       <Form form={form} layout="vertical">
         <Form.Item
@@ -84,10 +86,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
           name="service_name"
           rules={[
             { required: true, message: "Пожалуйста, введите название услуги" },
-            {
-              min: 3,
-              message: "Минимум 3 символа",
-            },
+            { min: 3, message: "Минимум 3 символа" },
           ]}
         >
           <Input placeholder="Введите название услуги" />

@@ -34,19 +34,21 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        service: initialData.service,
-        quantity: initialData.quantity,
-        summ: initialData.summ,
-      });
-    } else {
-      form.resetFields();
-      form.setFieldsValue({
-        act: actId,
-      });
+    if (visible) {
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          service: initialData.service,
+          quantity: initialData.quantity,
+          summ: initialData.summ,
+        });
+      } else {
+        form.resetFields();
+        form.setFieldsValue({
+          act: actId,
+        });
+      }
     }
-  }, [initialData, mode, form, actId]);
+  }, [visible, initialData, mode, form, actId]);
 
   const handleSubmit = async () => {
     try {

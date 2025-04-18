@@ -65,25 +65,21 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  const menu = (billDetail: IBillDetail) => (
-    <Menu>
-      <Menu.Item
-        key="edit"
-        icon={<EditOutlined />}
-        onClick={() => handleEdit(billDetail)}
-      >
-        Редактировать
-      </Menu.Item>
-      <Menu.Item
-        key="delete"
-        icon={<DeleteOutlined />}
-        onClick={() => handleDelete(billDetail)}
-        danger
-      >
-        Удалить
-      </Menu.Item>
-    </Menu>
-  );
+  const getMenuItems = (billDetail: IBillDetail) => [
+    {
+      key: "edit",
+      icon: <EditOutlined />,
+      label: "Редактировать",
+      onClick: () => handleEdit(billDetail),
+    },
+    {
+      key: "delete",
+      icon: <DeleteOutlined />,
+      label: "Удалить",
+      danger: true,
+      onClick: () => handleDelete(billDetail),
+    },
+  ];
 
   const columns = [
     {
@@ -125,7 +121,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       key: "actions",
       width: 100,
       render: (record: IBillDetail) => (
-        <Dropdown overlay={menu(record)} trigger={["click"]}>
+        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
           <Button
             type="text"
             icon={<MoreOutlined />}

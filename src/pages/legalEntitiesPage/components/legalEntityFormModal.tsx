@@ -51,22 +51,24 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        legal_entity_name: initialData.legal_entity_name,
-        inn: initialData.inn,
-        kpp: initialData.kpp,
-        address: initialData.address,
-        vat_rate: initialData.vat_rate,
-        entity_type: initialData.entity_type,
-        signer: initialData.signer,
-        company: initialData.company,
-        description: initialData.description,
-      });
-    } else {
-      form.resetFields();
+    if (visible) {
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          legal_entity_name: initialData.legal_entity_name,
+          inn: initialData.inn,
+          kpp: initialData.kpp,
+          address: initialData.address,
+          vat_rate: initialData.vat_rate,
+          entity_type: initialData.entity_type,
+          signer: initialData.signer,
+          company: initialData.company,
+          description: initialData.description,
+        });
+      } else {
+        form.resetFields();
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {

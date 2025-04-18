@@ -66,25 +66,41 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  const menu = (actDetail: IActDetail) => (
-    <Menu>
-      <Menu.Item
-        key="edit"
-        icon={<EditOutlined />}
-        onClick={() => handleEdit(actDetail)}
-      >
-        Редактировать
-      </Menu.Item>
-      <Menu.Item
-        key="delete"
-        icon={<DeleteOutlined />}
-        onClick={() => handleDelete(actDetail)}
-        danger
-      >
-        Удалить
-      </Menu.Item>
-    </Menu>
-  );
+  // const menu = (actDetail: IActDetail) => (
+  //   <Menu>
+  //     <Menu.Item
+  //       key="edit"
+  //       icon={<EditOutlined />}
+  //       onClick={() => handleEdit(actDetail)}
+  //     >
+  //       Редактировать
+  //     </Menu.Item>
+  //     <Menu.Item
+  //       key="delete"
+  //       icon={<DeleteOutlined />}
+  //       onClick={() => handleDelete(actDetail)}
+  //       danger
+  //     >
+  //       Удалить
+  //     </Menu.Item>
+  //   </Menu>
+  // );
+
+  const getMenuItems = (actDetail: IActDetail) => [
+    {
+      key: "edit",
+      icon: <EditOutlined />,
+      label: "Редактировать",
+      onClick: () => handleEdit(actDetail),
+    },
+    {
+      key: "delete",
+      icon: <DeleteOutlined />,
+      label: "Удалить",
+      danger: true,
+      onClick: () => handleDelete(actDetail),
+    },
+  ];
 
   const columns = [
     {
@@ -126,7 +142,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       key: "actions",
       width: 48,
       render: (record: IActDetail) => (
-        <Dropdown overlay={menu(record)} trigger={["click"]}>
+        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
           <Button
             type="text"
             icon={<MoreOutlined />}

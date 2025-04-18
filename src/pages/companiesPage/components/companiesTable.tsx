@@ -3,12 +3,12 @@ import { ICompany } from "../../../api/companiesApi";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompaniesTableColumns } from "./companiesTableColumns";
 import {
-  companiesSelector,
   setPage,
   setPageSize,
   setSearch,
 } from "../../../redux/slices/companiesSlice";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../redux/store";
 
 interface CompaniesTableProps {
   data: {
@@ -23,7 +23,9 @@ export const CompaniesTable: React.FC<CompaniesTableProps> = ({
   loading,
 }) => {
   const dispatch = useDispatch();
-  const { search, page, page_size } = useSelector(companiesSelector);
+  const { search, page, page_size } = useSelector(
+    (state: RootState) => state.companies
+  );
   const navigate = useNavigate();
 
   // Фильтрация данных

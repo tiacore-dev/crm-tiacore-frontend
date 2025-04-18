@@ -6,7 +6,7 @@ import {
   fetchContractDetails,
   IContract,
 } from "../../api/contractsApi";
-import { contractsSelector } from "../../redux/slices/contractsSlice";
+import { RootState } from "../../redux/store";
 
 export interface IContractsResponse {
   total: number;
@@ -36,7 +36,7 @@ export const useContractQuery = (queryParams: IContractsQueryParams) => {
     order,
     page,
     page_size,
-  } = useSelector(contractsSelector);
+  } = useSelector((state: RootState) => state.contracts);
 
   const buildQueryParams = () => {
     const params: IContractsQueryParams = {

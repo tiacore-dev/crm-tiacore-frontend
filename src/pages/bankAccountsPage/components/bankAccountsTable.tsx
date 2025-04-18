@@ -11,6 +11,7 @@ import {
   setLegalEntity,
   setBankName,
 } from "../../../redux/slices/bankAccountsSlice";
+import { RootState } from "../../../redux/store";
 
 interface BankAccountsTableProps {
   data: {
@@ -32,7 +33,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { account_number, legal_entity, bank_name, page, page_size } =
-    useSelector(bankAccountsSelector);
+    useSelector((state: RootState) => state.bankAccounts);
 
   const columns = getBankAccountsTableColumns({
     legalEntitiesData,

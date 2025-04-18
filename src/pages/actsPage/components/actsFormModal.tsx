@@ -95,21 +95,23 @@ export const ActFormModal: React.FC<ActModalProps> = ({
   ]);
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      const isLocked = !!initialData.contract;
-      form.setFieldsValue({
-        act_number: initialData.act_number,
-        act_date: initialData.act_date ? dayjs(initialData.act_date) : null,
-        contract: initialData.contract || undefined,
-        buyer: initialData.buyer,
-        seller: initialData.seller,
-      });
-      setFieldsLocked(isLocked);
-    } else {
-      form.resetFields();
-      setFieldsLocked(false);
+    if (visible) {
+      if (initialData && mode === "edit") {
+        const isLocked = !!initialData.contract;
+        form.setFieldsValue({
+          act_number: initialData.act_number,
+          act_date: initialData.act_date ? dayjs(initialData.act_date) : null,
+          contract: initialData.contract || undefined,
+          buyer: initialData.buyer,
+          seller: initialData.seller,
+        });
+        setFieldsLocked(isLocked);
+      } else {
+        form.resetFields();
+        setFieldsLocked(false);
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]);
 
   return (
     <Modal

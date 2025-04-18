@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { fetchActs, fetchAct, IAct } from "../../api/actsApi";
 import { actsSelector } from "../../redux/slices/actsSlice";
+import { RootState } from "../../redux/store";
 
 export interface IActsResponse {
   total: number;
@@ -27,7 +28,7 @@ export const useActsQuery = (queryParams: IActsQueryParams) => {
     page_size,
     sort_by,
     order,
-  } = useSelector(actsSelector);
+  } = useSelector((state: RootState) => state.acts);
 
   const buildQueryParams = () => {
     const params: IActsQueryParams = {

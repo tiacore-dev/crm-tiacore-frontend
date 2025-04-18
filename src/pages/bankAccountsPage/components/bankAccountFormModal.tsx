@@ -34,18 +34,20 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        legal_entity: initialData.legal_entity,
-        bank_name: initialData.bank_name,
-        account_number: initialData.account_number,
-        bank_bic: initialData.bank_bic,
-        bank_corr_account: initialData.bank_corr_account,
-      });
-    } else {
-      form.resetFields();
+    if (visible) {
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          legal_entity: initialData.legal_entity,
+          bank_name: initialData.bank_name,
+          account_number: initialData.account_number,
+          bank_bic: initialData.bank_bic,
+          bank_corr_account: initialData.bank_corr_account,
+        });
+      } else {
+        form.resetFields();
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {

@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined } from "@ant-design/icons";
+import { RootState } from "../../../redux/store";
 
 interface UsersTableProps {
   data: {
@@ -28,8 +29,9 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { username, full_name, position, page, page_size } =
-    useSelector(usersSelector);
+  const { username, full_name, position, page, page_size } = useSelector(
+    (state: RootState) => state.users
+  );
 
   const columns: TableColumnsType<IUser> = [
     {

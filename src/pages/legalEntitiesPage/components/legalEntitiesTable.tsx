@@ -11,6 +11,7 @@ import {
   setCompany,
   setEntityType,
 } from "../../../redux/slices/legalEntitiesSlice";
+import { RootState } from "../../../redux/store";
 
 interface LegalEntitiesTableProps {
   data: {
@@ -37,7 +38,7 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { search, company, entity_type, page, page_size } = useSelector(
-    legalEntitiesSelector
+    (state: RootState) => state.legalEntities
   );
 
   const columns = getLegalEntitiesTableColumns({

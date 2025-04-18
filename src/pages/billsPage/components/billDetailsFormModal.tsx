@@ -34,19 +34,21 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        service: initialData.service,
-        quantity: initialData.quantity,
-        summ: initialData.summ,
-      });
-    } else {
-      form.resetFields();
-      form.setFieldsValue({
-        bill: billId,
-      });
+    if (visible) {
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          service: initialData.service,
+          quantity: initialData.quantity,
+          summ: initialData.summ,
+        });
+      } else {
+        form.resetFields();
+        form.setFieldsValue({
+          bill: billId,
+        });
+      }
     }
-  }, [initialData, mode, form, billId]);
+  }, [visible, initialData, mode, form, billId]);
 
   const handleSubmit = async () => {
     try {

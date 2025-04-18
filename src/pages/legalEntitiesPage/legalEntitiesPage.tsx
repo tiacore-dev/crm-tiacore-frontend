@@ -16,11 +16,15 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { Space } from "antd";
 import { ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../redux/slices/legalEntitiesSlice";
+import { RootState } from "../../redux/store";
 
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { search, company, entity_type } = useSelector(legalEntitiesSelector);
+  // const { search, company, entity_type } = useSelector(legalEntitiesSelector);
+  const { search, company, entity_type } = useSelector(
+    (state: RootState) => state.legalEntities
+  );
 
   useEffect(() => {
     dispatch(

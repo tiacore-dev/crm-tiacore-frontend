@@ -13,6 +13,7 @@ import { useState } from "react";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { useServiceMutations } from "../../../hooks/services/useServiceMutations";
 import { ServiceCreateModal } from "./serviceFormModal";
+import { RootState } from "../../../redux/store";
 // import { useQueryClient } from "@tanstack/react-query";
 
 interface ServicesTableProps {
@@ -28,7 +29,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   loading,
 }) => {
   const dispatch = useDispatch();
-  const { page, page_size } = useSelector(servicesSelector);
+  const { page, page_size } = useSelector((state: RootState) => state.services);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedService, setSelectedService] = useState<IService | null>(null);
   const { deleteMutation } = useServiceMutations("", "", () => {});
@@ -55,25 +56,21 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
     }
   };
 
-  const menu = (service: IService) => (
-    <Menu>
-      <Menu.Item
-        key="edit"
-        icon={<EditOutlined />}
-        onClick={() => handleEdit(service)}
-      >
-        Редактировать
-      </Menu.Item>
-      <Menu.Item
-        key="delete"
-        icon={<DeleteOutlined />}
-        onClick={() => handleDelete(service)}
-        danger
-      >
-        Удалить
-      </Menu.Item>
-    </Menu>
-  );
+  const getMenuItems = (service: IService) => [
+    {
+      key: "edit",
+      icon: <EditOutlined />,
+      label: "Редактировать",
+      onClick: () => handleEdit(service),
+    },
+    {
+      key: "delete",
+      icon: <DeleteOutlined />,
+      label: "Удалить",
+      danger: true,
+      onClick: () => handleDelete(service),
+    },
+  ];
 
   const columns: ColumnsType<IService> = [
     {
@@ -93,7 +90,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
           <div style={{ padding: "4px 8px", lineHeight: "1.7", flexGrow: 1 }}>
             {text}
           </div>
-          <Dropdown overlay={menu(record)} trigger={["click"]}>
+          <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
             <Button
               type="text"
               icon={<MoreOutlined />}

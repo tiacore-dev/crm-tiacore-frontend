@@ -28,15 +28,17 @@ export const CompanyFormModal: React.FC<CompanyFormModalProps> = ({
   );
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      form.setFieldsValue({
-        company_name: initialData.company_name,
-        description: initialData.description,
-      });
-    } else {
-      form.resetFields();
+    if (visible) {
+      if (initialData && mode === "edit") {
+        form.setFieldsValue({
+          company_name: initialData.company_name,
+          description: initialData.description,
+        });
+      } else {
+        form.resetFields();
+      }
     }
-  }, [initialData, mode, form]);
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {

@@ -12,6 +12,7 @@ import {
 } from "../../../redux/slices/templatesSlice";
 import { downloadTemplate } from "../../../api/templatesApi";
 import { useState } from "react";
+import { RootState } from "../../../redux/store";
 
 interface TemplatesTableProps {
   data: ITemplate[];
@@ -29,7 +30,9 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { page, page_size, search, company } = useSelector(templatesSelector);
+  const { page, page_size, search, company } = useSelector(
+    (state: RootState) => state.templates
+  );
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const handleDownload = async (template_id: string) => {
