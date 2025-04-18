@@ -1,7 +1,9 @@
+// bankAccountsTable.tsx
 import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { IBankAccount } from "../../../api/bankAccountsApi";
 import { getBankAccountsTableColumns } from "./bankAccountsTableColumns";
+import { getBankAccountsTableColumnsForLegalEntity } from "./bankAccountsTableColumnsForLegalEntity";
 import { useSelector, useDispatch } from "react-redux";
 import {
   bankAccountsSelector,
@@ -23,37 +25,50 @@ interface BankAccountsTableProps {
     legal_entity_id: string;
     legal_entity_name: string;
   }[];
+  legalEntityId?: string; // Новый проп для работы в режиме страницы юр. лица
 }
 
 export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
   data = { total: 0, bank_accounts: [] },
   loading,
   legalEntitiesData = [],
+  legalEntityId,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { account_number, legal_entity, bank_name, page, page_size } =
     useSelector((state: RootState) => state.bankAccounts);
 
-  const columns = getBankAccountsTableColumns({
-    legalEntitiesData,
-    navigate,
-    accountNumber: account_number,
-    legalEntity: legal_entity,
-    bankName: bank_name,
-    onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
-    onLegalEntityChange: (value) => dispatch(setLegalEntity(value)),
-    onBankNameChange: (value) => dispatch(setBankName(value)),
-  });
+  // Выбираем нужные колонки в зависимости от режима
+  const columns = legalEntityId
+    ? getBankAccountsTableColumnsForLegalEntity({
+        navigate,
+        accountNumber: account_number,
+        bankName: bank_name,
+        onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
+        onBankNameChange: (value) => dispatch(setBankName(value)),
+      })
+    : getBankAccountsTableColumns({
+        legalEntitiesData,
+        navigate,
+        accountNumber: account_number,
+        legalEntity: legal_entity,
+        bankName: bank_name,
+        onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
+        onLegalEntityChange: (value) => dispatch(setLegalEntity(value)),
+        onBankNameChange: (value) => dispatch(setBankName(value)),
+      });
 
-  // 1. Фильтрация данных
+  // Фильтрация данных
   const filteredData = data.bank_accounts.filter((account) => {
     const matchesAccountNumber = account_number
       ? account.account_number
           .toLowerCase()
           .includes(account_number.toLowerCase())
       : true;
-    const matchesLegalEntity = legal_entity
+    const matchesLegalEntity = legalEntityId
+      ? account.legal_entity === legalEntityId
+      : legal_entity
       ? account.legal_entity === legal_entity
       : true;
     const matchesBankName = bank_name
@@ -62,32 +77,33 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
     return matchesAccountNumber && matchesLegalEntity && matchesBankName;
   });
 
-  // 2. Сортировка будет выполняться Ant Table автоматически через sorter в колонках
-  // 3. Пагинация обрабатывается Ant Table автоматически при правильном dataSource
-
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={filteredData} // Передаем все отфильтрованные данные
+        dataSource={filteredData}
         rowKey="bank_account_id"
         loading={loading}
-        pagination={{
-          current: page,
-          pageSize: page_size,
-          total: filteredData.length,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => (
-            <Typography.Text>Всего: {total}</Typography.Text>
-          ),
-          onChange: (newPage, newPageSize) => {
-            if (newPageSize !== page_size) {
-              dispatch(setPageSize(newPageSize));
-            }
-            dispatch(setPage(newPage));
-          },
-        }}
+        pagination={
+          filteredData.length >= 10
+            ? {
+                current: page,
+                pageSize: page_size,
+                total: filteredData.length,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50", "100"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего: {total}</Typography.Text>
+                ),
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+              }
+            : false
+        }
       />
     </div>
   );

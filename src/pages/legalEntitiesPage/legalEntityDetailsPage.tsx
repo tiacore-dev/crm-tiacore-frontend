@@ -13,6 +13,7 @@ import { useEntityTypes } from "../../hooks/base/useBaseQuery";
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
 import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTable";
+import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -66,6 +67,11 @@ export const LegalEntityDetailsPage: React.FC = () => {
     });
   };
 
+  const { data: bankAccountsData, isLoading: isBankAccountsLoading } =
+    useBankAccountQuery({
+      legal_entity: legal_entity_id,
+    });
+
   return (
     <div>
       {isLoading ? (
@@ -88,17 +94,31 @@ export const LegalEntityDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-
-                <LegalEntityDetailsCard
-                  legal_entity={legal_entity}
-                  companiesData={companiesResponse?.companies || []}
-                  legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                />
-                {/* <BankAccountsTable
-                  data={bankAccountsData || { total: 0, bank_accounts: [] }}
-                  loading={isLoading}
-                  legalEntitiesData={legalEntitiesResponse?.entities || []}
-                /> */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "24px",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  {" "}
+                  <div style={{ flex: 2 }}>
+                    <LegalEntityDetailsCard
+                      legal_entity={legal_entity}
+                      companiesData={companiesResponse?.companies || []}
+                      legalEntityTypes={
+                        legalEntityTypes?.legal_entity_types || []
+                      }
+                    />
+                  </div>
+                  <div style={{ flex: 4 }}>
+                    <BankAccountsTable
+                      data={bankAccountsData || { total: 0, bank_accounts: [] }}
+                      loading={isBankAccountsLoading}
+                      legalEntityId={legal_entity_id}
+                    />
+                  </div>
+                </div>
               </div>
 
               {isModalVisible && (
