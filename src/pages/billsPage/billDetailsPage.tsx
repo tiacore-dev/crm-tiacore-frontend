@@ -18,6 +18,7 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { useBillDetailsQuery } from "../../hooks/billDetails/billDetailQuery";
 import { BillDetailsTable } from "./components/billDetailsTable";
+import { GenerateTemplateButton } from "../../components/generateTemplateButton";
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
   const navigate = useNavigate();
@@ -111,6 +112,10 @@ export const BillDetailsPage: React.FC = () => {
                   <Button danger onClick={() => setShowDeleteConfirm(true)}>
                     <DeleteOutlined /> Удалить
                   </Button>
+                  <GenerateTemplateButton
+                    billId={bill_id || ""}
+                    entityType={"bill"}
+                  />
                 </Space>
 
                 <BillDetailsCard

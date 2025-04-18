@@ -86,9 +86,9 @@ export const UserDetailsPage: React.FC = () => {
                   <div style={{ flex: "0 0 300px" }}>
                     <UserDetailsCard userDetails={userDetails} />
                   </div>
-                  <div style={{ flex: 1 }}>
+                  {/* <div style={{ flex: 1 }}>
                     <UserCompanyRelationsTable userId={user_id} />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

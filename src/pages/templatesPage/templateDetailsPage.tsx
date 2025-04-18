@@ -12,7 +12,7 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { TemplateFormModal } from "./components/templateFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { TemplateDetailsCard } from "./components/templateDetailsCard";
-import { GenerateTemplateButton } from "./components/generateTemplateButton";
+import { GenerateTemplateButton } from "../../components/generateTemplateButton";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();

@@ -13,11 +13,23 @@ export interface ITemplate {
 }
 
 // Функция для получения списка  с параметрами
-export const fetchTemplates = async () => {
+export const fetchTemplates = async (params?: {
+  entity?: string;
+  page?: number;
+  page_size?: number;
+}) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+
+  // Устанавливаем параметры по умолчанию
+  const queryParams = {
+    page: params?.page || 1,
+    page_size: params?.page_size || 100,
+    ...(params?.entity && { entity: params.entity }), // Добавляем entity только если он передан
+  };
+
   const response = await axiosInstance.get(`${url}/api/templates/all`, {
-    params: { page: 1, page_size: 100 },
+    params: queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

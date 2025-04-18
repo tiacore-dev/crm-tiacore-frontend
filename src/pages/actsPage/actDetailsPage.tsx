@@ -16,6 +16,7 @@ import { useActDetailsQuery } from "../../hooks/actDetails/actDetailQuery";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { ActDetailsTable } from "./components/actDetailsTable";
 import { createMemoizedHelpers } from "../../utils/infoById";
+import { GenerateTemplateButton } from "../../components/generateTemplateButton";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -98,6 +99,10 @@ export const ActDetailsPage: React.FC = () => {
                   <Button danger onClick={() => setShowDeleteConfirm(true)}>
                     <DeleteOutlined /> Удалить
                   </Button>
+                  <GenerateTemplateButton
+                    actId={act_id || ""}
+                    entityType={"act"}
+                  />
                 </Space>
 
                 <ActDetailsDescriptions

@@ -11,10 +11,16 @@ export interface IBankAccountsResponse {
   bank_accounts: IBankAccount[];
 }
 
-export const useBankAccountQuery = () => {
+export interface IBankAccountsQueryParams {
+  legal_entity?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export const useBankAccountQuery = (params?: IBankAccountsQueryParams) => {
   return useQuery<IBankAccountsResponse>({
-    queryKey: ["bank_accounts"],
-    queryFn: fetchBankAccounts,
+    queryKey: ["bank_accounts", params], // Добавляем параметры в ключ запроса
+    queryFn: () => fetchBankAccounts(params), // Передаем параметры в fetchBankAccounts
   });
 };
 

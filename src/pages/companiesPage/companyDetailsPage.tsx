@@ -97,7 +97,7 @@ export const CompanyDetailsPage: React.FC = () => {
                     <CompanyCard data={companyDetails} loading={isLoading} />{" "}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <UserCompanyRelationsTable companyId={company_id} />
+                    {/* <UserCompanyRelationsTable companyId={company_id} /> */}
                   </div>
                 </div>
               </div>{" "}

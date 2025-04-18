@@ -158,19 +158,14 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
           marginBottom: 16,
         }}
       >
-        <Typography.Title level={4} style={{ margin: 0 }}>
+        <Typography.Title level={4} style={{ marginRight: 16 }}>
           Детали акта
         </Typography.Title>
-        <Button
-          type="primary"
-          onClick={handleAddDetail}
-          icon={<PlusOutlined />}
-        >
+        <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
           Добавить
         </Button>
       </div>

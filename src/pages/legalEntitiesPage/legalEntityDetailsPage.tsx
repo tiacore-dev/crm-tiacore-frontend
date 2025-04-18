@@ -12,6 +12,7 @@ import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { useEntityTypes } from "../../hooks/base/useBaseQuery";
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
+import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTable";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -93,6 +94,11 @@ export const LegalEntityDetailsPage: React.FC = () => {
                   companiesData={companiesResponse?.companies || []}
                   legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 />
+                {/* <BankAccountsTable
+                  data={bankAccountsData || { total: 0, bank_accounts: [] }}
+                  loading={isLoading}
+                  legalEntitiesData={legalEntitiesResponse?.entities || []}
+                /> */}
               </div>
 
               {isModalVisible && (

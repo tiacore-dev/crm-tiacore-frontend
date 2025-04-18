@@ -119,7 +119,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     {
       title: "",
       key: "actions",
-      width: 100,
+      width: 48,
       render: (record: IBillDetail) => (
         <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
           <Button
@@ -137,19 +137,14 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
           marginBottom: 16,
         }}
       >
-        <Typography.Title level={4} style={{ margin: 0 }}>
+        <Typography.Title level={4} style={{ margin: 0, marginRight: 16 }}>
           Детали счета
         </Typography.Title>
-        <Button
-          type="primary"
-          onClick={handleAddDetail}
-          icon={<PlusOutlined />}
-        >
+        <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
           Добавить
         </Button>
       </div>

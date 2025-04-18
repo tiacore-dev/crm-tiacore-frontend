@@ -18,10 +18,16 @@ export interface ITemplatesResponse {
   }[];
 }
 
-export const useTemplateQuery = () => {
+export interface ITemplatesQueryParams {
+  entity?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export const useTemplateQuery = (params?: ITemplatesQueryParams) => {
   return useQuery<ITemplatesResponse>({
-    queryKey: ["templates"],
-    queryFn: fetchTemplates,
+    queryKey: ["templates", params], // Добавляем параметры в ключ запроса
+    queryFn: () => fetchTemplates(params), // Передаем параметры в fetchTemplates
   });
 };
 

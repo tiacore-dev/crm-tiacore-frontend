@@ -13,11 +13,23 @@ export interface IBankAccount {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchBankAccounts = async () => {
+export const fetchBankAccounts = async (params?: {
+  legal_entity?: string;
+  page?: number;
+  page_size?: number;
+}) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+
+  // Устанавливаем параметры по умолчанию
+  const queryParams = {
+    page: params?.page || 1,
+    page_size: params?.page_size || 100,
+    ...(params?.legal_entity && { legal_entity: params.legal_entity }), // Добавляем legal_entity только если он передан
+  };
+
   const response = await axiosInstance.get(`${url}/api/bank-accounts/all`, {
-    params: { page: 1, page_size: 100 },
+    params: queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

@@ -7,10 +7,7 @@ import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { BankAccountsTable } from "./components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
-import {
-  bankAccountsSelector,
-  resetState,
-} from "../../redux/slices/bankAccountsSlice";
+import { resetState } from "../../redux/slices/bankAccountsSlice";
 import { BankAccountCreateModal } from "./components/bankAccountFormModal";
 import { RootState } from "../../redux/store";
 
