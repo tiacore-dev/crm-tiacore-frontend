@@ -12,6 +12,6 @@ export interface IBillDetailsResponse {
 export const useBillDetailsQuery = (billId?: string) => {
   return useQuery<IBillDetailsResponse>({
     queryKey: ["billDetails", billId],
-    queryFn: () => fetchBillDetails({ bill: billId }), // передаём параметры правильно
+    queryFn: () => fetchBillDetails({ bill: billId }),
   });
 };

@@ -9,34 +9,34 @@ interface LegalEntitiesTableColumnsProps {
     legal_entity_type_id: string;
     entity_name: string;
   }[];
-  companiesData: {
-    company_id: string;
-    company_name: string;
-  }[];
+  // companiesData: {
+  //   company_id: string;
+  //   company_name: string;
+  // }[];
   navigate: ReturnType<typeof useNavigate>;
   search: string;
-  company: string;
+  // company: string;
   entity_type: string;
   onSearchChange: (value: string) => void;
-  onCompanyChange: (value: string) => void;
+  // onCompanyChange: (value: string) => void;
   onEntityTypeChange: (value: string) => void;
 }
 
 export const getLegalEntitiesTableColumns = ({
   legalEntityTypes,
-  companiesData,
+  // companiesData,
   navigate,
   search,
-  company,
+  // company,
   entity_type,
   onSearchChange,
-  onCompanyChange,
+  // onCompanyChange,
   onEntityTypeChange,
 }: LegalEntitiesTableColumnsProps): ColumnType<ILegalEntity>[] => {
-  const getCompanyName = (companyId: string): string => {
-    const company = companiesData.find((c) => c.company_id === companyId);
-    return company ? company.company_name : companyId;
-  };
+  // const getCompanyName = (companyId: string): string => {
+  //   const company = companiesData.find((c) => c.company_id === companyId);
+  //   return company ? company.company_name : companyId;
+  // };
 
   const getEntityType = (typeId: string): string => {
     const type = legalEntityTypes.find(
@@ -85,40 +85,40 @@ export const getLegalEntitiesTableColumns = ({
       ),
       filteredValue: search ? [search] : null,
     },
-    {
-      title: "Компания",
-      dataIndex: "company",
-      key: "company",
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
-      sorter: (a: ILegalEntity, b: ILegalEntity) =>
-        getCompanyName(a.company).localeCompare(getCompanyName(b.company)),
-      sortDirections: ["ascend", "descend"],
-      render: getCompanyName,
-      filterDropdown: () => (
-        <div style={{ padding: 8 }}>
-          <Select
-            showSearch
-            allowClear
-            placeholder="Фильтр по компании"
-            value={company || undefined}
-            onChange={(value) => onCompanyChange(value || "")}
-            style={{ width: 200 }}
-            options={companiesData.map((c) => ({
-              label: c.company_name,
-              value: c.company_id,
-            }))}
-            filterOption={(input, option) =>
-              (option?.label as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-          />
-        </div>
-      ),
-      filteredValue: company ? [company] : null,
-    },
+    // {
+    //   title: "Компания",
+    //   dataIndex: "company",
+    //   key: "company",
+    //   filterIcon: (filtered) => (
+    //     <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    //   ),
+    //   sorter: (a: ILegalEntity, b: ILegalEntity) =>
+    //     getCompanyName(a.company).localeCompare(getCompanyName(b.company)),
+    //   sortDirections: ["ascend", "descend"],
+    //   render: getCompanyName,
+    //   filterDropdown: () => (
+    //     <div style={{ padding: 8 }}>
+    //       <Select
+    //         showSearch
+    //         allowClear
+    //         placeholder="Фильтр по компании"
+    //         value={company || undefined}
+    //         onChange={(value) => onCompanyChange(value || "")}
+    //         style={{ width: 200 }}
+    //         options={companiesData.map((c) => ({
+    //           label: c.company_name,
+    //           value: c.company_id,
+    //         }))}
+    //         filterOption={(input, option) =>
+    //           (option?.label as string)
+    //             .toLowerCase()
+    //             .includes(input.toLowerCase())
+    //         }
+    //       />
+    //     </div>
+    //   ),
+    //   filteredValue: company ? [company] : null,
+    // },
     {
       title: "ИНН",
       dataIndex: "inn",

@@ -188,35 +188,3 @@ export const generateTemplate = async (
     throw error;
   }
 };
-
-// export const generateTemplate = async (
-//   template_id: string,
-//   entity_id: string,
-//   is_pdf: boolean
-// ): Promise<string> => {
-//   const url = process.env.REACT_APP_API_URL;
-//   const accessToken = localStorage.getItem("access_token");
-
-//   try {
-//     const response = await axiosInstance.post<string>(
-//       `${url}/api/templates/generate`,
-//       { template_id, entity_id, is_pdf },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-
-//     return response.data;
-//   } catch (error) {
-//     const axiosError = error as AxiosError;
-//     if (axiosError.response) {
-//       toast.error("Ошибка при генерации шаблона");
-//     } else {
-//       toast.error("Неизвестная ошибка");
-//     }
-//     throw error;
-//   }
-// };

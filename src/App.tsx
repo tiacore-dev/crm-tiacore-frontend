@@ -31,6 +31,7 @@ import { ActsPage } from "./pages/actsPage/actsPage";
 import { ActDetailsPage } from "./pages/actsPage/actDetailsPage";
 import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
 import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
+import { RolePermissionsPage } from "./pages/rolePermissionsPage/rolePermissionsPage";
 import dayjs from "dayjs";
 import "dayjs/locale/ru"; // Русская локаль
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -38,6 +39,7 @@ import "./App.css";
 import "antd/dist/reset.css"; // Импорт стилей Ant Design
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
+import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -102,7 +104,16 @@ const App: React.FC = () => {
                 path="/templates/:template_id"
                 element={<TemplateDetailsPage />}
               />
+              <Route
+                path="/role_permissions_relations"
+                element={<RolePermissionsPage />}
+              />
+              <Route
+                path="/role_permissions_relations/:role_id"
+                element={<RolePermissionsDetailsPage />}
+              />
             </Route>
+
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </Router>

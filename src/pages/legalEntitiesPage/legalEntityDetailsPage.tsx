@@ -7,13 +7,14 @@ import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { BackButton } from "../../components/backButton";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { useEntityTypes } from "../../hooks/base/useBaseQuery";
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
 import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
+import { BankAccountCreateModal } from "../bankAccountsPage/components/bankAccountFormModal";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -21,6 +22,9 @@ export const LegalEntityDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCreateBankModalVisible, setIsCreateBankModalVisible] =
+    useState(false);
+
   const { data: legalEntityTypes } = useEntityTypes();
   const { data: companiesResponse } = useCompaniesForSelection();
 
@@ -105,7 +109,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
                   <div style={{ flex: 2 }}>
                     <LegalEntityDetailsCard
                       legal_entity={legal_entity}
-                      companiesData={companiesResponse?.companies || []}
+                      // companiesData={companiesResponse?.companies || []}
                       legalEntityTypes={
                         legalEntityTypes?.legal_entity_types || []
                       }
@@ -141,6 +145,17 @@ export const LegalEntityDetailsPage: React.FC = () => {
                   isDeleteLoading={deleteMutation.isPending}
                 />
               )}
+              {/* {isCreateBankModalVisible && (
+                <BankAccountCreateModal
+                  visible={isModalVisible}
+                  onCancel={() => setIsCreateBankModalVisible(false)}
+                  legalEntityId={legal_entity_id}
+                  onSuccess={() => {
+                    setIsCreateBankModalVisible(false);
+                  }}
+                  mode="create"
+                />
+              )} */}
             </>
           )}
           {isError && <BackButton />}

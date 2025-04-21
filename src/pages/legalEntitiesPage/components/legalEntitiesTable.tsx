@@ -33,7 +33,7 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   data = { total: 0, entities: [] },
   loading,
   legalEntityTypes = [],
-  companiesData = [],
+  // companiesData = [],
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,13 +43,13 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
 
   const columns = getLegalEntitiesTableColumns({
     legalEntityTypes,
-    companiesData,
+    // companiesData,
     navigate,
     search,
-    company,
+    // company,
     entity_type,
     onSearchChange: (value) => dispatch(setSearch(value)),
-    onCompanyChange: (value) => dispatch(setCompany(value)),
+    // onCompanyChange: (value) => dispatch(setCompany(value)),
     onEntityTypeChange: (value) => dispatch(setEntityType(value)),
   });
 
@@ -58,11 +58,15 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
     const matchesSearch = search
       ? entity.legal_entity_name.toLowerCase().includes(search.toLowerCase())
       : true;
-    const matchesCompany = company ? entity.company === company : true;
+    // const matchesCompany = company ? entity.company === company : true;
     const matchesEntityType = entity_type
       ? entity.entity_type === entity_type
       : true;
-    return matchesSearch && matchesCompany && matchesEntityType;
+    return (
+      matchesSearch &&
+      // && matchesCompany
+      matchesEntityType
+    );
   });
 
   return (

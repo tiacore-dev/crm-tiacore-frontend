@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ITemplate } from "../../../api/templatesApi";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { getCompanyNameById } from "../../../utils/infoById";
+import "../../../components/cards.css";
 
 interface TemplateDetailsCardProps {
   template: ITemplate;

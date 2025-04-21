@@ -19,6 +19,7 @@ import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { useBillDetailsQuery } from "../../hooks/billDetails/billDetailQuery";
 import { BillDetailsTable } from "./components/billDetailsTable";
 import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
   const navigate = useNavigate();
@@ -105,7 +106,6 @@ export const BillDetailsPage: React.FC = () => {
                       setShowEditModal(true);
                     }}
                   >
-                    {" "}
                     <EditOutlined />
                     Редактировать
                   </Button>
@@ -118,22 +118,33 @@ export const BillDetailsPage: React.FC = () => {
                   />
                 </Space>
 
-                <BillDetailsCard
-                  bill={bill}
-                  getEntityNameById={getEntityNameById}
-                  getContractNameById={getContractNameById}
-                  getBankNameById={getBankNameById}
-                  getBankNumberById={getBankAccountNumberById}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "24px",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div style={{ flex: 2 }}>
+                    <BillDetailsCard
+                      bill={bill}
+                      getEntityNameById={getEntityNameById}
+                      getContractNameById={getContractNameById}
+                      getBankNameById={getBankNameById}
+                      getBankNumberById={getBankAccountNumberById}
+                    />
+                  </div>
+                  <div style={{ flex: 3 }}>
+                    <BillDetailsTable
+                      data={billDetails || { total: 0, bill_details: [] }}
+                      loading={isLoadingDetails}
+                      servicesData={servicesData}
+                      billId={bill_id || ""}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="main-container">
-                <BillDetailsTable
-                  data={billDetails || { total: 0, bill_details: [] }}
-                  loading={isLoadingDetails}
-                  servicesData={servicesData}
-                  billId={bill_id || ""}
-                />
-              </div>
+
               {showEditModal && (
                 <BillCreateModal
                   visible={showEditModal}

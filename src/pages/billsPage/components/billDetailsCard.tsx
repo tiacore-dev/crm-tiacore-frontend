@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ExportOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IBill } from "../../../api/billsApi";
+import "../../../components/cards.css";
 
 interface BillDetailsCardProps {
   bill: IBill;

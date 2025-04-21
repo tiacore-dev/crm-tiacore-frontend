@@ -1,6 +1,7 @@
 import React from "react";
 import { Typography, Card } from "antd";
 import { ICompany } from "../../../api/companiesApi";
+import "../../../components/cards.css";
 
 const { Title, Text } = Typography;
 
