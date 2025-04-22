@@ -12,7 +12,6 @@ import {
   useUserRelationsQuery,
   useCompanyRelationsQuery,
 } from "../../hooks/userCompanyRelations/useUserCompanyRelationsQuery";
-import { useUserRoles } from "../../hooks/base/useBaseQuery";
 import type { IUserCompanyRelation } from "../../api/userCompanyRelationsApi";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 import { getCompanyNameById } from "../../utils/infoById";
@@ -29,7 +28,8 @@ import {
 import { useState } from "react";
 import { useUserCompanyRelationsMutations } from "../../hooks/userCompanyRelations/useUserCompanyRelationsMutations";
 import { ConfirmDeleteModal } from "../modals/confirmDeleteModal";
-import { RelationFormModal } from "./relationFormModal";
+import { RelationFormModal } from "./userCompanyRelationFormModal";
+import { useRolesQuery } from "../../hooks/role/useRoleQuery";
 
 const { Text } = Typography;
 
@@ -43,7 +43,7 @@ export const UserCompanyRelationsTable = ({
   companyId,
 }: UserCompanyRelationsTableProps) => {
   // Получаем список всех ролей
-  const { data: rolesData, isLoading: rolesLoading } = useUserRoles();
+  const { data: rolesData, isLoading: rolesLoading } = useRolesQuery();
 
   // Получаем список всех компаний
   const { data: companiesData, isLoading: companiesLoading } =
@@ -167,7 +167,7 @@ export const UserCompanyRelationsTable = ({
   ];
 
   const getRoleName = (roleId: string) => {
-    const role = rolesData?.user_roles.find((r) => r.role_id === roleId);
+    const role = rolesData?.roles.find((r) => r.role_id === roleId);
     return role ? role.role_name : roleId;
   };
 
@@ -220,7 +220,7 @@ export const UserCompanyRelationsTable = ({
           onSuccess={handleSuccess}
           mode={editingRelation ? "edit" : "create"}
           initialData={editingRelation}
-          roles={rolesData?.user_roles || []}
+          roles={rolesData?.roles || []}
           userId={userId}
           companyId={companyId}
           companies={companiesData?.companies || []}

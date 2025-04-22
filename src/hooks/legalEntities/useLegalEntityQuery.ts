@@ -1,4 +1,3 @@
-//companyUseQuery.ts
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchLegalEntities,

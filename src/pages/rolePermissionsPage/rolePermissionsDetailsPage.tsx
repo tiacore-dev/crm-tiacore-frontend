@@ -1,30 +1,56 @@
 // src/pages/rolePermissions/RolePermissionsDetailsPage.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { Button, Spin, Card, List, Checkbox, message } from "antd";
+import { Button, Spin, List, Space } from "antd";
 import { BackButton } from "../../components/backButton";
 import { useRoleDetailsQuery } from "../../hooks/role/useRoleQuery";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { usePermissionsQuery } from "../../hooks/permissions/usePermissionsQuery";
 import { useRolePermissionsQuery } from "../../hooks/rolePermissionRelations/useRolePermissionRelationsQuery";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createRolePermission,
-  deleteRolePermission,
-} from "../../api/rolePermissionsRelationsApi";
+import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
+import { useRoleMutations } from "../../hooks/role/useRoleMutations";
+import { useRolePermissionRelationsMutations } from "../../hooks/rolePermissionRelations/useRolePermissionRelationsMutations";
+import { PermissionItem } from "./components/permissionItem";
 
 export const RolePermissionsDetailsPage: React.FC = () => {
   const { role_id } = useParams<{ role_id: string }>();
   const dispatch = useDispatch();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Получаем данные о роли
   const {
     data: role,
     isLoading: isLoadingRole,
     isError: isErrorRole,
   } = useRoleDetailsQuery(role_id || "");
+
+  const {
+    data: allPermissions,
+    isLoading: isLoadingPermissions,
+    isError: isErrorPermissions,
+  } = usePermissionsQuery();
+
+  const {
+    data: rolePermissions,
+    isLoading: isLoadingRolePermissions,
+    isError: isErrorRolePermissions,
+  } = useRolePermissionsQuery({ role: role_id });
+
+  const { deleteMutation } = useRoleMutations(
+    role_id || "",
+    role?.role_name || ""
+  );
+
+  useEffect(() => {
+    if (rolePermissions?.relations) {
+      setSelectedPermissions(
+        rolePermissions.relations.map((rp) => rp.permission_id)
+      );
+    }
+  }, [rolePermissions]);
 
   useEffect(() => {
     if (role) {
@@ -41,114 +67,136 @@ export const RolePermissionsDetailsPage: React.FC = () => {
     }
   }, [role, dispatch, role_id]);
 
-  // Получаем все возможные разрешения
-  const {
-    data: allPermissions,
-    isLoading: isLoadingPermissions,
-    isError: isErrorPermissions,
-  } = usePermissionsQuery();
+  const { saveChangesMutation } = useRolePermissionRelationsMutations(role_id);
 
-  // Получаем разрешения, связанные с текущей ролью
-  const {
-    data: rolePermissions,
-    isLoading: isLoadingRolePermissions,
-    isError: isErrorRolePermissions,
-  } = useRolePermissionsQuery({ role: role_id });
-
-  // Мутация для добавления разрешения к роли
-  const addPermissionMutation = useMutation({
-    mutationFn: (permission_id: string) =>
-      createRolePermission({ role: role_id || "", permission: permission_id }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["rolePermissionRelations"] });
-      message.success("Разрешение добавлено к роли");
-    },
-    onError: () => {
-      message.error("Ошибка при добавлении разрешения");
-    },
-  });
-
-  // Мутация для удаления разрешения из роли
-  const removePermissionMutation = useMutation({
-    mutationFn: (role_permission_id: string) =>
-      deleteRolePermission(role_permission_id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["rolePermissionRelations"] });
-      message.success("Разрешение удалено из роли");
-    },
-    onError: () => {
-      message.error("Ошибка при удалении разрешения");
-    },
-  });
-
-  // Проверяем, есть ли у разрешения связь с текущей ролью
-  const isPermissionLinked = (permissionId: string) => {
-    return rolePermissions?.relations.some(
-      (rp) => rp.permission_id === permissionId
-    );
-  };
-
-  // Получаем ID связи для разрешения
-  const getRelationId = (permissionId: string) => {
-    const relation = rolePermissions?.relations.find(
-      (rp) => rp.permission_id === permissionId
-    );
-    return relation?.role_permission_id;
-  };
-
-  // Обработчик изменения состояния чекбокса
   const handlePermissionChange = (permissionId: string, checked: boolean) => {
-    if (checked) {
-      addPermissionMutation.mutate(permissionId);
-    } else {
-      const relationId = getRelationId(permissionId);
-      if (relationId) {
-        removePermissionMutation.mutate(relationId);
-      }
-    }
+    setSelectedPermissions((prev) =>
+      checked
+        ? [...prev, permissionId]
+        : prev.filter((id) => id !== permissionId)
+    );
   };
 
-  if (isLoadingRole || isLoadingPermissions || isLoadingRolePermissions) {
-    return <Spin size="large" className="center-spin" />;
-  }
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
 
-  if (isErrorRole || isErrorPermissions || isErrorRolePermissions) {
-    return <BackButton />;
-  }
+  const handleCancelClick = () => {
+    setSelectedPermissions(
+      rolePermissions?.relations.map((rp) => rp.permission_id) || []
+    );
+    setIsEditing(false);
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteMutation.mutate(role_id || "", {
+      onSuccess: () => {
+        navigate("/role_permissions_relations");
+      },
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedPermissions(
+      allPermissions?.permissions.map((p) => p.permission_id) || []
+    );
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedPermissions([]);
+  };
 
   return (
-    <div className="main-container">
-      <Card title={`Роль: ${role?.role_name}`}>
-        <List
-          header={<div>Список разрешений</div>}
-          bordered
-          dataSource={allPermissions?.permissions || []}
-          renderItem={(permission) => (
-            <List.Item>
-              <Checkbox
-                checked={isPermissionLinked(permission.permission_id)}
-                onChange={(e) =>
-                  handlePermissionChange(
-                    permission.permission_id,
-                    e.target.checked
-                  )
-                }
-                disabled={
-                  addPermissionMutation.isPending ||
-                  removePermissionMutation.isPending
-                }
-              >
-                {permission.permission_name}
-                {permission.comment && (
-                  <span style={{ color: "#888", marginLeft: "8px" }}>
-                    ({permission.comment})
-                  </span>
+    <div>
+      {isLoadingRole || isLoadingPermissions || isLoadingRolePermissions ? (
+        <Spin size="large" className="center-spin" />
+      ) : (
+        <>
+          {!(isErrorRole || isErrorPermissions || isErrorRolePermissions) && (
+            <div className="main-container">
+              {!isEditing ? (
+                <Space>
+                  <Button
+                    onClick={handleEditClick}
+                    style={{ marginBottom: 16 }}
+                  >
+                    Редактировать
+                  </Button>
+                  <Button
+                    danger
+                    onClick={handleDeleteClick}
+                    style={{ marginBottom: 16 }}
+                  >
+                    Удалить роль
+                  </Button>
+                </Space>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => {
+                      saveChangesMutation.mutate(selectedPermissions, {
+                        onSuccess: () => {
+                          setIsEditing(false);
+                        },
+                      });
+                    }}
+                    loading={saveChangesMutation.isPending}
+                    style={{ marginBottom: 16, marginRight: 8 }}
+                  >
+                    Сохранить
+                  </Button>
+                  <Button
+                    onClick={handleCancelClick}
+                    style={{ marginBottom: 16, marginRight: 8 }}
+                  >
+                    Отмена
+                  </Button>
+                  <Button
+                    onClick={handleSelectAll}
+                    style={{ marginBottom: 16, marginRight: 8 }}
+                  >
+                    Выделить все
+                  </Button>
+                  <Button
+                    onClick={handleDeselectAll}
+                    style={{ marginBottom: 16 }}
+                  >
+                    Убрать все
+                  </Button>
+                </>
+              )}
+              <List
+                bordered
+                dataSource={allPermissions?.permissions || []}
+                renderItem={(permission) => (
+                  <PermissionItem
+                    permission={permission}
+                    isLinked={selectedPermissions.includes(
+                      permission.permission_id
+                    )}
+                    isEditing={isEditing}
+                    onPermissionChange={handlePermissionChange}
+                  />
                 )}
-              </Checkbox>
-            </List.Item>
+              />
+              {isDeleteModalOpen && (
+                <ConfirmDeleteModal
+                  onConfirm={handleConfirmDelete}
+                  onCancel={() => setIsDeleteModalOpen(false)}
+                  isDeleteLoading={deleteMutation.isPending}
+                />
+              )}
+            </div>
           )}
-        />
-      </Card>
+          {(isErrorRole || isErrorPermissions || isErrorRolePermissions) && (
+            <BackButton />
+          )}
+        </>
+      )}
     </div>
   );
 };

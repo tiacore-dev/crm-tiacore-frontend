@@ -1,13 +1,26 @@
+// navbar.tsx
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, Button } from "antd";
+import { Menu, Button, Dropdown } from "antd";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
-import "./navbar.css"; // Импорт стилей
+import { useCompany } from "../../context/companyContext";
+import "./navbar.css";
+import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showSettings, setShowSettings] = useState(false);
+  const {
+    selectedCompanyId,
+    setSelectedCompanyId,
+    availableCompanies,
+    isSuperadmin,
+  } = useCompany();
+
+  // Получаем данные о всех компаниях
+  const { data: companiesData } = useCompanyQuery();
+  const companies = companiesData?.companies || [];
 
   // Основные пункты меню
   const mainItems = [
@@ -22,16 +35,16 @@ export const Navbar: React.FC = () => {
   // Дополнительные пункты меню (настройки)
   const settingsItems = [
     { label: "Услуги", key: "/services" },
-    { label: "Пользователи", key: "/users" },
     { label: "Компании", key: "/companies" },
     { label: "Шаблоны", key: "/templates" },
-    {
-      label: "Управление доступом",
-      key: "/role_permissions_relations",
-    },
+    ...(isSuperadmin
+      ? [
+          { label: "Пользователи", key: "/users" },
+          { label: "Управление доступом", key: "/role_permissions_relations" },
+        ]
+      : []),
   ];
 
-  // Функция для определения активного пункта меню
   const getSelectedKeys = () => {
     const currentPath = location.pathname;
     const allItems = [...mainItems, ...settingsItems];
@@ -41,14 +54,28 @@ export const Navbar: React.FC = () => {
     return matchedItem ? [matchedItem.key] : [];
   };
 
-  // Обработчик переключения настроек
   const toggleSettings = () => {
     setShowSettings(!showSettings);
   };
 
+  // Создаем элементы для выпадающего меню выбора компании
+  const companyMenuItems = availableCompanies.map((companyId) => {
+    const company = companies.find((c) => c.company_id === companyId);
+    return {
+      key: companyId,
+      label: company ? company.company_name : companyId,
+      onClick: () => setSelectedCompanyId(companyId),
+    };
+  });
+
+  // Получаем название выбранной компании
+  const selectedCompanyName =
+    companies.find((c) => c.company_id === selectedCompanyId)?.company_name ||
+    selectedCompanyId;
+
   return (
     <div className={`navbar-container ${showSettings ? "settings-open" : ""}`}>
-      {/* Основное меню (всегда видимое) */}
+      {/* Основное меню */}
       <Menu
         className="navbar-menu"
         mode="horizontal"
@@ -57,7 +84,7 @@ export const Navbar: React.FC = () => {
         onClick={({ key }) => navigate(key)}
       />
 
-      {/* Дополнительное меню (появляется при нажатии на настройки) */}
+      {/* Дополнительное меню (настройки) */}
       {showSettings && (
         <Menu
           className="settings-menu"
@@ -68,11 +95,19 @@ export const Navbar: React.FC = () => {
         />
       )}
 
-      {/* Кнопки */}
+      {/* Кнопки и выбор компании */}
       <div className="buttons-container">
-        <Button
-          type="text"
-          icon={
+        {!isSuperadmin && (
+          <Dropdown menu={{ items: companyMenuItems }} placement="bottomRight">
+            <Button className="company-selector">
+              {selectedCompanyName || "Выберите компанию"}
+            </Button>
+          </Dropdown>
+        )}
+
+        <button className="animated-settings-btn" onClick={toggleSettings}>
+          <div className="sign">
+            <div className="text">Настройки</div>
             <SettingOutlined
               className={`rotate-icon ${
                 showSettings
@@ -80,24 +115,18 @@ export const Navbar: React.FC = () => {
                   : "rotate-icon-clockwise"
               }`}
             />
-          }
-          onClick={toggleSettings}
-        >
-          Настройки
-        </Button>
+          </div>
+        </button>
 
         <button
-          className="logout-btn"
+          className="animated-btn"
           onClick={() => {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
+            localStorage.clear();
             window.location.href = "/login";
           }}
         >
           <div className="sign">
-            <svg viewBox="0 0 512 512">
-              <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" />
-            </svg>
+            <LogoutOutlined />
           </div>
           <div className="text">Выйти</div>
         </button>

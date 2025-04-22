@@ -5,9 +5,13 @@ import {
   fetchCompanyDetails,
   ICompany,
 } from "../../api/companiesApi";
-import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
+// import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
 
 export interface useCompanyQueryResponse {
+  total: number;
+  companies: ICompany[];
+}
+export interface ICompaniesResponse {
   total: number;
   companies: ICompany[];
 }

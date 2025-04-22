@@ -92,3 +92,12 @@ export const deleteUserCompanyRelation = async (user_company_id: string) => {
     }
   );
 };
+
+// Функция для проверки существующей связи
+export const checkExistingRelation = async (params: {
+  user: string;
+  company: string;
+}) => {
+  const response = await fetchUserCompanyRelations(params);
+  return response.relations.length > 0;
+};

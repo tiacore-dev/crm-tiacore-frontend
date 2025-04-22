@@ -29,6 +29,9 @@ export const useLegalEntityMutations = (
     mutationFn: createLegalEntity,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntitiesForSelection"],
+      });
       toast.success(
         <div>
           Юр. лицо успешно добавлено{" "}
@@ -42,8 +45,7 @@ export const useLegalEntityMutations = (
       );
     },
     onError: (error: AxiosError) => {
-      // Проверяем код ошибки
-      toast.error("Ошибка при добавлении компании");
+      toast.error("Ошибка при добавлении юридического лица");
     },
   });
 
@@ -53,6 +55,10 @@ export const useLegalEntityMutations = (
         ? updateLegalEntity(legal_entity_id, editedData)
         : Promise.reject(),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntitiesForSelection"],
+      });
       if (legal_entity_id) {
         queryClient.invalidateQueries({
           queryKey: ["legalEntityDetails", legal_entity_id],
@@ -70,6 +76,10 @@ export const useLegalEntityMutations = (
     mutationFn: () =>
       legal_entity_id ? deleteLegalEntity(legal_entity_id) : Promise.reject(),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntitiesForSelection"],
+      });
       toast.success("Успешно удалено");
     },
     onError: () => {

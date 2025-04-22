@@ -1,3 +1,4 @@
+//loginpage.tsx
 import React, { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,8 @@ type FormData = {
 type AuthResponse = {
   access_token: string;
   refresh_token: string;
+  permissions: Record<string, string[]>; // Добавляем permissions
+  is_superadmin: boolean; // Добавляем is_superadmin
 };
 
 type ApiError = {
@@ -61,7 +64,16 @@ export const LoginPage: React.FC = () => {
     onSuccess: (data) => {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
-      navigate("/home");
+      localStorage.setItem("is_superadmin", data.is_superadmin.toString());
+      if (!data.is_superadmin) {
+        localStorage.setItem("permissions", JSON.stringify(data.permissions));
+        const companyIds = Object.keys(data.permissions);
+        if (companyIds.length > 0) {
+          localStorage.setItem("selectedCompanyId", companyIds[0]);
+        }
+      }
+
+      window.location.href = "/home";
     },
     onError: (error) => {
       toast.error(error.message);

@@ -7,8 +7,7 @@ import { useUserQueryAll } from "../../hooks/users/useUserQuery";
 import { UsersTable } from "./components/usersTable";
 import { UserFormModal } from "./components/userFormModal";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
-import { useUserRoles } from "../../hooks/base/useBaseQuery";
-import { usersSelector, resetState } from "../../redux/slices/usersSlice";
+import { resetState } from "../../redux/slices/usersSlice";
 import { RootState } from "../../redux/store";
 
 export const UsersPage: React.FC = () => {

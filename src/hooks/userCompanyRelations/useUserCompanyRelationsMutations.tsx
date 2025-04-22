@@ -3,6 +3,7 @@ import {
   createUserCompanyRelation,
   updateUserCompanyRelation,
   deleteUserCompanyRelation,
+  checkExistingRelation,
 } from "../../api/userCompanyRelationsApi";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
@@ -17,14 +18,34 @@ export const useUserCompanyRelationsMutations = (
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: createUserCompanyRelation,
+    mutationFn: async (newRelation: {
+      user: string;
+      company: string;
+      role: string;
+    }) => {
+      // Проверяем существующую связь
+      const exists = await checkExistingRelation({
+        user: newRelation.user,
+        company: newRelation.company,
+      });
+
+      if (exists) {
+        throw new Error(
+          user_id
+            ? "Этот пользователь уже привязан к выбранной компании"
+            : "Эта компания уже привязана к выбранному пользователю"
+        );
+      }
+
+      return createUserCompanyRelation(newRelation);
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["userRelations"] });
       queryClient.invalidateQueries({ queryKey: ["companyRelations"] });
       toast.success("Информация добавлена");
     },
-    onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении");
+    onError: (error: AxiosError | Error) => {
+      toast.error(error.message);
     },
   });
 

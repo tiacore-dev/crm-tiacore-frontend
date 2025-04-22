@@ -10,7 +10,7 @@ import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserDetailsCard } from "./components/userDetails";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { UserFormModal } from "./components/userFormModal";
-import { UserCompanyRelationsTable } from "../../components/relations/relationsTable";
+import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 
 export const UserDetailsPage: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
@@ -86,9 +86,9 @@ export const UserDetailsPage: React.FC = () => {
                   <div style={{ flex: "0 0 300px" }}>
                     <UserDetailsCard userDetails={userDetails} />
                   </div>
-                  {/* <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1 }}>
                     <UserCompanyRelationsTable userId={user_id} />
-                  </div> */}
+                  </div>
                 </div>
               </div>
 

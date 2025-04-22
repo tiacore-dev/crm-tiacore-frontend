@@ -10,7 +10,7 @@ import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyCard } from "./components/companyDetailsCard"; // Изменен импорт
 import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { UserCompanyRelationsTable } from "../../components/relations/relationsTable";
+import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -97,7 +97,7 @@ export const CompanyDetailsPage: React.FC = () => {
                     <CompanyCard data={companyDetails} loading={isLoading} />{" "}
                   </div>
                   <div style={{ flex: 1 }}>
-                    {/* <UserCompanyRelationsTable companyId={company_id} /> */}
+                    <UserCompanyRelationsTable companyId={company_id} />
                   </div>
                 </div>
               </div>{" "}

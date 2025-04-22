@@ -23,10 +23,3 @@ export const useContractStatuses = () => {
     queryFn: fetchContractStatuses,
   });
 };
-
-export const useUserRoles = () => {
-  return useQuery<IUserRolesResponse>({
-    queryKey: ["userRoles"],
-    queryFn: fetchUserRoles,
-  });
-};

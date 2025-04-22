@@ -1,57 +1,55 @@
+// src/hooks/rolePermissionRelations/useRolePermissionRelationsMutations.tsx
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createRolePermission,
-  updateRolePermission,
   deleteRolePermission,
 } from "../../api/rolePermissionsRelationsApi";
-import toast from "react-hot-toast";
+import { message } from "antd";
 import { AxiosError } from "axios";
 
-export const useRolePermissionRelationsMutations = (
-  role_permission_id: string,
-  role_id: string,
-  permission_id: string,
-  setIsEditing?: (val: boolean) => void
-) => {
+export const useRolePermissionRelationsMutations = (role_id?: string) => {
   const queryClient = useQueryClient();
 
-  const createMutation = useMutation({
-    mutationFn: createRolePermission,
-    onSuccess: (data) => {
+  const saveChangesMutation = useMutation({
+    mutationFn: async (selectedPermissions: string[]) => {
+      const currentPermissionsResponse = await queryClient.getQueryData<{
+        relations: { permission_id: string; role_permission_id: string }[];
+      }>(["rolePermissionRelations", { role: role_id }]);
+
+      const currentPermissions =
+        currentPermissionsResponse?.relations.map((rp) => rp.permission_id) ||
+        [];
+
+      const toAdd = selectedPermissions.filter(
+        (permId) => !currentPermissions.includes(permId)
+      );
+
+      const toRemove = currentPermissions
+        .filter((permId) => !selectedPermissions.includes(permId))
+        .map((permId) => {
+          const relation = currentPermissionsResponse?.relations.find(
+            (rp) => rp.permission_id === permId
+          );
+          return relation?.role_permission_id || "";
+        })
+        .filter((id) => id);
+
+      await Promise.all([
+        ...toAdd.map((permId) =>
+          createRolePermission({ role: role_id || "", permission: permId })
+        ),
+        ...toRemove.map((relationId) => deleteRolePermission(relationId)),
+      ]);
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["rolePermissionRelations"] });
-      toast.success("Информация добавлена");
+      message.success("Изменения сохранены");
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении");
+      message.error("Ошибка при сохранении изменений");
+      console.error("Error saving permission changes:", error);
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: (editedData: any) =>
-      role_permission_id
-        ? updateRolePermission(role_permission_id, editedData)
-        : Promise.reject(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["rolePermissionRelations"] });
-      setIsEditing && setIsEditing(false);
-      toast.success("Информация обновлена");
-    },
-    onError: () => {
-      toast.error("Ошибка при обновлении данных");
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (role_permission_id: string) =>
-      deleteRolePermission(role_permission_id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["rolePermissionRelations"] });
-      toast.success("Успешно удалено");
-    },
-    onError: () => {
-      toast.error("Ошибка при удалении");
-    },
-  });
-
-  return { createMutation, updateMutation, deleteMutation };
+  return { saveChangesMutation };
 };

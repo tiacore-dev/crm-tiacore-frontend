@@ -124,16 +124,12 @@ export const getLegalEntitiesTableColumns = ({
       dataIndex: "inn",
       key: "inn",
       width: 150,
-      sorter: (a: ILegalEntity, b: ILegalEntity) => a.inn.localeCompare(b.inn),
-      sortDirections: ["ascend", "descend"],
     },
     {
       title: "КПП",
       dataIndex: "kpp",
       key: "kpp",
       width: 130,
-      sorter: (a: ILegalEntity, b: ILegalEntity) => a.kpp.localeCompare(b.kpp),
-      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Ставка НДС",

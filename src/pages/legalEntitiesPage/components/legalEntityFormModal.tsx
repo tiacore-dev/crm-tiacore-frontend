@@ -1,19 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Form, Select } from "antd"; // Импортируем Form и Select
+import { Modal, Input, Button, Form, Select } from "antd";
 import { ILegalEntityType } from "../../../api/baseApi";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntityMutation";
-
-export interface ICompany {
-  company_id: string;
-  company_name: string;
-  description: string;
-}
-
-export interface ICompaniesResponse {
-  total: number;
-  companies: ICompany[];
-}
+import { ICompany } from "../../../api/companiesApi";
 
 export interface LegalEntityModalProps {
   visible: boolean;
@@ -46,7 +36,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     initialData?.address || "",
     initialData?.entity_type || "",
     initialData?.signer || "",
-    initialData?.company || "",
+    // initialData?.company || "",
     initialData?.description || ""
   );
 
@@ -61,7 +51,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
           vat_rate: initialData.vat_rate,
           entity_type: initialData.entity_type,
           signer: initialData.signer,
-          company: initialData.company,
+          // company: initialData.company,
           description: initialData.description,
         });
       } else {
@@ -76,6 +66,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
       const values = await form.validateFields();
       const formData = {
         ...values,
+        relation_type: "seller", // Добавляем relation_type по умолчанию
       };
       if (mode === "create") {
         await createMutation.mutateAsync(formData);
@@ -142,7 +133,6 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
           name="kpp"
           label="КПП"
           rules={[
-            { required: true, message: "Пожалуйста, введите КПП" },
             { min: 9, message: "Минимум 9 символов" },
             { max: 9, message: "Максимум 9 символов" },
             {
@@ -188,13 +178,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
         <Form.Item
           name="signer"
           label="Подписавший"
-          rules={[
-            {
-              required: true,
-              message: "Пожалуйста, введите кто подписавший",
-            },
-            { min: 3, message: "Минимум 3 символа" },
-          ]}
+          rules={[{ min: 3, message: "Минимум 3 символа" }]}
         >
           <Input placeholder="Введите подписавшую сторону" />
         </Form.Item>

@@ -12,6 +12,8 @@ export const refreshToken = async (): Promise<string | null> => {
     const response = await axios.post<{
       access_token: string;
       refresh_token: string;
+      permissions?: Record<string, string[]>; // Добавляем permissions
+      is_superadmin?: boolean;
     }>(`${url}/api/auth/refresh`, { refresh_token: r_token });
 
     console.log("response", response);
@@ -23,6 +25,9 @@ export const refreshToken = async (): Promise<string | null> => {
     console.error("Ошибка при обновлении токена:", error);
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("permissions");
+    localStorage.removeItem("is_superadmin");
+    localStorage.removeItem("selectedCompanyId");
     return null;
   }
 };

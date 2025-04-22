@@ -1,8 +1,9 @@
-import { Modal, Form, Select, Button } from "antd";
+import { Modal, Form, Select, Button, message } from "antd";
 import { useUserCompanyRelationsMutations } from "../../hooks/userCompanyRelations/useUserCompanyRelationsMutations";
 import { IUserCompanyRelation } from "../../api/userCompanyRelationsApi";
 import { useEffect, useState } from "react";
 import { IUser } from "../../api/usersApi";
+import { fetchUserCompanyRelations } from "../../api/userCompanyRelationsApi";
 
 interface RelationFormModalProps {
   visible: boolean;
@@ -49,7 +50,6 @@ export const RelationFormModal = ({
       });
     } else {
       form.resetFields();
-      // Устанавливаем значения по умолчанию для создания
       if (userId) {
         form.setFieldsValue({ user_id: userId });
       }
@@ -64,12 +64,28 @@ export const RelationFormModal = ({
       setIsSubmitting(true);
       const values = await form.validateFields();
 
+      const user = userId || values.user_id;
+      const company = companyId || values.company_id;
+
       if (mode === "create") {
+        const existingRelations = await fetchUserCompanyRelations({
+          user,
+          company,
+        });
+
+        if (existingRelations.relations.length > 0) {
+          message.error(
+            userId
+              ? "Этот пользователь уже привязан к выбранной компании"
+              : "Эта компания уже привязана к выбранному пользователю"
+          );
+          return;
+        }
+
         await createMutation.mutateAsync({
-          // Преобразуем названия полей перед отправкой
-          user: userId || values.user_id,
+          user,
           role: values.role_id,
-          company: companyId || values.company_id,
+          company,
         });
       } else if (mode === "edit" && initialData?.user_company_id) {
         await updateMutation.mutateAsync({
@@ -90,7 +106,7 @@ export const RelationFormModal = ({
 
   return (
     <Modal
-      title={initialData ? "Редактировать связь" : "Создать связь"}
+      title={initialData ? "Редактировать" : "Создать"}
       open={visible}
       onOk={handleSubmit}
       onCancel={onCancel}
@@ -116,7 +132,6 @@ export const RelationFormModal = ({
           role_id: initialData?.role_id,
         }}
       >
-        {/* Показываем поле пользователя только в режиме создания и если не передан userId */}
         {mode === "create" && !userId && (
           <Form.Item
             name="user_id"
@@ -140,7 +155,6 @@ export const RelationFormModal = ({
           </Form.Item>
         )}
 
-        {/* Показываем поле компании только в режиме создания и если не передан companyId */}
         {mode === "create" && !companyId && (
           <Form.Item
             name="company_id"
@@ -162,7 +176,6 @@ export const RelationFormModal = ({
           </Form.Item>
         )}
 
-        {/* Поле роли показываем всегда */}
         <Form.Item
           name="role_id"
           label="Роль"
