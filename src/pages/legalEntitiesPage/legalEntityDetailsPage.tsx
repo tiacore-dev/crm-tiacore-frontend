@@ -14,6 +14,7 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
 import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
+import { useCompany } from "../../context/companyContext";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -21,6 +22,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { selectedCompanyId } = useCompany();
 
   const { data: legalEntityTypes } = useEntityTypes();
   const { data: companiesResponse } = useCompaniesForSelection();
@@ -29,6 +31,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
     data: legal_entity,
     isLoading,
     isError,
+    refetch,
   } = useLegalEntityDetailsQuery(legal_entity_id || "");
 
   const { deleteMutation } = useLegalEntityMutations(
@@ -40,8 +43,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
     legal_entity?.address || "",
     legal_entity?.entity_type || "",
     legal_entity?.signer || "",
-    legal_entity?.company || "",
-    legal_entity?.description || ""
+    legal_entity?.company || ""
+    // legal_entity?.description || ""
   );
 
   useEffect(() => {
@@ -49,7 +52,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
       dispatch(
         setBreadcrumbs([
           { label: "Главная страница", to: "/home" },
-          { label: "Юридические лица", to: "/legal_entities" },
+          { label: "Контрагенты", to: "/legal_entities" },
           {
             label: legal_entity.legal_entity_name,
             to: `/legal_entities/${legal_entity_id}`,
@@ -58,6 +61,12 @@ export const LegalEntityDetailsPage: React.FC = () => {
       );
     }
   }, [legal_entity, dispatch, legal_entity_id]);
+
+  useEffect(() => {
+    if (selectedCompanyId) {
+      refetch();
+    }
+  }, [selectedCompanyId, refetch]);
 
   const handleDelete = () => {
     deleteMutation.mutate(undefined, {

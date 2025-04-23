@@ -62,7 +62,7 @@ export const getBankAccountsTableColumns = ({
       filteredValue: accountNumber ? [accountNumber] : null,
     },
     {
-      title: "Юр. лицо",
+      title: "Контрагент",
       dataIndex: "legal_entity",
       key: "legal_entity",
       filterIcon: (filtered) => (
@@ -85,7 +85,7 @@ export const getBankAccountsTableColumns = ({
           <Select
             showSearch
             allowClear
-            placeholder="Фильтр по юр. лицу"
+            placeholder="Фильтр по контрагенту"
             value={legalEntity || undefined}
             onChange={(value) => onLegalEntityChange(value || "")}
             style={{ width: 200 }}

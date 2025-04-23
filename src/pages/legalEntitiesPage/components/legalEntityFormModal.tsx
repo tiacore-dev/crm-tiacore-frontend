@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Form, Select } from "antd";
+import { Modal, Form } from "antd";
 import { ILegalEntityType } from "../../../api/baseApi";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntityMutation";
 import { ICompany } from "../../../api/companiesApi";
+import {
+  useLegalEntityByInnKppQuery,
+  useLegalEntityDetailsQuery,
+} from "../../../hooks/legalEntities/useLegalEntityQuery";
+import { renderFooter } from "./renderLegalEntityFooter";
+import {
+  renderAdditionalFields,
+  renderBasicFields,
+} from "./renderLegalEntityFields";
 
 export interface LegalEntityModalProps {
   visible: boolean;
@@ -26,19 +35,48 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [showAllFields, setShowAllFields] = useState(mode === "edit");
+  const [basicFieldsData, setBasicFieldsData] = useState<{
+    inn: string;
+    kpp: string;
+    relation_type?: string;
+  } | null>(null);
+  const [isExistingEntity, setIsExistingEntity] = useState(false);
+  const [innForCheck, setInnForCheck] = useState<string | null>(null);
+  const [kppForCheck, setKppForCheck] = useState<string | null>(null);
   const { createMutation, updateMutation } = useLegalEntityMutations(
     initialData?.legal_entity_id || "",
     initialData?.legal_entity_name || "",
     initialData?.inn || "",
-    initialData?.kpp || "",
     initialData?.vat_rate || 0,
     initialData?.address || "",
     initialData?.entity_type || "",
-    initialData?.signer || "",
-    // initialData?.company || "",
-    initialData?.description || ""
+    initialData?.kpp || "",
+    initialData?.signer || ""
   );
+  // Запрос для проверки существующего контрагента
+  const { data: existingEntity, isFetching: isCheckingExisting } =
+    useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
+
+  // Запрос для получения деталей контрагента, если он найден
+  const { data: entityDetails } = useLegalEntityDetailsQuery(
+    existingEntity?.legal_entity_id || ""
+  );
+  useEffect(() => {
+    if (entityDetails && showAllFields) {
+      // Автозаполнение полей при получении данных
+      form.setFieldsValue({
+        legal_entity_name: entityDetails.legal_entity_name,
+        address: entityDetails.address,
+        vat_rate: entityDetails.vat_rate,
+        entity_type: entityDetails.entity_type,
+        signer: entityDetails.signer,
+      });
+      setIsExistingEntity(true);
+    } else if (showAllFields) {
+      setIsExistingEntity(false);
+    }
+  }, [entityDetails, showAllFields, form]);
 
   useEffect(() => {
     if (visible) {
@@ -51,23 +89,53 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
           vat_rate: initialData.vat_rate,
           entity_type: initialData.entity_type,
           signer: initialData.signer,
-          // company: initialData.company,
-          description: initialData.description,
         });
+        setShowAllFields(true);
       } else {
         form.resetFields();
+        setShowAllFields(false);
+        setBasicFieldsData(null);
       }
     }
   }, [visible, initialData, mode, form]);
+
+  const handleNext = async () => {
+    try {
+      const values = await form.validateFields(["inn", "kpp", "relation_type"]);
+
+      // Устанавливаем значения для запроса
+      setInnForCheck(values.inn);
+      setKppForCheck(values.kpp || null);
+
+      setBasicFieldsData({
+        inn: values.inn,
+        kpp: values.kpp,
+        relation_type: values.relation_type,
+      });
+      setShowAllFields(true);
+    } catch (error) {
+      console.error("Validation failed:", error);
+    }
+  };
+
+  const handleBack = () => {
+    setShowAllFields(false);
+  };
 
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
-      const formData = {
-        ...values,
-        relation_type: "seller", // Добавляем relation_type по умолчанию
-      };
+
+      const formData =
+        mode === "create"
+          ? {
+              ...values,
+              relation_type:
+                basicFieldsData?.relation_type || values.relation_type,
+            }
+          : values;
+
       if (mode === "create") {
         await createMutation.mutateAsync(formData);
       } else if (mode === "edit" && initialData?.legal_entity_id) {
@@ -84,127 +152,36 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     }
   };
 
+  const relationType = form.getFieldValue("relation_type");
+
   return (
     <Modal
-      title={mode === "create" ? "Добавить юр. лицо" : "Редактировать юр.лицо"}
+      title={
+        mode === "create" ? "Добавить контрагента" : "Редактировать контрагента"
+      }
       open={visible}
       onCancel={onCancel}
-      footer={[
-        <Button key="back" onClick={onCancel}>
-          Отменить
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          loading={isSubmitting}
-          onClick={handleSubmit}
-        >
-          {mode === "create" ? "Создать" : "Сохранить"}
-        </Button>,
-      ]}
+      footer={renderFooter({
+        mode,
+        showAllFields,
+        isSubmitting,
+        onCancel,
+        handleBack,
+        handleSubmit,
+        handleNext,
+      })}
       width={700}
     >
       <Form form={form} layout="vertical">
-        <Form.Item
-          name="legal_entity_name"
-          label="Название"
-          rules={[
-            { required: true, message: "Пожалуйста, введите название" },
-            { min: 3, message: "Минимум 3 символа" },
-          ]}
-        >
-          <Input placeholder="Введите название" />
-        </Form.Item>
-        <Form.Item
-          name="inn"
-          label="ИНН"
-          rules={[
-            { required: true, message: "Пожалуйста, введите ИНН" },
-            { min: 10, message: "Минимум 10 символов" },
-            {
-              pattern: /^\d+$/,
-              message: "Поле должно содержать только цифры",
-            },
-          ]}
-        >
-          <Input placeholder="Введите ИНН" />
-        </Form.Item>
-        <Form.Item
-          name="kpp"
-          label="КПП"
-          rules={[
-            { min: 9, message: "Минимум 9 символов" },
-            { max: 9, message: "Максимум 9 символов" },
-            {
-              pattern: /^\d+$/,
-              message: "Поле должно содержать только цифры",
-            },
-          ]}
-        >
-          <Input placeholder="Введите КПП" />
-        </Form.Item>
-        <Form.Item
-          name="vat_rate"
-          label="Ставка НДС"
-          rules={[
-            { required: true, message: "Пожалуйста, введите ставку НДС" },
-          ]}
-        >
-          <Input placeholder="Введите ставку НДС" type="number" />
-        </Form.Item>
-        <Form.Item
-          name="address"
-          label="Адрес"
-          rules={[
-            { required: true, message: "Пожалуйста, введите адрес" },
-            { min: 5, message: "Минимум 5 символов" },
-          ]}
-        >
-          <Input placeholder="Введите адрес" />
-        </Form.Item>
-        <Form.Item
-          name="entity_type"
-          label="Тип"
-          rules={[{ required: true, message: "Пожалуйста, выберите тип" }]}
-        >
-          <Select
-            placeholder="Выберите тип"
-            options={legalEntityTypes.map((type) => ({
-              value: type.legal_entity_type_id,
-              label: type.entity_name,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          name="signer"
-          label="Подписавший"
-          rules={[{ min: 3, message: "Минимум 3 символа" }]}
-        >
-          <Input placeholder="Введите подписавшую сторону" />
-        </Form.Item>
-        <Form.Item
-          name="company"
-          label="Компания"
-          rules={[{ required: true, message: "Пожалуйста, выберите компанию" }]}
-        >
-          <Select
-            placeholder="Выберите компанию"
-            options={companiesDate.map((company) => ({
-              value: company.company_id,
-              label: company.company_name,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          name="description"
-          label="Описание"
-          rules={[
-            { required: false },
-            { min: 3, message: "Минимум 3 символа" },
-          ]}
-        >
-          <Input placeholder="Введите описание (необязательно)" />
-        </Form.Item>
+        {!showAllFields
+          ? renderBasicFields({ mode })
+          : renderAdditionalFields({
+              mode,
+              isExistingEntity,
+              relationType,
+              legalEntityTypes,
+              companiesDate,
+            })}
       </Form>
     </Modal>
   );

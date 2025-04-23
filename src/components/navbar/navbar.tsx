@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
   // Основные пункты меню
   const mainItems = [
     { label: "Главная", key: "/home" },
-    { label: "Юр. лица", key: "/legal_entities" },
+    { label: "Контрагенты", key: "/legal_entities" },
     { label: "Договоры", key: "/contracts" },
     { label: "Банковские счета", key: "/bank_accounts" },
     { label: "Счета", key: "/bills" },

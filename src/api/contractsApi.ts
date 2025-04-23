@@ -20,6 +20,8 @@ export interface IContract {
 export const fetchContracts = async (queryParams: IContractsQueryParams) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params = Object.fromEntries(
     Object.entries(queryParams).filter(([_, value]) => value !== undefined)
@@ -41,7 +43,8 @@ export const createContract = async (
 ): Promise<IContract> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   try {
     const response = await axiosInstance.post(
       `${url}/api/contracts/add`,
@@ -66,6 +69,8 @@ export const createContract = async (
 export const fetchContractDetails = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   try {
     const response = await axiosInstance.get(
       `${url}/api/contracts/${contract_id}`,
@@ -92,7 +97,8 @@ export const fetchContractDetails = async (contract_id: string) => {
 export const updateContract = async (contract_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const response = await axiosInstance.patch(
     `${url}/api/contracts/${contract_id}`,
     updatedData,
@@ -111,7 +117,8 @@ export const updateContract = async (contract_id: string, updatedData: any) => {
 export const deleteContract = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   await axiosInstance.delete(`${url}/api/contracts/${contract_id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -123,6 +130,8 @@ export const deleteContract = async (contract_id: string) => {
 export const downloadContract = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   try {
     const response = await axiosInstance.get(
       `${url}/api/contracts/${contract_id}/download`,

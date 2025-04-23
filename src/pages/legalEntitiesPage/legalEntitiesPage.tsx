@@ -5,7 +5,7 @@ import { BackButton } from "../../components/backButton";
 import { Button, Spin } from "antd";
 import {
   useLegalEntitiesForSelection,
-  // useLegalEntityQuery,
+  useLegalEntityQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
@@ -30,7 +30,7 @@ export const LegalEntitiesPage: React.FC = () => {
     dispatch(
       setBreadcrumbs([
         { label: "Главная страница", to: "/home" },
-        { label: "Юридические лица", to: "/legal_entities" },
+        { label: "Контрагенты", to: "/legal_entities" },
       ])
     );
   }, [dispatch]);

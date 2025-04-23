@@ -11,11 +11,16 @@ export interface IService {
 export const fetchServices = async () => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = { page: 1, page_size: 100 };
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.get(`${url}/api/services/all`, {
-    params: {
-      page: 1,
-      page_size: 100, // Большое число, чтобы получить все данные
-    },
+    params,
+
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -30,10 +35,17 @@ export const createService = async (newService: {
 }): Promise<IService> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.post(
     `${url}/api/services/add`,
     newService,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -46,10 +58,18 @@ export const createService = async (newService: {
 export const fetchServiceDetails = async (service_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   try {
     const response = await axiosInstance.get(
       `${url}/api/services/${service_id}`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
@@ -71,10 +91,18 @@ export const fetchServiceDetails = async (service_id: string) => {
 export const updateService = async (service_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.patch(
     `${url}/api/services/${service_id}`,
     updatedData,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -87,8 +115,15 @@ export const updateService = async (service_id: string, updatedData: any) => {
 export const deleteService = async (service_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   await axiosInstance.delete(`${url}/api/services/${service_id}`, {
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

@@ -13,13 +13,13 @@ export const useLegalEntityMutations = (
   legal_entity_id: string,
   legal_entity_name: string,
   inn: string,
-  kpp: string,
   vat_rate: number,
   address: string,
   entity_type: string,
   signer: string,
   company: string,
-  description?: string,
+  kpp?: string,
+  // description?: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
@@ -34,7 +34,7 @@ export const useLegalEntityMutations = (
       });
       toast.success(
         <div>
-          Юр. лицо успешно добавлено{" "}
+          Контрагент успешно добавлен{" "}
           <Button
             type="link"
             onClick={() => navigate(`/legal_entities/${data.legal_entity_id}`)}
@@ -45,7 +45,7 @@ export const useLegalEntityMutations = (
       );
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении юридического лица");
+      toast.error("Ошибка при добавлении контрагента");
     },
   });
 

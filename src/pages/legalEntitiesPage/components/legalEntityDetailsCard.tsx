@@ -34,7 +34,7 @@ export const LegalEntityDetailsCard: React.FC<LegalEntityDetailsCardProps> = ({
 
   return (
     <Descriptions bordered column={1}>
-      <Descriptions.Item label="Имя юридического лица">
+      <Descriptions.Item label="Имя контрагента">
         {legal_entity.legal_entity_name}{" "}
         <span style={{ color: "#888", fontSize: "0.9em" }}>
           ({getEntityTypeName(legal_entity.entity_type)})
@@ -60,9 +60,9 @@ export const LegalEntityDetailsCard: React.FC<LegalEntityDetailsCardProps> = ({
       <Descriptions.Item label="Подписавшая сторона">
         {legal_entity.signer}
       </Descriptions.Item>
-      <Descriptions.Item label="Описание">
+      {/* <Descriptions.Item label="Описание">
         {legal_entity.description || "—"}
-      </Descriptions.Item>
+      </Descriptions.Item> */}
     </Descriptions>
   );
 };

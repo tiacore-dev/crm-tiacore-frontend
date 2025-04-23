@@ -13,7 +13,7 @@ export interface ILegalEntity {
   entity_type: string;
   signer: string;
   // company: string;
-  description?: string;
+  // description?: string;
 }
 
 // Функция для получения списка пользователей с параметрами
@@ -49,7 +49,7 @@ interface ICreateLegalEntity {
   signer: string | null;
   // company: string;
   relation_type: "buyer" | "seller";
-  description?: string | null;
+  // description?: string | null;
 }
 
 export const createLegalEntity = async (
@@ -106,7 +106,13 @@ export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
     );
     return response.data;
   } catch (error) {
-    // ... обработка ошибок
+    const axiosError = error as AxiosError;
+    if (axiosError.response) {
+      toast.error("Ошибка при загрузке страницы");
+    } else {
+      toast.error("Неизвестная ошибка");
+    }
+    throw error;
   }
 };
 
@@ -120,7 +126,7 @@ interface IUpdateLegalEntity {
   entity_type: string;
   signer: string | null;
   // company: string;
-  description?: string | null;
+  // description?: string | null;
 }
 
 export const updateLegalEntity = async (
@@ -171,4 +177,45 @@ export const deleteLegalEntity = async (legal_entity_id: string) => {
       "Content-Type": "application/json",
     },
   });
+};
+
+export interface IInnKppResponse {
+  legal_entity_id: string;
+}
+
+export const fetchLegalEntityByInnKpp = async (
+  inn: string,
+  kpp: string | null = null
+): Promise<IInnKppResponse> => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: {
+    inn: string;
+    kpp?: string;
+    company?: string;
+  } = { inn };
+
+  if (kpp) {
+    params.kpp = kpp;
+  }
+
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
+  const response = await axiosInstance.get(
+    `${url}/api/legal-entities/inn-kpp`,
+    {
+      params,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return response.data;
 };

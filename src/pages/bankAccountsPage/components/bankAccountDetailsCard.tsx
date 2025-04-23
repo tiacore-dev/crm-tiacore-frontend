@@ -24,7 +24,7 @@ export const BankAccountDetailsDescriptions: React.FC<
       <Descriptions.Item label="Банк">
         {bank_account.bank_name}
       </Descriptions.Item>
-      <Descriptions.Item label="Юр. лицо">
+      <Descriptions.Item label="Контрагент">
         {legalEntitiesData?.find(
           (entity) => entity.legal_entity_id === bank_account.legal_entity
         )?.legal_entity_name || bank_account.legal_entity}
