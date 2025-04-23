@@ -117,32 +117,19 @@ export const BillDetailsPage: React.FC = () => {
                     entityType={"bill"}
                   />
                 </Space>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "24px",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div style={{ flex: 2 }}>
-                    <BillDetailsCard
-                      bill={bill}
-                      getEntityNameById={getEntityNameById}
-                      getContractNameById={getContractNameById}
-                      getBankNameById={getBankNameById}
-                      getBankNumberById={getBankAccountNumberById}
-                    />
-                  </div>
-                  <div style={{ flex: 3 }}>
-                    <BillDetailsTable
-                      data={billDetails || { total: 0, bill_details: [] }}
-                      loading={isLoadingDetails}
-                      servicesData={servicesData}
-                      billId={bill_id || ""}
-                    />
-                  </div>
-                </div>
+                <BillDetailsCard
+                  bill={bill}
+                  getEntityNameById={getEntityNameById}
+                  getContractNameById={getContractNameById}
+                  getBankNameById={getBankNameById}
+                  getBankNumberById={getBankAccountNumberById}
+                />
+                <BillDetailsTable
+                  data={billDetails || { total: 0, bill_details: [] }}
+                  loading={isLoadingDetails}
+                  servicesData={servicesData}
+                  billId={bill_id || ""}
+                />
               </div>
 
               {showEditModal && (

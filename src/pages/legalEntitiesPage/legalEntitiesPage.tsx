@@ -63,7 +63,7 @@ export const LegalEntitiesPage: React.FC = () => {
                     onClick={() => setIsModalVisible(true)}
                     icon={<PlusOutlined />}
                   >
-                    Добавить юр. лицо
+                    Добавить контрагента
                   </Button>
                   <Button
                     onClick={handleResetFilters}

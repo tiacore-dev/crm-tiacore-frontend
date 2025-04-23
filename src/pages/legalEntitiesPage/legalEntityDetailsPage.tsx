@@ -44,7 +44,6 @@ export const LegalEntityDetailsPage: React.FC = () => {
     legal_entity?.entity_type || "",
     legal_entity?.signer || "",
     legal_entity?.company || ""
-    // legal_entity?.description || ""
   );
 
   useEffect(() => {
@@ -104,29 +103,17 @@ export const LegalEntityDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "24px",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div style={{ flex: 2 }}>
-                    <LegalEntityDetailsCard
-                      legal_entity={legal_entity}
-                      legalEntityTypes={
-                        legalEntityTypes?.legal_entity_types || []
-                      }
-                    />
-                  </div>
-                  <div style={{ flex: 4 }}>
-                    <BankAccountsTable
-                      data={bankAccountsData || { total: 0, bank_accounts: [] }}
-                      loading={isBankAccountsLoading}
-                      legalEntityId={legal_entity_id}
-                    />
-                  </div>
-                </div>
+
+                <LegalEntityDetailsCard
+                  legal_entity={legal_entity}
+                  legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                />
+
+                <BankAccountsTable
+                  data={bankAccountsData || { total: 0, bank_accounts: [] }}
+                  loading={isBankAccountsLoading}
+                  legalEntityId={legal_entity_id}
+                />
               </div>
 
               {isModalVisible && (
