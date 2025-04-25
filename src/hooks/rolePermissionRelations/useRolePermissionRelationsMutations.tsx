@@ -47,7 +47,7 @@ export const useRolePermissionRelationsMutations = (role_id?: string) => {
     },
     onError: (error: AxiosError) => {
       message.error("Ошибка при сохранении изменений");
-      console.error("Error saving permission changes:", error);
+      // console.error("Error saving permission changes:", error);
     },
   });
 

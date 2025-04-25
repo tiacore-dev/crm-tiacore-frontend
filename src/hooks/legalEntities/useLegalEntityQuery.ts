@@ -7,6 +7,7 @@ import {
   IInnKppResponse,
   fetchSellers,
   fetchBuyers,
+  fetchLegalEntitiesFiltred,
 } from "../../api/legalEntitiesApi";
 import { useCompany } from "../../context/companyContext";
 
@@ -32,6 +33,15 @@ export const useLegalEntityQuery = () => {
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntities", selectedCompanyId],
     queryFn: fetchLegalEntities,
+    retry: false,
+  });
+};
+
+export const useLegalEntityFiltredQuery = (company_id: string) => {
+  const { selectedCompanyId } = useCompany();
+  return useQuery<ILegalEntitiesResponse>({
+    queryKey: ["legalEntities", selectedCompanyId],
+    queryFn: () => fetchLegalEntitiesFiltred(company_id),
     retry: false,
   });
 };

@@ -70,7 +70,7 @@ export const TemplateDetailsPage: React.FC = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error("Ошибка при скачивании:", error);
+      // console.error("Ошибка при скачивании:", error);
       message.error("Не удалось скачать файл");
     }
   };

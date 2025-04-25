@@ -148,7 +148,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
         });
       }
     } catch (error) {
-      console.error("Ошибка валидации:", error);
+      // console.error("Ошибка валидации:", error);
     }
   };
 

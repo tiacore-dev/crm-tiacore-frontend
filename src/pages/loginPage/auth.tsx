@@ -7,7 +7,7 @@ export const refreshToken = async (): Promise<string | null> => {
   }
 
   try {
-    console.log(r_token);
+    // console.log(r_token);
     const url = process.env.REACT_APP_API_URL;
     const response = await axios.post<{
       access_token: string;
@@ -16,13 +16,13 @@ export const refreshToken = async (): Promise<string | null> => {
       is_superadmin?: boolean;
     }>(`${url}/api/auth/refresh`, { refresh_token: r_token });
 
-    console.log("response", response);
+    // console.log("response", response);
     localStorage.setItem("access_token", response.data.access_token);
     localStorage.setItem("refresh_token", response.data.refresh_token);
 
     return response.data.access_token;
   } catch (error) {
-    console.error("Ошибка при обновлении токена:", error);
+    // console.error("Ошибка при обновлении токена:", error);
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("permissions");

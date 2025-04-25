@@ -77,7 +77,7 @@ export const GenerateTemplateButton: React.FC<GenerateTemplateButtonProps> = ({
       message.success("Шаблон успешно сгенерирован");
       closeModal();
     } catch (error) {
-      console.error("Ошибка генерации шаблона:", error);
+      // console.error("Ошибка генерации шаблона:", error);
       message.error("Не удалось сгенерировать шаблон");
     } finally {
       setIsGenerating(false);

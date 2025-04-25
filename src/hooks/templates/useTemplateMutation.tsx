@@ -46,7 +46,7 @@ export const useTemplateMutations = (
     mutationFn: async (editedData: FormData | object) => {
       if (!template_id) return Promise.reject("Нет ID шаблона");
 
-      console.log("Отправляемые данные:", editedData);
+      // console.log("Отправляемые данные:", editedData);
 
       return updateTemplate(template_id, editedData);
     },
@@ -60,7 +60,7 @@ export const useTemplateMutations = (
       toast.success("Информация обновлена");
     },
     onError: (error) => {
-      console.error("Ошибка при обновлении:", error);
+      // console.error("Ошибка при обновлении:", error);
       toast.error("Ошибка при обновлении данных");
     },
   });

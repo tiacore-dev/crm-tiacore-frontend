@@ -21,25 +21,23 @@ export const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
     usePermissionsQuery();
 
   const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        createMutation.mutate(
-          {
-            role_name: values.role_name,
-            permissions: values.permissions || [],
+    form.validateFields().then((values) => {
+      createMutation.mutate(
+        {
+          role_name: values.role_name,
+          permissions: values.permissions || [],
+        },
+        {
+          onSuccess: () => {
+            onSuccess();
+            form.resetFields();
           },
-          {
-            onSuccess: () => {
-              onSuccess();
-              form.resetFields();
-            },
-          }
-        );
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+        }
+      );
+    });
+    // .catch((info) => {
+    // console.log("Validate Failed:", info);
+    // });
   };
 
   return (

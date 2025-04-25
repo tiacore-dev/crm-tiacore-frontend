@@ -66,26 +66,6 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  // const menu = (actDetail: IActDetail) => (
-  //   <Menu>
-  //     <Menu.Item
-  //       key="edit"
-  //       icon={<EditOutlined />}
-  //       onClick={() => handleEdit(actDetail)}
-  //     >
-  //       Редактировать
-  //     </Menu.Item>
-  //     <Menu.Item
-  //       key="delete"
-  //       icon={<DeleteOutlined />}
-  //       onClick={() => handleDelete(actDetail)}
-  //       danger
-  //     >
-  //       Удалить
-  //     </Menu.Item>
-  //   </Menu>
-  // );
-
   const getMenuItems = (actDetail: IActDetail) => [
     {
       key: "edit",
@@ -191,8 +171,6 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         initialData={editingActDetail}
         onSuccess={() => {
           setIsModalVisible(false);
-          // Здесь можно добавить инвалидацию запроса:
-          // queryClient.invalidateQueries({ queryKey: ["actDetails"] });
         }}
       />
       {showDeleteConfirm && (

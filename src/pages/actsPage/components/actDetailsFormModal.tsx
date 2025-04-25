@@ -71,7 +71,7 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("Validation failed:", error);
+      // console.error("Validation failed:", error);
     } finally {
       setIsSubmitting(false);
     }

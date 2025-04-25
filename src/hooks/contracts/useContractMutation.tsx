@@ -50,7 +50,7 @@ export const useContractMutations = (
   const updateMutation = useMutation({
     mutationFn: async (editedData: FormData | object) => {
       if (!contract_id) return Promise.reject("Нет ID договора");
-      console.log("Отправляемые данные:", editedData);
+      // console.log("Отправляемые данные:", editedData);
       return updateContract(contract_id, editedData);
     },
     onSuccess: () => {
@@ -63,7 +63,7 @@ export const useContractMutations = (
       toast.success("Информация обновлена");
     },
     onError: (error) => {
-      console.error("Ошибка при обновлении:", error);
+      // console.error("Ошибка при обновлении:", error);
       toast.error("Ошибка при обновлении данных");
     },
   });

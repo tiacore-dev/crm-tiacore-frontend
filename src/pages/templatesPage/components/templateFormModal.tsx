@@ -104,7 +104,7 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
         });
       }
     } catch (error) {
-      console.error("Ошибка валидации:", error);
+      // console.error("Ошибка валидации:", error);
     }
   };
 

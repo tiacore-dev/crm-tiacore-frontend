@@ -195,9 +195,9 @@ export const UserCompanyRelationsTable = ({
           <Button
             icon={<PlusOutlined />}
             onClick={handleCreate}
-            style={{ marginTop: 16 }}
+            style={{ marginTop: 16, marginBottom: 16 }}
           >
-            Добавить
+            Добавить пользователя
           </Button>
         </>
       )}

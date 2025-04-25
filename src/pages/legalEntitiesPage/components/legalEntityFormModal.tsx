@@ -118,7 +118,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
       });
       setShowAllFields(true);
     } catch (error) {
-      console.error("Validation failed:", error);
+      // console.error("Validation failed:", error);
     }
   };
 
@@ -163,7 +163,6 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
           });
         } else {
           // Создаем нового контрагента
-
           const formData = cleanData({
             ...values,
             relation_type:
@@ -181,7 +180,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("Validation failed:", error);
+      // console.error("Validation failed:", error);
     } finally {
       setIsSubmitting(false);
     }

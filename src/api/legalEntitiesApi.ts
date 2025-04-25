@@ -37,6 +37,20 @@ export const fetchLegalEntities = async () => {
   return response.data;
 };
 
+export const fetchLegalEntitiesFiltred = async (company_id: string) => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const params: any = { company: company_id, page: 1, page_size: 100 };
+  const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};
+
 // Функция для создания нового
 interface ICreateLegalEntity {
   legal_entity_name: string;
