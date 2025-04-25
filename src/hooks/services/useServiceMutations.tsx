@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 export const useServiceMutations = (
   service_id: string = "",
   service_name: string = "",
+  company: string = "",
+
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
@@ -19,6 +21,7 @@ export const useServiceMutations = (
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
       toast.success(<div>Услуга успешно добавлена </div>);
+      queryClient.invalidateQueries({ queryKey: ["services"] });
     },
     onError: () => {
       toast.error("Ошибка при добавлении услуги");

@@ -6,6 +6,10 @@ import { IAct } from "../../../api/actsApi";
 import { IContract } from "../../../api/contractsApi";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
+import {
+  useLegalEntitiesSellers,
+  useLegalEntitiesBuyers,
+} from "../../../hooks/legalEntities/useLegalEntityQuery";
 
 interface ActModalProps {
   visible: boolean;
@@ -20,7 +24,6 @@ interface ActModalProps {
 export const ActFormModal: React.FC<ActModalProps> = ({
   visible,
   onCancel,
-  legalEntitiesData,
   contractsData,
   onSuccess,
   mode = "create",
@@ -29,6 +32,10 @@ export const ActFormModal: React.FC<ActModalProps> = ({
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldsLocked, setFieldsLocked] = useState(false);
+  const { data: sellersResponse } = useLegalEntitiesSellers();
+  const sellers = sellersResponse?.entities || [];
+  const { data: buyersResponse } = useLegalEntitiesBuyers();
+  const buyers = buyersResponse?.entities || [];
 
   const { createMutation, updateMutation } = useActsMutations(
     initialData?.act_id || "",
@@ -187,7 +194,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             placeholder="Выберите заказчика"
             disabled={fieldsLocked}
           >
-            {legalEntitiesData.map((entity) => (
+            {buyers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
@@ -214,7 +221,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             placeholder="Выберите исполнителя"
             disabled={fieldsLocked}
           >
-            {legalEntitiesData.map((entity) => (
+            {sellers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}

@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 // import { useSelector } from "react-redux";
 import { fetchUsers, fetchUserDetails, IUser } from "../../api/usersApi";
+import { useCompany } from "../../context/companyContext";
 
 export interface useUserQueryResponse {
   total: number;
@@ -9,8 +10,9 @@ export interface useUserQueryResponse {
 }
 
 export const useUserQueryAll = () => {
+  const { selectedCompanyId } = useCompany();
   return useQuery<useUserQueryResponse>({
-    queryKey: ["users_all"],
+    queryKey: ["users_all", selectedCompanyId],
     queryFn: fetchUsers,
   });
 };

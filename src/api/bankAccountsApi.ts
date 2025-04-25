@@ -12,7 +12,7 @@ export interface IBankAccount {
   bank_corr_account: string;
 }
 
-// Функция для получения списка пользователей с параметрами
+// Функция для получения списка  с параметрами
 export const fetchBankAccounts = async (params?: {
   legal_entity?: string;
   page?: number;
@@ -20,12 +20,15 @@ export const fetchBankAccounts = async (params?: {
 }) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   // Устанавливаем параметры по умолчанию
   const queryParams = {
     page: params?.page || 1,
     page_size: params?.page_size || 100,
     ...(params?.legal_entity && { legal_entity: params.legal_entity }), // Добавляем legal_entity только если он передан
+    ...(!isSuperadmin && selectedCompanyId && { company: selectedCompanyId }),
   };
 
   const response = await axiosInstance.get(`${url}/api/bank-accounts/all`, {
@@ -48,10 +51,17 @@ export const createBankAccount = async (newBankAccount: {
 }): Promise<IBankAccount> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.post(
     `${url}/api/bank-accounts/add`,
     newBankAccount,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -65,10 +75,18 @@ export const createBankAccount = async (newBankAccount: {
 export const fetchBankAccountDetails = async (bank_account_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   try {
     const response = await axiosInstance.get(
       `${url}/api/bank-accounts/${bank_account_id}`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
@@ -94,10 +112,18 @@ export const updateBankAccount = async (
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.patch(
     `${url}/api/bank-accounts/${bank_account_id}`,
     updatedData,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -112,8 +138,15 @@ export const updateBankAccount = async (
 export const deleteBankAccount = async (bank_account_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   await axiosInstance.delete(`${url}/api/bank-accounts/${bank_account_id}`, {
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

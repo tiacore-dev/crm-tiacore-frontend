@@ -13,6 +13,7 @@ import {
   renderAdditionalFields,
   renderBasicFields,
 } from "./renderLegalEntityFields";
+import { useEntityCompanyRelationsMutations } from "../../../hooks/entityCompanyRelations/useEntityCompanyRelationMutations";
 
 export interface LegalEntityModalProps {
   visible: boolean;
@@ -44,16 +45,22 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   const [isExistingEntity, setIsExistingEntity] = useState(false);
   const [innForCheck, setInnForCheck] = useState<string | null>(null);
   const [kppForCheck, setKppForCheck] = useState<string | null>(null);
+
   const { createMutation, updateMutation } = useLegalEntityMutations(
     initialData?.legal_entity_id || "",
     initialData?.legal_entity_name || "",
     initialData?.inn || "",
-    initialData?.vat_rate || 0,
+    initialData?.vat_rate || null,
     initialData?.address || "",
-    initialData?.entity_type || "",
-    initialData?.kpp || "",
-    initialData?.signer || ""
+    initialData?.entity_type || null,
+    initialData?.company || "",
+    initialData?.kpp || null,
+    initialData?.signer || undefined
   );
+
+  const { createMutation: createRelationMutation } =
+    useEntityCompanyRelationsMutations("", "", "", "");
+
   // Запрос для проверки существующего контрагента
   const { data: existingEntity, isFetching: isCheckingExisting } =
     useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
@@ -62,9 +69,9 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   const { data: entityDetails } = useLegalEntityDetailsQuery(
     existingEntity?.legal_entity_id || ""
   );
+
   useEffect(() => {
     if (entityDetails && showAllFields) {
-      // Автозаполнение полей при получении данных
       form.setFieldsValue({
         legal_entity_name: entityDetails.legal_entity_name,
         address: entityDetails.address,
@@ -102,11 +109,8 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   const handleNext = async () => {
     try {
       const values = await form.validateFields(["inn", "kpp", "relation_type"]);
-
-      // Устанавливаем значения для запроса
       setInnForCheck(values.inn);
       setKppForCheck(values.kpp || null);
-
       setBasicFieldsData({
         inn: values.inn,
         kpp: values.kpp,
@@ -126,19 +130,50 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
+      const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
-      const formData =
-        mode === "create"
-          ? {
-              ...values,
-              relation_type:
-                basicFieldsData?.relation_type || values.relation_type,
-            }
-          : values;
+      const cleanData = (data: any) => {
+        const cleaned = { ...data };
+        if (
+          cleaned.signer === null ||
+          cleaned.signer === undefined ||
+          cleaned.signer === ""
+        ) {
+          delete cleaned.signer;
+        }
+        if (
+          cleaned.entity_type === null ||
+          cleaned.entity_type === undefined ||
+          cleaned.entity_type === ""
+        ) {
+          delete cleaned.entity_type;
+        }
+        return cleaned;
+      };
 
       if (mode === "create") {
-        await createMutation.mutateAsync(formData);
+        // Если найден существующий контрагент по ИНН/КПП
+        if (existingEntity?.legal_entity_id) {
+          // Создаем только связь с компанией
+          await createRelationMutation.mutateAsync({
+            legal_entity: existingEntity.legal_entity_id,
+            company: selectedCompanyId || "",
+            relation_type:
+              basicFieldsData?.relation_type || values.relation_type,
+          });
+        } else {
+          // Создаем нового контрагента
+
+          const formData = cleanData({
+            ...values,
+            relation_type:
+              basicFieldsData?.relation_type || values.relation_type,
+            company: selectedCompanyId || null,
+          });
+          await createMutation.mutateAsync(formData);
+        }
       } else if (mode === "edit" && initialData?.legal_entity_id) {
+        const formData = cleanData(values);
         await updateMutation.mutateAsync(formData);
       }
 

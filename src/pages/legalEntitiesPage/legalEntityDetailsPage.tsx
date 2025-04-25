@@ -7,7 +7,7 @@ import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { BackButton } from "../../components/backButton";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { useEntityTypes } from "../../hooks/base/useBaseQuery";
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
@@ -15,6 +15,7 @@ import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
 import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useCompany } from "../../context/companyContext";
+import { BankAccountCreateModal } from "../bankAccountsPage/components/bankAccountFormModal";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -22,6 +23,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showCreateBankAccountModal, setShowCreateBankAccountModal] =
+    useState(false);
   const { selectedCompanyId } = useCompany();
 
   const { data: legalEntityTypes } = useEntityTypes();
@@ -108,27 +111,51 @@ export const LegalEntityDetailsPage: React.FC = () => {
                   legal_entity={legal_entity}
                   legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 />
+                <Button
+                  style={{ marginBottom: 16, marginTop: 16 }}
+                  onClick={() => setShowCreateBankAccountModal(true)}
+                  icon={<PlusOutlined />}
+                >
+                  Добавить банковский счёт
+                </Button>
 
                 <BankAccountsTable
                   data={bankAccountsData || { total: 0, bank_accounts: [] }}
                   loading={isBankAccountsLoading}
-                  legalEntityId={legal_entity_id}
+                  legalEntitiesData={{
+                    legal_entity_id: legal_entity.legal_entity_id,
+                    legal_entity_name: legal_entity.legal_entity_name,
+                  }}
                 />
               </div>
 
-              {isModalVisible && (
-                <LegalEntityFormModal
-                  visible={isModalVisible}
-                  onCancel={() => setIsModalVisible(false)}
-                  legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                  companiesDate={companiesResponse?.companies || []}
-                  onSuccess={() => {
-                    setIsModalVisible(false);
-                  }}
-                  mode="edit"
-                  initialData={legal_entity}
-                />
-              )}
+              <LegalEntityFormModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                companiesDate={companiesResponse?.companies || []}
+                onSuccess={() => {
+                  setIsModalVisible(false);
+                  refetch();
+                }}
+                mode="edit"
+                initialData={legal_entity}
+              />
+
+              <BankAccountCreateModal
+                visible={showCreateBankAccountModal}
+                onCancel={() => setShowCreateBankAccountModal(false)}
+                legalEntitiesData={{
+                  legal_entity_id: legal_entity.legal_entity_id,
+                  legal_entity_name: legal_entity.legal_entity_name,
+                }}
+                onSuccess={() => {
+                  setShowCreateBankAccountModal(false);
+                  refetch();
+                }}
+                mode="create"
+              />
+
               {showDeleteConfirm && (
                 <ConfirmDeleteModal
                   onConfirm={handleDelete}

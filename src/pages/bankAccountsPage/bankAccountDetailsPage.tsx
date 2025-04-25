@@ -8,12 +8,18 @@ import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { BankAccountCreateModal } from "./components/bankAccountFormModal";
-import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
+import {
+  useLegalEntitiesForSelection,
+  useLegalEntityDetailsQuery,
+} from "../../hooks/legalEntities/useLegalEntityQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { BankAccountDetailsDescriptions } from "./components/bankAccountDetailsCard";
+import { getEntityNameById } from "../../utils/infoById";
 
 export const BankAccountDetailsPage: React.FC = () => {
   const { bank_account_id } = useParams<{ bank_account_id: string }>();
+  const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -24,8 +30,13 @@ export const BankAccountDetailsPage: React.FC = () => {
     isLoading,
     isError,
   } = useBankcAccountDetailsQuery(bank_account_id!);
-
-  const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
+  const {
+    data: legalEntityData,
+    isLoading: isLoadingEntity,
+    isError: isErrorEntity,
+    refetch,
+  } = useLegalEntityDetailsQuery(legal_entity_id || "");
+  // const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
 
   const { deleteMutation } = useBankAccountMutations(
     bank_account_id || "",
@@ -41,15 +52,19 @@ export const BankAccountDetailsPage: React.FC = () => {
       dispatch(
         setBreadcrumbs([
           { label: "Главная страница", to: "/home" },
-          { label: "Банковские счета", to: "/bank_accounts" },
+          { label: "Контрагенты", to: "/legal_entities" },
+          {
+            label: legalEntityData.legal_entity_name,
+            to: `/legal_entities/${legal_entity_id}`,
+          },
           {
             label: bank_account.account_number,
-            to: `/bank_accounts/${bank_account_id}`,
+            to: `/legal_entities/${legal_entity_id}/${bank_account_id}`,
           },
         ])
       );
     }
-  }, [bank_account, dispatch, bank_account_id]);
+  }, [bank_account, dispatch, bank_account_id, legalEntityData]);
 
   const handleDelete = () => {
     deleteMutation.mutate(undefined, {
@@ -82,17 +97,18 @@ export const BankAccountDetailsPage: React.FC = () => {
                     <DeleteOutlined /> Удалить
                   </Button>
                 </Space>
-
                 <BankAccountDetailsDescriptions
                   bank_account={bank_account}
-                  legalEntitiesData={legalEntitiesResponse?.entities}
+                  legalEntitiesData={legalEntityData}
                 />
               </div>
-
               <BankAccountCreateModal
                 visible={showEditModal}
                 onCancel={() => setShowEditModal(false)}
-                legalEntitiesData={legalEntitiesResponse?.entities || []}
+                legalEntitiesData={{
+                  legal_entity_id: legal_entity_id || "",
+                  legal_entity_name: legalEntityData.legal_entity_name,
+                }}
                 onSuccess={() => {
                   setShowEditModal(false);
                 }}

@@ -6,6 +6,7 @@ import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import { useCompany } from "../../context/companyContext";
 import "./navbar.css";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
+import { queryClient } from "../../context/companyContext";
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export const Navbar: React.FC = () => {
     { label: "Главная", key: "/home" },
     { label: "Контрагенты", key: "/legal_entities" },
     { label: "Договоры", key: "/contracts" },
-    { label: "Банковские счета", key: "/bank_accounts" },
+    // { label: "Банковские счета", key: "/bank_accounts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },
   ];

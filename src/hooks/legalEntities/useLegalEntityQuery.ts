@@ -5,7 +5,10 @@ import {
   ILegalEntity,
   fetchLegalEntityByInnKpp,
   IInnKppResponse,
+  fetchSellers,
+  fetchBuyers,
 } from "../../api/legalEntitiesApi";
+import { useCompany } from "../../context/companyContext";
 
 export interface ILegalEntitiesResponse {
   total: number;
@@ -21,21 +24,22 @@ export const useLegalEntityByInnKppQuery = (
     queryFn: () => fetchLegalEntityByInnKpp(inn, kpp),
     enabled: !!inn, // Запрос выполняется только если inn указан
     retry: false,
-    staleTime: 5 * 60 * 1000, //???
   });
 };
 
 export const useLegalEntityQuery = () => {
+  const { selectedCompanyId } = useCompany();
   return useQuery<ILegalEntitiesResponse>({
-    queryKey: ["legalEntities"],
+    queryKey: ["legalEntities", selectedCompanyId],
     queryFn: fetchLegalEntities,
     retry: false,
   });
 };
 
 export const useLegalEntityDetailsQuery = (legal_entity_id: string) => {
+  const { selectedCompanyId } = useCompany();
   return useQuery({
-    queryKey: ["legalEntityDetails", legal_entity_id],
+    queryKey: ["legalEntityDetails", legal_entity_id, selectedCompanyId],
     queryFn: () => {
       if (!legal_entity_id) {
         return Promise.resolve(null); // Возвращаем null если ID пустой
@@ -48,9 +52,31 @@ export const useLegalEntityDetailsQuery = (legal_entity_id: string) => {
 };
 
 export const useLegalEntitiesForSelection = () => {
+  const { selectedCompanyId } = useCompany();
+
   return useQuery<ILegalEntitiesResponse>({
-    queryKey: ["legalEntitiesForSelection"],
+    queryKey: ["legalEntitiesForSelection", selectedCompanyId],
     queryFn: () => fetchLegalEntities(),
+    retry: false,
+  });
+};
+
+export const useLegalEntitiesSellers = () => {
+  const { selectedCompanyId } = useCompany();
+
+  return useQuery<ILegalEntitiesResponse>({
+    queryKey: ["legalEntitiesSellers", selectedCompanyId],
+    queryFn: () => fetchSellers(),
+    retry: false,
+  });
+};
+
+export const useLegalEntitiesBuyers = () => {
+  const { selectedCompanyId } = useCompany();
+
+  return useQuery<ILegalEntitiesResponse>({
+    queryKey: ["legalEntitiesBuyers", selectedCompanyId],
+    queryFn: () => fetchBuyers(),
     retry: false,
   });
 };

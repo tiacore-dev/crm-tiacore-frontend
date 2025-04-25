@@ -7,6 +7,7 @@ import {
   IContract,
 } from "../../api/contractsApi";
 import { RootState } from "../../redux/store";
+import { useCompany } from "../../context/companyContext";
 
 export interface IContractsResponse {
   total: number;
@@ -54,24 +55,27 @@ export const useContractQuery = (queryParams: IContractsQueryParams) => {
 
     return params;
   };
+  const { selectedCompanyId } = useCompany();
 
   return useQuery<IContractsResponse>({
-    queryKey: ["contracts", buildQueryParams()],
+    queryKey: ["contracts", buildQueryParams(), selectedCompanyId],
     queryFn: () => fetchContracts(buildQueryParams()),
   });
 };
 
 export const useContractDetailsQuery = (contract_id: string) => {
+  const { selectedCompanyId } = useCompany();
   return useQuery({
-    queryKey: ["contractDetails", contract_id],
+    queryKey: ["contractDetails", contract_id, selectedCompanyId],
     queryFn: () => fetchContractDetails(contract_id),
     retry: false,
   });
 };
 
 export const useContractsForSelection = () => {
+  const { selectedCompanyId } = useCompany();
   return useQuery<IContractsResponse>({
-    queryKey: ["contractsForSelection"],
+    queryKey: ["contractsForSelection", selectedCompanyId],
     queryFn: () => fetchContracts({ page: 1, page_size: 100 }),
   });
 };

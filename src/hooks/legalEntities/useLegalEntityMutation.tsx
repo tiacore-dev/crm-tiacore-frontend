@@ -13,12 +13,12 @@ export const useLegalEntityMutations = (
   legal_entity_id: string,
   legal_entity_name: string,
   inn: string,
-  vat_rate: number,
+  vat_rate: number | null,
   address: string,
-  entity_type: string,
-  signer: string,
+  signer: string | null,
   company: string,
-  kpp?: string,
+  kpp: string | null,
+  entity_type?: string,
   // description?: string,
   setIsEditing?: (val: boolean) => void
 ) => {

@@ -1,8 +1,7 @@
-// bankAccountsTable.tsx
-import { Table, Typography } from "antd";
+import { Table, Typography, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { IBankAccount } from "../../../api/bankAccountsApi";
-import { getBankAccountsTableColumns } from "./bankAccountsTableColumns";
+// import { getBankAccountsTableColumns } from "./bankAccountsTableColumns";
 import { getBankAccountsTableColumnsForLegalEntity } from "./bankAccountsTableColumnsForLegalEntity";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -14,6 +13,7 @@ import {
   setBankName,
 } from "../../../redux/slices/bankAccountsSlice";
 import { RootState } from "../../../redux/store";
+import { PlusOutlined } from "@ant-design/icons";
 
 interface BankAccountsTableProps {
   data: {
@@ -21,53 +21,53 @@ interface BankAccountsTableProps {
     bank_accounts: IBankAccount[];
   };
   loading: boolean;
-  legalEntitiesData?: {
+  legalEntitiesData: {
     legal_entity_id: string;
     legal_entity_name: string;
-  }[];
-  legalEntityId?: string; // Новый проп для работы в режиме страницы юр. лица
+  };
+  // legalEntityId: string;
+  onCreateBankAccount?: () => void;
 }
 
 export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
   data = { total: 0, bank_accounts: [] },
   loading,
-  legalEntitiesData = [],
-  legalEntityId,
+  legalEntitiesData,
+  // legalEntityId,
+  onCreateBankAccount,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { account_number, legal_entity, bank_name, page, page_size } =
     useSelector((state: RootState) => state.bankAccounts);
 
-  // Выбираем нужные колонки в зависимости от режима
-  const columns = legalEntityId
-    ? getBankAccountsTableColumnsForLegalEntity({
-        navigate,
-        accountNumber: account_number,
-        bankName: bank_name,
-        onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
-        onBankNameChange: (value) => dispatch(setBankName(value)),
-      })
-    : getBankAccountsTableColumns({
-        legalEntitiesData,
-        navigate,
-        accountNumber: account_number,
-        legalEntity: legal_entity,
-        bankName: bank_name,
-        onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
-        onLegalEntityChange: (value) => dispatch(setLegalEntity(value)),
-        onBankNameChange: (value) => dispatch(setBankName(value)),
-      });
+  const columns = getBankAccountsTableColumnsForLegalEntity({
+    navigate,
+    accountNumber: account_number,
+    bankName: bank_name,
+    legalEntityId: legalEntitiesData.legal_entity_id,
+    onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
+    onBankNameChange: (value) => dispatch(setBankName(value)),
+  });
+  // : getBankAccountsTableColumns({
+  //     legalEntitiesData,
+  //     navigate,
+  //     accountNumber: account_number,
+  //     legalEntity: legal_entity,
+  //     bankName: bank_name,
+  //     onAccountNumberChange: (value) => dispatch(setAccountNumber(value)),
+  //     onLegalEntityChange: (value) => dispatch(setLegalEntity(value)),
+  //     onBankNameChange: (value) => dispatch(setBankName(value)),
+  //   });
 
-  // Фильтрация данных
   const filteredData = data.bank_accounts.filter((account) => {
     const matchesAccountNumber = account_number
       ? account.account_number
           .toLowerCase()
           .includes(account_number.toLowerCase())
       : true;
-    const matchesLegalEntity = legalEntityId
-      ? account.legal_entity === legalEntityId
+    const matchesLegalEntity = legalEntitiesData.legal_entity_id
+      ? account.legal_entity === legalEntitiesData.legal_entity_id
       : legal_entity
       ? account.legal_entity === legal_entity
       : true;
@@ -79,6 +79,17 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
 
   return (
     <div>
+      {!legalEntitiesData.legal_entity_id && (
+        <div style={{ marginBottom: 16 }}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate("/bank_accounts/create")}
+          >
+            Добавить банковский счёт
+          </Button>
+        </div>
+      )}
       <Table
         columns={columns}
         dataSource={filteredData}

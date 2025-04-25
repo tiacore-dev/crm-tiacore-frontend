@@ -75,16 +75,20 @@ const App: React.FC = () => {
                   path="/legal_entities/:legal_entity_id"
                   element={<LegalEntityDetailsPage />}
                 />
+                <Route
+                  path="/legal_entities/:legal_entity_id/:bank_account_id"
+                  element={<BankAccountDetailsPage />}
+                />
                 <Route path="/contracts" element={<ContractsPage />} />
                 <Route
                   path="/contracts/:contract_id"
                   element={<ContractDetailsPage />}
                 />
-                <Route path="/bank_accounts" element={<BankAccountsPage />} />
+                {/* <Route path="/bank_accounts" element={<BankAccountsPage />} />
                 <Route
                   path="/bank_accounts/:bank_account_id"
                   element={<BankAccountDetailsPage />}
-                />
+                /> */}
                 <Route path="/bills" element={<BillsPage />} />
                 <Route path="/bills/:bill_id" element={<BillDetailsPage />} />
                 <Route path="/acts" element={<ActsPage />} />

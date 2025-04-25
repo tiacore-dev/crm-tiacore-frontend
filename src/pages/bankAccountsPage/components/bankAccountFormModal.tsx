@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Button } from "antd";
 import { useBankAccountMutations } from "../../../hooks/bankAccounts/useBankAccountMutation";
-import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { IBankAccount } from "../../../api/bankAccountsApi";
 
 interface BankAccountCreateModalProps {
   visible: boolean;
   onCancel: () => void;
-  legalEntitiesData: ILegalEntity[];
+  legalEntitiesData: {
+    legal_entity_id: string;
+    legal_entity_name: string;
+  };
   onSuccess?: () => void;
   mode?: "create" | "edit";
   initialData?: IBankAccount | null;
@@ -43,11 +45,17 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
           bank_bic: initialData.bank_bic,
           bank_corr_account: initialData.bank_corr_account,
         });
-      } else {
+      }
+      // else if (mode === "create" && legalEntitiesData.length === 1) {
+      //   form.setFieldsValue({
+      //     legal_entity: legalEntitiesData.legal_entity_id,
+      //   });
+      // }
+      else {
         form.resetFields();
       }
     }
-  }, [visible, initialData, mode, form]);
+  }, [visible, initialData, mode, form, legalEntitiesData]);
 
   const handleSubmit = async () => {
     try {
@@ -121,27 +129,6 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
           <Input placeholder="Введите название банка" />
         </Form.Item>
         <Form.Item
-          name="legal_entity"
-          label="Юридическое лицо"
-          rules={[{ required: true, message: "Пожалуйста, выберите юр. лицо" }]}
-        >
-          <Select
-            showSearch
-            optionFilterProp="children"
-            placeholder="Выберите юр. лицо"
-          >
-            {legalEntitiesData.map((entity) => (
-              <Select.Option
-                key={entity.legal_entity_id}
-                value={entity.legal_entity_id}
-              >
-                {entity.legal_entity_name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
           name="bank_bic"
           label="БИК банка"
           rules={[
@@ -153,15 +140,7 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
             },
           ]}
         >
-          <Input
-            placeholder="Введите БИК банка (9 символов)"
-            // onChange={(e) => {
-            //   // Оставляем только цифры
-            //   const value = e.target.value.replace(/\D/g, "");
-            //   form.setFieldsValue({ bank_bic: value });
-            // }}
-            // maxLength={9} // Ограничиваем максимальную длину
-          />
+          <Input placeholder="Введите БИК банка (9 символов)" />
         </Form.Item>
 
         <Form.Item
@@ -182,15 +161,7 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
             },
           ]}
         >
-          <Input
-            placeholder="Введите корреспондентский счет (20 символов)"
-            // onChange={(e) => {
-            //   // Оставляем только цифры
-            //   const value = e.target.value.replace(/\D/g, "");
-            //   form.setFieldsValue({ bank_corr_account: value });
-            // }}
-            // maxLength={20} // Ограничиваем максимальную длину
-          />
+          <Input placeholder="Введите корреспондентский счет (20 символов)" />
         </Form.Item>
       </Form>
     </Modal>

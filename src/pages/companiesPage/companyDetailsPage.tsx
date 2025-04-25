@@ -85,22 +85,10 @@ export const CompanyDetailsPage: React.FC = () => {
                   >
                     Удалить
                   </Button>
-                </Space>{" "}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "24px",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div style={{ flex: "0 0 300px" }}>
-                    <CompanyCard data={companyDetails} loading={isLoading} />{" "}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <UserCompanyRelationsTable companyId={company_id} />
-                  </div>
-                </div>
-              </div>{" "}
+                </Space>
+                <CompanyCard data={companyDetails} loading={isLoading} />{" "}
+                <UserCompanyRelationsTable companyId={company_id} />
+              </div>
               {showEditModal && (
                 <CompanyFormModal
                   visible={showEditModal}

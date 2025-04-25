@@ -5,6 +5,7 @@ import {
   fetchServices,
   IService,
 } from "../../api/servicesApi";
+import { useCompany } from "../../context/companyContext";
 
 interface IServicesResponse {
   total: number;
@@ -12,8 +13,10 @@ interface IServicesResponse {
 }
 
 export const useServiceQuery = () => {
+  const { selectedCompanyId } = useCompany();
+
   return useQuery<IServicesResponse>({
-    queryKey: ["services"],
+    queryKey: ["services", selectedCompanyId], // Добавляем companyId в ключ запроса
     queryFn: fetchServices, // Загружаем все данные один раз
   });
 };

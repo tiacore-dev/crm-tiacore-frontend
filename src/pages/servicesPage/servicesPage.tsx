@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-// import {
-// servicesSelector,
-// setPage,
-// setPageSize,
-// setSearch,
-// resetState,
-// } from "../../redux/slices/servicesSlice";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { Button, Space, Spin } from "antd";
@@ -17,10 +9,8 @@ import { ServicesTable } from "./components/servicesTable";
 import { ServiceCreateModal } from "./components/serviceFormModal";
 
 export const ServicesPage: React.FC = () => {
-  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const { page, page_size, search } = useSelector(servicesSelector);
 
   useEffect(() => {
     dispatch(

@@ -18,12 +18,21 @@ export interface IBill {
 export const fetchBills = async (queryParams: IBillsQueryParams) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   // Создаем копию параметров, удаляя undefined значения
-  const params = Object.fromEntries(
-    Object.entries(queryParams).filter(([_, value]) => value !== undefined)
-  );
-
+  // const params = Object.fromEntries(
+  //   Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+  // );
+  const params = {
+    ...Object.fromEntries(
+      Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+    ),
+    ...(!isSuperadmin && selectedCompanyId
+      ? { company: selectedCompanyId }
+      : {}),
+  };
   const response = await axiosInstance.get(`${url}/api/bills/all`, {
     params,
     headers: {
@@ -44,7 +53,15 @@ export const createBill = async (newBill: {
 }): Promise<IBill> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.post(`${url}/api/bills/add`, newBill, {
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -57,8 +74,16 @@ export const createBill = async (newBill: {
 export const fetchBill = async (bill_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   try {
     const response = await axiosInstance.get(`${url}/api/bills/${bill_id}`, {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -80,10 +105,18 @@ export const fetchBill = async (bill_id: string) => {
 export const updateBill = async (bill_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.patch(
     `${url}/api/bills/${bill_id}`,
     updatedData,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -98,8 +131,15 @@ export const updateBill = async (bill_id: string, updatedData: any) => {
 export const deleteBill = async (bill_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   await axiosInstance.delete(`${url}/api/bills/${bill_id}`, {
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

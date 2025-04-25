@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { fetchActs, fetchAct, IAct } from "../../api/actsApi";
 import { actsSelector } from "../../redux/slices/actsSlice";
 import { RootState } from "../../redux/store";
+import { useCompany } from "../../context/companyContext";
 
 export interface IActsResponse {
   total: number;
@@ -44,15 +45,18 @@ export const useActsQuery = (queryParams: IActsQueryParams) => {
 
     return params;
   };
+  const { selectedCompanyId } = useCompany();
+
   return useQuery<IActsResponse>({
-    queryKey: ["acts", buildQueryParams()],
+    queryKey: ["acts", buildQueryParams(), selectedCompanyId],
     queryFn: () => fetchActs(buildQueryParams()),
   });
 };
 
 export const useActQuery = (act_id: string) => {
+  const { selectedCompanyId } = useCompany();
   return useQuery({
-    queryKey: ["act", act_id],
+    queryKey: ["act", act_id, selectedCompanyId],
     queryFn: () => fetchAct(act_id),
     retry: false,
   });

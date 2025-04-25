@@ -9,6 +9,7 @@ interface BankAccountsTableColumnsForLegalEntityProps {
   navigate: NavigateFunction;
   bankName: string;
   accountNumber: string;
+  legalEntityId: string;
   onBankNameChange: (value: string) => void;
   onAccountNumberChange: (value: string) => void;
 }
@@ -17,6 +18,7 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
   navigate,
   accountNumber,
   bankName,
+  legalEntityId,
   onAccountNumberChange,
   onBankNameChange,
 }: BankAccountsTableColumnsForLegalEntityProps): ColumnType<IBankAccount>[] => {
@@ -34,7 +36,11 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
       render: (text: string, record: IBankAccount) => (
         <Button
           type="link"
-          onClick={() => navigate(`/bank_accounts/${record.bank_account_id}`)}
+          onClick={() =>
+            navigate(
+              `/legal_entities/${legalEntityId}/${record.bank_account_id}`
+            )
+          }
         >
           {text}
         </Button>

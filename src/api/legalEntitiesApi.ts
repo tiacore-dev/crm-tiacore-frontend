@@ -7,13 +7,12 @@ export interface ILegalEntity {
   legal_entity_id: string;
   legal_entity_name: string;
   inn: string;
-  kpp: string;
-  vat_rate: number;
+  kpp?: string;
+  vat_rate?: number;
   address: string;
-  entity_type: string;
-  signer: string;
-  // company: string;
-  // description?: string;
+  entity_type?: string;
+  signer?: string;
+  company: string | null;
 }
 
 // Функция для получения списка пользователей с параметрами
@@ -42,11 +41,11 @@ export const fetchLegalEntities = async () => {
 interface ICreateLegalEntity {
   legal_entity_name: string;
   inn: string;
-  kpp: string | null;
+  kpp?: string;
   vat_rate: number;
   address: string;
-  entity_type: string;
-  signer: string | null;
+  entity_type?: string;
+  signer?: string;
   // company: string;
   relation_type: "buyer" | "seller";
   // description?: string | null;
@@ -63,9 +62,6 @@ export const createLegalEntity = async (
   if (!isSuperadmin && selectedCompanyId) {
     params.company = selectedCompanyId;
   }
-  // if (!isSuperadmin && selectedCompanyId) {
-  //   newLegalEntity.company = selectedCompanyId;
-  // }
 
   const response = await axiosInstance.post(
     `${url}/api/legal-entities/add`,
@@ -120,13 +116,11 @@ export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
 interface IUpdateLegalEntity {
   legal_entity_name: string;
   inn: string;
-  kpp: string | null;
-  vat_rate: number;
+  kpp?: string;
+  vat_rate?: number;
   address: string;
-  entity_type: string;
-  signer: string | null;
-  // company: string;
-  // description?: string | null;
+  entity_type?: string;
+  signer?: string;
 }
 
 export const updateLegalEntity = async (
@@ -142,7 +136,6 @@ export const updateLegalEntity = async (
   if (!isSuperadmin && selectedCompanyId) {
     params.company = selectedCompanyId;
   }
-
   const response = await axiosInstance.patch(
     `${url}/api/legal-entities/${legal_entity_id}`,
     updatedData,
@@ -217,5 +210,53 @@ export const fetchLegalEntityByInnKpp = async (
     }
   );
 
+  return response.data;
+};
+
+export const fetchSellers = async () => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = { page: 1, page_size: 100 };
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
+  const response = await axiosInstance.get(
+    `${url}/api/legal-entities/get-sellers`,
+    {
+      params,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const fetchBuyers = async () => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = { page: 1, page_size: 100 };
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
+  const response = await axiosInstance.get(
+    `${url}/api/legal-entities/get-buyers`,
+    {
+      params,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return response.data;
 };

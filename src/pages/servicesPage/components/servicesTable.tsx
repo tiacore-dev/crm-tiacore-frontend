@@ -1,12 +1,7 @@
-import { Table, Typography, Dropdown, Menu, Button, Space } from "antd";
+import { Table, Typography, Dropdown, Button, Space } from "antd";
 import { IService } from "../../../api/servicesApi";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  servicesSelector,
-  setPage,
-  setPageSize,
-} from "../../../redux/slices/servicesSlice";
-// import { useNavigate } from "react-router-dom";
+import { setPage, setPageSize } from "../../../redux/slices/servicesSlice";
 import type { ColumnsType } from "antd/es/table";
 import { MoreOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
@@ -14,7 +9,6 @@ import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModa
 import { useServiceMutations } from "../../../hooks/services/useServiceMutations";
 import { ServiceCreateModal } from "./serviceFormModal";
 import { RootState } from "../../../redux/store";
-// import { useQueryClient } from "@tanstack/react-query";
 
 interface ServicesTableProps {
   data: {
@@ -32,7 +26,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   const { page, page_size } = useSelector((state: RootState) => state.services);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedService, setSelectedService] = useState<IService | null>(null);
-  const { deleteMutation } = useServiceMutations("", "", () => {});
+  const { deleteMutation } = useServiceMutations("", "", "", () => {});
   const [editingService, setEditingService] = useState<IService | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -103,7 +97,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   ];
 
   return (
-    <div style={{ padding: "0 16px" }}>
+    <div>
       <Table
         columns={columns}
         dataSource={data.services}
@@ -124,6 +118,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
             }
             dispatch(setPage(newPage));
           },
+          hideOnSinglePage: true, // Автоматически скрывает пагинацию, если страница одна
         }}
         style={{ margin: 0 }}
         className="custom-table"

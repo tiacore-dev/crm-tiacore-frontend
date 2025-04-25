@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 export interface IService {
   service_id: string;
   service_name: string;
+  company: string;
 }
 // Функция для получения списка услуг с параметрами
 export const fetchServices = async () => {

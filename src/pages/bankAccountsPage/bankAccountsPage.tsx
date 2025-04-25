@@ -60,13 +60,13 @@ export const BankAccountsPage: React.FC = () => {
                   Сбросить фильтры
                 </Button>
               </Space>
-              <BankAccountsTable
+              {/* <BankAccountsTable
                 data={bankAccountsData || { total: 0, bank_accounts: [] }}
                 loading={isLoading}
                 legalEntitiesData={legalEntitiesResponse?.entities || []}
-              />
+              /> */}
 
-              <BankAccountCreateModal
+              {/* <BankAccountCreateModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 legalEntitiesData={legalEntitiesResponse?.entities || []}
@@ -74,7 +74,7 @@ export const BankAccountsPage: React.FC = () => {
                   setIsModalVisible(false);
                 }}
                 mode="create"
-              />
+              /> */}
             </div>
           )}
           {isError && <BackButton />}

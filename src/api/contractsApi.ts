@@ -16,16 +16,21 @@ export interface IContract {
   comment?: string;
 }
 
-// Функция для получения списка пользователей с параметрами
+// Функция для получения списка контрактов с параметрами
 export const fetchContracts = async (queryParams: IContractsQueryParams) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
-  const params = Object.fromEntries(
-    Object.entries(queryParams).filter(([_, value]) => value !== undefined)
-  );
+  const params = {
+    ...Object.fromEntries(
+      Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+    ),
+    ...(!isSuperadmin && selectedCompanyId
+      ? { company: selectedCompanyId }
+      : {}),
+  };
 
   const response = await axiosInstance.get(`${url}/api/contracts/all`, {
     params,
@@ -37,7 +42,7 @@ export const fetchContracts = async (queryParams: IContractsQueryParams) => {
   return response.data;
 };
 
-// Функция для создания нового
+// Функция для создания нового контракта
 export const createContract = async (
   formData: FormData
 ): Promise<IContract> => {
@@ -45,11 +50,17 @@ export const createContract = async (
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   try {
     const response = await axiosInstance.post(
       `${url}/api/contracts/add`,
       formData,
       {
+        params,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -65,16 +76,23 @@ export const createContract = async (
   }
 };
 
-//получение инфопмации
+// Получение информации о контракте
 export const fetchContractDetails = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
   try {
     const response = await axiosInstance.get(
       `${url}/api/contracts/${contract_id}`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
@@ -89,20 +107,27 @@ export const fetchContractDetails = async (contract_id: string) => {
     } else {
       toast.error("Неизвестная ошибка");
     }
-    throw error; // Пробрасываем ошибку дальше
+    throw error;
   }
 };
 
-//изменить данные
+// Изменение данных контракта
 export const updateContract = async (contract_id: string, updatedData: any) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
   const response = await axiosInstance.patch(
     `${url}/api/contracts/${contract_id}`,
     updatedData,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -112,14 +137,20 @@ export const updateContract = async (contract_id: string, updatedData: any) => {
   return response.data;
 };
 
-//удалить данные
-
+// Удаление контракта
 export const deleteContract = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
   await axiosInstance.delete(`${url}/api/contracts/${contract_id}`, {
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -127,15 +158,23 @@ export const deleteContract = async (contract_id: string) => {
   });
 };
 
+// Скачивание контракта
 export const downloadContract = async (contract_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
   try {
     const response = await axiosInstance.get(
       `${url}/api/contracts/${contract_id}/download`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -149,6 +188,6 @@ export const downloadContract = async (contract_id: string) => {
     } else {
       toast.error("Неизвестная ошибка");
     }
-    throw error; // Пробрасываем ошибку дальше
+    throw error;
   }
 };

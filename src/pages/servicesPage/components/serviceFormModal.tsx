@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Form } from "antd";
+import { Modal, Input, Button, Form, Select } from "antd";
 import { IService } from "../../../api/servicesApi";
 import { useServiceMutations } from "../../../hooks/services/useServiceMutations";
+import { useCompanyQuery } from "../../../hooks/companies/useCompanyQuery";
 
 interface ServiceCreateModalProps {
   visible: boolean;
@@ -20,10 +21,13 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: companiesData } = useCompanyQuery();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const { createMutation, updateMutation } = useServiceMutations(
     initialData?.service_id || "",
-    initialData?.service_name || ""
+    initialData?.service_name || "",
+    initialData?.company || ""
   );
 
   useEffect(() => {
@@ -31,6 +35,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
       if (initialData && mode === "edit") {
         form.setFieldsValue({
           service_name: initialData.service_name,
+          company: initialData.company,
         });
       } else {
         form.resetFields();
@@ -43,10 +48,19 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
       setIsSubmitting(true);
       const values = await form.validateFields();
 
+      // Добавляем company в данные при создании, если его нет
+      const formData =
+        mode === "create"
+          ? {
+              ...values,
+              company: selectedCompanyId || values.company,
+            }
+          : values;
+
       if (mode === "create") {
-        await createMutation.mutateAsync(values);
+        await createMutation.mutateAsync(formData);
       } else if (mode === "edit" && initialData?.service_id) {
-        await updateMutation.mutateAsync(values);
+        await updateMutation.mutateAsync(formData);
       }
 
       form.resetFields();
@@ -91,6 +105,24 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
         >
           <Input placeholder="Введите название услуги" />
         </Form.Item>
+
+        {mode === "create" && (
+          <Form.Item
+            label="Компания"
+            name="company"
+            rules={[
+              { required: true, message: "Пожалуйста, выберите компанию" },
+            ]}
+          >
+            <Select
+              placeholder="Выберите компанию"
+              options={companiesData?.companies.map((company) => ({
+                value: company.company_id,
+                label: company.company_name,
+              }))}
+            />
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

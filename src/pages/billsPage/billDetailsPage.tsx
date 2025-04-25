@@ -136,8 +136,8 @@ export const BillDetailsPage: React.FC = () => {
                 <BillCreateModal
                   visible={showEditModal}
                   onCancel={() => setShowEditModal(false)}
-                  legalEntitiesData={legalEntitiesResponse?.entities || []}
-                  bankAccountsData={bankAccountsResponse?.bank_accounts || []}
+                  // legalEntitiesData={legalEntitiesResponse?.entities || []}
+                  // bankAccountsData={bankAccountsResponse?.bank_accounts || []}
                   contractsData={contractsResponse?.contracts || []}
                   onSuccess={() => {
                     setShowEditModal(false);

@@ -14,15 +14,32 @@ export interface IActDetail {
 export const fetchActDetails = async (params?: { act?: string }) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  // Определяем тип параметров запроса
+  interface RequestParams {
+    page: number;
+    page_size: number;
+    act?: string;
+    company?: string;
+  }
+
+  const requestParams: RequestParams = {
+    page: 1,
+    page_size: 100,
+    ...params,
+  };
+
+  // Добавляем company в параметры, если пользователь не суперадмин и companyId есть
+  if (!isSuperadmin && selectedCompanyId) {
+    requestParams.company = selectedCompanyId;
+  }
 
   const response = await axiosInstance.get<IActDetailsResponse>(
     `${url}/api/act-details/all`,
     {
-      params: {
-        ...params,
-        page: 1,
-        page_size: 100,
-      },
+      params: requestParams,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -42,10 +59,19 @@ export const createActDetail = async (newActDetail: {
 }): Promise<IActDetail> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
   const response = await axiosInstance.post(
     `${url}/api/act-details/add`,
     newActDetail,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -62,10 +88,19 @@ export const updateActDetail = async (
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
+
   const response = await axiosInstance.patch(
     `${url}/api/act-details/${act_detail_id}`,
     updatedData,
     {
+      params,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -80,8 +115,16 @@ export const updateActDetail = async (
 export const deleteActDetail = async (act_detail_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
 
   await axiosInstance.delete(`${url}/api/act-details/${act_detail_id}`, {
+    params,
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",

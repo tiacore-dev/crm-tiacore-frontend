@@ -2,6 +2,7 @@ import React from "react";
 import { Descriptions } from "antd";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import "../../../components/cards.css";
+
 interface LegalEntityDetailsCardProps {
   legal_entity: ILegalEntity;
   legalEntityTypes?: {
@@ -9,15 +10,22 @@ interface LegalEntityDetailsCardProps {
     entity_name: string;
   }[];
 }
+
 export const LegalEntityDetailsCard: React.FC<LegalEntityDetailsCardProps> = ({
   legal_entity,
   legalEntityTypes = [],
 }) => {
-  const getEntityTypeName = (typeId: string): string => {
+  const getEntityTypeName = (typeId?: string): string => {
+    if (!typeId) return "Не указано";
     const type = legalEntityTypes.find(
       (t) => t.legal_entity_type_id === typeId
     );
     return type ? type.entity_name : typeId;
+  };
+
+  const formatVatRate = (rate?: number) => {
+    if (rate === undefined) return "Не указано";
+    return rate === 0 ? "НДС не облагается" : `${rate} %`;
   };
 
   return (
@@ -29,15 +37,17 @@ export const LegalEntityDetailsCard: React.FC<LegalEntityDetailsCardProps> = ({
         </span>
       </Descriptions.Item>
       <Descriptions.Item label="ИНН">{legal_entity.inn}</Descriptions.Item>
-      <Descriptions.Item label="КПП">{legal_entity.kpp}</Descriptions.Item>
+      <Descriptions.Item label="КПП">
+        {legal_entity.kpp || "Не указано"}
+      </Descriptions.Item>
       <Descriptions.Item label="Ставка НДС">
-        {legal_entity.vat_rate}
+        {formatVatRate(legal_entity.vat_rate)}
       </Descriptions.Item>
       <Descriptions.Item label="Адрес">
         {legal_entity.address}
       </Descriptions.Item>
       <Descriptions.Item label="Подписавшая сторона">
-        {legal_entity.signer}
+        {legal_entity.signer || "Не указано"}
       </Descriptions.Item>
     </Descriptions>
   );

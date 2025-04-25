@@ -1,4 +1,5 @@
 // companyContext.tsx
+import { QueryClient } from "@tanstack/react-query";
 import React, { createContext, useContext, useEffect, useState } from "react";
 interface CompanyContextType {
   selectedCompanyId: string | null;
@@ -63,3 +64,4 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export const useCompany = () => useContext(CompanyContext);
+export const queryClient = new QueryClient();

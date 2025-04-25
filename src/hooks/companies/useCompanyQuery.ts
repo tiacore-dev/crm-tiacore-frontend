@@ -6,6 +6,7 @@ import {
   ICompany,
 } from "../../api/companiesApi";
 // import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
+import { useCompany } from "../../context/companyContext";
 
 export interface useCompanyQueryResponse {
   total: number;
@@ -17,23 +18,27 @@ export interface ICompaniesResponse {
 }
 
 export const useCompanyQuery = () => {
+  const { selectedCompanyId } = useCompany();
+
   return useQuery<useCompanyQueryResponse>({
-    queryKey: ["companies"],
+    queryKey: ["companies", selectedCompanyId],
     queryFn: fetchCompanies,
   });
 };
 
 export const useCompanyDetailsQuery = (company_id: string) => {
+  const { selectedCompanyId } = useCompany();
   return useQuery({
-    queryKey: ["companyDetails", company_id],
+    queryKey: ["companyDetails", company_id, selectedCompanyId],
     queryFn: () => fetchCompanyDetails(company_id),
     retry: false,
   });
 };
 
 export const useCompaniesForSelection = () => {
+  const { selectedCompanyId } = useCompany();
   return useQuery<ICompaniesResponse>({
-    queryKey: ["companiesForSelection"], //??????
+    queryKey: ["companiesForSelection", selectedCompanyId], //??????
     queryFn: () => fetchCompanies(),
   });
 };

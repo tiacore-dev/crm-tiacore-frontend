@@ -34,6 +34,7 @@ export const renderBasicFields = ({ mode }: Partial<RenderFieldsProps>) => (
       rules={[
         { required: true, message: "Пожалуйста, введите ИНН" },
         { min: 10, message: "Минимум 10 символов" },
+        { max: 12, message: "Максимум 12 символов" },
         { pattern: /^\d+$/, message: "Поле должно содержать только цифры" },
       ]}
     >
@@ -48,7 +49,7 @@ export const renderBasicFields = ({ mode }: Partial<RenderFieldsProps>) => (
         { pattern: /^\d+$/, message: "Поле должно содержать только цифры" },
       ]}
     >
-      <Input placeholder="Введите КПП" />
+      <Input placeholder="Введите КПП (если есть)" />
     </Form.Item>
   </>
 );
@@ -79,7 +80,7 @@ export const renderAdditionalFields = ({
             <Input placeholder="Введите ИНН" disabled />
           </Form.Item>
           <Form.Item name="kpp" label="КПП">
-            <Input placeholder="Введите КПП" disabled />
+            <Input placeholder="Введите КПП (если есть)" disabled />
           </Form.Item>
         </>
       )}
@@ -100,15 +101,20 @@ export const renderAdditionalFields = ({
           label="Ставка НДС"
           rules={[
             {
-              required: !isExistingEntity,
-              message: "Пожалуйста, введите ставку НДС",
+              required: true,
+              message: "Пожалуйста, выберите ставку НДС",
             },
           ]}
         >
-          <Input
-            placeholder="Введите ставку НДС"
-            type="number"
+          <Select
+            placeholder="Выберите ставку НДС"
             disabled={isExistingEntity}
+            options={[
+              { value: 0, label: "НДС не облагается" },
+              { value: 5, label: "5%" },
+              { value: 7, label: "7%" },
+              { value: 20, label: "20%" },
+            ]}
           />
         </Form.Item>
       )}
@@ -119,22 +125,16 @@ export const renderAdditionalFields = ({
         rules={[
           { required: true, message: "Пожалуйста, введите адрес" },
           { min: 5, message: "Минимум 5 символов" },
+          {
+            required: false, // Явно указываем, что поле необязательное
+          },
         ]}
       >
         <Input placeholder="Введите адрес" disabled={isExistingEntity} />
       </Form.Item>
 
       {!isBuyer && (
-        <Form.Item
-          name="entity_type"
-          label="Тип"
-          rules={[
-            {
-              required: !isExistingEntity,
-              message: "Пожалуйста, выберите тип",
-            },
-          ]}
-        >
+        <Form.Item name="entity_type" label="Тип">
           <Select
             placeholder="Выберите тип"
             options={legalEntityTypes.map((type) => ({
@@ -150,7 +150,13 @@ export const renderAdditionalFields = ({
         <Form.Item
           name="signer"
           label="Подписант"
-          rules={[{ min: 3, message: "Минимум 3 символа" }]}
+          rules={[
+            {
+              required: false, // Явно указываем, что поле необязательное
+              min: 3,
+              message: "Минимум 3 символа",
+            },
+          ]}
         >
           <Input disabled={isExistingEntity} />
         </Form.Item>

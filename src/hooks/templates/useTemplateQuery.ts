@@ -5,6 +5,7 @@ import {
   fetchTemplateDetails,
   ITemplate,
 } from "../../api/templatesApi";
+import { useCompany } from "../../context/companyContext";
 
 export interface ITemplatesResponse {
   total: number;
@@ -25,16 +26,18 @@ export interface ITemplatesQueryParams {
 }
 
 export const useTemplateQuery = (params?: ITemplatesQueryParams) => {
+  const { selectedCompanyId } = useCompany();
   return useQuery<ITemplatesResponse>({
-    queryKey: ["templates", params], // Добавляем параметры в ключ запроса
+    queryKey: ["templates", params, selectedCompanyId], // Добавляем параметры в ключ запроса
     queryFn: () => fetchTemplates(params), // Передаем параметры в fetchTemplates
   });
 };
 
 export const useTemplateDetailsQuery = (template_id: string) => {
+  const { selectedCompanyId } = useCompany();
   return useQuery<ITemplate>({
-    queryKey: ["templateDetails", template_id],
+    queryKey: ["templateDetails", template_id, selectedCompanyId],
     queryFn: () => fetchTemplateDetails(template_id),
-    enabled: !!template_id, //??
+    enabled: !!template_id,
   });
 };

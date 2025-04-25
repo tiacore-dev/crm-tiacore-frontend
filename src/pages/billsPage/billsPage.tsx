@@ -155,12 +155,11 @@ export const BillsPage: React.FC = () => {
                   onSortChange={handleSortChange}
                   onFilterChange={handleFilterChange}
                 />
-
                 <BillCreateModal
                   visible={isModalVisible}
                   onCancel={() => setIsModalVisible(false)}
-                  legalEntitiesData={legalEntitiesResponse?.entities || []}
-                  bankAccountsData={bankAccountsResponse?.bank_accounts || []}
+                  // legalEntitiesData={legalEntitiesResponse?.entities || []}
+                  // bankAccountsData={bankAccountsResponse?.bank_accounts || []}
                   contractsData={contractsResponse?.contracts || []}
                   mode="create"
                 />

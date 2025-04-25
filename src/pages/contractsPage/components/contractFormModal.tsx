@@ -235,13 +235,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
             },
           ]}
         >
-          <DatePicker
-            style={{ width: "100%" }}
-            format="DD.MM.YYYY"
-            disabledDate={(current) =>
-              current && current > dayjs().endOf("day")
-            }
-          />
+          <DatePicker style={{ width: "100%" }} format="DD.MM.YYYY" />
         </Form.Item>
 
         <Form.Item

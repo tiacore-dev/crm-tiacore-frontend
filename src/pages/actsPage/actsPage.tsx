@@ -125,7 +125,7 @@ export const ActsPage: React.FC = () => {
                     onClick={() => setIsModalVisible(true)}
                     icon={<PlusOutlined />}
                   >
-                    Добавить счет
+                    Добавить акт
                   </Button>
                   <Button
                     onClick={handleResetFilters}
