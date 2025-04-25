@@ -1,6 +1,7 @@
 import { axiosInstance } from "../axiosConfig";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import { IEntityCompanyRelationsResponse } from "../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
 
 interface IEntityCompanyRelation {
   entity_company_relation_id: string;
@@ -37,7 +38,11 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
   return response.data;
 };
 
-export const fetchEntityCompanyRelations = async () => {
+export const fetchEntityCompanyRelations = async (
+  legal_entity?: string,
+  company?: string,
+  relation_type?: string
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
@@ -47,8 +52,17 @@ export const fetchEntityCompanyRelations = async () => {
   if (!isSuperadmin && selectedCompanyId) {
     params.company = selectedCompanyId;
   }
+  if (legal_entity) {
+    params.legal_entity = legal_entity;
+  }
+  if (company) {
+    params.company = company;
+  }
+  if (relation_type) {
+    params.relation_type = relation_type;
+  }
 
-  const response = await axiosInstance.get<IEntityCompanyRelation>(
+  const response = await axiosInstance.get<IEntityCompanyRelationsResponse>(
     `${url}/api/entity-company-relations/all`,
     {
       params,

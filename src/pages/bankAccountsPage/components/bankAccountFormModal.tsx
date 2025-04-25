@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Button } from "antd";
+import { Modal, Form, Input, Button } from "antd";
 import { useBankAccountMutations } from "../../../hooks/bankAccounts/useBankAccountMutation";
 import { IBankAccount } from "../../../api/bankAccountsApi";
 
@@ -39,33 +39,32 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
     if (visible) {
       if (initialData && mode === "edit") {
         form.setFieldsValue({
-          legal_entity: initialData.legal_entity,
           bank_name: initialData.bank_name,
           account_number: initialData.account_number,
           bank_bic: initialData.bank_bic,
           bank_corr_account: initialData.bank_corr_account,
         });
-      }
-      // else if (mode === "create" && legalEntitiesData.length === 1) {
-      //   form.setFieldsValue({
-      //     legal_entity: legalEntitiesData.legal_entity_id,
-      //   });
-      // }
-      else {
+      } else {
         form.resetFields();
       }
     }
-  }, [visible, initialData, mode, form, legalEntitiesData]);
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
 
+      // Всегда добавляем legal_entity_id к данным при создании
+      const submitData =
+        mode === "create"
+          ? { ...values, legal_entity: legalEntitiesData.legal_entity_id }
+          : values;
+
       if (mode === "create") {
-        await createMutation.mutateAsync(values);
+        await createMutation.mutateAsync(submitData);
       } else if (mode === "edit" && initialData?.bank_account_id) {
-        await updateMutation.mutateAsync(values);
+        await updateMutation.mutateAsync(submitData);
       }
 
       form.resetFields();
@@ -142,7 +141,6 @@ export const BankAccountCreateModal: React.FC<BankAccountCreateModalProps> = ({
         >
           <Input placeholder="Введите БИК банка (9 символов)" />
         </Form.Item>
-
         <Form.Item
           name="bank_corr_account"
           label="Корреспондентский счет"
