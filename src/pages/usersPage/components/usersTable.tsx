@@ -65,7 +65,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       filteredValue: full_name ? [full_name] : null,
     },
     {
-      title: "Логин",
+      title: "Email",
       dataIndex: "username",
       key: "username",
       filterIcon: (filtered) => (
@@ -76,7 +76,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Input
-            placeholder="Поиск логину"
+            placeholder="Поиск по email"
             value={username}
             onChange={(e) => dispatch(setUserName(e.target.value))}
             style={{ width: 200 }}

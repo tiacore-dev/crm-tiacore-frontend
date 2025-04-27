@@ -11,6 +11,8 @@ interface UserCreateModalProps {
   initialData?: IUser | null;
 }
 
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
 export const UserFormModal: React.FC<UserCreateModalProps> = ({
   visible,
   onCancel,
@@ -30,7 +32,6 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
 
   useEffect(() => {
     if (visible) {
-      // Добавляем проверку на visible
       if (initialData && mode === "edit") {
         form.setFieldsValue({
           username: initialData.username,
@@ -41,7 +42,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         form.resetFields();
       }
     }
-  }, [visible, initialData, mode, form]); // Добавляем visible в зависимости
+  }, [visible, initialData, mode, form]);
 
   const handleSubmit = async () => {
     try {
@@ -87,34 +88,63 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         </Button>,
       ]}
       width={700}
-      destroyOnClose // Добавляем для корректного сброса формы
+      destroyOnClose
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          label="Логин пользователя"
+          label="Email пользователя"
           name="username"
           rules={[
             {
               required: true,
-              message: "Пожалуйста, введите логин пользователя",
+              message: "Пожалуйста, введите email пользователя",
+            },
+            {
+              type: "email",
+              message: "Введите корректный email адрес",
+            },
+            {
+              pattern: emailRegex,
+              message: "Email должен быть в формате example@domain.com",
             },
             { min: 3, message: "Минимум 3 символа" },
           ]}
         >
-          <Input placeholder="Введите логин пользователя" />
+          <Input placeholder="Введите email пользователя" />
         </Form.Item>
-        {mode === "create" && (
-          <Form.Item
-            label="Пароль пользователя"
-            name="password"
-            rules={[
-              { required: true, message: "Пожалуйста, введите пароль" },
-              { min: 6, message: "Минимум 6 символов" },
-            ]}
-          >
-            <Input.Password placeholder="Введите пароль" />
-          </Form.Item>
-        )}
+
+        {/* Пароль (основное поле) */}
+        <Form.Item
+          label="Пароль"
+          name="password"
+          rules={[
+            { required: true, message: "Пожалуйста, введите пароль" },
+            { min: 6, message: "Минимум 6 символов" },
+          ]}
+        >
+          <Input.Password placeholder="Введите пароль" />
+        </Form.Item>
+
+        {/* Подтверждение пароля */}
+        <Form.Item
+          label="Подтверждение пароля"
+          name="confirmPassword"
+          dependencies={["password"]}
+          rules={[
+            { required: true, message: "Пожалуйста, подтвердите пароль" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("Пароли не совпадают"));
+              },
+            }),
+          ]}
+        >
+          <Input.Password placeholder="Повторите пароль" />
+        </Form.Item>
+
         <Form.Item
           label="Ф.И.О."
           name="full_name"

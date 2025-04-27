@@ -31,15 +31,17 @@ export const useBillMutations = (
       queryClient.invalidateQueries({
         queryKey: ["bills"],
       });
+      navigate(`/bills/${data.bill_id}`);
+
       toast.success(
         <div>
           Счет успешно добавлен{" "}
-          <Button
+          {/* <Button
             type="link"
             onClick={() => navigate(`/bills/${data.bill_id}`)}
           >
             Подробнее
-          </Button>
+          </Button> */}
         </div>
       );
     },

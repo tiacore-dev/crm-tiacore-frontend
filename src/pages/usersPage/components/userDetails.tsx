@@ -12,21 +12,25 @@ export const UserDetailsCard: React.FC<UserDetailsProps> = ({
   userDetails,
 }) => {
   return (
-    <Card style={{ width: "100%", maxWidth: 600 }}>
-      <div style={{ marginBottom: 16 }}>
-        <Title level={5}>Логин:</Title>
-        <Text>{userDetails.username}</Text>
-      </div>
+    <>
+      {!!userDetails && (
+        <Card style={{ width: "100%", maxWidth: 600 }}>
+          <div style={{ marginBottom: 16 }}>
+            <Title level={5}>Email:</Title>
+            <Text>{userDetails.username}</Text>
+          </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <Title level={5}>Ф.И.О.:</Title>
-        <Text>{userDetails.full_name}</Text>
-      </div>
+          <div style={{ marginBottom: 16 }}>
+            <Title level={5}>Ф.И.О.:</Title>
+            <Text>{userDetails.full_name}</Text>
+          </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <Title level={5}>Позиция:</Title>
-        <Text>{userDetails.position}</Text>
-      </div>
-    </Card>
+          <div style={{ marginBottom: 16 }}>
+            <Title level={5}>Позиция:</Title>
+            <Text>{userDetails.position}</Text>
+          </div>
+        </Card>
+      )}
+    </>
   );
 };

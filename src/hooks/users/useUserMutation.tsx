@@ -36,7 +36,7 @@ export const useUserMutations = (
     onError: (error: AxiosError) => {
       // Проверяем код ошибки
       if (error.response?.status === 400) {
-        toast.error("Пользователь с таким логином уже существует");
+        toast.error("Пользователь с таким email уже существует");
       } else {
         toast.error("Ошибка при добавлении пользователя");
       }

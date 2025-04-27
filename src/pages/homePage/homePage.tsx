@@ -1,16 +1,13 @@
-import React, { useEffect } from "react";
-// import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import { refreshToken } from "../loginPage/auth";
-// import {
-//   fetchEntityTypes,
-//   fetchContractStatuses,
-//   fetchUserRoles,
-// } from "../../api/baseApi";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { Button, Typography } from "antd"; // Импорт компонентов Ant Design
-// import { ILegalEntityType } from "../legalEntitiesPage/components/legalEntityCreateModal";
-// import { ILegalEntityTypesResponse } from "../../api/baseApi";
+import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
+import { UserDetailsCard } from "../usersPage/components/userDetails";
+import { EditOutlined } from "@ant-design/icons";
+import { UserFormModal } from "../usersPage/components/userFormModal";
+import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 
 export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,6 +18,16 @@ export const HomePage: React.FC = () => {
   const tryRefresh = () => {
     refreshToken();
   };
+  const [showEditModal, setShowEditModal] = useState(false);
+  const selectedCompanyId =
+    localStorage.getItem("selectedCompanyId") || undefined;
+
+  const {
+    data: userDetails,
+    isLoading,
+    isError,
+    // } = useUserDetailsQuery(user_id!);
+  } = useUserDetailsQuery("19edaa8f-3951-4abf-8f1a-332571f80738");
 
   return (
     <div className="main-container">
@@ -29,33 +36,41 @@ export const HomePage: React.FC = () => {
       {/* Кнопка для обновления токена */}
       <Button onClick={tryRefresh}>Обновить токен</Button>
 
-      {/* Отображение данных с индикацией загрузки */}
-      {/* <div style={{ marginTop: 24 }}>
-        <Typography.Title level={3}>Типы сущностей</Typography.Title>
-        {isLoadingEntityTypes ? (
-          <Spin />
-        ) : (
-          <Typography.Text>{JSON.stringify(entityTypes)}</Typography.Text>
-        )}
-
-        <Typography.Title level={3} style={{ marginTop: 16 }}>
-          Статусы контрактов
-        </Typography.Title>
-        {isLoadingContractStatuses ? (
-          <Spin />
-        ) : (
-          <Typography.Text>{JSON.stringify(contractStatuses)}</Typography.Text>
-        )}
-
-        <Typography.Title level={3} style={{ marginTop: 16 }}>
-          Роли пользователей
-        </Typography.Title>
-        {isLoadingUserRoles ? (
-          <Spin />
-        ) : (
-          <Typography.Text>{JSON.stringify(userRoles)}</Typography.Text>
-        )}
-      </div> */}
+      <div
+        style={{
+          display: "flex",
+          gap: "24px",
+          alignItems: "flex-start",
+        }}
+      >
+        <div
+          style={{ flex: "0 0 300px", marginTop: "16px", marginBottom: "16px" }}
+        >
+          <UserDetailsCard userDetails={userDetails} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <UserCompanyRelationsTable
+            userId={"19edaa8f-3951-4abf-8f1a-332571f80738"}
+            companyId={selectedCompanyId}
+          />
+        </div>
+      </div>
+      <Button
+        onClick={() => {
+          setShowEditModal(true);
+        }}
+      >
+        <EditOutlined />
+        Редактировать
+      </Button>
+      {showEditModal && (
+        <UserFormModal
+          visible={showEditModal}
+          onCancel={() => setShowEditModal(false)}
+          mode="edit"
+          initialData={userDetails}
+        />
+      )}
     </div>
   );
 };

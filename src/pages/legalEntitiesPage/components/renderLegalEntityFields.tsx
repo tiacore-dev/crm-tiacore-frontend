@@ -8,7 +8,7 @@ interface RenderFieldsProps {
   isExistingEntity: boolean;
   relationType: string;
   legalEntityTypes: ILegalEntityType[];
-  companiesDate: ICompany[];
+  // companiesDate: ICompany[];
 }
 
 export const renderBasicFields = ({ mode }: Partial<RenderFieldsProps>) => (

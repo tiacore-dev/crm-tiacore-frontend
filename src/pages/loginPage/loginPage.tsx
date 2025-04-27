@@ -1,13 +1,13 @@
-//loginpage.tsx
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../../axiosConfig";
 import toast from "react-hot-toast";
-import { Button, Typography, Spin } from "antd";
+import { Button, Typography, Spin, Space } from "antd";
 import "./loginPage.css";
 import { FloatingInput } from "../../components/floatingInput/floatingInput";
+import { UserFormModal } from "../usersPage/components/userFormModal";
 
 type FormData = {
   username: string;
@@ -17,8 +17,8 @@ type FormData = {
 type AuthResponse = {
   access_token: string;
   refresh_token: string;
-  permissions: Record<string, string[]>; // Добавляем permissions
-  is_superadmin: boolean; // Добавляем is_superadmin
+  permissions: Record<string, string[]>;
+  is_superadmin: boolean;
 };
 
 type ApiError = {
@@ -28,6 +28,9 @@ type ApiError = {
     };
   };
 };
+
+// Регулярное выражение для валидации email
+// const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 export const LoginPage: React.FC = () => {
   const {
@@ -42,6 +45,7 @@ export const LoginPage: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
 
   const loginMutation = useMutation<AuthResponse, Error, FormData>({
     mutationFn: async (data) => {
@@ -95,19 +99,21 @@ export const LoginPage: React.FC = () => {
         </Typography.Title>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Логин */}
+          {/* Email */}
           <Controller
             name="username"
             control={control}
-            rules={{ required: "Логин обязателен" }}
+            rules={{
+              required: "Email обязателен",
+            }}
             render={({ field }) => (
               <FloatingInput
                 id="username"
-                name="Логин"
+                name="Email"
                 value={field.value}
                 onChange={field.onChange}
                 disabled={loginMutation.isPending}
-                hint="Введите логин"
+                hint="Введите email"
               />
             )}
           />
@@ -119,7 +125,13 @@ export const LoginPage: React.FC = () => {
           <Controller
             name="password"
             control={control}
-            rules={{ required: "Пароль обязателен" }}
+            rules={{
+              required: "Пароль обязателен",
+              minLength: {
+                value: 6,
+                message: "Пароль должен содержать минимум 6 символов",
+              },
+            }}
             render={({ field }) => (
               <FloatingInput
                 id="password"
@@ -136,17 +148,38 @@ export const LoginPage: React.FC = () => {
             <div className="error-text">{errors.password.message}</div>
           )}
 
-          <Button
-            htmlType="submit"
-            className="button"
-            // type="primary"
-            size="large"
-            disabled={loginMutation.isPending}
-          >
-            {loginMutation.isPending ? <Spin size="small" /> : "Войти"}
-          </Button>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Button
+              htmlType="submit"
+              className="button"
+              size="large"
+              disabled={loginMutation.isPending}
+              block
+            >
+              {loginMutation.isPending ? <Spin size="small" /> : "Войти"}
+            </Button>
+
+            <Button
+              type="link"
+              onClick={() => setIsRegisterModalVisible(true)}
+              block
+            >
+              Зарегистрироваться
+            </Button>
+          </Space>
         </form>
       </div>
+
+      {/* Модальное окно регистрации */}
+      <UserFormModal
+        visible={isRegisterModalVisible}
+        onCancel={() => setIsRegisterModalVisible(false)}
+        onSuccess={() => {
+          setIsRegisterModalVisible(false);
+          toast.success("Пользователь успешно зарегистрирован");
+        }}
+        mode="create"
+      />
     </div>
   );
 };

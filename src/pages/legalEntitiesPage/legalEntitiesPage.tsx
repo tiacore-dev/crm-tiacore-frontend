@@ -4,6 +4,7 @@ import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/backButton";
 import { Button, Spin } from "antd";
 import {
+  useLegalEntitiesBuyers,
   useLegalEntitiesForSelection,
   useLegalEntityQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -41,7 +42,7 @@ export const LegalEntitiesPage: React.FC = () => {
     data: legal_entities_data,
     isLoading,
     isError,
-  } = useLegalEntitiesForSelection();
+  } = useLegalEntitiesBuyers();
 
   const { data: legalEntityTypes } = useEntityTypes();
 

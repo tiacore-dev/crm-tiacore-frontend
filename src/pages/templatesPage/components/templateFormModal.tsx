@@ -13,7 +13,7 @@ interface TemplateFormModalProps {
   onCancel: () => void;
   onSuccess: () => void;
   companiesData: { company_id: string; company_name: string }[];
-  templateData?: ITemplate; // Обязательно только для режима edit
+  templateData?: ITemplate;
 }
 
 export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
@@ -26,6 +26,15 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [file, setFile] = useState<RcFile | null>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    // Получаем company_id из localStorage при монтировании компонента
+    const companyId = localStorage.getItem("selectedCompanyId");
+    setSelectedCompanyId(companyId);
+  }, []);
 
   const { createMutation, updateMutation } = useTemplateMutations(
     templateData?.template_id || "",
@@ -46,11 +55,14 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
           entity: templateData.entity,
         });
       } else {
-        form.resetFields();
+        // Устанавливаем company из localStorage при создании
+        form.setFieldsValue({
+          company: selectedCompanyId,
+        });
       }
       setFile(null);
     }
-  }, [visible, mode, templateData, form]);
+  }, [visible, mode, templateData, form, selectedCompanyId]);
 
   const beforeUpload = (file: RcFile) => {
     setFile(file);
@@ -61,7 +73,6 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
     try {
       const values = await form.validateFields();
 
-      // Для режима создания файл обязателен
       if (mode === "create" && !file) {
         message.error("Пожалуйста, загрузите файл шаблона");
         return;
@@ -69,7 +80,7 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
 
       const formData = new FormData();
       formData.append("template_name", values.template_name);
-      formData.append("company", values.company);
+      formData.append("company", selectedCompanyId || ""); // Используем company из localStorage
       formData.append("entity", values.entity);
 
       if (values.description) {
@@ -150,25 +161,9 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
           <Input placeholder="Введите название шаблона" />
         </Form.Item>
 
-        <Form.Item
-          name="company"
-          label="Компания"
-          rules={[{ required: true, message: "Пожалуйста, выберите компанию" }]}
-        >
-          <Select
-            showSearch
-            optionFilterProp="children"
-            placeholder="Выберете компанию"
-          >
-            {companiesData.map((company) => (
-              <Select.Option
-                key={company.company_id}
-                value={company.company_id}
-              >
-                {company.company_name}
-              </Select.Option>
-            ))}
-          </Select>
+        {/* Скрытое поле для company */}
+        <Form.Item name="company" hidden>
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -176,7 +171,7 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
           label="Тип"
           rules={[{ required: true, message: "Пожалуйста, выберите тип" }]}
         >
-          <Select placeholder="Выберете тип">
+          <Select placeholder="Выберите тип">
             <Select.Option value="act">Акт</Select.Option>
             <Select.Option value="bill">Счет</Select.Option>
           </Select>

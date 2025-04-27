@@ -214,7 +214,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
               isExistingEntity,
               relationType,
               legalEntityTypes,
-              companiesDate,
+              // companiesDate,
             })}
       </Form>
     </Modal>

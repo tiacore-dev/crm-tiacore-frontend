@@ -16,7 +16,6 @@ import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTa
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useCompany } from "../../context/companyContext";
 import { BankAccountCreateModal } from "../bankAccountsPage/components/bankAccountFormModal";
-import { useIsSellerQuery } from "../../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -37,12 +36,6 @@ export const LegalEntityDetailsPage: React.FC = () => {
     isError,
     refetch,
   } = useLegalEntityDetailsQuery(legal_entity_id || "");
-
-  const {
-    data: sellers,
-    isLoading: loadingIsSellers,
-    isError: errorEsSellers,
-  } = useIsSellerQuery(legal_entity_id, selectedCompanyId);
 
   const { deleteMutation } = useLegalEntityMutations(
     legal_entity_id || "",
@@ -86,8 +79,6 @@ export const LegalEntityDetailsPage: React.FC = () => {
     });
   };
 
-  const isSeller = !!sellers?.relations?.length;
-
   const { data: bankAccountsData, isLoading: isBankAccountsLoading } =
     useBankAccountQuery({
       legal_entity: legal_entity_id,
@@ -120,27 +111,22 @@ export const LegalEntityDetailsPage: React.FC = () => {
                   legal_entity={legal_entity}
                   legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 />
+                <Button
+                  style={{ marginBottom: 16, marginTop: 16 }}
+                  onClick={() => setShowCreateBankAccountModal(true)}
+                  icon={<PlusOutlined />}
+                >
+                  Добавить банковский счёт
+                </Button>
 
-                {isSeller && (
-                  <>
-                    <Button
-                      style={{ marginBottom: 16, marginTop: 16 }}
-                      onClick={() => setShowCreateBankAccountModal(true)}
-                      icon={<PlusOutlined />}
-                    >
-                      Добавить банковский счёт
-                    </Button>
-
-                    <BankAccountsTable
-                      data={bankAccountsData || { total: 0, bank_accounts: [] }}
-                      loading={isBankAccountsLoading}
-                      legalEntitiesData={{
-                        legal_entity_id: legal_entity.legal_entity_id,
-                        legal_entity_name: legal_entity.legal_entity_name,
-                      }}
-                    />
-                  </>
-                )}
+                <BankAccountsTable
+                  data={bankAccountsData || { total: 0, bank_accounts: [] }}
+                  loading={isBankAccountsLoading}
+                  legalEntitiesData={{
+                    legal_entity_id: legal_entity.legal_entity_id,
+                    legal_entity_name: legal_entity.legal_entity_name,
+                  }}
+                />
               </div>
 
               <LegalEntityFormModal

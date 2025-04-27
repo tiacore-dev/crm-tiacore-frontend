@@ -83,7 +83,7 @@ export const getLegalEntitiesTableColumns = ({
       dataIndex: "kpp",
       key: "kpp",
       width: 130,
-      render: (kpp) => kpp || "Не указано",
+      render: (kpp) => kpp || "—",
     },
     {
       title: "Ставка НДС",
@@ -102,7 +102,7 @@ export const getLegalEntitiesTableColumns = ({
       sortDirections: ["ascend", "descend"],
     },
     {
-      title: "Подписавший",
+      title: "Подписант",
       dataIndex: "signer",
       key: "signer",
       render: (signer) => signer || "Не указано",

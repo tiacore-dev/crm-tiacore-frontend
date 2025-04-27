@@ -29,14 +29,8 @@ export const useActsMutations = (
       queryClient.invalidateQueries({
         queryKey: ["acts"],
       });
-      toast.success(
-        <div>
-          Акт успешно добавлен{" "}
-          <Button type="link" onClick={() => navigate(`/acts/${data.act_id}`)}>
-            Подробнее
-          </Button>
-        </div>
-      );
+      navigate(`/acts/${data.act_id}`);
+      toast.success(<div>Акт успешно добавлен </div>);
     },
     onError: (error: AxiosError) => {
       toast.error("Ошибка при добавлении акта");

@@ -9,10 +9,13 @@ import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyCard } from "./components/companyDetailsCard"; // Изменен импорт
 import { CompanyFormModal } from "./components/companyFormModal";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
-import { useLegalEntityFiltredQuery } from "../../hooks/legalEntities/useLegalEntityQuery";
+import {
+  useLegalEntitiesSellers,
+  useLegalEntityFiltredQuery,
+} from "../../hooks/legalEntities/useLegalEntityQuery";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ export const CompanyDetailsPage: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { company_id } = useParams<{ company_id: string }>();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const {
     data: companyDetails,
@@ -32,7 +36,7 @@ export const CompanyDetailsPage: React.FC = () => {
     data: legalEntitiesData,
     isLoading: isLoadingEntity,
     isError: IsErrorEntity,
-  } = useLegalEntityFiltredQuery(company_id!);
+  } = useLegalEntitiesSellers();
 
   const { deleteMutation, updateMutation } = useCompanyMutations(
     company_id || "",
@@ -101,8 +105,14 @@ export const CompanyDetailsPage: React.FC = () => {
                 <UserCompanyRelationsTable companyId={company_id} />
                 <div>
                   <Typography.Title level={4} style={{ marginBottom: 16 }}>
-                    Контрагенты
+                    Организации
                   </Typography.Title>
+                  <Button
+                    onClick={() => setIsModalVisible(true)}
+                    icon={<PlusOutlined />}
+                  >
+                    Добавить контрагента
+                  </Button>
                   <LegalEntitiesTable
                     data={legalEntitiesData || { total: 0, entities: [] }}
                     loading={isLoading}
@@ -125,6 +135,12 @@ export const CompanyDetailsPage: React.FC = () => {
                   isDeleteLoading={deleteMutation.isPending}
                 />
               )}
+              {/* <LegalEntityFormModal
+                              visible={isModalVisible}
+                              onCancel={() => setIsModalVisible(false)}
+                              legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                              mode="create"
+                            /> */}
             </>
           )}
           {isError && <BackButton />}
