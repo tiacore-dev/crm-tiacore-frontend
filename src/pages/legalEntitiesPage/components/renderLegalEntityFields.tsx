@@ -7,13 +7,15 @@ interface RenderFieldsProps {
   mode: "create" | "edit";
   isExistingEntity: boolean;
   relationType: string;
-  legalEntityTypes: ILegalEntityType[];
-  // companiesDate: ICompany[];
+  legalEntityType?: "buyer" | "seller";
 }
 
-export const renderBasicFields = ({ mode }: Partial<RenderFieldsProps>) => (
+export const renderBasicFields = ({
+  mode,
+  legalEntityType,
+}: Partial<RenderFieldsProps>) => (
   <>
-    {mode === "create" && (
+    {mode === "create" && !legalEntityType && (
       <Form.Item
         name="relation_type"
         label="Тип контрагента"
@@ -28,6 +30,7 @@ export const renderBasicFields = ({ mode }: Partial<RenderFieldsProps>) => (
         />
       </Form.Item>
     )}
+    {/* Остальные поля остаются без изменений */}
     <Form.Item
       name="inn"
       label="ИНН"
@@ -58,7 +61,6 @@ export const renderAdditionalFields = ({
   mode,
   isExistingEntity,
   relationType,
-  legalEntityTypes,
 }: RenderFieldsProps) => {
   const isBuyer = relationType === "buyer";
 
@@ -126,7 +128,7 @@ export const renderAdditionalFields = ({
           { required: true, message: "Пожалуйста, введите адрес" },
           { min: 5, message: "Минимум 5 символов" },
           {
-            required: false, // Явно указываем, что поле необязательное
+            required: false,
           },
         ]}
       >
@@ -134,25 +136,12 @@ export const renderAdditionalFields = ({
       </Form.Item>
 
       {!isBuyer && (
-        <Form.Item name="entity_type" label="Тип">
-          <Select
-            placeholder="Выберите тип"
-            options={legalEntityTypes.map((type) => ({
-              value: type.legal_entity_type_id,
-              label: type.entity_name,
-            }))}
-            disabled={isExistingEntity}
-          />
-        </Form.Item>
-      )}
-
-      {!isBuyer && (
         <Form.Item
           name="signer"
           label="Подписант"
           rules={[
             {
-              required: false, // Явно указываем, что поле необязательное
+              required: false,
               min: 3,
               message: "Минимум 3 символа",
             },

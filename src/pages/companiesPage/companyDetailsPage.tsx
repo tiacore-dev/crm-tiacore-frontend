@@ -16,6 +16,7 @@ import {
   useLegalEntitiesSellers,
   useLegalEntityFiltredQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
+import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -135,12 +136,13 @@ export const CompanyDetailsPage: React.FC = () => {
                   isDeleteLoading={deleteMutation.isPending}
                 />
               )}
-              {/* <LegalEntityFormModal
-                              visible={isModalVisible}
-                              onCancel={() => setIsModalVisible(false)}
-                              legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                              mode="create"
-                            /> */}
+              <LegalEntityFormModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                legalEntityType="seller"
+                mode="create"
+              />
             </>
           )}
           {isError && <BackButton />}

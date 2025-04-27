@@ -18,8 +18,9 @@ import { useEntityCompanyRelationsMutations } from "../../../hooks/entityCompany
 export interface LegalEntityModalProps {
   visible: boolean;
   onCancel: () => void;
-  legalEntityTypes: ILegalEntityType[];
-  companiesDate: ICompany[];
+  // legalEntityTypes: ILegalEntityType[];
+  legalEntityType?: "buyer" | "seller";
+  // companiesDate: ICompany[];
   onSuccess?: () => void;
   mode?: "create" | "edit";
   initialData?: ILegalEntity | null;
@@ -28,8 +29,8 @@ export interface LegalEntityModalProps {
 export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   visible,
   onCancel,
-  legalEntityTypes,
-  companiesDate,
+  legalEntityType,
+  // companiesDate,
   onSuccess,
   mode = "create",
   initialData = null,
@@ -96,15 +97,20 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
           vat_rate: initialData.vat_rate,
           entity_type: initialData.entity_type,
           signer: initialData.signer,
+          ...(legalEntityType && { relation_type: legalEntityType }),
         });
         setShowAllFields(true);
+      } else if (mode === "create" && legalEntityType) {
+        form.setFieldsValue({
+          relation_type: legalEntityType,
+        });
       } else {
         form.resetFields();
         setShowAllFields(false);
         setBasicFieldsData(null);
       }
     }
-  }, [visible, initialData, mode, form]);
+  }, [visible, initialData, mode, form, legalEntityType]);
 
   const handleNext = async () => {
     try {
@@ -208,12 +214,13 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     >
       <Form form={form} layout="vertical">
         {!showAllFields
-          ? renderBasicFields({ mode })
+          ? renderBasicFields({ mode, legalEntityType })
           : renderAdditionalFields({
               mode,
               isExistingEntity,
               relationType,
-              legalEntityTypes,
+              // legalEntityTypes,
+              legalEntityType,
               // companiesDate,
             })}
       </Form>

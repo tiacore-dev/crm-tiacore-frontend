@@ -28,10 +28,8 @@ export const useLegalEntityMutations = (
   const createMutation = useMutation({
     mutationFn: createLegalEntity,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
-      queryClient.invalidateQueries({
-        queryKey: ["legalEntitiesForSelection"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["legalEntitiesSellers"] });
+      queryClient.invalidateQueries({ queryKey: ["legalEntitiesBuyers"] });
       toast.success(
         <div>
           Контрагент успешно добавлен{" "}

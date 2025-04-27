@@ -85,8 +85,9 @@ export const LegalEntitiesPage: React.FC = () => {
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                companiesDate={companiesResponse?.companies || []}
+                // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                legalEntityType="buyer"
+                // companiesDate={companiesResponse?.companies || []}
                 mode="create"
               />
             </div>
