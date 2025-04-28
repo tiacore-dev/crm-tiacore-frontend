@@ -14,8 +14,8 @@ interface LegalEntitiesTableColumnsProps {
   entity_type: string;
   onSearchChange: (value: string) => void;
   onEntityTypeChange: (value: string) => void;
+  isSellers: boolean;
 }
-
 export const getLegalEntitiesTableColumns = ({
   legalEntityTypes,
   navigate,
@@ -23,6 +23,7 @@ export const getLegalEntitiesTableColumns = ({
   entity_type,
   onSearchChange,
   onEntityTypeChange,
+  isSellers,
 }: LegalEntitiesTableColumnsProps): ColumnType<ILegalEntity>[] => {
   const getEntityType = (typeId?: string): string => {
     if (!typeId) return "Не указано";
@@ -32,9 +33,9 @@ export const getLegalEntitiesTableColumns = ({
     return type ? type.entity_name : typeId;
   };
 
-  return [
+  const baseColumns: ColumnType<ILegalEntity>[] = [
     {
-      title: "Название (Тип)",
+      title: "Название",
       dataIndex: "legal_entity_name",
       key: "legal_entity_name",
       filterIcon: (filtered) => (
@@ -86,13 +87,6 @@ export const getLegalEntitiesTableColumns = ({
       render: (kpp) => kpp || "—",
     },
     {
-      title: "Ставка НДС",
-      dataIndex: "vat_rate",
-      key: "vat_rate",
-      render: (vat_rate) => (vat_rate ? `${vat_rate}%` : "Не указано"),
-      width: 110,
-    },
-    {
       title: "Адрес",
       dataIndex: "address",
       key: "address",
@@ -101,11 +95,26 @@ export const getLegalEntitiesTableColumns = ({
         a.address.localeCompare(b.address),
       sortDirections: ["ascend", "descend"],
     },
-    {
-      title: "Подписант",
-      dataIndex: "signer",
-      key: "signer",
-      render: (signer) => signer || "Не указано",
-    },
   ];
+
+  const sellerSpecificColumns: ColumnType<ILegalEntity>[] = isSellers
+    ? [
+        {
+          title: "Ставка НДС",
+          dataIndex: "vat_rate",
+          key: "vat_rate",
+          render: (vat_rate) =>
+            vat_rate ? `${vat_rate}%` : "НДС не облагается",
+          width: 200,
+        },
+        {
+          title: "Подписант",
+          dataIndex: "signer",
+          key: "signer",
+          render: (signer) => signer || "Не указано",
+        },
+      ]
+    : [];
+
+  return [...baseColumns, ...sellerSpecificColumns];
 };

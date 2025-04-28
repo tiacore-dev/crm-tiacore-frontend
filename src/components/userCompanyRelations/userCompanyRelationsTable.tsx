@@ -16,7 +16,7 @@ import type { IUserCompanyRelation } from "../../api/userCompanyRelationsApi";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 import { getCompanyNameById } from "../../utils/infoById";
 import { useUserQueryAll } from "../../hooks/users/useUserQuery";
-import { getUserNameById } from "../../utils/infoById";
+import { getEmailById } from "../../utils/infoById";
 import { Link } from "react-router-dom";
 import {
   ExportOutlined,
@@ -140,7 +140,7 @@ export const UserCompanyRelationsTable = ({
           </Link>
           {userId
             ? getCompanyName(id)
-            : getUserNameById(id, usersData?.users) || id}
+            : getEmailById(id, usersData?.users) || id}
         </Space>
       ),
     },

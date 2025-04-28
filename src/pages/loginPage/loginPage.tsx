@@ -10,7 +10,7 @@ import { FloatingInput } from "../../components/floatingInput/floatingInput";
 import { UserFormModal } from "../usersPage/components/userFormModal";
 
 type FormData = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -39,7 +39,7 @@ export const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -99,17 +99,16 @@ export const LoginPage: React.FC = () => {
         </Typography.Title>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Email */}
           <Controller
-            name="username"
+            name="email"
             control={control}
             rules={{
-              required: "Email обязателен",
+              required: "E-mail обязателен",
             }}
             render={({ field }) => (
               <FloatingInput
-                id="username"
-                name="Email"
+                id="email"
+                name="email"
                 value={field.value}
                 onChange={field.onChange}
                 disabled={loginMutation.isPending}
@@ -117,11 +116,9 @@ export const LoginPage: React.FC = () => {
               />
             )}
           />
-          {errors.username && (
-            <div className="error-text">{errors.username.message}</div>
+          {errors.email && (
+            <div className="error-text">{errors.email.message}</div>
           )}
-
-          {/* Пароль */}
           <Controller
             name="password"
             control={control}

@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 
 export interface IUser {
   user_id: string;
-  username: string;
+  email: string;
   full_name: string;
   position: string;
 }
@@ -34,7 +34,7 @@ export const fetchUsers = async () => {
 
 // Функция для создания нового пользователя
 export const createUser = async (newUser: {
-  username: string;
+  email: string;
   password: string;
   full_name: string;
   position: string;

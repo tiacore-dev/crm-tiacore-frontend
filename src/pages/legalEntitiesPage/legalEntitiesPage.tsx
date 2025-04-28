@@ -79,16 +79,15 @@ export const LegalEntitiesPage: React.FC = () => {
                   data={legal_entities_data || { total: 0, entities: [] }}
                   loading={isLoading}
                   legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                  companiesData={companiesResponse?.companies || []}
+                  isSellers={false}
                 />
               </div>
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                legalEntityType="buyer"
-                // companiesDate={companiesResponse?.companies || []}
+                legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 mode="create"
+                defaultRelationType="buyer" // Устанавливаем значение по умолчанию
               />
             </div>
           )}

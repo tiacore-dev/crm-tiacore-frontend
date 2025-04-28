@@ -23,17 +23,14 @@ interface LegalEntitiesTableProps {
     legal_entity_type_id: string;
     entity_name: string;
   }[];
-  companiesData?: {
-    company_id: string;
-    company_name: string;
-  }[];
+  isSellers: boolean;
 }
 
 export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   data = { total: 0, entities: [] },
   loading,
   legalEntityTypes = [],
-  // companiesData = [],
+  isSellers,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,14 +40,12 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
 
   const columns = getLegalEntitiesTableColumns({
     legalEntityTypes,
-    // companiesData,
     navigate,
     search,
-    // company,
     entity_type,
     onSearchChange: (value) => dispatch(setSearch(value)),
-    // onCompanyChange: (value) => dispatch(setCompany(value)),
     onEntityTypeChange: (value) => dispatch(setEntityType(value)),
+    isSellers,
   });
 
   // 1. Фильтрация данных
@@ -58,15 +53,10 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
     const matchesSearch = search
       ? entity.legal_entity_name.toLowerCase().includes(search.toLowerCase())
       : true;
-    // const matchesCompany = company ? entity.company === company : true;
     const matchesEntityType = entity_type
       ? entity.entity_type === entity_type
       : true;
-    return (
-      matchesSearch &&
-      // && matchesCompany
-      matchesEntityType
-    );
+    return matchesSearch && matchesEntityType;
   });
 
   return (

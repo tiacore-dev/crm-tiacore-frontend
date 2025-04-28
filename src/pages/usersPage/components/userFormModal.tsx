@@ -25,7 +25,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
 
   const { createMutation, updateMutation } = useUserMutations(
     initialData?.user_id || "",
-    initialData?.username || "",
+    initialData?.email || "",
     initialData?.full_name || "",
     initialData?.position || ""
   );
@@ -34,7 +34,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
     if (visible) {
       if (initialData && mode === "edit") {
         form.setFieldsValue({
-          username: initialData.username,
+          email: initialData.email,
           full_name: initialData.full_name,
           position: initialData.position,
         });
@@ -93,7 +93,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
       <Form form={form} layout="vertical">
         <Form.Item
           label="Email пользователя"
-          name="username"
+          name="email"
           rules={[
             {
               required: true,

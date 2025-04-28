@@ -14,7 +14,7 @@ export const UsersPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { username, full_name, position, page, page_size } = useSelector(
+  const { email, full_name, position, page, page_size } = useSelector(
     (state: RootState) => state.users
   );
 
@@ -54,7 +54,7 @@ export const UsersPage: React.FC = () => {
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}
-                    disabled={!username && !full_name && !position}
+                    disabled={!email && !full_name && !position}
                   >
                     Сбросить фильтры
                   </Button>

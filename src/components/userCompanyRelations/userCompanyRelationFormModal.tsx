@@ -146,9 +146,7 @@ export const RelationFormModal = ({
             <Select placeholder="Выберите пользователя">
               {users.map((user) => (
                 <Select.Option key={user.user_id} value={user.user_id}>
-                  {user.full_name
-                    ? user.full_name
-                    : user.username || user.user_id}
+                  {user.full_name ? user.full_name : user.email || user.user_id}
                 </Select.Option>
               ))}
             </Select>

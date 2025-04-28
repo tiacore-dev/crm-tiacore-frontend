@@ -8,7 +8,7 @@ import {
   setPage,
   setPageSize,
   setPosition,
-  setUserName,
+  setEmail,
 } from "../../../redux/slices/usersSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +29,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { username, full_name, position, page, page_size } = useSelector(
+  const { email, full_name, position, page, page_size } = useSelector(
     (state: RootState) => state.users
   );
 
@@ -66,25 +66,25 @@ export const UsersTable: React.FC<UsersTableProps> = ({
     },
     {
       title: "Email",
-      dataIndex: "username",
-      key: "username",
+      dataIndex: "email",
+      key: "email",
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
-      sorter: (a: IUser, b: IUser) => a.username.localeCompare(b.username),
+      sorter: (a: IUser, b: IUser) => a.email.localeCompare(b.email),
       sortDirections: ["ascend", "descend"],
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Input
             placeholder="Поиск по email"
-            value={username}
-            onChange={(e) => dispatch(setUserName(e.target.value))}
+            value={email}
+            onChange={(e) => dispatch(setEmail(e.target.value))}
             style={{ width: 200 }}
             allowClear
           />
         </div>
       ),
-      filteredValue: username ? [username] : null,
+      filteredValue: email ? [email] : null,
     },
     {
       title: "Позиция",
@@ -112,8 +112,8 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 
   // Фильтрация данных
   const filteredData = data.users.filter((user) => {
-    const matchesUsername = username
-      ? user.username.toLowerCase().includes(username.toLowerCase())
+    const matchesEmail = email
+      ? user.email.toLowerCase().includes(email.toLowerCase())
       : true;
     const matchesFullName = full_name
       ? user.full_name.toLowerCase().includes(full_name.toLowerCase())
@@ -122,7 +122,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       ? user.position.toLowerCase().includes(position.toLowerCase())
       : true;
 
-    return matchesUsername && matchesFullName && matchesPosition;
+    return matchesEmail && matchesFullName && matchesPosition;
   });
 
   return (

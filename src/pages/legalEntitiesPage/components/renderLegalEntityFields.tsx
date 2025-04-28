@@ -1,25 +1,24 @@
-// renderFields.tsx
 import { Form, Input, Select } from "antd";
 import { ILegalEntityType } from "../../../api/baseApi";
-import { ICompany } from "../../../api/companiesApi";
 
 interface RenderFieldsProps {
   mode: "create" | "edit";
   isExistingEntity: boolean;
   relationType: string;
-  legalEntityType?: "buyer" | "seller";
+  legalEntityTypes: ILegalEntityType[];
+  defaultRelationType?: "buyer" | "seller";
 }
 
 export const renderBasicFields = ({
   mode,
-  legalEntityType,
+  defaultRelationType,
 }: Partial<RenderFieldsProps>) => (
   <>
-    {mode === "create" && !legalEntityType && (
+    {mode === "create" && defaultRelationType && (
       <Form.Item
         name="relation_type"
         label="Тип контрагента"
-        rules={[{ required: true, message: "Пожалуйста, выберите тип" }]}
+        initialValue={defaultRelationType}
       >
         <Select
           placeholder="Выберите тип"
@@ -27,10 +26,10 @@ export const renderBasicFields = ({
             { value: "seller", label: "Исполнитель" },
             { value: "buyer", label: "Заказчик" },
           ]}
+          disabled
         />
       </Form.Item>
     )}
-    {/* Остальные поля остаются без изменений */}
     <Form.Item
       name="inn"
       label="ИНН"
@@ -61,6 +60,7 @@ export const renderAdditionalFields = ({
   mode,
   isExistingEntity,
   relationType,
+  legalEntityTypes,
 }: RenderFieldsProps) => {
   const isBuyer = relationType === "buyer";
 
@@ -134,6 +134,19 @@ export const renderAdditionalFields = ({
       >
         <Input placeholder="Введите адрес" disabled={isExistingEntity} />
       </Form.Item>
+
+      {!isBuyer && (
+        <Form.Item name="entity_type" label="Тип">
+          <Select
+            placeholder="Выберите тип"
+            options={legalEntityTypes.map((type) => ({
+              value: type.legal_entity_type_id,
+              label: type.entity_name,
+            }))}
+            disabled={isExistingEntity}
+          />
+        </Form.Item>
+      )}
 
       {!isBuyer && (
         <Form.Item

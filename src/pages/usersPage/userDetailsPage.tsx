@@ -39,7 +39,7 @@ export const UserDetailsPage: React.FC = () => {
 
   const { deleteMutation } = useUserMutations(
     user_id || "",
-    userDetails?.username || "",
+    userDetails?.email || "",
     userDetails?.full_name || "",
     userDetails?.password || "",
     userDetails?.position || ""

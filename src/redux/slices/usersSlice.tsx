@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface UsersState {
-  username: string;
+  email: string;
   full_name: string;
   position: string;
   page: number;
@@ -10,7 +10,7 @@ interface UsersState {
 }
 
 const initialState: UsersState = {
-  username: "",
+  email: "",
   full_name: "",
   position: "",
   page: 1,
@@ -28,8 +28,8 @@ export const usersSlice = createSlice({
       state.page_size = action.payload;
       state.page = 1;
     },
-    setUserName: (state, action: PayloadAction<string>) => {
-      state.username = action.payload;
+    setEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
       state.page = 1;
     },
     setFullName: (state, action: PayloadAction<string>) => {
@@ -47,7 +47,7 @@ export const usersSlice = createSlice({
 export const {
   setPage,
   setPageSize,
-  setUserName,
+  setEmail,
   setFullName,
   setPosition,
   resetState,

@@ -4,7 +4,7 @@ import { IBankAccount } from "../api/bankAccountsApi";
 import { ICompany } from "../api/companiesApi";
 import { IUser } from "../api/usersApi"; // убедись, что путь верный
 
-export const getUserNameById = (
+export const getEmailById = (
   userId: string,
   users?: IUser[]
 ): string | undefined => {

@@ -9,7 +9,7 @@ import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyCard } from "./components/companyDetailsCard"; // Изменен импорт
 import { CompanyFormModal } from "./components/companyFormModal";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
 import {
@@ -109,14 +109,17 @@ export const CompanyDetailsPage: React.FC = () => {
                     Организации
                   </Typography.Title>
                   <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
+                    onClick={() => {
+                      setIsModalVisible(true);
+                    }}
+                    icon={<EditOutlined />}
                   >
-                    Добавить контрагента
+                    Добавить
                   </Button>
                   <LegalEntitiesTable
                     data={legalEntitiesData || { total: 0, entities: [] }}
                     loading={isLoading}
+                    isSellers={true}
                   />
                 </div>
               </div>
@@ -139,9 +142,9 @@ export const CompanyDetailsPage: React.FC = () => {
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                legalEntityType="seller"
+                legalEntityTypes={[]}
                 mode="create"
+                defaultRelationType="seller" // Устанавливаем значение по умолчанию
               />
             </>
           )}

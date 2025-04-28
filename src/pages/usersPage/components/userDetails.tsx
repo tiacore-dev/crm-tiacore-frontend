@@ -17,7 +17,7 @@ export const UserDetailsCard: React.FC<UserDetailsProps> = ({
         <Card style={{ width: "100%", maxWidth: 600 }}>
           <div style={{ marginBottom: 16 }}>
             <Title level={5}>Email:</Title>
-            <Text>{userDetails.username}</Text>
+            <Text>{userDetails.email}</Text>
           </div>
 
           <div style={{ marginBottom: 16 }}>

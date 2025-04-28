@@ -8,7 +8,7 @@ import { Button } from "antd";
 
 export const useUserMutations = (
   user_id?: string,
-  username?: string,
+  email?: string,
   password?: string,
   full_name?: string,
   position?: string,

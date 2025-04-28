@@ -3,7 +3,6 @@ import { Modal, Form } from "antd";
 import { ILegalEntityType } from "../../../api/baseApi";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntityMutation";
-import { ICompany } from "../../../api/companiesApi";
 import {
   useLegalEntityByInnKppQuery,
   useLegalEntityDetailsQuery,
@@ -18,22 +17,21 @@ import { useEntityCompanyRelationsMutations } from "../../../hooks/entityCompany
 export interface LegalEntityModalProps {
   visible: boolean;
   onCancel: () => void;
-  // legalEntityTypes: ILegalEntityType[];
-  legalEntityType?: "buyer" | "seller";
-  // companiesDate: ICompany[];
+  legalEntityTypes: ILegalEntityType[];
   onSuccess?: () => void;
   mode?: "create" | "edit";
   initialData?: ILegalEntity | null;
+  defaultRelationType?: "buyer" | "seller"; // Новый пропс
 }
 
 export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   visible,
   onCancel,
-  legalEntityType,
-  // companiesDate,
+  legalEntityTypes,
   onSuccess,
   mode = "create",
   initialData = null,
+  defaultRelationType, // Получаем значение по умолчанию из пропсов
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,11 +60,9 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   const { createMutation: createRelationMutation } =
     useEntityCompanyRelationsMutations("", "", "", "");
 
-  // Запрос для проверки существующего контрагента
   const { data: existingEntity, isFetching: isCheckingExisting } =
     useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
 
-  // Запрос для получения деталей контрагента, если он найден
   const { data: entityDetails } = useLegalEntityDetailsQuery(
     existingEntity?.legal_entity_id || ""
   );
@@ -97,34 +93,36 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
           vat_rate: initialData.vat_rate,
           entity_type: initialData.entity_type,
           signer: initialData.signer,
-          ...(legalEntityType && { relation_type: legalEntityType }),
         });
         setShowAllFields(true);
-      } else if (mode === "create" && legalEntityType) {
-        form.setFieldsValue({
-          relation_type: legalEntityType,
-        });
       } else {
         form.resetFields();
+        // Устанавливаем relation_type по умолчанию при создании
+        if (mode === "create" && defaultRelationType) {
+          form.setFieldsValue({
+            relation_type: defaultRelationType,
+          });
+        }
         setShowAllFields(false);
         setBasicFieldsData(null);
       }
     }
-  }, [visible, initialData, mode, form, legalEntityType]);
+  }, [visible, initialData, mode, form, defaultRelationType]);
 
   const handleNext = async () => {
     try {
-      const values = await form.validateFields(["inn", "kpp", "relation_type"]);
+      const values = await form.validateFields(["inn", "kpp"]);
       setInnForCheck(values.inn);
       setKppForCheck(values.kpp || null);
       setBasicFieldsData({
         inn: values.inn,
         kpp: values.kpp,
-        relation_type: values.relation_type,
+        relation_type:
+          defaultRelationType || form.getFieldValue("relation_type"),
       });
       setShowAllFields(true);
     } catch (error) {
-      // console.error("Validation failed:", error);
+      console.error("Validation failed:", error);
     }
   };
 
@@ -158,21 +156,18 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
       };
 
       if (mode === "create") {
-        // Если найден существующий контрагент по ИНН/КПП
         if (existingEntity?.legal_entity_id) {
-          // Создаем только связь с компанией
           await createRelationMutation.mutateAsync({
             legal_entity: existingEntity.legal_entity_id,
             company: selectedCompanyId || "",
             relation_type:
-              basicFieldsData?.relation_type || values.relation_type,
+              defaultRelationType! || basicFieldsData?.relation_type,
           });
         } else {
-          // Создаем нового контрагента
           const formData = cleanData({
             ...values,
             relation_type:
-              basicFieldsData?.relation_type || values.relation_type,
+              defaultRelationType || basicFieldsData?.relation_type,
             company: selectedCompanyId || null,
           });
           await createMutation.mutateAsync(formData);
@@ -186,13 +181,14 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      // console.error("Validation failed:", error);
+      console.error("Validation failed:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const relationType = form.getFieldValue("relation_type");
+  const relationType =
+    defaultRelationType || form.getFieldValue("relation_type");
 
   return (
     <Modal
@@ -214,14 +210,12 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     >
       <Form form={form} layout="vertical">
         {!showAllFields
-          ? renderBasicFields({ mode, legalEntityType })
+          ? renderBasicFields({ mode, defaultRelationType })
           : renderAdditionalFields({
               mode,
               isExistingEntity,
               relationType,
-              // legalEntityTypes,
-              legalEntityType,
-              // companiesDate,
+              legalEntityTypes,
             })}
       </Form>
     </Modal>
