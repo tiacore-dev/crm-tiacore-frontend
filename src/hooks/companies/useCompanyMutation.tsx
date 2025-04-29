@@ -19,7 +19,13 @@ export const useCompanyMutations = (
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { setAvailableCompanies } = useCompany();
+  const {
+    setAvailableCompanies,
+    availableCompanies,
+    setSelectedCompanyId,
+    isSuperadmin,
+    selectedCompanyId,
+  } = useCompany();
 
   const createMutation = useMutation({
     mutationFn: createCompany,
@@ -30,7 +36,12 @@ export const useCompanyMutations = (
           const permissions = JSON.parse(
             localStorage.getItem("permissions") || "{}"
           );
-          setAvailableCompanies(Object.keys(permissions));
+          const newAvailableCompanies = Object.keys(permissions);
+          setAvailableCompanies(newAvailableCompanies);
+
+          if (!isSuperadmin && newAvailableCompanies.length === 1) {
+            setSelectedCompanyId(newAvailableCompanies[0]);
+          }
 
           queryClient.invalidateQueries({ queryKey: ["companies"] });
           toast.success(
@@ -75,9 +86,34 @@ export const useCompanyMutations = (
   const deleteMutation = useMutation({
     mutationFn: () =>
       company_id ? deleteCompany(company_id) : Promise.reject(),
-    onSuccess: () => {
-      toast.success("Успешно удалено");
-      navigate(-1);
+    onSuccess: async () => {
+      try {
+        const newToken = await refreshToken();
+        if (newToken) {
+          const permissions = JSON.parse(
+            localStorage.getItem("permissions") || "{}"
+          );
+          const newAvailableCompanies = Object.keys(permissions);
+          setAvailableCompanies(newAvailableCompanies);
+
+          // Если удаленная компания была выбрана
+          if (selectedCompanyId === company_id) {
+            if (newAvailableCompanies.length > 0) {
+              // Выбираем первую доступную компанию
+              setSelectedCompanyId(newAvailableCompanies[0]);
+            } else {
+              // Если компаний не осталось
+              setSelectedCompanyId(null);
+            }
+          }
+
+          queryClient.invalidateQueries({ queryKey: ["companies"] });
+          toast.success("Успешно удалено");
+          // navigate(-1);
+        }
+      } catch (error) {
+        toast.error("Ошибка при обновлении токена");
+      }
     },
     onError: () => {
       toast.error("Ошибка при удалении");

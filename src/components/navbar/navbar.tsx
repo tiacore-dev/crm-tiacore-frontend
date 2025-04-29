@@ -91,7 +91,7 @@ export const Navbar: React.FC = () => {
         {!isSuperadmin && (
           <Dropdown menu={{ items: companyMenuItems }} placement="bottomRight">
             <Button className="company-selector">
-              {selectedCompanyName || "Выберите компанию"}
+              {selectedCompanyName || "Добавьте компанию"}
             </Button>
           </Dropdown>
         )}

@@ -188,8 +188,8 @@ export const UserCompanyRelationsTable = ({
         <>
           <div style={{ display: "flex", marginTop: 16 }}>
             <Typography.Title level={4} style={{ marginRight: 16 }}>
-              Пользователи{" "}
-            </Typography.Title>{" "}
+              {userId ? "Компании" : "Пользователи"}
+            </Typography.Title>
             <Button
               icon={<PlusOutlined />}
               onClick={handleCreate}
