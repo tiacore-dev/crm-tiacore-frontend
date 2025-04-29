@@ -2,36 +2,34 @@ import { ColumnType } from "antd/es/table";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { Button, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface LegalEntitiesTableColumnsProps {
-  // legalEntityTypes: {
-  //   legal_entity_type_id: string;
-  //   entity_name: string;
-  // }[];
-  navigate: ReturnType<typeof useNavigate>;
+  navigate: ReturnType<typeof useNavigate> | ((id: string) => void);
   search: string;
   entity_type: string;
   onSearchChange: (value: string) => void;
   onEntityTypeChange: (value: string) => void;
   isSellers: boolean;
 }
+
 export const getLegalEntitiesTableColumns = ({
-  // legalEntityTypes,
   navigate,
   search,
-  // entity_type,
   onSearchChange,
-  // onEntityTypeChange,
   isSellers,
 }: LegalEntitiesTableColumnsProps): ColumnType<ILegalEntity>[] => {
-  // const getEntityType = (typeId?: string): string => {
-  //   if (!typeId) return "Не указано";
-  //   const type = legalEntityTypes.find(
-  //     (c) => c.legal_entity_type_id === typeId
-  //   );
-  //   return type ? type.entity_name : typeId;
-  // };
+  const handleNavigate = (id: string) => {
+    if (typeof navigate === "function") {
+      if (navigate.length === 1) {
+        // Это кастомная функция navigate (принимает только id)
+        (navigate as (id: string) => void)(id);
+      } else {
+        // Это стандартный navigate из react-router
+        (navigate as NavigateFunction)(`/legal_entities/${id}`);
+      }
+    }
+  };
 
   const baseColumns: ColumnType<ILegalEntity>[] = [
     {
@@ -45,18 +43,12 @@ export const getLegalEntitiesTableColumns = ({
         a.legal_entity_name.localeCompare(b.legal_entity_name),
       sortDirections: ["ascend", "descend"],
       render: (text: string, record: ILegalEntity) => {
-        // const entityType = getEntityType(record.entity_type);
         return (
           <Button
             type="link"
-            onClick={() =>
-              navigate(`/legal_entities/${record.legal_entity_id}`)
-            }
+            onClick={() => handleNavigate(record.legal_entity_id)}
           >
             {text}
-            {/* <span style={{ color: "#888", fontSize: "0.9em" }}>
-              ({entityType})
-            </span> */}
           </Button>
         );
       },

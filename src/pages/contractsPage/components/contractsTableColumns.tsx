@@ -226,7 +226,15 @@ export const getContractsTableColumns = ({
           getContractStatusName(contractStatusId)
         );
         return (
-          <Tag color={displayStatus === "Активен" ? "green" : "orange"}>
+          <Tag
+            color={
+              displayStatus === "Активен"
+                ? "green"
+                : displayStatus === "Завершен"
+                ? "blue"
+                : "orange"
+            }
+          >
             {displayStatus}
           </Tag>
         );

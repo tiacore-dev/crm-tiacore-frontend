@@ -186,13 +186,18 @@ export const UserCompanyRelationsTable = ({
         <Text type="danger">Ошибка при загрузке данных</Text>
       ) : (
         <>
-          <Button
-            icon={<PlusOutlined />}
-            onClick={handleCreate}
-            style={{ marginBottom: 16 }}
-          >
-            Добавить
-          </Button>
+          <div style={{ display: "flex", marginTop: 16 }}>
+            <Typography.Title level={4} style={{ marginRight: 16 }}>
+              Пользователи{" "}
+            </Typography.Title>{" "}
+            <Button
+              icon={<PlusOutlined />}
+              onClick={handleCreate}
+              style={{ marginBottom: 16 }}
+            >
+              Добавить
+            </Button>
+          </div>
           <Table
             columns={columns}
             dataSource={data?.relations || []} // Пустой массив, если relations нет

@@ -19,20 +19,15 @@ interface LegalEntitiesTableProps {
     entities: ILegalEntity[];
   };
   loading: boolean;
-  // legalEntityTypes?: {
-  //   legal_entity_type_id: string;
-  //   entity_name: string;
-  // }[];
-  // mode="buyer"|"seller"|"all";
   isSellers: boolean;
+  customNavigate?: (id: string) => void;
 }
 
 export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   data = { total: 0, entities: [] },
   loading,
-  // legalEntityTypes = [],
   isSellers,
-  // mode,
+  customNavigate,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,8 +36,7 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   );
 
   const columns = getLegalEntitiesTableColumns({
-    // legalEntityTypes,
-    navigate,
+    navigate: customNavigate || navigate,
     search,
     entity_type,
     onSearchChange: (value) => dispatch(setSearch(value)),
@@ -50,23 +44,18 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
     isSellers,
   });
 
-  // 1. Фильтрация данных
   const filteredData = data.entities.filter((entity) => {
     const matchesSearch = search
       ? entity.legal_entity_name.toLowerCase().includes(search.toLowerCase())
       : true;
-    // const matchesEntityType = entity_type
-    //   ? entity.entity_type === entity_type
-    //   : true;
     return matchesSearch;
-    // && matchesEntityType;
   });
 
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={filteredData} // Передаем все отфильтрованные данные
+        dataSource={filteredData}
         rowKey="legal_entity_id"
         loading={loading}
         pagination={{

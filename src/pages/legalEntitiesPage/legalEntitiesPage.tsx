@@ -16,19 +16,19 @@ import { Space } from "antd";
 import { ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../redux/slices/legalEntitiesSlice";
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { search, company, entity_type } = useSelector(
     (state: RootState) => state.legalEntities
   );
 
-  // Получаем данные из обоих хуков
   const buyersData = useLegalEntitiesBuyers();
   const selectionData = useLegalEntitiesForSelection();
 
-  // Определяем, какие данные использовать
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const {
     data: legal_entities_data,
@@ -78,6 +78,11 @@ export const LegalEntitiesPage: React.FC = () => {
                   data={legal_entities_data || { total: 0, entities: [] }}
                   loading={isLoading}
                   isSellers={false}
+                  customNavigate={(id) =>
+                    navigate(`/legal_entities/${id}`, {
+                      state: { from: "legal_entities" },
+                    })
+                  }
                 />
               </div>
               <LegalEntityFormModal

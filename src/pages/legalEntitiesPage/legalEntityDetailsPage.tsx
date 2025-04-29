@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useLegalEntityDetailsQuery } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { useLegalEntityMutations } from "../../hooks/legalEntities/useLegalEntityMutation";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
@@ -9,8 +9,6 @@ import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { BackButton } from "../../components/backButton";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
-import { useEntityTypes } from "../../hooks/base/useBaseQuery";
-import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
 import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
@@ -21,15 +19,13 @@ import { useIsSellerQuery } from "../../hooks/entityCompanyRelations/useEntityCo
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showCreateBankAccountModal, setShowCreateBankAccountModal] =
     useState(false);
   const { selectedCompanyId } = useCompany();
-
-  // const { data: legalEntityTypes } = useEntityTypes();
-  // const { data: companiesResponse } = useCompaniesForSelection();
 
   const {
     data: legal_entity,
@@ -58,18 +54,39 @@ export const LegalEntityDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (legal_entity) {
-      dispatch(
-        setBreadcrumbs([
-          { label: "Главная страница", to: "/home" },
-          { label: "Контрагенты", to: "/legal_entities" },
-          {
-            label: legal_entity.legal_entity_name,
-            to: `/legal_entities/${legal_entity_id}`,
-          },
-        ])
-      );
+      const fromPage = location.state?.from;
+      const companyId = location.state?.companyId;
+      const companyName = location.state?.companyName;
+
+      if (fromPage === "company" && companyId && companyName) {
+        dispatch(
+          setBreadcrumbs([
+            { label: "Главная страница", to: "/home" },
+            { label: "Компании", to: "/companies" },
+            {
+              label: companyName,
+              to: `/companies/${companyId}`,
+            },
+            {
+              label: legal_entity.legal_entity_name,
+              to: `/legal_entities/${legal_entity_id}`,
+            },
+          ])
+        );
+      } else {
+        dispatch(
+          setBreadcrumbs([
+            { label: "Главная страница", to: "/home" },
+            { label: "Контрагенты", to: "/legal_entities" },
+            {
+              label: legal_entity.legal_entity_name,
+              to: `/legal_entities/${legal_entity_id}`,
+            },
+          ])
+        );
+      }
     }
-  }, [legal_entity, dispatch, legal_entity_id]);
+  }, [dispatch, legal_entity, legal_entity_id, location.state]);
 
   useEffect(() => {
     if (selectedCompanyId) {
@@ -87,6 +104,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
   };
 
   const isSeller = !!sellers?.relations?.length;
+  const fromPage = location.state?.from;
+  const showAdditionalFields = fromPage === "company" || isSeller;
 
   const { data: bankAccountsData, isLoading: isBankAccountsLoading } =
     useBankAccountQuery({
@@ -118,10 +137,10 @@ export const LegalEntityDetailsPage: React.FC = () => {
 
                 <LegalEntityDetailsCard
                   legal_entity={legal_entity}
-                  // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                  showAdditionalFields={fromPage === "company"}
                 />
 
-                {isSeller && (
+                {fromPage === "company" && (
                   <>
                     <Button
                       style={{ marginBottom: 16, marginTop: 16 }}
@@ -146,14 +165,15 @@ export const LegalEntityDetailsPage: React.FC = () => {
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
-                // companiesDate={companiesResponse?.companies || []}
                 onSuccess={() => {
                   setIsModalVisible(false);
                   refetch();
                 }}
                 mode="edit"
                 initialData={legal_entity}
+                defaultRelationType={
+                  fromPage === "company" ? "seller" : "buyer"
+                }
               />
 
               <BankAccountCreateModal

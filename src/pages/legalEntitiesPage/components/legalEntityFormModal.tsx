@@ -21,7 +21,7 @@ export interface LegalEntityModalProps {
   onSuccess?: () => void;
   mode?: "create" | "edit";
   initialData?: ILegalEntity | null;
-  defaultRelationType?: "buyer" | "seller"; // Новый пропс
+  defaultRelationType?: "buyer" | "seller";
 }
 
 export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
@@ -31,7 +31,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   onSuccess,
   mode = "create",
   initialData = null,
-  defaultRelationType, // Получаем значение по умолчанию из пропсов
+  defaultRelationType,
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -189,12 +189,19 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
 
   const relationType =
     defaultRelationType || form.getFieldValue("relation_type");
-
+  const modalTitle =
+    mode === "create" && defaultRelationType === "buyer"
+      ? "Добавить контрагента"
+      : mode === "create" && defaultRelationType === "seller"
+      ? "Добавить организацию к компании"
+      : mode === "edit" && defaultRelationType === "buyer"
+      ? "Редактировать контрагента"
+      : mode === "edit" && defaultRelationType === "seller"
+      ? "Редактировать организацию"
+      : "Форма контрагента";
   return (
     <Modal
-      title={
-        mode === "create" ? "Добавить контрагента" : "Редактировать контрагента"
-      }
+      title={modalTitle}
       open={visible}
       onCancel={onCancel}
       footer={renderFooter({

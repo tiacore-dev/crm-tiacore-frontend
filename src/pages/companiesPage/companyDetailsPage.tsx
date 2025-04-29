@@ -7,9 +7,9 @@ import { Button, Space, Spin, Typography } from "antd";
 import { BackButton } from "../../components/backButton";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
-import { CompanyCard } from "./components/companyDetailsCard"; // Изменен импорт
+import { CompanyCard } from "./components/companyDetailsCard";
 import { CompanyFormModal } from "./components/companyFormModal";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
 import {
@@ -71,8 +71,9 @@ export const CompanyDetailsPage: React.FC = () => {
 
   const handleEditSuccess = useCallback(() => {
     setShowEditModal(false);
-    refetch(); // Обновляем данные после успешного редактирования
+    refetch();
   }, [refetch]);
+
   return (
     <div>
       {isLoading ? (
@@ -99,27 +100,38 @@ export const CompanyDetailsPage: React.FC = () => {
                     Удалить
                   </Button>
                 </Space>
-                <CompanyCard data={companyDetails} loading={isLoading} />{" "}
-                <Typography.Title level={4} style={{ marginBottom: 16 }}>
-                  Пользователи
-                </Typography.Title>
+                <CompanyCard data={companyDetails} loading={isLoading} />
                 <UserCompanyRelationsTable companyId={company_id} />
                 <div>
-                  <Typography.Title level={4} style={{ marginBottom: 16 }}>
-                    Организации
-                  </Typography.Title>
-                  <Button
-                    onClick={() => {
-                      setIsModalVisible(true);
-                    }}
-                    icon={<EditOutlined />}
+                  <div
+                    style={{ display: "flex", marginTop: 16, marginBottom: 16 }}
                   >
-                    Добавить
-                  </Button>
+                    <Typography.Title level={4} style={{ marginRight: 16 }}>
+                      Организации
+                    </Typography.Title>
+                    <Button
+                      onClick={() => {
+                        setIsModalVisible(true);
+                      }}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить
+                    </Button>
+                  </div>
+
                   <LegalEntitiesTable
                     data={legalEntitiesData || { total: 0, entities: [] }}
                     loading={isLoading}
                     isSellers={true}
+                    customNavigate={(id) =>
+                      navigate(`/legal_entities/${id}`, {
+                        state: {
+                          from: "company",
+                          companyId: company_id,
+                          companyName: companyDetails.company_name,
+                        },
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -142,9 +154,8 @@ export const CompanyDetailsPage: React.FC = () => {
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                // legalEntityTypes={[]}
                 mode="create"
-                defaultRelationType="seller" // Устанавливаем значение по умолчанию
+                defaultRelationType="seller"
               />
             </>
           )}
