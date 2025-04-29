@@ -22,12 +22,12 @@ export const HomePage: React.FC = () => {
   const selectedCompanyId =
     localStorage.getItem("selectedCompanyId") || undefined;
 
-  const {
-    data: userDetails,
-    isLoading,
-    isError,
-    // } = useUserDetailsQuery(user_id!);
-  } = useUserDetailsQuery("19edaa8f-3951-4abf-8f1a-332571f80738");
+  // const {
+  //   data: userDetails,
+  //   isLoading,
+  //   isError,
+  //   // } = useUserDetailsQuery(user_id!);
+  // } = useUserDetailsQuery("19edaa8f-3951-4abf-8f1a-332571f80738");
 
   return (
     <div className="main-container">
@@ -36,7 +36,7 @@ export const HomePage: React.FC = () => {
       {/* Кнопка для обновления токена */}
       <Button onClick={tryRefresh}>Обновить токен</Button>
 
-      <div
+      {/* <div
         style={{
           display: "flex",
           gap: "24px",
@@ -54,23 +54,23 @@ export const HomePage: React.FC = () => {
             companyId={selectedCompanyId}
           />
         </div>
-      </div>
-      <Button
+      </div> */}
+      {/* <Button
         onClick={() => {
           setShowEditModal(true);
         }}
       >
         <EditOutlined />
         Редактировать
-      </Button>
-      {showEditModal && (
+      </Button> */}
+      {/* {showEditModal && (
         <UserFormModal
           visible={showEditModal}
           onCancel={() => setShowEditModal(false)}
           mode="edit"
           initialData={userDetails}
         />
-      )}
+      )} */}
     </div>
   );
 };

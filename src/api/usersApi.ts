@@ -10,8 +10,13 @@ export interface IUser {
   position: string;
 }
 
+export interface IUsersResponse {
+  total: number;
+  users: IUser[];
+}
+
 // Функция для получения списка пользователей с параметрами
-export const fetchUsers = async () => {
+export const fetchUsers = async (): Promise<IUsersResponse> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
@@ -132,4 +137,32 @@ export const deleteUser = async (user_id: string) => {
       "Content-Type": "application/json",
     },
   });
+};
+
+export const registrationUser = async (newUser: {
+  email: string;
+  password: string;
+  full_name: string;
+  position: string;
+}): Promise<IUser> => {
+  const url = process.env.REACT_APP_API_URL;
+  // const accessToken = localStorage.getItem("access_token");
+  // const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const params: any = {};
+  // if (!isSuperadmin && selectedCompanyId) {
+  //   params.company = selectedCompanyId;
+  // }
+  const response = await axiosInstance.post(
+    `${url}/api/auth/register`,
+    newUser,
+    {
+      // params,
+      headers: {
+        // Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
 };

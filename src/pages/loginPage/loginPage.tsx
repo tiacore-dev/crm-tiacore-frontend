@@ -175,7 +175,7 @@ export const LoginPage: React.FC = () => {
           setIsRegisterModalVisible(false);
           toast.success("Пользователь успешно зарегистрирован");
         }}
-        mode="create"
+        mode="registration"
       />
     </div>
   );

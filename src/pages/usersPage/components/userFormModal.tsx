@@ -7,7 +7,7 @@ interface UserCreateModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess?: () => void;
-  mode?: "create" | "edit";
+  mode?: "create" | "edit" | "registration";
   initialData?: IUser | null;
 }
 
@@ -23,12 +23,13 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { createMutation, updateMutation } = useUserMutations(
-    initialData?.user_id || "",
-    initialData?.email || "",
-    initialData?.full_name || "",
-    initialData?.position || ""
-  );
+  const { createMutation, updateMutation, registrationMutation } =
+    useUserMutations(
+      initialData?.user_id || "",
+      initialData?.email || "",
+      initialData?.full_name || "",
+      initialData?.position || ""
+    );
 
   useEffect(() => {
     if (visible) {
@@ -44,34 +45,52 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
     }
   }, [visible, initialData, mode, form]);
 
+  // Изменения в userFormModal.tsx
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
 
+      // Создаем новый объект без confirmPassword
+      const dataToSend = {
+        email: values.email,
+        password: values.password,
+        full_name: values.full_name,
+        position: values.position,
+      };
+
       if (mode === "create") {
-        await createMutation.mutateAsync(values);
+        await createMutation.mutateAsync(dataToSend);
       } else if (mode === "edit" && initialData?.user_id) {
-        await updateMutation.mutateAsync(values);
+        await updateMutation.mutateAsync(dataToSend);
+      } else if (mode === "registration") {
+        await registrationMutation.mutateAsync(dataToSend);
       }
 
       form.resetFields();
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      // console.error("Validation failed:", error);
+      // Ошибки обрабатываются в хуке useUserMutations
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  const getModalTitle = () => {
+    switch (mode) {
+      case "create":
+        return "Добавить пользователя";
+      case "edit":
+        return "Редактировать пользователя";
+      case "registration":
+        return "Регистрация нового пользователя";
+      default:
+        return "Добавить пользователя";
+    }
+  };
   return (
     <Modal
-      title={
-        mode === "create"
-          ? "Добавить пользователя"
-          : "Редактировать пользователя"
-      }
+      title={getModalTitle()} // Используем функцию для определения заголовка
       open={visible}
       onCancel={onCancel}
       footer={[
@@ -84,7 +103,11 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
           loading={isSubmitting}
           onClick={handleSubmit}
         >
-          {mode === "create" ? "Создать" : "Сохранить"}
+          {mode === "registration"
+            ? "Зарегистрироваться"
+            : mode === "create"
+            ? "Создать"
+            : "Сохранить"}{" "}
         </Button>,
       ]}
       width={700}

@@ -41,36 +41,36 @@ export const UsersPage: React.FC = () => {
         <Spin size="large" className="center-spin" />
       ) : (
         <>
-          {!isError && (
-            <div>
-              <div className="main-container">
-                <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить пользователя
-                  </Button>
-                  <Button
-                    onClick={handleResetFilters}
-                    icon={<ClearOutlined />}
-                    disabled={!email && !full_name && !position}
-                  >
-                    Сбросить фильтры
-                  </Button>
-                </Space>
-                <UsersTable
-                  data={users_data || { total: 0, users: [] }}
-                  loading={isLoading}
-                />
-              </div>
-              <UserFormModal
-                visible={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
-                mode="create"
+          {/* {!isError && ( */}
+          <div>
+            <div className="main-container">
+              <Space style={{ marginBottom: 16 }}>
+                <Button
+                  onClick={() => setIsModalVisible(true)}
+                  icon={<PlusOutlined />}
+                >
+                  Добавить пользователя
+                </Button>
+                <Button
+                  onClick={handleResetFilters}
+                  icon={<ClearOutlined />}
+                  disabled={!email && !full_name && !position}
+                >
+                  Сбросить фильтры
+                </Button>
+              </Space>
+              <UsersTable
+                data={users_data || { total: 0, users: [] }}
+                loading={isLoading}
               />
             </div>
-          )}
+            <UserFormModal
+              visible={isModalVisible}
+              onCancel={() => setIsModalVisible(false)}
+              mode="create"
+            />
+          </div>
+          {/* )} */}
           {isError && <BackButton />}
         </>
       )}
