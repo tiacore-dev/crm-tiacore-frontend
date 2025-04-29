@@ -1,18 +1,21 @@
 // companyContext.tsx
 import { QueryClient } from "@tanstack/react-query";
 import React, { createContext, useContext, useEffect, useState } from "react";
+
 interface CompanyContextType {
   selectedCompanyId: string | null;
   setSelectedCompanyId: (id: string | null) => void;
   availableCompanies: string[];
-  isSuperadmin: boolean; // Добавляем поле isSuperadmin
+  isSuperadmin: boolean;
+  setAvailableCompanies: (companies: string[]) => void;
 }
 
 const CompanyContext = createContext<CompanyContextType>({
   selectedCompanyId: null,
   setSelectedCompanyId: () => {},
   availableCompanies: [],
-  isSuperadmin: false, // Значение по умолчанию
+  isSuperadmin: false,
+  setAvailableCompanies: () => {},
 });
 
 export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -30,15 +33,13 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
     const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
     setIsSuperadmin(isSuperadmin);
-
-    const companies = Object.keys(permissions);
-    setAvailableCompanies(companies);
+    setAvailableCompanies(Object.keys(permissions));
 
     if (!isSuperadmin) {
-      if (savedCompanyId && companies.includes(savedCompanyId)) {
+      if (savedCompanyId && Object.keys(permissions).includes(savedCompanyId)) {
         setSelectedCompanyId(savedCompanyId);
-      } else if (companies.length > 0) {
-        setSelectedCompanyId(companies[0]);
+      } else if (Object.keys(permissions).length > 0) {
+        setSelectedCompanyId(Object.keys(permissions)[0]);
       }
     }
   }, []);
@@ -56,6 +57,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedCompanyId,
         availableCompanies,
         isSuperadmin,
+        setAvailableCompanies,
       }}
     >
       {children}

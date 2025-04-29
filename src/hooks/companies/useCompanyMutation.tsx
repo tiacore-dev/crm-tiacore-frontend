@@ -6,8 +6,10 @@ import {
 } from "../../api/companiesApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
+import { AxiosError } from "axios";
 import { Button } from "antd";
+import { refreshToken } from "../../pages/loginPage/auth";
+import { useCompany } from "../../context/companyContext";
 
 export const useCompanyMutations = (
   company_id: string,
@@ -17,19 +19,32 @@ export const useCompanyMutations = (
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { setAvailableCompanies } = useCompany();
 
   const createMutation = useMutation({
     mutationFn: createCompany,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
-      toast.success(
-        <>
-          Компания успешно добавлена{" "}
-          <Button onClick={() => navigate(`/companies/${data.company_id}`)}>
-            Подробнее
-          </Button>
-        </>
-      );
+    onSuccess: async (data) => {
+      try {
+        const newToken = await refreshToken();
+        if (newToken) {
+          const permissions = JSON.parse(
+            localStorage.getItem("permissions") || "{}"
+          );
+          setAvailableCompanies(Object.keys(permissions));
+
+          queryClient.invalidateQueries({ queryKey: ["companies"] });
+          toast.success(
+            <>
+              Компания успешно добавлена{" "}
+              <Button onClick={() => navigate(`/companies/${data.company_id}`)}>
+                Подробнее
+              </Button>
+            </>
+          );
+        }
+      } catch (error) {
+        toast.error("Ошибка при обновлении токена");
+      }
     },
     onError: (error: AxiosError) => {
       if (error.response?.status === 400) {

@@ -1,4 +1,3 @@
-// navbar.tsx
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, Button, Dropdown } from "antd";
@@ -19,21 +18,17 @@ export const Navbar: React.FC = () => {
     isSuperadmin,
   } = useCompany();
 
-  // Получаем данные о всех компаниях
   const { data: companiesData } = useCompanyQuery();
   const companies = companiesData?.companies || [];
 
-  // Основные пункты меню
   const mainItems = [
     { label: "Главная", key: "/home" },
     { label: "Контрагенты", key: "/legal_entities" },
     { label: "Договоры", key: "/contracts" },
-    // { label: "Банковские счета", key: "/bank_accounts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },
   ];
 
-  // Дополнительные пункты меню (настройки)
   const settingsItems = [
     { label: "Услуги", key: "/services" },
     { label: "Компании", key: "/companies" },
@@ -59,7 +54,6 @@ export const Navbar: React.FC = () => {
     setShowSettings(!showSettings);
   };
 
-  // Создаем элементы для выпадающего меню выбора компании
   const companyMenuItems = availableCompanies.map((companyId) => {
     const company = companies.find((c) => c.company_id === companyId);
     return {
@@ -69,14 +63,12 @@ export const Navbar: React.FC = () => {
     };
   });
 
-  // Получаем название выбранной компании
   const selectedCompanyName =
     companies.find((c) => c.company_id === selectedCompanyId)?.company_name ||
     selectedCompanyId;
 
   return (
     <div className={`navbar-container ${showSettings ? "settings-open" : ""}`}>
-      {/* Основное меню */}
       <Menu
         className="navbar-menu"
         mode="horizontal"
@@ -85,7 +77,6 @@ export const Navbar: React.FC = () => {
         onClick={({ key }) => navigate(key)}
       />
 
-      {/* Дополнительное меню (настройки) */}
       {showSettings && (
         <Menu
           className="settings-menu"
@@ -96,7 +87,6 @@ export const Navbar: React.FC = () => {
         />
       )}
 
-      {/* Кнопки и выбор компании */}
       <div className="buttons-container">
         {!isSuperadmin && (
           <Dropdown menu={{ items: companyMenuItems }} placement="bottomRight">
