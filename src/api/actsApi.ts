@@ -11,6 +11,7 @@ export interface IAct {
   contract?: string;
   buyer: string;
   seller: string;
+  company: string;
 }
 
 // Функция для получения списка пользователей с параметрами
@@ -50,6 +51,7 @@ export const createAct = async (newAct: {
   contract?: string;
   buyer: string;
   seller: string;
+  company: string;
 }): Promise<IAct> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

@@ -40,7 +40,8 @@ export const ContractDetailsPage: React.FC = () => {
     contract?.seller || "",
     contract?.s3_key || "",
     contract?.file || "",
-    contract?.status || ""
+    contract?.status || "",
+    contract?.company || ""
   );
 
   useEffect(() => {
@@ -133,7 +134,7 @@ export const ContractDetailsPage: React.FC = () => {
                     setShowEditModal(false);
                   }}
                   contractData={contract}
-                  legalEntitiesData={legalEntitiesResponse?.entities || []}
+                  // legalEntitiesData={legalEntitiesResponse?.entities || []}
                 />
               )}
               {showDeleteConfirm && (

@@ -52,7 +52,8 @@ export const BillDetailsPage: React.FC = () => {
     bill?.bank_account || "",
     bill?.contract || "",
     bill?.buyer || "",
-    bill?.seller || ""
+    bill?.seller || "",
+    bill?.company || ""
   );
 
   useEffect(() => {

@@ -17,7 +17,7 @@ import { useEntityCompanyRelationsMutations } from "../../../hooks/entityCompany
 export interface LegalEntityModalProps {
   visible: boolean;
   onCancel: () => void;
-  legalEntityTypes: ILegalEntityType[];
+  // legalEntityTypes: ILegalEntityType[];
   onSuccess?: () => void;
   mode?: "create" | "edit";
   initialData?: ILegalEntity | null;
@@ -27,7 +27,7 @@ export interface LegalEntityModalProps {
 export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   visible,
   onCancel,
-  legalEntityTypes,
+  // legalEntityTypes,
   onSuccess,
   mode = "create",
   initialData = null,
@@ -215,7 +215,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
               mode,
               isExistingEntity,
               relationType,
-              legalEntityTypes,
+              // legalEntityTypes,
             })}
       </Form>
     </Modal>

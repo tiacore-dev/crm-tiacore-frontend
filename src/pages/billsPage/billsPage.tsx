@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/backButton";
-import { Button, Spin, Space } from "antd"; // Добавляем Space для группировки кнопок
+import { Button, Spin, Space } from "antd";
 import { useBillsQuery } from "../../hooks/bills/useBillQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { useBankAccountsForSelection } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useContractsForSelection } from "../../hooks/contracts/useContractQuery";
 import { BillsTable } from "./components/billsTable";
 import { BillCreateModal } from "./components/billsFormModal";
-import { PlusOutlined, ClearOutlined } from "@ant-design/icons"; // Добавляем иконку очистки
+import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import {
   billsSelector,
   setPage,

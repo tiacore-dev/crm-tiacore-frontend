@@ -142,7 +142,7 @@ export const CompanyDetailsPage: React.FC = () => {
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                legalEntityTypes={[]}
+                // legalEntityTypes={[]}
                 mode="create"
                 defaultRelationType="seller" // Устанавливаем значение по умолчанию
               />

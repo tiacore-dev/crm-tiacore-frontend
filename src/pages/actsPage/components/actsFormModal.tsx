@@ -10,6 +10,7 @@ import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
 } from "../../../hooks/legalEntities/useLegalEntityQuery";
+import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 interface ActModalProps {
   visible: boolean;
@@ -36,14 +37,18 @@ export const ActFormModal: React.FC<ActModalProps> = ({
   const sellers = sellersResponse?.entities || [];
   const { data: buyersResponse } = useLegalEntitiesBuyers();
   const buyers = buyersResponse?.entities || [];
-
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const { data: companiesResponse } = useCompaniesForSelection();
+  const companies = companiesResponse?.companies || [];
   const { createMutation, updateMutation } = useActsMutations(
     initialData?.act_id || "",
     initialData?.act_number || "",
     initialData?.act_date || 0,
     initialData?.contract || "",
     initialData?.buyer || "",
-    initialData?.seller || ""
+    initialData?.seller || "",
+    initialData?.company || ""
   );
 
   const handleContractChange = useCallback(
@@ -71,10 +76,10 @@ export const ActFormModal: React.FC<ActModalProps> = ({
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
-
       const formData = {
         ...values,
         act_date: values.act_date ? values.act_date.valueOf() : null,
+        company: isSuperadmin ? values.company : selectedCompanyId, // Автозаполнение для обычных пользователей
       };
 
       if (mode === "create") {

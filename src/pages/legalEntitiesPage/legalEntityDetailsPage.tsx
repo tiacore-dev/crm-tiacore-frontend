@@ -28,7 +28,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
     useState(false);
   const { selectedCompanyId } = useCompany();
 
-  const { data: legalEntityTypes } = useEntityTypes();
+  // const { data: legalEntityTypes } = useEntityTypes();
   // const { data: companiesResponse } = useCompaniesForSelection();
 
   const {
@@ -118,7 +118,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
 
                 <LegalEntityDetailsCard
                   legal_entity={legal_entity}
-                  legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                  // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 />
 
                 {isSeller && (
@@ -146,7 +146,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
+                // legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 // companiesDate={companiesResponse?.companies || []}
                 onSuccess={() => {
                   setIsModalVisible(false);

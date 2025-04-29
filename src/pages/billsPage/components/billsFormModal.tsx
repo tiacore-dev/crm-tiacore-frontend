@@ -12,6 +12,7 @@ import {
   useLegalEntitiesBuyers,
 } from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useBankAccountQuery } from "../../../hooks/bankAccounts/useBankAccountQuery";
+import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 interface BillModalProps {
   visible: boolean;
@@ -35,7 +36,10 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
   const [fieldsLocked, setFieldsLocked] = useState(false);
   const [bankAccountsDisabled, setBankAccountsDisabled] = useState(true);
   const [selectedSeller, setSelectedSeller] = useState<string | null>(null);
-
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const { data: companiesResponse } = useCompaniesForSelection();
+  const companies = companiesResponse?.companies || [];
   const { data: sellersResponse } = useLegalEntitiesSellers();
   const sellers = sellersResponse?.entities || [];
   const { data: buyersResponse } = useLegalEntitiesBuyers();
@@ -54,7 +58,8 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
     initialData?.bill_date || 0,
     initialData?.contract || "",
     initialData?.buyer || "",
-    initialData?.seller || ""
+    initialData?.seller || "",
+    initialData?.company || ""
   );
 
   const handleSellerChange = (sellerId: string) => {
@@ -121,6 +126,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
       const formData = {
         ...values,
         bill_date: values.bill_date ? values.bill_date.valueOf() : null,
+        company: isSuperadmin ? values.company : selectedCompanyId, // Автозаполнение для обычных пользователей
       };
 
       if (mode === "create") {

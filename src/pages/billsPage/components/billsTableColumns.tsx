@@ -61,6 +61,11 @@ export const getBillsTableColumns = ({
   const getBankAccountNumber = (bankId: string) =>
     getBankAccountNumberById(bankId, bankAccountsData) || bankId;
 
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+
+  // const getCompanyName = (companyId: string) =>
+  //   companiesData?.find(c => c.company_id === companyId)?.company_name || companyId;
+
   const handleSortChange = (key: string) => {
     if (!onSortChange) return;
 
@@ -192,6 +197,7 @@ export const getBillsTableColumns = ({
       ),
     },
     {
+      //????????????????????????????????????????????????????????????????
       title: "Договор",
       dataIndex: "contract",
       key: "contract",

@@ -14,6 +14,7 @@ export interface IContract {
   file?: string;
   status: string;
   comment?: string;
+  company: string;
 }
 
 // Функция для получения списка контрактов с параметрами

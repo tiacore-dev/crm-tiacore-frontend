@@ -5,10 +5,10 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 interface LegalEntitiesTableColumnsProps {
-  legalEntityTypes: {
-    legal_entity_type_id: string;
-    entity_name: string;
-  }[];
+  // legalEntityTypes: {
+  //   legal_entity_type_id: string;
+  //   entity_name: string;
+  // }[];
   navigate: ReturnType<typeof useNavigate>;
   search: string;
   entity_type: string;
@@ -17,21 +17,21 @@ interface LegalEntitiesTableColumnsProps {
   isSellers: boolean;
 }
 export const getLegalEntitiesTableColumns = ({
-  legalEntityTypes,
+  // legalEntityTypes,
   navigate,
   search,
-  entity_type,
+  // entity_type,
   onSearchChange,
-  onEntityTypeChange,
+  // onEntityTypeChange,
   isSellers,
 }: LegalEntitiesTableColumnsProps): ColumnType<ILegalEntity>[] => {
-  const getEntityType = (typeId?: string): string => {
-    if (!typeId) return "Не указано";
-    const type = legalEntityTypes.find(
-      (c) => c.legal_entity_type_id === typeId
-    );
-    return type ? type.entity_name : typeId;
-  };
+  // const getEntityType = (typeId?: string): string => {
+  //   if (!typeId) return "Не указано";
+  //   const type = legalEntityTypes.find(
+  //     (c) => c.legal_entity_type_id === typeId
+  //   );
+  //   return type ? type.entity_name : typeId;
+  // };
 
   const baseColumns: ColumnType<ILegalEntity>[] = [
     {
@@ -45,7 +45,7 @@ export const getLegalEntitiesTableColumns = ({
         a.legal_entity_name.localeCompare(b.legal_entity_name),
       sortDirections: ["ascend", "descend"],
       render: (text: string, record: ILegalEntity) => {
-        const entityType = getEntityType(record.entity_type);
+        // const entityType = getEntityType(record.entity_type);
         return (
           <Button
             type="link"
@@ -53,10 +53,10 @@ export const getLegalEntitiesTableColumns = ({
               navigate(`/legal_entities/${record.legal_entity_id}`)
             }
           >
-            {text}{" "}
-            <span style={{ color: "#888", fontSize: "0.9em" }}>
+            {text}
+            {/* <span style={{ color: "#888", fontSize: "0.9em" }}>
               ({entityType})
-            </span>
+            </span> */}
           </Button>
         );
       },

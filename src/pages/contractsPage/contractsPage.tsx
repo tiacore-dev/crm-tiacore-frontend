@@ -185,7 +185,7 @@ export const ContractsPage: React.FC = () => {
                   onSuccess={() => {
                     setIsModalVisible(false);
                   }}
-                  legalEntitiesData={legalEntitiesResponse?.entities || []}
+                  // legalEntitiesData={legalEntitiesResponse?.entities || []}
                 />
               </div>
             </div>

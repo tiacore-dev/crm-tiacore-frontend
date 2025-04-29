@@ -18,6 +18,7 @@ export const useContractMutations = (
   comment: string,
   file: string,
   status: string,
+  company: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();

@@ -5,7 +5,7 @@ interface RenderFieldsProps {
   mode: "create" | "edit";
   isExistingEntity: boolean;
   relationType: string;
-  legalEntityTypes: ILegalEntityType[];
+  // legalEntityTypes: ILegalEntityType[];
   defaultRelationType?: "buyer" | "seller";
 }
 
@@ -60,8 +60,8 @@ export const renderAdditionalFields = ({
   mode,
   isExistingEntity,
   relationType,
-  legalEntityTypes,
-}: RenderFieldsProps) => {
+}: // legalEntityTypes,
+RenderFieldsProps) => {
   const isBuyer = relationType === "buyer";
 
   return (
@@ -135,7 +135,7 @@ export const renderAdditionalFields = ({
         <Input placeholder="Введите адрес" disabled={isExistingEntity} />
       </Form.Item>
 
-      {!isBuyer && (
+      {/* {!isBuyer && (
         <Form.Item name="entity_type" label="Тип">
           <Select
             placeholder="Выберите тип"
@@ -146,7 +146,7 @@ export const renderAdditionalFields = ({
             disabled={isExistingEntity}
           />
         </Form.Item>
-      )}
+      )} */}
 
       {!isBuyer && (
         <Form.Item

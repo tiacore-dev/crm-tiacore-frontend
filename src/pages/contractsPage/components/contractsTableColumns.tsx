@@ -64,6 +64,8 @@ export const getContractsTableColumns = ({
         return "Активен";
       case "waiting":
         return "В процессе";
+      case "completed":
+        return "Заверщен";
       default:
         return status;
     }

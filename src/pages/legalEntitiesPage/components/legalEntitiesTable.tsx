@@ -19,18 +19,20 @@ interface LegalEntitiesTableProps {
     entities: ILegalEntity[];
   };
   loading: boolean;
-  legalEntityTypes?: {
-    legal_entity_type_id: string;
-    entity_name: string;
-  }[];
+  // legalEntityTypes?: {
+  //   legal_entity_type_id: string;
+  //   entity_name: string;
+  // }[];
+  // mode="buyer"|"seller"|"all";
   isSellers: boolean;
 }
 
 export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   data = { total: 0, entities: [] },
   loading,
-  legalEntityTypes = [],
+  // legalEntityTypes = [],
   isSellers,
+  // mode,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -39,7 +41,7 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
   );
 
   const columns = getLegalEntitiesTableColumns({
-    legalEntityTypes,
+    // legalEntityTypes,
     navigate,
     search,
     entity_type,
@@ -53,10 +55,11 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
     const matchesSearch = search
       ? entity.legal_entity_name.toLowerCase().includes(search.toLowerCase())
       : true;
-    const matchesEntityType = entity_type
-      ? entity.entity_type === entity_type
-      : true;
-    return matchesSearch && matchesEntityType;
+    // const matchesEntityType = entity_type
+    //   ? entity.entity_type === entity_type
+    //   : true;
+    return matchesSearch;
+    // && matchesEntityType;
   });
 
   return (

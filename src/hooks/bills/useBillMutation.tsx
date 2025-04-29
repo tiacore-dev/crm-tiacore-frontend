@@ -13,6 +13,7 @@ export const useBillMutations = (
   contract: string,
   buyer: string,
   seller: string,
+  company: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
@@ -26,6 +27,7 @@ export const useBillMutations = (
       contract?: string; // Указываем, что поле необязательное
       buyer: string;
       seller: string;
+      company: string;
     }) => createBill(newBill),
     onSuccess: (data) => {
       queryClient.invalidateQueries({

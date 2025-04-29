@@ -12,6 +12,7 @@ export const useActsMutations = (
   contract: string,
   buyer: string,
   seller: string,
+  company: string,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
@@ -24,6 +25,7 @@ export const useActsMutations = (
       contract?: string; // Указываем, что поле необязательное
       buyer: string;
       seller: string;
+      company: string;
     }) => createAct(newAct),
     onSuccess: (data) => {
       queryClient.invalidateQueries({

@@ -139,6 +139,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
           display: "flex",
           alignItems: "center",
           marginBottom: 16,
+          marginTop: 16,
         }}
       >
         <Typography.Title level={4} style={{ margin: 0, marginRight: 16 }}>

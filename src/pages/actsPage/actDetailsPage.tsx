@@ -48,7 +48,8 @@ export const ActDetailsPage: React.FC = () => {
     act?.act_date || 0,
     act?.contract || "",
     act?.buyer || "",
-    act?.seller || ""
+    act?.seller || "",
+    act?.company || ""
   );
 
   useEffect(() => {

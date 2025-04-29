@@ -11,9 +11,7 @@ import {
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { PlusOutlined } from "@ant-design/icons";
-import { useEntityTypes } from "../../hooks/base/useBaseQuery";
 import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
-import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { Space } from "antd";
 import { ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../redux/slices/legalEntitiesSlice";
@@ -22,10 +20,21 @@ import { RootState } from "../../redux/store";
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const { search, company, entity_type } = useSelector(legalEntitiesSelector);
   const { search, company, entity_type } = useSelector(
     (state: RootState) => state.legalEntities
   );
+
+  // Получаем данные из обоих хуков
+  const buyersData = useLegalEntitiesBuyers();
+  const selectionData = useLegalEntitiesForSelection();
+
+  // Определяем, какие данные использовать
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const {
+    data: legal_entities_data,
+    isLoading,
+    isError,
+  } = isSuperadmin ? selectionData : buyersData;
 
   useEffect(() => {
     dispatch(
@@ -35,16 +44,6 @@ export const LegalEntitiesPage: React.FC = () => {
       ])
     );
   }, [dispatch]);
-
-  const { data: companiesResponse } = useCompaniesForSelection();
-
-  const {
-    data: legal_entities_data,
-    isLoading,
-    isError,
-  } = useLegalEntitiesBuyers();
-
-  const { data: legalEntityTypes } = useEntityTypes();
 
   const handleResetFilters = () => {
     dispatch(resetState());
@@ -78,16 +77,14 @@ export const LegalEntitiesPage: React.FC = () => {
                 <LegalEntitiesTable
                   data={legal_entities_data || { total: 0, entities: [] }}
                   loading={isLoading}
-                  legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                   isSellers={false}
                 />
               </div>
               <LegalEntityFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                legalEntityTypes={legalEntityTypes?.legal_entity_types || []}
                 mode="create"
-                defaultRelationType="buyer" // Устанавливаем значение по умолчанию
+                defaultRelationType="buyer"
               />
             </div>
           )}
