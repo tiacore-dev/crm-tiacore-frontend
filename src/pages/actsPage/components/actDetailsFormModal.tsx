@@ -30,7 +30,8 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
     initialData?.act || actId,
     initialData?.service || "",
     initialData?.quantity || 0,
-    initialData?.summ || 0
+    initialData?.summ || 0,
+    initialData?.price || 0
   );
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
           service: initialData.service,
           quantity: initialData.quantity,
           summ: initialData.summ,
+          price: initialData.price,
         });
       } else {
         form.resetFields();
@@ -140,12 +142,11 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
             min={1}
           />
         </Form.Item>
-
         <Form.Item
-          name="summ"
-          label="Сумма(₽)"
+          name="price"
+          label="Цена(₽)"
           rules={[
-            { required: true, message: "Пожалуйста, введите сумму" },
+            { required: true, message: "Пожалуйста, введите цену" },
             {
               validator: (_, value) => {
                 const numValue = Number(value);
@@ -161,7 +162,7 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
           ]}
         >
           <InputNumber
-            placeholder="Введите сумму(₽)"
+            placeholder="Введите цену(₽)"
             style={{ width: "100%" }}
             min={1}
             max={99999999}

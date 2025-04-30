@@ -30,7 +30,8 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
     initialData?.bill || billId,
     initialData?.service || "",
     initialData?.quantity || 0,
-    initialData?.summ || 0
+    initialData?.summ || 0,
+    initialData?.price || 0
   );
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
         form.setFieldsValue({
           service: initialData.service,
           quantity: initialData.quantity,
-          summ: initialData.summ,
+          price: initialData.price,
         });
       } else {
         form.resetFields();
@@ -142,10 +143,10 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
         </Form.Item>
 
         <Form.Item
-          name="summ"
-          label="Сумма(₽)"
+          name="price"
+          label="Цена(₽)"
           rules={[
-            { required: true, message: "Пожалуйста, введите сумму" },
+            { required: true, message: "Пожалуйста, введите цену" },
             {
               validator: (_, value) => {
                 const numValue = Number(value);
@@ -153,7 +154,7 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
                   return Promise.reject("Введите корректное число");
                 }
                 if (numValue <= 0) {
-                  return Promise.reject("Сумма должна быть больше 0");
+                  return Promise.reject("Цена должна быть больше 0");
                 }
                 return Promise.resolve();
               },
@@ -161,7 +162,7 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
           ]}
         >
           <InputNumber
-            placeholder="Введите сумму(₽)"
+            placeholder="Введите цену(₽)"
             style={{ width: "100%" }}
             min={1}
             max={99999999}

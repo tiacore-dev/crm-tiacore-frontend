@@ -22,10 +22,10 @@ export const useEntityCompanyRelationsMutations = (
       queryClient.invalidateQueries({ queryKey: ["entity_company_relation"] });
       queryClient.invalidateQueries({ queryKey: ["legalEntitiesSellers"] });
       queryClient.invalidateQueries({ queryKey: ["legalEntitiesBuyers"] });
-      toast.success(<div>Пользователь успешно добавлен </div>);
+      toast.success(<div>Успешно добавлено </div>);
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении пользователя");
+      toast.error("Ошибка при добавлении");
     },
   });
   //   const updateMutation = useMutation({

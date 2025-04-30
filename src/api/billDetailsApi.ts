@@ -10,6 +10,7 @@ export interface IBillDetail {
   service: string; //uuid4
   quantity: number;
   summ: number;
+  price: number;
 }
 
 // Функция для получения списка с параметрами
@@ -65,6 +66,7 @@ export const createBillDetail = async (newBillDetail: {
   service: string; //uuid4
   quantity: number;
   summ: number;
+  price: number;
 }): Promise<IBillDetail> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

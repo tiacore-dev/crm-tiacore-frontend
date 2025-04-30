@@ -35,7 +35,15 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedBillDetail, setSelectedBillDetail] =
     useState<IBillDetail | null>(null);
-  const { deleteMutation } = useBillDetailMutations("", "", "", 0, 0, () => {});
+  const { deleteMutation } = useBillDetailMutations(
+    "",
+    "",
+    "",
+    0,
+    0,
+    0,
+    () => {}
+  );
   const [editingBillDetail, setEditingBillDetail] =
     useState<IBillDetail | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -104,6 +112,17 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       render: (value: number) => (
         <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>{value}</div>
       ),
+    },
+    {
+      title: "Цена",
+      dataIndex: "price",
+      key: "price",
+      render: (value: number) => (
+        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
+          {`${value.toLocaleString()} ₽`}
+        </div>
+      ),
+      sorter: (a: IBillDetail, b: IBillDetail) => a.price - b.price,
     },
     {
       title: "Сумма",

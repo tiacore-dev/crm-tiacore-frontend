@@ -10,6 +10,7 @@ export interface IActDetail {
   service: string; //uuid4
   quantity: number;
   summ: number;
+  price: number;
 }
 
 // Функция для получения списка с параметрами
@@ -66,6 +67,7 @@ export const createActDetail = async (newActDetail: {
   service: string; //uuid4
   quantity: number;
   summ: number;
+  price: number;
 }): Promise<IActDetail> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

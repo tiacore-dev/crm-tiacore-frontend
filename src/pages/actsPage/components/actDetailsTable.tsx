@@ -35,7 +35,15 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   const [selectedActDetail, setSelectedActDetail] = useState<IActDetail | null>(
     null
   );
-  const { deleteMutation } = useActDetailMutations("", "", "", 0, 0, () => {});
+  const { deleteMutation } = useActDetailMutations(
+    "",
+    "",
+    "",
+    0,
+    0,
+    0,
+    () => {}
+  );
   const [editingActDetail, setEditingActDetail] = useState<IActDetail | null>(
     null
   );
@@ -105,6 +113,17 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       render: (value: number) => (
         <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>{value}</div>
       ),
+    },
+    {
+      title: "Цена",
+      dataIndex: "price",
+      key: "price",
+      render: (value: number) => (
+        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
+          {`${value.toLocaleString()} ₽`}
+        </div>
+      ),
+      sorter: (a: IActDetail, b: IActDetail) => a.price - b.price,
     },
     {
       title: "Сумма",

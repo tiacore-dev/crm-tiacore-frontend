@@ -13,6 +13,7 @@ export const useBillDetailMutations = (
   service: string, //uuid4
   quantity: number,
   summ: number,
+  price: number,
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
