@@ -41,6 +41,7 @@ import weekOfYear from "dayjs/plugin/weekOfYear";
 import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
 import { CompanyProvider } from "./context/companyContext";
 import { AccountPage } from "./pages/accountPage/acoountPage";
+import { AcceptInvitePage } from "./pages/invitePages/acceptInvitePage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -61,6 +62,7 @@ const App: React.FC = () => {
             <Toaster position="top-right" />
             <Routes>
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/accept-invite" element={<AcceptInvitePage />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/account" element={<AccountPage />} />
