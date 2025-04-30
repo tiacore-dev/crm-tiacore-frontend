@@ -28,8 +28,8 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
     useUserMutations(
       initialData?.user_id || "",
       initialData?.email || "",
-      initialData?.full_name || "",
-      initialData?.position || ""
+      initialData?.full_name || ""
+      // initialData?.position || ""
     );
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         form.setFieldsValue({
           email: initialData.email,
           full_name: initialData.full_name,
-          position: initialData.position,
+          // position: initialData.position,
           is_verified: initialData.is_verified || false, // Добавляем is_verified
         });
       } else {
@@ -184,7 +184,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         >
           <Input placeholder="Введите Ф.И.О." />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="Должность"
           name="position"
           rules={[
@@ -193,7 +193,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
           ]}
         >
           <Input placeholder="Введите должность" />
-        </Form.Item>
+        </Form.Item> */}
         {isSuperadmin && mode === "edit" && (
           <Form.Item name="is_verified" valuePropName="checked">
             <Checkbox>Верифицировать пользователя</Checkbox>

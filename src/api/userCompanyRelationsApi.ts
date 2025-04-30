@@ -10,6 +10,7 @@ export interface IUserCompanyRelation {
 }
 
 // Функция для получения списка с параметрами
+// Функция для получения списка с параметрами
 export const fetchUserCompanyRelations = async (
   params: {
     user?: string;
@@ -20,15 +21,27 @@ export const fetchUserCompanyRelations = async (
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  // if(selectedCompanyId)params.
+
+  interface RequestParams {
+    page: number;
+    page_size: number;
+    user?: string;
+    company?: string;
+  }
+
+  const requestParams: RequestParams = {
+    page: 1,
+    page_size: 100,
+    ...params,
+    ...(!isSuperadmin && selectedCompanyId
+      ? { company: selectedCompanyId }
+      : {}),
+  };
+
   const response = await axiosInstance.get<IUserCompanyRelationsResponse>(
     `${url}/api/user-company-relations/all`,
     {
-      params: {
-        ...params,
-        page: 1,
-        page_size: 100,
-      },
+      params: requestParams, // Используем объединенные параметры
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

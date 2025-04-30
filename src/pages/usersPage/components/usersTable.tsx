@@ -86,28 +86,28 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       ),
       filteredValue: email ? [email] : null,
     },
-    {
-      title: "Позиция",
-      dataIndex: "position",
-      key: "position",
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
-      sorter: (a: IUser, b: IUser) => a.position.localeCompare(b.position),
-      sortDirections: ["ascend", "descend"],
-      filterDropdown: () => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Поиск позиции"
-            value={position}
-            onChange={(e) => dispatch(setPosition(e.target.value))}
-            style={{ width: 200 }}
-            allowClear
-          />
-        </div>
-      ),
-      filteredValue: position ? [position] : null,
-    },
+    // {
+    //   title: "Позиция",
+    //   dataIndex: "position",
+    //   key: "position",
+    //   filterIcon: (filtered) => (
+    //     <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    //   ),
+    //   sorter: (a: IUser, b: IUser) => a.position.localeCompare(b.position),
+    //   sortDirections: ["ascend", "descend"],
+    //   filterDropdown: () => (
+    //     <div style={{ padding: 8 }}>
+    //       <Input
+    //         placeholder="Поиск позиции"
+    //         value={position}
+    //         onChange={(e) => dispatch(setPosition(e.target.value))}
+    //         style={{ width: 200 }}
+    //         allowClear
+    //       />
+    //     </div>
+    //   ),
+    //   filteredValue: position ? [position] : null,
+    // },
   ];
 
   // Фильтрация данных
@@ -118,11 +118,11 @@ export const UsersTable: React.FC<UsersTableProps> = ({
     const matchesFullName = full_name
       ? user.full_name.toLowerCase().includes(full_name.toLowerCase())
       : true;
-    const matchesPosition = position
-      ? user.position.toLowerCase().includes(position.toLowerCase())
-      : true;
+    // const matchesPosition = position
+    //   ? user.position.toLowerCase().includes(position.toLowerCase())
+    //   : true;
 
-    return matchesEmail && matchesFullName && matchesPosition;
+    return matchesEmail && matchesFullName;
   });
 
   return (

@@ -25,10 +25,10 @@ export const UserDetailsCard: React.FC<UserDetailsProps> = ({
             <Text>{userDetails.full_name}</Text>
           </div>
 
-          <div style={{ marginBottom: 16 }}>
+          {/* <div style={{ marginBottom: 16 }}>
             <Title level={5}>Позиция:</Title>
             <Text>{userDetails.position}</Text>
-          </div>
+          </div> */}
         </Card>
       )}
     </>
