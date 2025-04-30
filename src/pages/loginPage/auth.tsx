@@ -16,17 +16,13 @@ export const registrationUser = async (newUser: {
   // if (!isSuperadmin && selectedCompanyId) {
   //   params.company = selectedCompanyId;
   // }
-  const response = await axiosInstance.post(
-    `${url}/api/auth/register`,
-    newUser,
-    {
-      // params,
-      headers: {
-        // Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await axiosInstance.post(`${url}/api/register`, newUser, {
+    // params,
+    headers: {
+      // Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
   return response.data;
 };
 

@@ -71,7 +71,7 @@ export const LoginPage: React.FC = () => {
 
       try {
         const response = await axiosInstance.post<AuthResponse>(
-          `${url}/api/auth/token`,
+          `${url}/api/auth/login`,
           data
         );
         return response.data;
