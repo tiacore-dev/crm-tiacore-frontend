@@ -10,7 +10,7 @@ interface BillDetailFormModalProps {
   billId: string; // ID акта, к которому относится деталь
   onSuccess?: () => void;
   mode?: "create" | "edit";
-  initialData?: IBillDetail | null;
+  initialData?: IBillDetail;
 }
 
 export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
@@ -19,7 +19,7 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
   billId,
   onSuccess,
   mode = "create",
-  initialData = null,
+  initialData,
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +41,7 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
           service: initialData.service,
           quantity: initialData.quantity,
           price: initialData.price,
+          summ: initialData.summ,
         });
       } else {
         form.resetFields();

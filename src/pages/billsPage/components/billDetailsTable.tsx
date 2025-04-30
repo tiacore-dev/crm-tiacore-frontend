@@ -44,8 +44,9 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     0,
     () => {}
   );
-  const [editingBillDetail, setEditingBillDetail] =
-    useState<IBillDetail | null>(null);
+  const [editingBillDetail, setEditingBillDetail] = useState<
+    IBillDetail | undefined
+  >(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleEdit = (billDetail: IBillDetail) => {
@@ -69,7 +70,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
   };
 
   const handleAddDetail = () => {
-    setEditingBillDetail(null);
+    setEditingBillDetail(undefined);
     setIsModalVisible(true);
   };
 
@@ -183,7 +184,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
         visible={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
-          setEditingBillDetail(null);
+          setEditingBillDetail(undefined);
         }}
         billId={billId}
         mode={editingBillDetail ? "edit" : "create"}

@@ -154,7 +154,7 @@ export const ActDetailFormModal: React.FC<ActDetailFormModalProps> = ({
                   return Promise.reject("Введите корректное число");
                 }
                 if (numValue <= 0) {
-                  return Promise.reject("Сумма должна быть больше 0");
+                  return Promise.reject("Цена должна быть больше 0");
                 }
                 return Promise.resolve();
               },

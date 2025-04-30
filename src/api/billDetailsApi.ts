@@ -25,7 +25,7 @@ export const fetchBillDetails = async (
   interface RequestParams {
     page: number;
     page_size: number;
-    act?: string;
+    bill?: string;
     company?: string;
   }
   const requestParams: RequestParams = {

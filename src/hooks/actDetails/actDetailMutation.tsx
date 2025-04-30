@@ -36,7 +36,9 @@ export const useActDetailMutations = (
         ? updateActDetail(act_detail_id, editedData)
         : Promise.reject(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["actDetails"] });
+      queryClient.invalidateQueries({
+        queryKey: ["actDetails"],
+      });
 
       setIsEditing && setIsEditing(false);
       toast.success("Информация обновлена");
