@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input, Button, Checkbox } from "antd";
 import { useUserMutations } from "../../../hooks/users/useUserMutation";
 import { IUser } from "../../../api/usersApi";
 
@@ -22,6 +22,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const { createMutation, updateMutation, registrationMutation } =
     useUserMutations(
@@ -38,6 +39,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
           email: initialData.email,
           full_name: initialData.full_name,
           position: initialData.position,
+          is_verified: initialData.is_verified || false, // Добавляем is_verified
         });
       } else {
         form.resetFields();
@@ -57,6 +59,10 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         password: values.password,
         full_name: values.full_name,
         position: values.position,
+        ...(mode === "edit" &&
+          isSuperadmin && {
+            is_verified: values.is_verified || false,
+          }),
       };
 
       if (mode === "create") {
@@ -188,6 +194,11 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         >
           <Input placeholder="Введите должность" />
         </Form.Item>
+        {isSuperadmin && mode === "edit" && (
+          <Form.Item name="is_verified" valuePropName="checked">
+            <Checkbox>Верифицировать пользователя</Checkbox>
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

@@ -22,14 +22,14 @@ export const AcceptInvitePage: React.FC = () => {
       toast.success("Приглашение успешно принято!");
       // Перенаправляем пользователя на нужную страницу
       // Можно использовать данные из response.data для определения куда перенаправлять
-      navigate("/home"); // Или другой путь из ответа API
+      //   navigate("/home"); // Или другой путь из ответа API
     },
     onError: (error: any) => {
       toast.error(
         error.response?.data?.message || "Ошибка при принятии приглашения"
       );
       // Перенаправляем на страницу входа при ошибке
-      navigate("/login");
+      //   navigate("/login");
     },
   });
 
@@ -39,7 +39,7 @@ export const AcceptInvitePage: React.FC = () => {
       acceptInviteMutation.mutate(token);
     } else {
       toast.error("Токен приглашения отсутствует");
-      navigate("/login");
+      //   navigate("/login");
     }
   }, [token]);
 

@@ -8,6 +8,7 @@ export interface IUser {
   email: string;
   full_name: string;
   position: string;
+  is_verified?: boolean; // Добавляем необязательное поле
 }
 
 export interface IUsersResponse {
