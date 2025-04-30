@@ -20,7 +20,6 @@ export const fetchUserCompanyRelations = async (
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  // if(selectedCompanyId)params.
   const response = await axiosInstance.get<IUserCompanyRelationsResponse>(
     `${url}/api/user-company-relations/all`,
     {
