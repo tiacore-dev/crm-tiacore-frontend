@@ -11,11 +11,11 @@ export interface ICompany {
 
 // Вспомогательная функция для проверки роли и получения company_id
 
-export const fetchCompanies = async () => {
+export const fetchCompanies = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {

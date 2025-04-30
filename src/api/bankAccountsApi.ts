@@ -13,21 +13,23 @@ export interface IBankAccount {
 }
 
 // Функция для получения списка  с параметрами
-export const fetchBankAccounts = async (params?: {
-  legal_entity?: string;
-  page?: number;
-  page_size?: number;
-}) => {
+export const fetchBankAccounts = async (
+  params?: {
+    legal_entity?: string;
+    page?: number;
+    page_size?: number;
+  },
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   // Устанавливаем параметры по умолчанию
   const queryParams = {
     page: params?.page || 1,
     page_size: params?.page_size || 100,
-    ...(params?.legal_entity && { legal_entity: params.legal_entity }), // Добавляем legal_entity только если он передан
+    ...(params?.legal_entity && { legal_entity: params.legal_entity }),
     ...(!isSuperadmin && selectedCompanyId && { company: selectedCompanyId }),
   };
 
@@ -72,16 +74,19 @@ export const createBankAccount = async (newBankAccount: {
 };
 
 //получение инфопмации
-export const fetchBankAccountDetails = async (bank_account_id: string) => {
+export const fetchBankAccountDetails = async (
+  bank_account_id: string,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
     params.company = selectedCompanyId;
   }
+
   try {
     const response = await axiosInstance.get(
       `${url}/api/bank-accounts/${bank_account_id}`,
@@ -101,7 +106,7 @@ export const fetchBankAccountDetails = async (bank_account_id: string) => {
     } else {
       toast.error("Неизвестная ошибка");
     }
-    throw error; // Пробрасываем ошибку дальше
+    throw error;
   }
 };
 

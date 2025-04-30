@@ -49,7 +49,7 @@ export const useActsQuery = (queryParams: IActsQueryParams) => {
 
   return useQuery<IActsResponse>({
     queryKey: ["acts", buildQueryParams(), selectedCompanyId],
-    queryFn: () => fetchActs(buildQueryParams()),
+    queryFn: () => fetchActs(buildQueryParams(), selectedCompanyId),
   });
 };
 
@@ -57,7 +57,7 @@ export const useActQuery = (act_id: string) => {
   const { selectedCompanyId } = useCompany();
   return useQuery({
     queryKey: ["act", act_id, selectedCompanyId],
-    queryFn: () => fetchAct(act_id),
+    queryFn: () => fetchAct(act_id, selectedCompanyId),
     retry: false,
   });
 };

@@ -59,7 +59,7 @@ export const useContractQuery = (queryParams: IContractsQueryParams) => {
 
   return useQuery<IContractsResponse>({
     queryKey: ["contracts", buildQueryParams(), selectedCompanyId],
-    queryFn: () => fetchContracts(buildQueryParams()),
+    queryFn: () => fetchContracts(buildQueryParams(), selectedCompanyId),
   });
 };
 
@@ -67,7 +67,7 @@ export const useContractDetailsQuery = (contract_id: string) => {
   const { selectedCompanyId } = useCompany();
   return useQuery({
     queryKey: ["contractDetails", contract_id, selectedCompanyId],
-    queryFn: () => fetchContractDetails(contract_id),
+    queryFn: () => fetchContractDetails(contract_id, selectedCompanyId),
     retry: false,
   });
 };
@@ -76,6 +76,7 @@ export const useContractsForSelection = () => {
   const { selectedCompanyId } = useCompany();
   return useQuery<IContractsResponse>({
     queryKey: ["contractsForSelection", selectedCompanyId],
-    queryFn: () => fetchContracts({ page: 1, page_size: 100 }),
+    queryFn: () =>
+      fetchContracts({ page: 1, page_size: 100 }, selectedCompanyId),
   });
 };

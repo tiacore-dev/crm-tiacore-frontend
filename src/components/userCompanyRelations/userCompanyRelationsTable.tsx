@@ -36,11 +36,13 @@ const { Text } = Typography;
 interface UserCompanyRelationsTableProps {
   userId?: string;
   companyId?: string;
+  fromAccount?: boolean;
 }
 
 export const UserCompanyRelationsTable = ({
   userId,
   companyId,
+  fromAccount,
 }: UserCompanyRelationsTableProps) => {
   // Получаем список всех ролей
   const { data: rolesData, isLoading: rolesLoading } = useRolesQuery();
@@ -190,13 +192,15 @@ export const UserCompanyRelationsTable = ({
             <Typography.Title level={4} style={{ marginRight: 16 }}>
               {userId ? "Компании" : "Пользователи"}
             </Typography.Title>
-            <Button
-              icon={<PlusOutlined />}
-              onClick={handleCreate}
-              style={{ marginBottom: 16 }}
-            >
-              Добавить
-            </Button>
+            {!fromAccount && (
+              <Button
+                icon={<PlusOutlined />}
+                onClick={handleCreate}
+                style={{ marginBottom: 16 }}
+              >
+                Добавить
+              </Button>
+            )}
           </div>
           <Table
             columns={columns}

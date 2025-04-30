@@ -14,6 +14,6 @@ export const useBillDetailsQuery = (billId?: string) => {
   const { selectedCompanyId } = useCompany();
   return useQuery<IBillDetailsResponse>({
     queryKey: ["billDetails", billId, selectedCompanyId],
-    queryFn: () => fetchBillDetails({ bill: billId }),
+    queryFn: () => fetchBillDetails({ bill: billId }, selectedCompanyId),
   });
 };

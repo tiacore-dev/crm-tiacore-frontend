@@ -14,7 +14,7 @@ export interface IActDetailsResponse {
 export const useActDetailsQuery = (actId?: string) => {
   const { selectedCompanyId } = useCompany();
   return useQuery<IActDetailsResponse>({
-    queryKey: ["actDetails", actId, selectedCompanyId], // Ключ кэша включает actId
-    queryFn: () => fetchActDetails({ act: actId }), // передаём параметры правильно
+    queryKey: ["actDetails", actId, selectedCompanyId],
+    queryFn: () => fetchActDetails({ act: actId }, selectedCompanyId),
   });
 };

@@ -19,6 +19,7 @@ export const renderBasicFields = ({
         name="relation_type"
         label="Тип контрагента"
         initialValue={defaultRelationType}
+        hidden
       >
         <Select
           placeholder="Выберите тип"
@@ -68,7 +69,7 @@ RenderFieldsProps) => {
     <>
       {mode === "create" && (
         <>
-          <Form.Item name="relation_type" label="Тип контрагента">
+          <Form.Item name="relation_type" label="Тип контрагента" hidden>
             <Select
               placeholder="Выберите тип"
               options={[

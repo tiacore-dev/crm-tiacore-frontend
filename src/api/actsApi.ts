@@ -15,11 +15,14 @@ export interface IAct {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchActs = async (queryParams: IActsQueryParams) => {
+export const fetchActs = async (
+  queryParams: IActsQueryParams,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   // Создаем копию параметров, удаляя undefined значения
   // const params = Object.fromEntries(
@@ -73,11 +76,14 @@ export const createAct = async (newAct: {
 };
 
 //получение инфопмации
-export const fetchAct = async (act_id: string) => {
+export const fetchAct = async (
+  act_id: string,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {

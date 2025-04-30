@@ -52,7 +52,7 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 
   return useQuery<IBillsResponse>({
     queryKey: ["bills", buildQueryParams(), selectedCompanyId],
-    queryFn: () => fetchBills(buildQueryParams()),
+    queryFn: () => fetchBills(buildQueryParams(), selectedCompanyId),
   });
 };
 
@@ -60,7 +60,7 @@ export const useBillQuery = (bill_id: string) => {
   const { selectedCompanyId } = useCompany();
   return useQuery({
     queryKey: ["bill", bill_id, selectedCompanyId],
-    queryFn: () => fetchBill(bill_id),
+    queryFn: () => fetchBill(bill_id, selectedCompanyId),
     retry: false,
   });
 };

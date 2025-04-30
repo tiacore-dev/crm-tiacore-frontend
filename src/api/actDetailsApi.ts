@@ -1,6 +1,8 @@
 // src/api/legalEntitiesApi.tsx
+import { AxiosError } from "axios";
 import { axiosInstance } from "../axiosConfig";
 import { IActDetailsResponse } from "../hooks/actDetails/actDetailQuery";
+import toast from "react-hot-toast";
 
 export interface IActDetail {
   act_detail_id: string; //uuid4
@@ -11,13 +13,14 @@ export interface IActDetail {
 }
 
 // Функция для получения списка с параметрами
-export const fetchActDetails = async (params?: { act?: string }) => {
+export const fetchActDetails = async (
+  params?: { act?: string },
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
-  // Определяем тип параметров запроса
   interface RequestParams {
     page: number;
     page_size: number;
@@ -29,25 +32,32 @@ export const fetchActDetails = async (params?: { act?: string }) => {
     page: 1,
     page_size: 100,
     ...params,
+    ...(!isSuperadmin && selectedCompanyId
+      ? { company: selectedCompanyId }
+      : {}),
   };
 
-  // Добавляем company в параметры, если пользователь не суперадмин и companyId есть
-  if (!isSuperadmin && selectedCompanyId) {
-    requestParams.company = selectedCompanyId;
-  }
-
-  const response = await axiosInstance.get<IActDetailsResponse>(
-    `${url}/api/act-details/all`,
-    {
-      params: requestParams,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
+  try {
+    const response = await axiosInstance.get<IActDetailsResponse>(
+      `${url}/api/act-details/all`,
+      {
+        params: requestParams,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response) {
+      toast.error("Ошибка при загрузке данных");
+    } else {
+      toast.error("Неизвестная ошибка");
     }
-  );
-
-  return response.data;
+    throw error;
+  }
 };
 
 // Функция для создания нового

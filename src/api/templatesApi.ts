@@ -13,16 +13,19 @@ export interface ITemplate {
 }
 
 // Функция для получения списка  с параметрами
-export const fetchTemplates = async (params?: {
-  entity?: string;
-  page?: number;
-  page_size?: number;
-  company?: string;
-}) => {
+export const fetchTemplates = async (
+  params?: {
+    entity?: string;
+    page?: number;
+    page_size?: number;
+    company?: string;
+  },
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   // Устанавливаем параметры по умолчанию
   const queryParams = {
@@ -77,11 +80,14 @@ export const createTemplate = async (
   }
 };
 //получение инфопмации о пользователе
-export const fetchTemplateDetails = async (template_id: string) => {
+export const fetchTemplateDetails = async (
+  template_id: string,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {

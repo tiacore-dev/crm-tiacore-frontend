@@ -9,11 +9,11 @@ export interface IService {
   company: string;
 }
 // Функция для получения списка услуг с параметрами
-export const fetchServices = async () => {
+export const fetchServices = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
@@ -56,11 +56,14 @@ export const createService = async (newService: {
   return response.data;
 };
 
-export const fetchServiceDetails = async (service_id: string) => {
+export const fetchServiceDetails = async (
+  service_id: string,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {

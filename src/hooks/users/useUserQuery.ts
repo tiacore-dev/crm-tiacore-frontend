@@ -13,14 +13,16 @@ export const useUserQueryAll = () => {
   const { selectedCompanyId } = useCompany();
   return useQuery<useUserQueryResponse>({
     queryKey: ["users_all", selectedCompanyId],
-    queryFn: fetchUsers,
+    queryFn: () => fetchUsers(selectedCompanyId),
   });
 };
 
 export const useUserDetailsQuery = (user_id: string) => {
+  const { selectedCompanyId } = useCompany();
+
   return useQuery({
     queryKey: ["userDetails", user_id],
-    queryFn: () => fetchUserDetails(user_id),
+    queryFn: () => fetchUserDetails(user_id, selectedCompanyId),
     retry: false,
   });
 };

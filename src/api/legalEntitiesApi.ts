@@ -16,11 +16,11 @@ export interface ILegalEntity {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchLegalEntities = async () => {
+export const fetchLegalEntities = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
@@ -227,11 +227,11 @@ export const fetchLegalEntityByInnKpp = async (
   return response.data;
 };
 
-export const fetchSellers = async () => {
+export const fetchSellers = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
@@ -251,11 +251,11 @@ export const fetchSellers = async () => {
   return response.data;
 };
 
-export const fetchBuyers = async () => {
+export const fetchBuyers = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {

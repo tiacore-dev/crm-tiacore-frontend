@@ -40,6 +40,7 @@ import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
 import { CompanyProvider } from "./context/companyContext";
+import { AccountPage } from "./pages/accountPage/acoountPage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -62,6 +63,8 @@ const App: React.FC = () => {
               <Route path="/login" element={<LoginPage />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/home" element={<HomePage />} />
+                <Route path="/account" element={<AccountPage />} />
+
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/users" element={<UsersPage />} />
                 <Route path="/users/:user_id" element={<UserDetailsPage />} />

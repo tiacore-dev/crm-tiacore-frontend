@@ -17,14 +17,16 @@ export const useServiceQuery = () => {
 
   return useQuery<IServicesResponse>({
     queryKey: ["services", selectedCompanyId], // Добавляем companyId в ключ запроса
-    queryFn: fetchServices, // Загружаем все данные один раз
+    queryFn: () => fetchServices(selectedCompanyId),
   });
 };
 
 export const useServiceDetailsQuery = (service_id: string) => {
+  const { selectedCompanyId } = useCompany();
+
   return useQuery({
-    queryKey: ["serviceDetails", service_id],
-    queryFn: () => fetchServiceDetails(service_id),
+    queryKey: ["serviceDetails", service_id, selectedCompanyId],
+    queryFn: () => fetchServiceDetails(service_id, selectedCompanyId),
     retry: false,
   });
 };

@@ -16,11 +16,14 @@ export interface IBill {
 }
 
 // Функция для получения списка пользователей с параметрами
-export const fetchBills = async (queryParams: IBillsQueryParams) => {
+export const fetchBills = async (
+  queryParams: IBillsQueryParams,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   // Создаем копию параметров, удаляя undefined значения
   // const params = Object.fromEntries(
@@ -73,11 +76,14 @@ export const createBill = async (newBill: {
 };
 
 //получение инфопмации
-export const fetchBill = async (bill_id: string) => {
+export const fetchBill = async (
+  bill_id: string,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {

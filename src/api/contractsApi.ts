@@ -18,11 +18,14 @@ export interface IContract {
 }
 
 // Функция для получения списка контрактов с параметрами
-export const fetchContracts = async (queryParams: IContractsQueryParams) => {
+export const fetchContracts = async (
+  queryParams: IContractsQueryParams,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params = {
     ...Object.fromEntries(
@@ -78,11 +81,14 @@ export const createContract = async (
 };
 
 // Получение информации о контракте
-export const fetchContractDetails = async (contract_id: string) => {
+export const fetchContractDetails = async (
+  contract_id: string,
+  selectedCompanyId?: string | null
+) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {

@@ -32,7 +32,7 @@ export const useLegalEntityQuery = () => {
   const { selectedCompanyId } = useCompany();
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntities", selectedCompanyId],
-    queryFn: fetchLegalEntities,
+    queryFn: () => fetchLegalEntities(selectedCompanyId),
     retry: false,
   });
 };
@@ -66,7 +66,7 @@ export const useLegalEntitiesForSelection = () => {
 
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntitiesForSelection", selectedCompanyId],
-    queryFn: () => fetchLegalEntities(),
+    queryFn: () => fetchLegalEntities(selectedCompanyId),
     retry: false,
   });
 };
@@ -76,7 +76,7 @@ export const useLegalEntitiesSellers = () => {
 
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntitiesSellers", selectedCompanyId],
-    queryFn: () => fetchSellers(),
+    queryFn: () => fetchSellers(selectedCompanyId),
     retry: false,
   });
 };
@@ -86,7 +86,7 @@ export const useLegalEntitiesBuyers = () => {
 
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntitiesBuyers", selectedCompanyId],
-    queryFn: () => fetchBuyers(),
+    queryFn: () => fetchBuyers(selectedCompanyId),
     retry: false,
   });
 };

@@ -22,7 +22,7 @@ export const useCompanyQuery = () => {
 
   return useQuery<useCompanyQueryResponse>({
     queryKey: ["companies", selectedCompanyId],
-    queryFn: fetchCompanies,
+    queryFn: () => fetchCompanies(selectedCompanyId),
   });
 };
 
@@ -39,6 +39,6 @@ export const useCompaniesForSelection = () => {
   const { selectedCompanyId } = useCompany();
   return useQuery<ICompaniesResponse>({
     queryKey: ["companiesForSelection", selectedCompanyId], //??????
-    queryFn: () => fetchCompanies(),
+    queryFn: () => fetchCompanies(selectedCompanyId),
   });
 };

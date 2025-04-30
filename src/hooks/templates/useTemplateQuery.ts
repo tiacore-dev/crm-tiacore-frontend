@@ -29,7 +29,7 @@ export const useTemplateQuery = (params?: ITemplatesQueryParams) => {
   const { selectedCompanyId } = useCompany();
   return useQuery<ITemplatesResponse>({
     queryKey: ["templates", params, selectedCompanyId], // Добавляем параметры в ключ запроса
-    queryFn: () => fetchTemplates(params), // Передаем параметры в fetchTemplates
+    queryFn: () => fetchTemplates(params, selectedCompanyId), // Передаем параметры в fetchTemplates
   });
 };
 
@@ -37,7 +37,7 @@ export const useTemplateDetailsQuery = (template_id: string) => {
   const { selectedCompanyId } = useCompany();
   return useQuery<ITemplate>({
     queryKey: ["templateDetails", template_id, selectedCompanyId],
-    queryFn: () => fetchTemplateDetails(template_id),
+    queryFn: () => fetchTemplateDetails(template_id, selectedCompanyId),
     enabled: !!template_id,
   });
 };
