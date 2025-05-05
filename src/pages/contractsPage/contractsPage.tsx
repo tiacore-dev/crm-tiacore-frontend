@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin, Space } from "antd";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { useContractQuery } from "../../hooks/contracts/useContractQuery";
 import { ContractsTable } from "./components/contractsTable";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -24,6 +24,7 @@ import {
   // contractsSelector,
 } from "../../redux/slices/contractsSlice";
 import { RootState } from "../../redux/store";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const ContractsPage: React.FC = () => {
   const {
@@ -40,6 +41,7 @@ export const ContractsPage: React.FC = () => {
 
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   useEffect(() => {
     dispatch(
@@ -140,12 +142,14 @@ export const ContractsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить договор
-                  </Button>
+                  {hasPermission("add_contract") && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить договор
+                    </Button>
+                  )}
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

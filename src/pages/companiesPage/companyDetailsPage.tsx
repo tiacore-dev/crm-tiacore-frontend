@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCompanyDetailsQuery } from "../../hooks/companies/useCompanyQuery";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin, Typography } from "antd";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyCard } from "./components/companyDetailsCard";
@@ -17,6 +17,7 @@ import {
   // useLegalEntityFiltredQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export const CompanyDetailsPage: React.FC = () => {
   const { company_id } = useParams<{ company_id: string }>();
   const [showEditModal, setShowEditModal] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const {
     data: companyDetails,
@@ -84,21 +86,26 @@ export const CompanyDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => {
-                      setShowEditModal(true);
-                    }}
-                    icon={<EditOutlined />}
-                  >
-                    Редактировать
-                  </Button>
-                  <Button
-                    danger
-                    onClick={() => setShowDeleteConfirm(true)}
-                    icon={<DeleteOutlined />}
-                  >
-                    Удалить
-                  </Button>
+                  {hasPermission("edit_company") && (
+                    <Button
+                      onClick={() => {
+                        setShowEditModal(true);
+                      }}
+                      icon={<EditOutlined />}
+                    >
+                      Редактировать
+                    </Button>
+                  )}
+
+                  {hasPermission("delete_company") && (
+                    <Button
+                      danger
+                      onClick={() => setShowDeleteConfirm(true)}
+                      icon={<DeleteOutlined />}
+                    >
+                      Удалить
+                    </Button>
+                  )}
                 </Space>
                 <CompanyCard data={companyDetails} loading={isLoading} />
                 <UserCompanyRelationsTable companyId={company_id} />
@@ -109,14 +116,18 @@ export const CompanyDetailsPage: React.FC = () => {
                     <Typography.Title level={4} style={{ marginRight: 16 }}>
                       Организации
                     </Typography.Title>
-                    <Button
-                      onClick={() => {
-                        setIsModalVisible(true);
-                      }}
-                      icon={<PlusOutlined />}
-                    >
-                      Добавить
-                    </Button>
+
+                    {hasPermission("add_legal_entity") &&
+                      hasPermission("add_legal_entity_company_relation") && (
+                        <Button
+                          onClick={() => {
+                            setIsModalVisible(true);
+                          }}
+                          icon={<PlusOutlined />}
+                        >
+                          Добавить
+                        </Button>
+                      )}
                   </div>
 
                   <LegalEntitiesTable

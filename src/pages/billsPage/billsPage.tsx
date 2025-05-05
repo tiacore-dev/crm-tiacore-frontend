@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { Button, Spin, Space } from "antd";
 import { useBillsQuery } from "../../hooks/bills/useBillQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -23,6 +23,7 @@ import {
   resetState,
 } from "../../redux/slices/billsSlice";
 import { RootState } from "../../redux/store";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const BillsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ export const BillsPage: React.FC = () => {
       ])
     );
   }, [dispatch]);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const {
     data: bills_data,
@@ -120,12 +122,15 @@ export const BillsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить счет
-                  </Button>
+                  {hasPermission("add_bill") && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить счет
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

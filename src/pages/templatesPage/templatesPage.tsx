@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin, Space } from "antd"; // Добавлен Space для группировки кнопок
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { useTemplateQuery } from "../../hooks/templates/useTemplateQuery";
 import { TemplatesTable } from "./components/templatesTable";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons"; // Добавлен ClearOutlined
@@ -13,12 +13,15 @@ import { TemplateFormModal } from "./components/templateFormModal";
 import { useSelector } from "react-redux";
 import { resetState } from "../../redux/slices/templatesSlice"; // Импорт нового действия
 import { RootState } from "../../redux/store";
+import { usePermissions } from "../../context/permissionsContext";
+
 export const TemplatesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { search, company } = useSelector(
     (state: RootState) => state.templates
   );
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   useEffect(() => {
     dispatch(
@@ -49,12 +52,15 @@ export const TemplatesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить шаблон
-                  </Button>
+                  {hasPermission("add_template") && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить шаблон
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

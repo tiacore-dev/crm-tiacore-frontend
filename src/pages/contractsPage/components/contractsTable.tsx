@@ -6,6 +6,7 @@ import { useState } from "react";
 import { downloadContract } from "../../../api/contractsApi";
 import { getContractsTableColumns } from "./contractsTableColumns";
 // import { useDispatch } from "react-redux";
+import { usePermissions } from "../../../context/permissionsContext";
 
 interface ContractsTableProps {
   data: {
@@ -54,6 +55,7 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
   const navigate = useNavigate();
   // const dispatch = useDispatch();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const { hasPermission } = usePermissions(); // Добавляем хук
 
   const handleDownload = async (contract_id: string) => {
     setDownloadingId(contract_id);
@@ -85,6 +87,7 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
     onSortChange,
     onFilterChange,
     filters,
+    hasPermission,
   });
 
   return (

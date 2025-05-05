@@ -22,6 +22,7 @@ import { ConfirmDeleteModal } from "../modals/confirmDeleteModal";
 import { RelationFormModal } from "./userCompanyRelationFormModal";
 import { useRolesQuery } from "../../hooks/role/useRoleQuery";
 import { InviteFormModal } from "../../pages/invitePages/inviteFormModal";
+import { usePermissions } from "../../context/permissionsContext";
 
 const { Text } = Typography;
 
@@ -42,6 +43,7 @@ export const UserCompanyRelationsTable = ({
   // Получаем список всех компаний
   const { data: companiesData, isLoading: companiesLoading } =
     useCompanyQuery();
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const { data: usersData, isLoading: usersLoading } = useUserQueryAll();
 
@@ -113,21 +115,29 @@ export const UserCompanyRelationsTable = ({
     }
   };
 
-  const getMenuItems = (relation: IUserCompanyRelation) => [
-    {
-      key: "edit",
-      icon: <EditOutlined />,
-      label: "Редактировать",
-      onClick: () => handleEdit(relation),
-    },
-    {
-      key: "delete",
-      icon: <DeleteOutlined />,
-      label: "Удалить",
-      danger: true,
-      onClick: () => handleDelete(relation),
-    },
-  ];
+  const getMenuItems = (relation: IUserCompanyRelation) => {
+    const items = [];
+
+    if (hasPermission("edit_user_company_relation")) {
+      items.push({
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Редактировать",
+        onClick: () => handleEdit(relation),
+      });
+    }
+    if (hasPermission("delete_user_company_relation")) {
+      items.push({
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Удалить",
+        danger: true,
+        onClick: () => handleDelete(relation),
+      });
+    }
+
+    return items;
+  };
 
   const columns = [
     {
@@ -152,18 +162,23 @@ export const UserCompanyRelationsTable = ({
       render: (roleId: string) => <Tag color="blue">{getRoleName(roleId)}</Tag>,
     },
     {
-      title: " ",
+      title: "",
       key: "actions",
       width: 48,
-      render: (_: any, record: IUserCompanyRelation) => (
-        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
-          <Button
-            type="text"
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
+      render: (_: any, record: IUserCompanyRelation) => {
+        const menuItems = getMenuItems(record);
+        if (menuItems.length === 0) return null; // Не рендерим кнопку, если нет доступных действий
+
+        return (
+          <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+            <Button
+              type="text"
+              icon={<MoreOutlined />}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Dropdown>
+        );
+      },
     },
   ];
 
@@ -191,7 +206,7 @@ export const UserCompanyRelationsTable = ({
             <Typography.Title level={4} style={{ marginRight: 16 }}>
               {userId ? "Компании" : "Пользователи"}
             </Typography.Title>
-            {!fromAccount && (
+            {!fromAccount && hasPermission("add_user_company_relation") && (
               <Button
                 icon={<PlusOutlined />}
                 onClick={handleCreate}

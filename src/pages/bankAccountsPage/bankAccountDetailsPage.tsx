@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useBankcAccountDetailsQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
-import { useBankAccountMutations } from "../../hooks/bankAccounts/useBankAccountMutation";
-import { BackButton } from "../../components/backButton";
+// import { useBankAccountMutations } from "../../hooks/bankAccounts/useBankAccountMutation";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
-import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
+// import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { BankAccountCreateModal } from "./components/bankAccountFormModal";
 import {
   // useLegalEntitiesForSelection,
   useLegalEntityDetailsQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { BankAccountDetailsDescriptions } from "./components/bankAccountDetailsCard";
 // import { getEntityNameById } from "../../utils/infoById";
 
@@ -20,9 +20,9 @@ export const BankAccountDetailsPage: React.FC = () => {
   const { bank_account_id } = useParams<{ bank_account_id: string }>();
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  // const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
   const {
@@ -38,14 +38,14 @@ export const BankAccountDetailsPage: React.FC = () => {
   } = useLegalEntityDetailsQuery(legal_entity_id || "");
   // const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
 
-  const { deleteMutation } = useBankAccountMutations(
-    bank_account_id || "",
-    bank_account?.legal_entity || "",
-    bank_account?.bank_name || "",
-    bank_account?.account_number || "",
-    bank_account?.bank_bic || "",
-    bank_account?.bank_corr_account || ""
-  );
+  // const { deleteMutation } = useBankAccountMutations(
+  //   bank_account_id || "",
+  //   bank_account?.legal_entity || "",
+  //   bank_account?.bank_name || "",
+  //   bank_account?.account_number || "",
+  //   bank_account?.bank_bic || "",
+  //   bank_account?.bank_corr_account || ""
+  // );
 
   useEffect(() => {
     if (bank_account) {
@@ -72,14 +72,14 @@ export const BankAccountDetailsPage: React.FC = () => {
     legal_entity_id,
   ]);
 
-  const handleDelete = () => {
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        setShowDeleteConfirm(false);
-        navigate("/bank_accounts");
-      },
-    });
-  };
+  // const handleDelete = () => {
+  //   deleteMutation.mutate(undefined, {
+  //     onSuccess: () => {
+  //       setShowDeleteConfirm(false);
+  //       navigate("/bank_accounts");
+  //     },
+  //   });
+  // };
 
   return (
     <div>
@@ -99,9 +99,9 @@ export const BankAccountDetailsPage: React.FC = () => {
                     <EditOutlined />
                     Редактировать
                   </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                  {/* <Button danger onClick={() => setShowDeleteConfirm(true)}>
                     <DeleteOutlined /> Удалить
-                  </Button>
+                  </Button> */}
                 </Space>
                 <BankAccountDetailsDescriptions
                   bank_account={bank_account}
@@ -121,13 +121,13 @@ export const BankAccountDetailsPage: React.FC = () => {
                 mode="edit"
                 initialData={bank_account}
               />
-              {showDeleteConfirm && (
-                <ConfirmDeleteModal
-                  onConfirm={handleDelete}
-                  onCancel={() => setShowDeleteConfirm(false)}
-                  isDeleteLoading={deleteMutation.isPending}
-                />
-              )}
+              {/* {showDeleteConfirm && (
+                // <ConfirmDeleteModal
+                //   onConfirm={handleDelete}
+                //   onCancel={() => setShowDeleteConfirm(false)}
+                //   isDeleteLoading={deleteMutation.isPending}
+                // />
+              )} */}
             </>
           )}
           {isError && <BackButton />}

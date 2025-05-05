@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
 import { useActsMutations } from "../../hooks/acts/useActsMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -16,8 +16,9 @@ import { useActDetailsQuery } from "../../hooks/actDetails/actDetailQuery";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { ActDetailsTable } from "./components/actDetailsTable";
 import { createMemoizedHelpers } from "../../utils/infoById";
-import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -31,6 +32,7 @@ export const ActDetailsPage: React.FC = () => {
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractsResponse } = useContractsForSelection();
   const { data: servicesResponse } = useServiceQuery();
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -96,21 +98,27 @@ export const ActDetailsPage: React.FC = () => {
               <div className="main-container">
                 <div style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 16 }}>
-                    <Button onClick={() => setShowEditModal(true)}>
-                      <EditOutlined />
-                      Редактировать
-                    </Button>
-                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                      <DeleteOutlined /> Удалить
-                    </Button>
-                    {!isMobile && (
+                    {hasPermission("edit_act") && (
+                      <Button onClick={() => setShowEditModal(true)}>
+                        <EditOutlined />
+                        Редактировать
+                      </Button>
+                    )}
+
+                    {hasPermission("delete_act") && (
+                      <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                        <DeleteOutlined /> Удалить
+                      </Button>
+                    )}
+
+                    {!isMobile && hasPermission("generate_template") && (
                       <GenerateTemplateButton
                         actId={act_id || ""}
                         entityType={"act"}
                       />
                     )}
                   </Space>
-                  {isMobile && (
+                  {isMobile && hasPermission("generate_template") && (
                     <Space>
                       <GenerateTemplateButton
                         actId={act_id || ""}

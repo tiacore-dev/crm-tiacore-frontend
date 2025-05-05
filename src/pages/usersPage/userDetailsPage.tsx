@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { useUserMutations } from "../../hooks/users/useUserMutation";
 import { UserDetailsCard } from "./components/userDetails";

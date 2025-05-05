@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useBillDetailMutations } from "../../../hooks/billDetails/billDetailMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { BillDetailFormModal } from "./billDetailsFormModal";
+import { usePermissions } from "../../../context/permissionsContext";
 
 interface IBillDetailsTableProps {
   data: {
@@ -48,6 +49,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     IBillDetail | undefined
   >(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const handleEdit = (billDetail: IBillDetail) => {
     setEditingBillDetail(billDetail);
@@ -74,21 +76,30 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  const getMenuItems = (billDetail: IBillDetail) => [
-    {
-      key: "edit",
-      icon: <EditOutlined />,
-      label: "Редактировать",
-      onClick: () => handleEdit(billDetail),
-    },
-    {
-      key: "delete",
-      icon: <DeleteOutlined />,
-      label: "Удалить",
-      danger: true,
-      onClick: () => handleDelete(billDetail),
-    },
-  ];
+  const getMenuItems = (billDetail: IBillDetail) => {
+    const items = [];
+
+    if (hasPermission("edit_bill_detail")) {
+      items.push({
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Редактировать",
+        onClick: () => handleEdit(billDetail),
+      });
+    }
+
+    if (hasPermission("delete_bill_detail")) {
+      items.push({
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Удалить",
+        danger: true,
+        onClick: () => handleDelete(billDetail),
+      });
+    }
+
+    return items;
+  };
 
   const columns = [
     {
@@ -140,15 +151,20 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       title: "",
       key: "actions",
       width: 48,
-      render: (record: IBillDetail) => (
-        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
-          <Button
-            type="text"
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
+      render: (record: IBillDetail) => {
+        const menuItems = getMenuItems(record);
+        if (menuItems.length === 0) return null;
+
+        return (
+          <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+            <Button
+              type="text"
+              icon={<MoreOutlined />}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Dropdown>
+        );
+      },
     },
   ];
 
@@ -165,9 +181,12 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
         <Typography.Title level={4} style={{ margin: 0, marginRight: 16 }}>
           Детали счета
         </Typography.Title>
-        <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
-          Добавить
-        </Button>
+
+        {hasPermission("add_bill_detail") && (
+          <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
+            Добавить
+          </Button>
+        )}
       </div>
       <Table
         columns={columns}

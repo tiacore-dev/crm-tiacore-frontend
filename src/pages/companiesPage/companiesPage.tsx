@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 import { Spin, Button, Space } from "antd";
 import { CompanyFormModal } from "./components/companyFormModal";
 import { CompaniesTable } from "./components/companiesTable";
 import { useDispatch, useSelector } from "react-redux";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
+import { usePermissions } from "../../context/permissionsContext";
 
 import {
   // companiesSelector,
@@ -21,6 +22,7 @@ export const CompaniesPage: React.FC = () => {
     search,
     //  page, page_size
   } = useSelector((state: RootState) => state.companies);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   useEffect(() => {
     dispatch(
@@ -47,12 +49,15 @@ export const CompaniesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить компанию
-                  </Button>
+                  {hasPermission("add_company") && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить компанию
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

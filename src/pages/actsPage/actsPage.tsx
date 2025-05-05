@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { Button, Spin, Space } from "antd";
 import { useActsQuery } from "../../hooks/acts/useActsQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -23,6 +23,7 @@ import {
   // actsSelector,
 } from "../../redux/slices/actsSlice";
 import { RootState } from "../../redux/store";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const ActsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ export const ActsPage: React.FC = () => {
       ])
     );
   }, [dispatch]);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const {
     data: acts_data,
@@ -135,12 +137,15 @@ export const ActsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить акт
-                  </Button>
+                  {hasPermission("add_act") && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить акт
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

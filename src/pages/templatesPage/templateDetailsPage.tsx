@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button, Space, message, Spin } from "antd";
 import { useTemplateDetailsQuery } from "../../hooks/templates/useTemplateQuery";
 import { useTemplateMutations } from "../../hooks/templates/useTemplateMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { downloadTemplate } from "../../api/templatesApi";
@@ -12,8 +12,9 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { TemplateFormModal } from "./components/templateFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { TemplateDetailsCard } from "./components/templateDetailsCard";
-import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
@@ -27,6 +28,7 @@ export const TemplateDetailsPage: React.FC = () => {
     isError,
     refetch,
   } = useTemplateDetailsQuery(template_id || "");
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const { data: companiesResponse } = useCompaniesForSelection();
 
@@ -91,14 +93,20 @@ export const TemplateDetailsPage: React.FC = () => {
                 <div style={{ marginBottom: 16 }}>
                   {/* Первая строка - основные кнопки */}
                   <Space style={{ marginBottom: isMobile ? 16 : 0 }}>
-                    <Button onClick={handleEditClick}>
-                      <EditOutlined />
-                      Редактировать
-                    </Button>
-                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                      <DeleteOutlined /> Удалить
-                    </Button>
-                    {!isMobile && (
+                    {hasPermission("edit_template") && (
+                      <Button onClick={handleEditClick}>
+                        <EditOutlined />
+                        Редактировать
+                      </Button>
+                    )}
+
+                    {hasPermission("delete_template") && (
+                      <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                        <DeleteOutlined /> Удалить
+                      </Button>
+                    )}
+
+                    {!isMobile && hasPermission("generate_template") && (
                       <GenerateTemplateButton
                         templateId={template_id || ""}
                         entityType={template?.entity === "act" ? "act" : "bill"}
@@ -107,7 +115,7 @@ export const TemplateDetailsPage: React.FC = () => {
                   </Space>
 
                   {/* Вторая строка - только для мобильных */}
-                  {isMobile && (
+                  {isMobile && hasPermission("generate_template") && (
                     <Space>
                       <GenerateTemplateButton
                         templateId={template_id || ""}

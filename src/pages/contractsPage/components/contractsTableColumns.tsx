@@ -30,6 +30,7 @@ interface ContractsTableColumnsProps {
     contract_date_from?: number;
     contract_date_to?: number;
   };
+  hasPermission: (permission: string) => boolean; // Добавляем параметр
 }
 
 export const getContractsTableColumns = ({
@@ -43,6 +44,7 @@ export const getContractsTableColumns = ({
   onSortChange,
   onFilterChange,
   filters,
+  hasPermission,
 }: ContractsTableColumnsProps): ColumnType<IContract>[] => {
   const getLegalEntityName = (legalEntityId: string): string => {
     const legalEntity = legalEntitiesData.find(
@@ -265,7 +267,9 @@ export const getContractsTableColumns = ({
       render: (_: string, record: IContract) => {
         if (!record.s3_key) return "-";
         const fileName = record.s3_key.split("/").pop() || "Файл";
-
+        if (!hasPermission("download_template")) {
+          return <span>{fileName}</span>; // Просто текст без возможности скачать
+        }
         return (
           <Button
             type="link"

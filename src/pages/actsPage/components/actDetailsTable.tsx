@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useActDetailMutations } from "../../../hooks/actDetails/actDetailMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { ActDetailFormModal } from "./actDetailsFormModal";
+import { usePermissions } from "../../../context/permissionsContext";
 
 interface IActDetailsTableProps {
   data: {
@@ -48,6 +49,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     null
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const handleEdit = (actDetail: IActDetail) => {
     setEditingActDetail(actDetail);
@@ -74,21 +76,30 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  const getMenuItems = (actDetail: IActDetail) => [
-    {
-      key: "edit",
-      icon: <EditOutlined />,
-      label: "Редактировать",
-      onClick: () => handleEdit(actDetail),
-    },
-    {
-      key: "delete",
-      icon: <DeleteOutlined />,
-      label: "Удалить",
-      danger: true,
-      onClick: () => handleDelete(actDetail),
-    },
-  ];
+  const getMenuItems = (actDetail: IActDetail) => {
+    const items = [];
+
+    if (hasPermission("edit_act_detail")) {
+      items.push({
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Редактировать",
+        onClick: () => handleEdit(actDetail),
+      });
+    }
+
+    if (hasPermission("delete_act_detail")) {
+      items.push({
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Удалить",
+        danger: true,
+        onClick: () => handleDelete(actDetail),
+      });
+    }
+
+    return items;
+  };
 
   const columns = [
     {
@@ -140,15 +151,20 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       title: "",
       key: "actions",
       width: 48,
-      render: (record: IActDetail) => (
-        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
-          <Button
-            type="text"
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
+      render: (record: IActDetail) => {
+        const menuItems = getMenuItems(record);
+        if (menuItems.length === 0) return null;
+
+        return (
+          <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+            <Button
+              type="text"
+              icon={<MoreOutlined />}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Dropdown>
+        );
+      },
     },
   ];
 
@@ -164,9 +180,12 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         <Typography.Title level={4} style={{ marginRight: 16 }}>
           Детали акта
         </Typography.Title>
-        <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
-          Добавить
-        </Button>
+
+        {hasPermission("add_act_detail") && (
+          <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
+            Добавить
+          </Button>
+        )}
       </div>
       <Table
         columns={columns}

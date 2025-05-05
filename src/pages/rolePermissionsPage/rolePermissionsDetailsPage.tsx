@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin, List, Space } from "antd";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { useRoleDetailsQuery } from "../../hooks/role/useRoleQuery";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePermissionsQuery } from "../../hooks/permissions/usePermissionsQuery";

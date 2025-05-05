@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Select, Checkbox, message } from "antd";
-import { generateTemplate } from "../api/templatesApi";
-import { useActsQuery } from "../hooks/acts/useActsQuery";
-import { useBillsQuery } from "../hooks/bills/useBillQuery";
-import { useTemplateQuery } from "../hooks/templates/useTemplateQuery";
+import { generateTemplate } from "../../api/templatesApi";
+import { useActsQuery } from "../../hooks/acts/useActsQuery";
+import { useBillsQuery } from "../../hooks/bills/useBillQuery";
+import { useTemplateQuery } from "../../hooks/templates/useTemplateQuery";
 import dayjs from "dayjs";
 import { FileSyncOutlined } from "@ant-design/icons";
 

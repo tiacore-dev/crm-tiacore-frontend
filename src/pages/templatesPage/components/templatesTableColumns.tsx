@@ -15,7 +15,8 @@ export const getTemplateColumns = (
   onSearchChange: (value: string) => void,
   onCompanyChange: (value: string) => void,
   downloadingId: string | null,
-  onDownload: (template_id: string) => void
+  onDownload: (template_id: string) => void,
+  hasPermission: (permission: string) => boolean // Добавляем параметр
 ): ColumnType<ITemplate>[] => {
   return [
     {
@@ -105,6 +106,11 @@ export const getTemplateColumns = (
       render: (_: string, record: ITemplate) => {
         if (!record.s3_key) return "-";
         const fileName = record.s3_key.split("/").pop() || "Файл";
+
+        // Проверяем права перед отображением кнопки
+        if (!hasPermission("download_template")) {
+          return <span>{fileName}</span>; // Просто текст без возможности скачать
+        }
 
         return (
           <Button

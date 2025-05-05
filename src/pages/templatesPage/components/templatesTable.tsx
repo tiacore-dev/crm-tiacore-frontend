@@ -13,6 +13,7 @@ import {
 import { downloadTemplate } from "../../../api/templatesApi";
 import { useState } from "react";
 import { RootState } from "../../../redux/store";
+import { usePermissions } from "../../../context/permissionsContext";
 
 interface TemplatesTableProps {
   data: ITemplate[];
@@ -34,6 +35,7 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (state: RootState) => state.templates
   );
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const { hasPermission } = usePermissions(); // Добавляем хук
 
   const handleDownload = async (template_id: string) => {
     setDownloadingId(template_id);
@@ -60,7 +62,8 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (value) => dispatch(setSearch(value)),
     (value) => dispatch(setCompany(value)),
     downloadingId,
-    handleDownload
+    handleDownload,
+    hasPermission
   );
 
   // 1. Фильтрация данных

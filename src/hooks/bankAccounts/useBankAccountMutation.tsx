@@ -51,11 +51,11 @@ export const useBankAccountMutations = (
         ? updateBankAccount(bank_account_id, editedData)
         : Promise.reject(),
     onSuccess: () => {
-      if (bank_account_id) {
-        queryClient.invalidateQueries({
-          queryKey: ["bankAccountDetails", bank_account_id],
-        });
-      }
+      // if (bank_account_id) {
+      queryClient.invalidateQueries({
+        queryKey: ["bank_accounts"],
+      });
+      // }
       setIsEditing && setIsEditing(false);
       toast.success("Информация обновлена");
     },
@@ -65,9 +65,12 @@ export const useBankAccountMutations = (
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () =>
+    mutationFn: (bank_account_id: string) =>
       bank_account_id ? deleteBankAccount(bank_account_id) : Promise.reject(),
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["bank_accounts"],
+      });
       toast.success("Успешно удалено");
     },
     onError: () => {

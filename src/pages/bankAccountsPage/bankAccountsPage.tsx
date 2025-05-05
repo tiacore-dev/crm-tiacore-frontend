@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { BankAccountsTable } from "./components/bankAccountsTable";
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";

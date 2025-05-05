@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { Button, Spin } from "antd";
 import {
   useLegalEntitiesBuyers,
@@ -17,6 +17,7 @@ import { ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../redux/slices/legalEntitiesSlice";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ export const LegalEntitiesPage: React.FC = () => {
   const { search, company, entity_type } = useSelector(
     (state: RootState) => state.legalEntities
   );
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const buyersData = useLegalEntitiesBuyers();
   const selectionData = useLegalEntitiesForSelection();
@@ -59,12 +61,15 @@ export const LegalEntitiesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить контрагента
-                  </Button>
+                  {hasPermission("add_legal_entity_company_relation") &&
+                    hasPermission("add_legal_entity") && (
+                      <Button
+                        onClick={() => setIsModalVisible(true)}
+                        icon={<PlusOutlined />}
+                      >
+                        Добавить контрагента
+                      </Button>
+                    )}
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

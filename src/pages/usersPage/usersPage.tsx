@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { Button, Space, Spin } from "antd";
 import { useUserQueryAll } from "../../hooks/users/useUserQuery";
 import { UsersTable } from "./components/usersTable";

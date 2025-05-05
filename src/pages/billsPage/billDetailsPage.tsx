@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useBillQuery } from "../../hooks/bills/useBillQuery";
 import { useBillMutations } from "../../hooks/bills/useBillMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -18,8 +18,9 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { useBillDetailsQuery } from "../../hooks/billDetails/billDetailQuery";
 import { BillDetailsTable } from "./components/billDetailsTable";
-import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
@@ -34,6 +35,7 @@ export const BillDetailsPage: React.FC = () => {
   const { data: companiesResponse } = useCompaniesForSelection();
   const { data: servicesResponse } = useServiceQuery();
   const isMobile = useMobileDetection();
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -105,25 +107,30 @@ export const BillDetailsPage: React.FC = () => {
               <div className="main-container">
                 <div style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 16 }}>
-                    <Button
-                      onClick={() => {
-                        setShowEditModal(true);
-                      }}
-                    >
-                      <EditOutlined />
-                      Редактировать
-                    </Button>
-                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                      <DeleteOutlined /> Удалить
-                    </Button>
-                    {!isMobile && (
+                    {hasPermission("edit_bill") && (
+                      <Button
+                        onClick={() => {
+                          setShowEditModal(true);
+                        }}
+                      >
+                        <EditOutlined />
+                        Редактировать
+                      </Button>
+                    )}
+
+                    {hasPermission("delete_bill") && (
+                      <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                        <DeleteOutlined /> Удалить
+                      </Button>
+                    )}
+                    {!isMobile && hasPermission("generate_template") && (
                       <GenerateTemplateButton
                         billId={bill_id || ""}
                         entityType={"bill"}
                       />
                     )}
                   </Space>
-                  {isMobile && (
+                  {isMobile && hasPermission("generate_template") && (
                     <Space>
                       {" "}
                       <GenerateTemplateButton

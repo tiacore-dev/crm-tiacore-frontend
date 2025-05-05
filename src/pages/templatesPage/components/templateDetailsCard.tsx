@@ -6,6 +6,7 @@ import { ITemplate } from "../../../api/templatesApi";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { getCompanyNameById } from "../../../utils/infoById";
 import "../../../components/cards.css";
+import { usePermissions } from "../../../context/permissionsContext";
 
 interface TemplateDetailsCardProps {
   template: ITemplate;
@@ -17,6 +18,7 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
   onDownload,
 }) => {
   const { data: companiesResponse } = useCompaniesForSelection();
+  const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   return (
     <Descriptions bordered column={1}>
@@ -39,14 +41,17 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
         {template.s3_key ? (
           <Space>
             <span>{template.s3_key.split("/").pop()}</span>
-            <DownloadOutlined
-              onClick={onDownload}
-              style={{
-                color: "#1890ff",
-                cursor: "pointer",
-              }}
-              title="Скачать"
-            />
+
+            {hasPermission("download_template") && (
+              <DownloadOutlined
+                onClick={onDownload}
+                style={{
+                  color: "#1890ff",
+                  cursor: "pointer",
+                }}
+                title="Скачать"
+              />
+            )}
           </Space>
         ) : (
           "Файл отсутствует"

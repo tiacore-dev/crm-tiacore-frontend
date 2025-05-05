@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin } from "antd";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { PlusOutlined } from "@ant-design/icons";
 import { RolesTable } from "./components/rolesTable";
 import { useRolesQuery } from "../../hooks/role/useRoleQuery";
