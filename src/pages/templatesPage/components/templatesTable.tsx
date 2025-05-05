@@ -84,22 +84,26 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
         dataSource={processedData}
         rowKey="template_id"
         loading={loading}
-        pagination={{
-          current: page,
-          pageSize: page_size,
-          total: filteredData.length,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => (
-            <Typography.Text>Всего шаблонов: {total}</Typography.Text>
-          ),
-          onChange: (newPage, newPageSize) => {
-            if (newPageSize !== page_size) {
-              dispatch(setPageSize(newPageSize));
-            }
-            dispatch(setPage(newPage));
-          },
-        }}
+        scroll={{ x: true }}
+        pagination={
+          filteredData.length > 10
+            ? {
+                current: page,
+                pageSize: page_size,
+                total: filteredData.length,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50", "100"],
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+                responsive: true,
+                showLessItems: true,
+              }
+            : false
+        }
       />
     </div>
   );

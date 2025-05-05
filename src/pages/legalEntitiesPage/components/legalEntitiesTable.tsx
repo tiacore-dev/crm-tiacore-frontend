@@ -58,22 +58,27 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
         dataSource={filteredData}
         rowKey="legal_entity_id"
         loading={loading}
-        pagination={{
-          current: page,
-          pageSize: page_size,
-          total: filteredData.length,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50"],
-          showTotal: (total) => (
-            <Typography.Text>Всего: {total}</Typography.Text>
-          ),
-          onChange: (newPage, newPageSize) => {
-            if (newPageSize !== page_size) {
-              dispatch(setPageSize(newPageSize));
-            }
-            dispatch(setPage(newPage));
-          },
-        }}
+        scroll={{ x: true }}
+        pagination={
+          filteredData.length > 10
+            ? {
+                current: page,
+                pageSize: page_size,
+                total: filteredData.length,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего: {total}</Typography.Text>
+                ),
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+              }
+            : false
+        }
       />
     </div>
   );

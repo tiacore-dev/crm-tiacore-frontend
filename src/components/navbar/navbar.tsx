@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, Button, Dropdown } from "antd";
-import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
+import { Menu, Button, Dropdown, Drawer } from "antd";
+import {
+  LogoutOutlined,
+  MenuOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { useCompany } from "../../context/companyContext";
 import "./navbar.css";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
-import { queryClient } from "../../context/companyContext";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [showSettings, setShowSettings] = useState(false);
+  const isMobile = useMobileDetection();
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [showSettings, setShowSettings] = useState(false); // Перенесли вызов хука в начало
   const {
     selectedCompanyId,
     setSelectedCompanyId,
@@ -42,13 +48,22 @@ export const Navbar: React.FC = () => {
     ...(!isSuperadmin ? [{ label: "Аккаунт", key: "/account" }] : []),
   ];
 
+  // Объединяем все пункты меню для мобильной версии
+  const mobileMenuItems = [...mainItems, ...settingsItems];
+
   const getSelectedKeys = () => {
     const currentPath = location.pathname;
-    const allItems = [...mainItems, ...settingsItems];
+    const allItems = isMobile
+      ? mobileMenuItems
+      : [...mainItems, ...(showSettings ? settingsItems : [])];
     const matchedItem = allItems.find((item) =>
       currentPath.startsWith(item.key)
     );
     return matchedItem ? [matchedItem.key] : [];
+  };
+
+  const toggleDrawer = () => {
+    setDrawerVisible(!drawerVisible);
   };
 
   const toggleSettings = () => {
@@ -68,6 +83,64 @@ export const Navbar: React.FC = () => {
     companies.find((c) => c.company_id === selectedCompanyId)?.company_name ||
     selectedCompanyId;
 
+  if (isMobile) {
+    return (
+      <>
+        <div className="navbar-container">
+          <Button
+            className="mobile-menu-button"
+            icon={<MenuOutlined />}
+            onClick={toggleDrawer}
+          />
+
+          <div className="buttons-container">
+            {!isSuperadmin && (
+              <Dropdown
+                menu={{ items: companyMenuItems }}
+                placement="bottomRight"
+              >
+                <Button className="company-selector">
+                  {selectedCompanyName || "Добавьте компанию"}
+                </Button>
+              </Dropdown>
+            )}
+
+            <button
+              className="animated-btn"
+              onClick={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+              }}
+            >
+              <div className="sign">
+                <LogoutOutlined />
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <Drawer
+          title="Меню"
+          placement="left"
+          onClose={toggleDrawer}
+          visible={drawerVisible}
+          width={280}
+        >
+          <Menu
+            mode="vertical"
+            items={mobileMenuItems}
+            selectedKeys={getSelectedKeys()}
+            onClick={({ key }) => {
+              navigate(key);
+              toggleDrawer();
+            }}
+          />
+        </Drawer>
+      </>
+    );
+  }
+
+  // Десктопная версия
   return (
     <div className={`navbar-container ${showSettings ? "settings-open" : ""}`}>
       <Menu

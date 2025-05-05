@@ -17,6 +17,7 @@ import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { ActDetailsTable } from "./components/actDetailsTable";
 import { createMemoizedHelpers } from "../../utils/infoById";
 import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -24,6 +25,7 @@ export const ActDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const isMobile = useMobileDetection();
 
   const { data: act, isLoading, isError } = useActQuery(act_id || "");
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
@@ -92,20 +94,31 @@ export const ActDetailsPage: React.FC = () => {
           {!isError && act && (
             <>
               <div className="main-container">
-                <Space style={{ marginBottom: 16 }}>
-                  <Button onClick={() => setShowEditModal(true)}>
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
-                  <GenerateTemplateButton
-                    actId={act_id || ""}
-                    entityType={"act"}
-                  />
-                </Space>
-
+                <div style={{ marginBottom: 16 }}>
+                  <Space style={{ marginBottom: 16 }}>
+                    <Button onClick={() => setShowEditModal(true)}>
+                      <EditOutlined />
+                      Редактировать
+                    </Button>
+                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                      <DeleteOutlined /> Удалить
+                    </Button>
+                    {!isMobile && (
+                      <GenerateTemplateButton
+                        actId={act_id || ""}
+                        entityType={"act"}
+                      />
+                    )}
+                  </Space>
+                  {isMobile && (
+                    <Space>
+                      <GenerateTemplateButton
+                        actId={act_id || ""}
+                        entityType={"act"}
+                      />
+                    </Space>
+                  )}
+                </div>
                 <ActDetailsDescriptions
                   act={act}
                   getEntityNameById={getEntityNameById}

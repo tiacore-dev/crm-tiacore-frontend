@@ -13,13 +13,14 @@ import { TemplateFormModal } from "./components/templateFormModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { TemplateDetailsCard } from "./components/templateDetailsCard";
 import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
+  const isMobile = useMobileDetection();
   const {
     data: template,
     isLoading,
@@ -84,20 +85,34 @@ export const TemplateDetailsPage: React.FC = () => {
           {!isError && template && (
             <>
               <div className="main-container">
-                <Space style={{ marginBottom: 16 }}>
-                  <Button onClick={handleEditClick}>
-                    {" "}
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
-                  <GenerateTemplateButton
-                    templateId={template_id || ""}
-                    entityType={template?.entity === "act" ? "act" : "bill"}
-                  />
-                </Space>
+                <div style={{ marginBottom: 16 }}>
+                  {/* Первая строка - основные кнопки */}
+                  <Space style={{ marginBottom: isMobile ? 16 : 0 }}>
+                    <Button onClick={handleEditClick}>
+                      <EditOutlined />
+                      Редактировать
+                    </Button>
+                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                      <DeleteOutlined /> Удалить
+                    </Button>
+                    {!isMobile && (
+                      <GenerateTemplateButton
+                        templateId={template_id || ""}
+                        entityType={template?.entity === "act" ? "act" : "bill"}
+                      />
+                    )}
+                  </Space>
+
+                  {/* Вторая строка - только для мобильных */}
+                  {isMobile && (
+                    <Space>
+                      <GenerateTemplateButton
+                        templateId={template_id || ""}
+                        entityType={template?.entity === "act" ? "act" : "bill"}
+                      />
+                    </Space>
+                  )}
+                </div>
                 <TemplateDetailsCard
                   template={template}
                   onDownload={handleDownload}

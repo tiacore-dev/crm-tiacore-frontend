@@ -69,13 +69,13 @@ export const getLegalEntitiesTableColumns = ({
       title: "ИНН",
       dataIndex: "inn",
       key: "inn",
-      width: 150,
+      // width: 150,
     },
     {
       title: "КПП",
       dataIndex: "kpp",
       key: "kpp",
-      width: 130,
+      // width: 130,
       render: (kpp) => kpp || "—",
     },
     {
@@ -97,7 +97,7 @@ export const getLegalEntitiesTableColumns = ({
           key: "vat_rate",
           render: (vat_rate) =>
             vat_rate ? `${vat_rate}%` : "НДС не облагается",
-          width: 200,
+          // width: 200,
         },
         {
           title: "Подписант",

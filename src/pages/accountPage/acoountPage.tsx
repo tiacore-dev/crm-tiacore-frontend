@@ -24,42 +24,24 @@ export const AccountPage: React.FC = () => {
   const selectedCompanyId =
     localStorage.getItem("selectedCompanyId") || undefined;
   const userId = localStorage.getItem("user_id");
-
-  // Обрабатываем случай, когда userId равен null
-  const {
-    data: userDetails,
-    // isLoading,
-    // isError,
-  } = useUserDetailsQuery(userId || "");
+  const { data: userDetails } = useUserDetailsQuery(userId || "");
 
   if (!userId) {
     return <div>Пользователь не авторизован</div>;
   }
-
   return (
     <div className="main-container">
-      <div
-        style={{
-          display: "flex",
-          gap: "24px",
-          alignItems: "flex-start",
-        }}
-      >
-        <div style={{ flex: 1, marginTop: "16px", marginBottom: "16px" }}>
-          <UserDetailsCard userDetails={userDetails} />
-        </div>
-        <div style={{ flex: 1 }}>
-          <UserCompanyRelationsTable
-            userId={userId}
-            companyId={selectedCompanyId}
-            fromAccount={true}
-          />
-        </div>
-      </div>
+      <UserDetailsCard userDetails={userDetails} />
+      <UserCompanyRelationsTable
+        userId={userId}
+        companyId={selectedCompanyId}
+        fromAccount={true}
+      />
       <Button
         onClick={() => {
           setShowEditModal(true);
         }}
+        style={{ marginTop: 16 }}
       >
         <EditOutlined />
         Редактировать

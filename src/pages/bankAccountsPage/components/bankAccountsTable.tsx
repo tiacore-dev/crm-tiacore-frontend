@@ -95,6 +95,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
         dataSource={filteredData}
         rowKey="bank_account_id"
         loading={loading}
+        scroll={{ x: true }}
         pagination={
           filteredData.length >= 10
             ? {

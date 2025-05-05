@@ -94,16 +94,21 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
         dataSource={data.contracts}
         rowKey="contract_id"
         loading={loading}
-        pagination={{
-          current: currentPage,
-          pageSize: pageSize,
-          total: data.total,
-          showSizeChanger: true,
-          pageSizeOptions: ["2", "10", "20", "50", "100"],
-          showTotal: (total) => (
-            <Typography.Text>Всего: {total}</Typography.Text>
-          ),
-        }}
+        scroll={{ x: true }}
+        pagination={
+          data.total > 10
+            ? {
+                current: currentPage,
+                pageSize: pageSize,
+                total: data.total,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50", "100"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего: {total}</Typography.Text>
+                ),
+              }
+            : false
+        }
         onChange={onTableChange}
       />
     </div>

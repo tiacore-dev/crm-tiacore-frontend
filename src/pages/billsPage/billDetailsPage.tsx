@@ -19,6 +19,7 @@ import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { useBillDetailsQuery } from "../../hooks/billDetails/billDetailQuery";
 import { BillDetailsTable } from "./components/billDetailsTable";
 import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
 
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
@@ -32,6 +33,7 @@ export const BillDetailsPage: React.FC = () => {
   const { data: contractsResponse } = useContractsForSelection();
   const { data: companiesResponse } = useCompaniesForSelection();
   const { data: servicesResponse } = useServiceQuery();
+  const isMobile = useMobileDetection();
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -101,23 +103,37 @@ export const BillDetailsPage: React.FC = () => {
           {!isError && bill && (
             <>
               <div className="main-container">
-                <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => {
-                      setShowEditModal(true);
-                    }}
-                  >
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
-                  <GenerateTemplateButton
-                    billId={bill_id || ""}
-                    entityType={"bill"}
-                  />
-                </Space>
+                <div style={{ marginBottom: 16 }}>
+                  <Space style={{ marginBottom: 16 }}>
+                    <Button
+                      onClick={() => {
+                        setShowEditModal(true);
+                      }}
+                    >
+                      <EditOutlined />
+                      Редактировать
+                    </Button>
+                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                      <DeleteOutlined /> Удалить
+                    </Button>
+                    {!isMobile && (
+                      <GenerateTemplateButton
+                        billId={bill_id || ""}
+                        entityType={"bill"}
+                      />
+                    )}
+                  </Space>
+                  {isMobile && (
+                    <Space>
+                      {" "}
+                      <GenerateTemplateButton
+                        billId={bill_id || ""}
+                        entityType={"bill"}
+                      />{" "}
+                    </Space>
+                  )}
+                </div>
+
                 <BillDetailsCard
                   bill={bill}
                   getEntityNameById={getEntityNameById}

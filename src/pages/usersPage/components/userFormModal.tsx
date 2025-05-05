@@ -132,10 +132,10 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
               type: "email",
               message: "Введите корректный email адрес",
             },
-            {
-              pattern: emailRegex,
-              message: "Email должен быть в формате example@domain.com",
-            },
+            // {
+            //   pattern: emailRegex,
+            //   message: "Email должен быть в формате example@domain.com",
+            // },
             { min: 3, message: "Минимум 3 символа" },
           ]}
         >

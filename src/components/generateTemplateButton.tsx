@@ -99,6 +99,8 @@ export const GenerateTemplateButton: React.FC<GenerateTemplateButtonProps> = ({
         onOk={handleGenerate}
         onCancel={closeModal}
         okText="Сгенерировать"
+        width="90%"
+        style={{ maxWidth: 700 }}
         confirmLoading={isGenerating}
       >
         <Form form={form} layout="vertical" initialValues={{ is_pdf: false }}>
