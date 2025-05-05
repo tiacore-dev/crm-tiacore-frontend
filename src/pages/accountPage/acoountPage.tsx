@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { refreshToken } from "../loginPage/auth";
+// import { refreshToken } from "../loginPage/auth";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
-import { Button, Typography } from "antd";
+import { Button } from "antd";
 import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
 import { UserDetailsCard } from "../usersPage/components/userDetails";
 import { EditOutlined } from "@ant-design/icons";
@@ -28,8 +28,8 @@ export const AccountPage: React.FC = () => {
   // Обрабатываем случай, когда userId равен null
   const {
     data: userDetails,
-    isLoading,
-    isError,
+    // isLoading,
+    // isError,
   } = useUserDetailsQuery(userId || "");
 
   if (!userId) {

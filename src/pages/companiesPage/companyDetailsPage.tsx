@@ -14,7 +14,7 @@ import { UserCompanyRelationsTable } from "../../components/userCompanyRelations
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
 import {
   useLegalEntitiesSellers,
-  useLegalEntityFiltredQuery,
+  // useLegalEntityFiltredQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
 
@@ -35,11 +35,11 @@ export const CompanyDetailsPage: React.FC = () => {
 
   const {
     data: legalEntitiesData,
-    isLoading: isLoadingEntity,
-    isError: IsErrorEntity,
+    // isLoading: isLoadingEntity,
+    // isError: IsErrorEntity,
   } = useLegalEntitiesSellers();
 
-  const { deleteMutation, updateMutation } = useCompanyMutations(
+  const { deleteMutation } = useCompanyMutations(
     company_id || "",
     companyDetails?.company_name || "",
     companyDetails?.description || ""

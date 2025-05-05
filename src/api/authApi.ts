@@ -1,6 +1,7 @@
+// src/api/authApi.ts
 import axios from "axios";
-import { IUser } from "../../api/usersApi";
-import { axiosInstance } from "../../axiosConfig";
+import { axiosInstance } from "../axiosConfig";
+import { IUser } from "./usersApi";
 
 export const registrationUser = async (newUser: {
   email: string;
@@ -14,6 +15,17 @@ export const registrationUser = async (newUser: {
       "Content-Type": "application/json",
     },
   });
+  return response.data;
+};
+
+export const inviteUser = async (data: {
+  email: string;
+  company_id: string;
+  role_id: string;
+}) => {
+  const url = process.env.REACT_APP_API_URL;
+  if (!url) throw new Error("REACT_APP_API_URL is not defined");
+  const response = await axiosInstance.post(`${url}/api/invite`, data);
   return response.data;
 };
 
@@ -57,4 +69,39 @@ export const refreshToken = async (): Promise<string | null> => {
     localStorage.removeItem("selectedCompanyId");
     return null;
   }
+};
+
+export const loginUser = async (data: { email: string; password: string }) => {
+  const url = process.env.REACT_APP_API_URL;
+  if (!url) throw new Error("REACT_APP_API_URL is not defined");
+
+  const response = await axiosInstance.post(`${url}/api/auth/login`, data);
+  return response.data;
+};
+
+export const verifyEmail = async (token: string) => {
+  const url = process.env.REACT_APP_API_URL;
+  if (!url) throw new Error("REACT_APP_API_URL is not defined");
+
+  const response = await axiosInstance.get(
+    `${url}/api/verify-email?token=${token}`
+  );
+  return response.data;
+};
+
+export const resendVerification = async (email: string) => {
+  const url = process.env.REACT_APP_API_URL;
+  if (!url) throw new Error("REACT_APP_API_URL is not defined");
+
+  await axiosInstance.post(`${url}/api/resend-verification`, { email });
+};
+
+export const acceptInvite = async (token: string) => {
+  const url = process.env.REACT_APP_API_URL;
+  if (!url) throw new Error("REACT_APP_API_URL is not defined");
+
+  const response = await axiosInstance.get(
+    `${url}/api/accept-invite?token=${token}`
+  );
+  return response.data;
 };

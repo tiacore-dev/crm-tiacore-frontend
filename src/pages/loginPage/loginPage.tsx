@@ -1,15 +1,18 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "../../axiosConfig";
-import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+// import { useMutation } from "@tanstack/react-query";
+// import toast from "react-hot-toast";
 import { Button, Typography, Spin, Space } from "antd";
 import "./loginPage.css";
 import { FloatingInput } from "../../components/floatingInput/floatingInput";
 import { UserFormModal } from "../usersPage/components/userFormModal";
+import {
+  useLoginMutation,
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
+} from "../../hooks/auth/useAuthMutations";
 
-// Объявляем расширение интерфейса Window
 declare global {
   interface Window {
     verificationExecuted?: boolean;
@@ -19,23 +22,6 @@ declare global {
 type FormData = {
   email: string;
   password: string;
-};
-
-type AuthResponse = {
-  access_token: string;
-  refresh_token: string;
-  permissions: Record<string, string[]>;
-  is_superadmin: boolean;
-  user_id: string;
-};
-
-type ApiError = {
-  response?: {
-    status: number;
-    data: {
-      message: string;
-    };
-  };
 };
 
 export const LoginPage: React.FC = () => {
@@ -52,52 +38,15 @@ export const LoginPage: React.FC = () => {
   });
 
   const emailValue = watch("email");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const location = useLocation();
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
+  const [showResendLink, setShowResendLink] = useState(false);
 
-  // Мутация для повторной отправки письма подтверждения
-  const resendVerificationMutation = useMutation({
-    mutationFn: async (email: string) => {
-      const url = process.env.REACT_APP_API_URL;
-      if (!url) throw new Error("REACT_APP_API_URL is not defined");
+  const resendVerificationMutation = useResendVerificationMutation();
+  const verifyEmailMutation = useVerifyEmailMutation();
+  const loginMutation = useLoginMutation();
 
-      await axiosInstance.post(`${url}/api/resend-verification`, { email });
-    },
-    onSuccess: () => {
-      toast.success("Письмо подтверждения отправлено повторно");
-    },
-    onError: () => {
-      toast.error("Ошибка при отправке письма подтверждения");
-    },
-  });
-
-  // Мутация для подтверждения email
-  const verifyEmailMutation = useMutation({
-    mutationFn: async (token: string) => {
-      const url = process.env.REACT_APP_API_URL;
-      if (!url) throw new Error("REACT_APP_API_URL is not defined");
-
-      const response = await axiosInstance.get(
-        `${url}/api/verify-email?token=${token}`
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      window.history.replaceState(null, "", window.location.pathname);
-      toast.success(
-        "Email успешно подтверждён! Теперь вы можете войти в систему.",
-        { id: "email-verified" }
-      );
-    },
-    onError: (error: ApiError) => {
-      const errorMessage =
-        error.response?.data.message || "Ошибка при подтверждении email";
-      toast.error(errorMessage, { id: "email-verify-error" });
-    },
-  });
-
-  // Проверяем токен при загрузке страницы
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const token = searchParams.get("token");
@@ -112,58 +61,20 @@ export const LoginPage: React.FC = () => {
     };
   }, [location.search]);
 
-  const loginMutation = useMutation<AuthResponse, ApiError, FormData>({
-    mutationFn: async (data) => {
-      const url = process.env.REACT_APP_API_URL;
-      if (!url) throw new Error("REACT_APP_API_URL is not defined");
-
-      const response = await axiosInstance.post<AuthResponse>(
-        `${url}/api/auth/login`,
-        data
-      );
-      return response.data;
-    },
-    onSuccess: (data) => {
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
-      localStorage.setItem("is_superadmin", data.is_superadmin.toString());
-      if (!data.is_superadmin) {
-        localStorage.setItem("permissions", JSON.stringify(data.permissions));
-        const companyIds = Object.keys(data.permissions);
-        if (companyIds.length > 0) {
-          localStorage.setItem("selectedCompanyId", companyIds[0]);
-        }
-      }
-      localStorage.setItem("user_id", data.user_id);
-
-      window.location.href = "/home";
-    },
-    onError: (error) => {
-      if (error.response?.status === 403) {
-        toast.error(
-          <div>
-            Email не подтвержден.{" "}
-            <Button
-              type="link"
-              onClick={() => resendVerificationMutation.mutate(emailValue)}
-              style={{ padding: 0, height: "auto" }}
-            >
-              Отправить письмо повторно
-            </Button>
-          </div>,
-          { duration: 8000, id: "email-not-verified" }
-        );
-      } else {
-        const errorMessage =
-          error.response?.data.message || "Ошибка при авторизации";
-        toast.error(errorMessage, { id: "login-error" });
-      }
-    },
-  });
-
   const onSubmit = useCallback(
     (data: FormData) => {
-      loginMutation.mutate(data);
+      loginMutation.mutate(data, {
+        onSuccess: () => {
+          setShowResendLink(false);
+        },
+        onError: (error) => {
+          if (error.response?.status === 403) {
+            setShowResendLink(true);
+          } else {
+            setShowResendLink(false);
+          }
+        },
+      });
     },
     [loginMutation]
   );
@@ -171,6 +82,22 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="login_container">
       <div className="form">
+        {showResendLink && (
+          <div className="resend-notification">
+            <Typography.Text type="danger" style={{ marginRight: 8 }}>
+              Email не подтвержден
+            </Typography.Text>
+            <Button
+              type="link"
+              loading={resendVerificationMutation.isPending}
+              onClick={() => resendVerificationMutation.mutate(emailValue)}
+              style={{ padding: 0, marginRight: 8 }}
+            >
+              Отправить письмо повторно
+            </Button>
+          </div>
+        )}
+
         <Typography.Title level={3} className="form-title">
           Вход
         </Typography.Title>

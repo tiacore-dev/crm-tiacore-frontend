@@ -1,13 +1,4 @@
-import {
-  Table,
-  Tag,
-  Typography,
-  Spin,
-  Space,
-  Menu,
-  Dropdown,
-  Button,
-} from "antd";
+import { Table, Tag, Typography, Spin, Space, Dropdown, Button } from "antd";
 import {
   useUserRelationsQuery,
   useCompanyRelationsQuery,
@@ -30,6 +21,7 @@ import { useUserCompanyRelationsMutations } from "../../hooks/userCompanyRelatio
 import { ConfirmDeleteModal } from "../modals/confirmDeleteModal";
 import { RelationFormModal } from "./userCompanyRelationFormModal";
 import { useRolesQuery } from "../../hooks/role/useRoleQuery";
+import { InviteFormModal } from "../../pages/invitePages/inviteFormModal";
 
 const { Text } = Typography;
 
@@ -69,6 +61,7 @@ export const UserCompanyRelationsTable = ({
   const [editingRelation, setEditingRelation] =
     useState<IUserCompanyRelation | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
 
   // Мутации для удаления
   const { deleteMutation } = useUserCompanyRelationsMutations(
@@ -80,8 +73,14 @@ export const UserCompanyRelationsTable = ({
   );
 
   const handleCreate = () => {
-    setEditingRelation(null);
-    setIsEditModalVisible(true);
+    if (companyId) {
+      // Если есть companyId (значит мы в контексте компании) - показываем InviteFormModal
+      setIsInviteModalVisible(true);
+    } else {
+      // Иначе показываем стандартный RelationFormModal
+      setEditingRelation(null);
+      setIsEditModalVisible(true);
+    }
   };
 
   const handleEdit = (relation: IUserCompanyRelation) => {
@@ -218,7 +217,14 @@ export const UserCompanyRelationsTable = ({
           isDeleteLoading={deleteMutation.isPending}
         />
       )}
-
+      {isInviteModalVisible && (
+        <InviteFormModal
+          visible={isInviteModalVisible}
+          onCancel={() => setIsInviteModalVisible(false)}
+          onSuccess={handleSuccess}
+          roles={rolesData?.roles || []}
+        />
+      )}
       {isEditModalVisible && (
         <RelationFormModal
           visible={isEditModalVisible}

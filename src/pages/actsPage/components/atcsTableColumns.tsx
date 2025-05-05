@@ -21,8 +21,9 @@ interface ActsTableColumnsProps {
   onSortChange?: (sortBy: string, order: string) => void;
   onFilterChange?: (field: string, value: any) => void;
   filters?: {
-    bank_account?: string;
     contract?: string;
+    buyer?: string;
+    seller?: string;
     act_date_from?: number;
     act_date_to?: number;
   };
@@ -94,7 +95,6 @@ export const getActsTableColumns = ({
         onClick: () => handleSortChange("act_date"),
       }),
       filterIcon: <CalendarOutlined />,
-
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <div>
@@ -141,7 +141,6 @@ export const getActsTableColumns = ({
       render: (contractId?: string) =>
         contractId ? getContractName(contractId) : "-",
       filterIcon: <SearchOutlined />,
-
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
           <Select
@@ -167,12 +166,52 @@ export const getActsTableColumns = ({
       dataIndex: "buyer",
       key: "buyer",
       render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
+      filterIcon: <SearchOutlined />,
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Выберите заказчика"
+            allowClear
+            showSearch
+            options={legalEntitiesData.map((entity) => ({
+              value: entity.legal_entity_id,
+              label: entity.legal_entity_name,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            onChange={(value) => onFilterChange?.("buyer", value)}
+            value={filters?.buyer}
+          />
+        </div>
+      ),
     },
     {
       title: "Исполнитель",
       dataIndex: "seller",
       key: "seller",
       render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
+      filterIcon: <SearchOutlined />,
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Выберите исполнителя"
+            allowClear
+            showSearch
+            options={legalEntitiesData.map((entity) => ({
+              value: entity.legal_entity_id,
+              label: entity.legal_entity_name,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            onChange={(value) => onFilterChange?.("seller", value)}
+            value={filters?.seller}
+          />
+        </div>
+      ),
     },
   ];
 };

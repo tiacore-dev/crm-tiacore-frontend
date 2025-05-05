@@ -3,6 +3,8 @@ import { RootState } from "../store";
 
 interface ActsState {
   contract?: string;
+  buyer?: string;
+  seller?: string;
   act_date_to?: number;
   act_date_from?: number;
   sort_by?: string;
@@ -13,6 +15,8 @@ interface ActsState {
 
 const initialState: ActsState = {
   contract: undefined,
+  buyer: undefined,
+  seller: undefined,
   act_date_to: undefined,
   act_date_from: undefined,
   sort_by: undefined,
@@ -27,6 +31,14 @@ export const actsSlice = createSlice({
   reducers: {
     setContract: (state, action: PayloadAction<string>) => {
       state.contract = action.payload;
+      state.page = 1;
+    },
+    setBuyer: (state, action: PayloadAction<string>) => {
+      state.buyer = action.payload;
+      state.page = 1;
+    },
+    setSeller: (state, action: PayloadAction<string>) => {
+      state.seller = action.payload;
       state.page = 1;
     },
     setDateTo: (state, action: PayloadAction<number>) => {
@@ -52,12 +64,14 @@ export const actsSlice = createSlice({
       state.page_size = action.payload;
       state.page = 1;
     },
-    resetState: () => initialState, // Добавляем действие для сброса состояния
+    resetState: () => initialState,
   },
 });
 
 export const {
   setContract,
+  setBuyer,
+  setSeller,
   setDateTo,
   setDateFrom,
   setSortBy,

@@ -24,6 +24,8 @@ interface ActsTableProps {
   order?: string;
   filters?: {
     contract?: string;
+    buyer?: string;
+    seller?: string;
     act_date_from?: number;
     act_date_to?: number;
   };

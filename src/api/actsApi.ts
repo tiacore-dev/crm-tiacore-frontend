@@ -15,6 +15,7 @@ export interface IAct {
 }
 
 // Функция для получения списка пользователей с параметрами
+
 export const fetchActs = async (
   queryParams: IActsQueryParams,
   selectedCompanyId?: string | null
@@ -22,12 +23,7 @@ export const fetchActs = async (
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
-  // Создаем копию параметров, удаляя undefined значения
-  // const params = Object.fromEntries(
-  //   Object.entries(queryParams).filter(([_, value]) => value !== undefined)
-  // );
   const params = {
     ...Object.fromEntries(
       Object.entries(queryParams).filter(([_, value]) => value !== undefined)
@@ -36,7 +32,6 @@ export const fetchActs = async (
       ? { company: selectedCompanyId }
       : {}),
   };
-
   const response = await axiosInstance.get(`${url}/api/acts/all`, {
     params,
     headers: {
