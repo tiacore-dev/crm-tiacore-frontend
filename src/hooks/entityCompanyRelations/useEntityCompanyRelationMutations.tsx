@@ -2,9 +2,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createEntityCompanyRelation } from "../../api/entityCompanyRelationsApi";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
-import { Button } from "antd";
+// import { Button } from "antd";
 
 export const useEntityCompanyRelationsMutations = (
   entity_company_relation_id: string,
@@ -14,7 +14,7 @@ export const useEntityCompanyRelationsMutations = (
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const createMutation = useMutation({
     mutationFn: createEntityCompanyRelation,

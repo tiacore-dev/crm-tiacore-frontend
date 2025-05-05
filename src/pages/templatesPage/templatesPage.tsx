@@ -9,7 +9,7 @@ import { TemplatesTable } from "./components/templatesTable";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons"; // Добавлен ClearOutlined
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { TemplateFormModal } from "./components/templateFormModal";
-import { templatesSelector } from "../../redux/slices/templatesSlice";
+// import { templatesSelector } from "../../redux/slices/templatesSlice";
 import { useSelector } from "react-redux";
 import { resetState } from "../../redux/slices/templatesSlice"; // Импорт нового действия
 import { RootState } from "../../redux/store";

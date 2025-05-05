@@ -3,11 +3,11 @@ import React from "react";
 import type { TableColumnsType } from "antd";
 import { Button, Input, Table, Typography } from "antd";
 import {
-  usersSelector,
+  // usersSelector,
   setFullName,
   setPage,
   setPageSize,
-  setPosition,
+  // setPosition,
   setEmail,
 } from "../../../redux/slices/usersSlice";
 import { useNavigate } from "react-router-dom";
@@ -29,9 +29,13 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { email, full_name, position, page, page_size } = useSelector(
-    (state: RootState) => state.users
-  );
+  const {
+    email,
+    full_name,
+    //  position,
+    page,
+    page_size,
+  } = useSelector((state: RootState) => state.users);
 
   const columns: TableColumnsType<IUser> = [
     {

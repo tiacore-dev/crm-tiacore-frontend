@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { fetchActs, fetchAct, IAct } from "../../api/actsApi";
-import { actsSelector } from "../../redux/slices/actsSlice";
+// import { actsSelector } from "../../redux/slices/actsSlice";
 import { RootState } from "../../redux/store";
 import { useCompany } from "../../context/companyContext";
 

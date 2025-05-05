@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { IPermission } from "../../../api/permissionsApi";
+// import { IPermission } from "../../../api/permissionsApi";
 import { IRole } from "../../../api/roleApi";
-import { IRolePermission } from "../../../api/rolePermissionsRelationsApi";
+// import { IRolePermission } from "../../../api/rolePermissionsRelationsApi";
 import { Button, Table, TableColumnsType, Typography } from "antd";
 
 interface RolesTableResponse {

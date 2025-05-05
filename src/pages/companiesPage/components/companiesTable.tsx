@@ -1,4 +1,4 @@
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 import { ICompany } from "../../../api/companiesApi";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompaniesTableColumns } from "./companiesTableColumns";

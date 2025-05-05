@@ -1,12 +1,12 @@
 import {
   ILegalEntityTypesResponse,
   IContractStatusesResponse,
-  IUserRolesResponse,
+  // IUserRolesResponse,
 } from "../../api/baseApi";
 import {
   fetchEntityTypes,
   fetchContractStatuses,
-  fetchUserRoles,
+  // fetchUserRoles,
 } from "../../api/baseApi";
 import { useQuery } from "@tanstack/react-query";
 

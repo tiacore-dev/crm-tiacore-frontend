@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
@@ -41,7 +41,7 @@ export const ActDetailsPage: React.FC = () => {
   const {
     data: actDetails,
     isLoading: isLoadingDetails,
-    isError: isErrorDetails,
+    // isError: isErrorDetails,
   } = useActDetailsQuery(act_id);
 
   const { deleteMutation } = useActsMutations(

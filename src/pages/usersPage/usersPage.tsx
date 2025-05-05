@@ -14,9 +14,12 @@ export const UsersPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { email, full_name, position, page, page_size } = useSelector(
-    (state: RootState) => state.users
-  );
+  const {
+    email,
+    full_name,
+    position,
+    // page, page_size
+  } = useSelector((state: RootState) => state.users);
 
   useEffect(() => {
     dispatch(

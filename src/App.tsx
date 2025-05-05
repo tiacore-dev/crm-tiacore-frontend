@@ -22,7 +22,7 @@ import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { ContractDetailsPage } from "./pages/contractsPage/contractDetailsPage";
-import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
+// import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
 import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";

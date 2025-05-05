@@ -1,5 +1,5 @@
 import { Modal, Form, Select, Button, Input, message } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useInviteMutation } from "../../hooks/auth/useAuthMutations";
 
 interface InviteFormModalProps {

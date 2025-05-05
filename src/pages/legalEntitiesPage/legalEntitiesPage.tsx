@@ -6,12 +6,12 @@ import { Button, Spin } from "antd";
 import {
   useLegalEntitiesBuyers,
   useLegalEntitiesForSelection,
-  useLegalEntityQuery,
+  // useLegalEntityQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { PlusOutlined } from "@ant-design/icons";
-import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
+// import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
 import { Space } from "antd";
 import { ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../redux/slices/legalEntitiesSlice";

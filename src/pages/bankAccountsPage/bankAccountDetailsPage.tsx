@@ -9,12 +9,12 @@ import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
 import { BankAccountCreateModal } from "./components/bankAccountFormModal";
 import {
-  useLegalEntitiesForSelection,
+  // useLegalEntitiesForSelection,
   useLegalEntityDetailsQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { BankAccountDetailsDescriptions } from "./components/bankAccountDetailsCard";
-import { getEntityNameById } from "../../utils/infoById";
+// import { getEntityNameById } from "../../utils/infoById";
 
 export const BankAccountDetailsPage: React.FC = () => {
   const { bank_account_id } = useParams<{ bank_account_id: string }>();
@@ -32,9 +32,9 @@ export const BankAccountDetailsPage: React.FC = () => {
   } = useBankcAccountDetailsQuery(bank_account_id!);
   const {
     data: legalEntityData,
-    isLoading: isLoadingEntity,
-    isError: isErrorEntity,
-    refetch,
+    // isLoading: isLoadingEntity,
+    // isError: isErrorEntity,
+    // refetch,
   } = useLegalEntityDetailsQuery(legal_entity_id || "");
   // const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
 
@@ -64,7 +64,13 @@ export const BankAccountDetailsPage: React.FC = () => {
         ])
       );
     }
-  }, [bank_account, dispatch, bank_account_id, legalEntityData]);
+  }, [
+    bank_account,
+    dispatch,
+    bank_account_id,
+    legalEntityData,
+    legal_entity_id,
+  ]);
 
   const handleDelete = () => {
     deleteMutation.mutate(undefined, {

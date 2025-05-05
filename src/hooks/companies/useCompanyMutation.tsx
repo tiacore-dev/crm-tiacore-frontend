@@ -21,7 +21,7 @@ export const useCompanyMutations = (
   const navigate = useNavigate();
   const {
     setAvailableCompanies,
-    availableCompanies,
+    // availableCompanies,
     setSelectedCompanyId,
     isSuperadmin,
     selectedCompanyId,

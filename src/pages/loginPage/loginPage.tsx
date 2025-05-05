@@ -59,7 +59,7 @@ export const LoginPage: React.FC = () => {
     return () => {
       window.verificationExecuted = false;
     };
-  }, [location.search]);
+  }, [location.search, verifyEmailMutation]);
 
   const onSubmit = useCallback(
     (data: FormData) => {

@@ -44,7 +44,7 @@ export const BillDetailsPage: React.FC = () => {
   const {
     data: billDetails,
     isLoading: isLoadingDetails,
-    isError: isErrorDetails,
+    // isError: isErrorDetails,
   } = useBillDetailsQuery(bill_id);
 
   const { deleteMutation } = useBillMutations(

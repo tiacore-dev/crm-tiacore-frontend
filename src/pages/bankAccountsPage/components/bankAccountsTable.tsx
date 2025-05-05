@@ -5,11 +5,11 @@ import { IBankAccount } from "../../../api/bankAccountsApi";
 import { getBankAccountsTableColumnsForLegalEntity } from "./bankAccountsTableColumnsForLegalEntity";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  bankAccountsSelector,
+  // bankAccountsSelector,
   setPage,
   setPageSize,
   setAccountNumber,
-  setLegalEntity,
+  // setLegalEntity,
   setBankName,
 } from "../../../redux/slices/bankAccountsSlice";
 import { RootState } from "../../../redux/store";

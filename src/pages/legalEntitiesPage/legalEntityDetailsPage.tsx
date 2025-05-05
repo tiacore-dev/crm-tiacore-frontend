@@ -14,7 +14,7 @@ import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTa
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useCompany } from "../../context/companyContext";
 import { BankAccountCreateModal } from "../bankAccountsPage/components/bankAccountFormModal";
-import { useIsSellerQuery } from "../../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
+// import { useIsSellerQuery } from "../../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
@@ -34,11 +34,11 @@ export const LegalEntityDetailsPage: React.FC = () => {
     refetch,
   } = useLegalEntityDetailsQuery(legal_entity_id || "");
 
-  const {
-    data: sellers,
-    isLoading: loadingIsSellers,
-    isError: errorEsSellers,
-  } = useIsSellerQuery(legal_entity_id, selectedCompanyId);
+  // const {
+  // data: sellers,
+  // isLoading: loadingIsSellers,
+  // isError: errorEsSellers,
+  // } = useIsSellerQuery(legal_entity_id, selectedCompanyId);
 
   const { deleteMutation } = useLegalEntityMutations(
     legal_entity_id || "",
@@ -103,9 +103,9 @@ export const LegalEntityDetailsPage: React.FC = () => {
     });
   };
 
-  const isSeller = !!sellers?.relations?.length;
+  // const isSeller = !!sellers?.relations?.length;
   const fromPage = location.state?.from;
-  const showAdditionalFields = fromPage === "company" || isSeller;
+  // const showAdditionalFields = fromPage === "company" || isSeller;
 
   const { data: bankAccountsData, isLoading: isBankAccountsLoading } =
     useBankAccountQuery({

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form } from "antd";
-import { ILegalEntityType } from "../../../api/baseApi";
+// import { ILegalEntityType } from "../../../api/baseApi";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntityMutation";
 import {
@@ -60,8 +60,10 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   const { createMutation: createRelationMutation } =
     useEntityCompanyRelationsMutations("", "", "", "");
 
-  const { data: existingEntity, isFetching: isCheckingExisting } =
-    useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
+  const {
+    data: existingEntity,
+    //  isFetching: isCheckingExisting
+  } = useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
 
   const { data: entityDetails } = useLegalEntityDetailsQuery(
     existingEntity?.legal_entity_id || ""

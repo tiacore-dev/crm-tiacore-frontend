@@ -1,6 +1,6 @@
 import { axiosInstance } from "../axiosConfig";
-import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+// import toast from "react-hot-toast";
+// import { AxiosError } from "axios";
 import { IEntityCompanyRelationsResponse } from "../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
 
 interface IEntityCompanyRelation {

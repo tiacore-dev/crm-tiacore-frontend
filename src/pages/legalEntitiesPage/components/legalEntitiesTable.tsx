@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { getLegalEntitiesTableColumns } from "./legalEntitiesTableColumns";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  legalEntitiesSelector,
+  // legalEntitiesSelector,
   setPage,
   setPageSize,
   setSearch,
-  setCompany,
+  // setCompany,
   setEntityType,
 } from "../../../redux/slices/legalEntitiesSlice";
 import { RootState } from "../../../redux/store";
@@ -31,9 +31,13 @@ export const LegalEntitiesTable: React.FC<LegalEntitiesTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { search, company, entity_type, page, page_size } = useSelector(
-    (state: RootState) => state.legalEntities
-  );
+  const {
+    search,
+    //  company,
+    entity_type,
+    page,
+    page_size,
+  } = useSelector((state: RootState) => state.legalEntities);
 
   const columns = getLegalEntitiesTableColumns({
     navigate: customNavigate || navigate,

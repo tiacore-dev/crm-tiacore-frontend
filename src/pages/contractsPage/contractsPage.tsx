@@ -21,7 +21,7 @@ import {
   setSeller,
   setStatus,
   resetState,
-  contractsSelector,
+  // contractsSelector,
 } from "../../redux/slices/contractsSlice";
 import { RootState } from "../../redux/store";
 

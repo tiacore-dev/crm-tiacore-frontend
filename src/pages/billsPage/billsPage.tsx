@@ -11,7 +11,7 @@ import { BillsTable } from "./components/billsTable";
 import { BillCreateModal } from "./components/billsFormModal";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import {
-  billsSelector,
+  // billsSelector,
   setPage,
   setPageSize,
   setSortBy,

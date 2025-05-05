@@ -30,7 +30,10 @@ export const TemplateDetailsPage: React.FC = () => {
 
   const { data: companiesResponse } = useCompaniesForSelection();
 
-  const { deleteMutation, updateMutation } = useTemplateMutations(
+  const {
+    deleteMutation,
+    //  updateMutation
+  } = useTemplateMutations(
     template_id || "",
     template?.template_name || "",
     template?.description || "",

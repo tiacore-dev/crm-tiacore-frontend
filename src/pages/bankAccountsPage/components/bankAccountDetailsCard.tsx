@@ -1,7 +1,7 @@
 import React from "react";
 import { Descriptions } from "antd";
-import { Link } from "react-router-dom";
-import { ExportOutlined } from "@ant-design/icons";
+// import { Link } from "react-router-dom";
+// import { ExportOutlined } from "@ant-design/icons";
 import { IBankAccount } from "../../../api/bankAccountsApi";
 import "../../../components/cards.css";
 

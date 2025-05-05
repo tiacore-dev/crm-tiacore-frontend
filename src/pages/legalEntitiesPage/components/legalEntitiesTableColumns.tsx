@@ -1,6 +1,6 @@
 import { ColumnType } from "antd/es/table";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
-import { Button, Input, Select } from "antd";
+import { Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 

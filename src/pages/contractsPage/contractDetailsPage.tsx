@@ -21,7 +21,7 @@ export const ContractDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  // const [downloading, setDownloading] = useState(false);
 
   const {
     data: contract,
@@ -67,7 +67,7 @@ export const ContractDetailsPage: React.FC = () => {
 
   const handleDownload = async () => {
     if (!contract_id) return;
-    setDownloading(true);
+    // setDownloading(true);
     try {
       const result = await downloadContract(contract_id);
       if (result) {
@@ -79,7 +79,7 @@ export const ContractDetailsPage: React.FC = () => {
         document.body.removeChild(link);
       }
     } finally {
-      setDownloading(false);
+      // setDownloading(false);
     }
   };
 

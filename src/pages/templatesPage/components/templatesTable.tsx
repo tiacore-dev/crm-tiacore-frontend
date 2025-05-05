@@ -1,10 +1,10 @@
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 import { ITemplate } from "../../../api/templatesApi";
 import { useNavigate } from "react-router-dom";
 import { getTemplateColumns } from "./templatesTableColumns";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  templatesSelector,
+  // templatesSelector,
   setPage,
   setPageSize,
   setSearch,

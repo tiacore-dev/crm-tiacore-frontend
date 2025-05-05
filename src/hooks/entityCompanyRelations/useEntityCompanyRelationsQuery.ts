@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useCompany } from "../../context/companyContext";
+// import { useCompany } from "../../context/companyContext";
 import { fetchEntityCompanyRelations } from "../../api/entityCompanyRelationsApi";
 
 export interface IEntityCompanyRelationsResponse {

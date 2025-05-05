@@ -1,6 +1,6 @@
 // src/pages/rolePermissions/components/CreateRoleModal.tsx
 import React from "react";
-import { Modal, Form, Input, Checkbox, message } from "antd";
+import { Modal, Form, Input, Checkbox } from "antd";
 import { usePermissionsQuery } from "../../../hooks/permissions/usePermissionsQuery";
 import { useRoleMutations } from "../../../hooks/role/useRoleMutations";
 

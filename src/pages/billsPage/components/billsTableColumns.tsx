@@ -61,7 +61,7 @@ export const getBillsTableColumns = ({
   const getBankAccountNumber = (bankId: string) =>
     getBankAccountNumberById(bankId, bankAccountsData) || bankId;
 
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  // const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   // const getCompanyName = (companyId: string) =>
   //   companiesData?.find(c => c.company_id === companyId)?.company_name || companyId;

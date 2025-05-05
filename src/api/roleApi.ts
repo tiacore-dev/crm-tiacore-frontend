@@ -1,6 +1,6 @@
 // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
-import { IUserCompanyRelationsResponse } from "../hooks/userCompanyRelations/useUserCompanyRelationsQuery";
+// import { IUserCompanyRelationsResponse } from "../hooks/userCompanyRelations/useUserCompanyRelationsQuery";
 
 export interface IRole {
   role_id: string;
