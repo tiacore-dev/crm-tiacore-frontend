@@ -39,6 +39,7 @@ export const UserCompanyRelationsTable = ({
 }: UserCompanyRelationsTableProps) => {
   // Получаем список всех ролей
   const { data: rolesData, isLoading: rolesLoading } = useRolesQuery();
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 
   // Получаем список всех компаний
   const { data: companiesData, isLoading: companiesLoading } =
@@ -64,7 +65,7 @@ export const UserCompanyRelationsTable = ({
     useState<IUserCompanyRelation | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
-
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   // Мутации для удаления
   const { deleteMutation } = useUserCompanyRelationsMutations(
     "",
@@ -74,7 +75,7 @@ export const UserCompanyRelationsTable = ({
     () => {}
   );
 
-  const handleCreate = () => {
+  const handleInvite = () => {
     if (companyId) {
       // Если есть companyId (значит мы в контексте компании) - показываем InviteFormModal
       setIsInviteModalVisible(true);
@@ -194,6 +195,27 @@ export const UserCompanyRelationsTable = ({
   const isTotalLoading =
     isLoading || rolesLoading || companiesLoading || usersLoading;
 
+  const getHeaderTitle = () => {
+    if (fromAccount) return "Компании";
+    if (userId) return "Компании";
+    return "Пользователи";
+  };
+
+  const showInviteButton = () => {
+    if (fromAccount) return false;
+    if (userId) return false;
+    return hasPermission("add_user_company_relation");
+  };
+
+  const showAddButton = () => {
+    if (fromAccount) return false;
+    if (userId) return isSuperadmin;
+    return isSuperadmin;
+  };
+  const handleCreate = () => {
+    setEditingRelation(null); // Сбрасываем редактируемое отношение
+    setIsCreateModalVisible(true); // Показываем модальное окно
+  };
   return (
     <>
       {isTotalLoading ? (
@@ -204,13 +226,22 @@ export const UserCompanyRelationsTable = ({
         <>
           <div style={{ display: "flex", marginTop: 16 }}>
             <Typography.Title level={4} style={{ marginRight: 16 }}>
-              {userId ? "Компании" : "Пользователи"}
+              {getHeaderTitle()}
             </Typography.Title>
-            {!fromAccount && hasPermission("add_user_company_relation") && (
+            {showInviteButton() && (
+              <Button
+                icon={<PlusOutlined />}
+                onClick={handleInvite}
+                style={{ marginBottom: 16 }}
+              >
+                {isSuperadmin ? "Пригласить" : "Добавить"}
+              </Button>
+            )}
+            {showAddButton() && (
               <Button
                 icon={<PlusOutlined />}
                 onClick={handleCreate}
-                style={{ marginBottom: 16 }}
+                style={{ marginLeft: 8 }}
               >
                 Добавить
               </Button>
@@ -230,6 +261,20 @@ export const UserCompanyRelationsTable = ({
           onConfirm={confirmDelete}
           onCancel={() => setShowDeleteConfirm(false)}
           isDeleteLoading={deleteMutation.isPending}
+        />
+      )}
+      {isCreateModalVisible && (
+        <RelationFormModal
+          visible={isCreateModalVisible}
+          onCancel={() => setIsCreateModalVisible(false)}
+          onSuccess={handleSuccess}
+          mode="create"
+          initialData={null}
+          roles={rolesData?.roles || []}
+          userId={userId}
+          companyId={companyId}
+          companies={companiesData?.companies || []}
+          users={usersData?.users || []}
         />
       )}
       {isInviteModalVisible && (

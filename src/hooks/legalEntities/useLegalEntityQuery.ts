@@ -71,12 +71,16 @@ export const useLegalEntitiesForSelection = () => {
   });
 };
 
-export const useLegalEntitiesSellers = () => {
+export const useLegalEntitiesSellers = (companyId?: string) => {
   const { selectedCompanyId } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   return useQuery<ILegalEntitiesResponse>({
-    queryKey: ["legalEntitiesSellers", selectedCompanyId],
-    queryFn: () => fetchSellers(selectedCompanyId),
+    queryKey: [
+      "legalEntitiesSellers",
+      isSuperadmin ? companyId : selectedCompanyId,
+    ],
+    queryFn: () => fetchSellers(isSuperadmin ? companyId : selectedCompanyId),
     retry: false,
   });
 };

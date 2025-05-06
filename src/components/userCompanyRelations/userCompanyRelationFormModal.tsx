@@ -106,7 +106,7 @@ export const RelationFormModal = ({
 
   return (
     <Modal
-      title={initialData ? "Редактировать" : "Создать"}
+      title={initialData ? "Редактировать" : "Добавить"}
       open={visible}
       onOk={handleSubmit}
       onCancel={onCancel}
@@ -120,7 +120,7 @@ export const RelationFormModal = ({
           loading={isSubmitting}
           onClick={handleSubmit}
         >
-          {mode === "create" ? "Создать" : "Сохранить"}
+          {mode === "create" ? "Добавить" : "Сохранить"}
         </Button>,
       ]}
       width={700}
@@ -146,7 +146,9 @@ export const RelationFormModal = ({
             <Select placeholder="Выберите пользователя">
               {users.map((user) => (
                 <Select.Option key={user.user_id} value={user.user_id}>
-                  {user.full_name ? user.full_name : user.email || user.user_id}
+                  {user.full_name
+                    ? `${user.full_name}${user.email ? ` (${user.email})` : ""}`
+                    : user.email || user.user_id}
                 </Select.Option>
               ))}
             </Select>

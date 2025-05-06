@@ -12,10 +12,7 @@ import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
-import {
-  useLegalEntitiesSellers,
-  // useLegalEntityFiltredQuery,
-} from "../../hooks/legalEntities/useLegalEntityQuery";
+import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
 import { usePermissions } from "../../context/permissionsContext";
 
@@ -35,11 +32,7 @@ export const CompanyDetailsPage: React.FC = () => {
     refetch,
   } = useCompanyDetailsQuery(company_id!);
 
-  const {
-    data: legalEntitiesData,
-    // isLoading: isLoadingEntity,
-    // isError: IsErrorEntity,
-  } = useLegalEntitiesSellers();
+  const { data: legalEntitiesData } = useLegalEntitiesSellers(company_id);
 
   const { deleteMutation } = useCompanyMutations(
     company_id || "",

@@ -95,6 +95,9 @@ export const updateUserCompanyRelation = async (
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
     params.company = selectedCompanyId;
+  } else if (!isSuperadmin && !selectedCompanyId) {
+    const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+    params.company = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/user-company-relations/${user_company_id}`,

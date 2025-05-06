@@ -234,9 +234,9 @@ export const fetchSellers = async (selectedCompanyId?: string | null) => {
   // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const params: any = { page: 1, page_size: 100 };
-  if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
-  }
+  // if (!isSuperadmin && selectedCompanyId) {
+  params.company = selectedCompanyId;
+  // }
 
   const response = await axiosInstance.get(
     `${url}/api/legal-entities/get-sellers`,

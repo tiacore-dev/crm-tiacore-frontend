@@ -41,7 +41,8 @@ export const useCompanyRelationsQuery = (
 
   return useQuery<IUserCompanyRelationsResponse>({
     queryKey: ["companyRelations", companyId, selectedCompanyId],
-    queryFn: () => fetchUserCompanyRelations({ company: companyId }),
+    queryFn: () =>
+      fetchUserCompanyRelations({ company: companyId }, selectedCompanyId),
     enabled: !!companyId,
     ...options,
   });

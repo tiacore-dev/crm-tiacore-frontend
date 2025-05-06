@@ -1,5 +1,5 @@
 // contexts/PermissionsContext.tsx
-import React, { createContext, useMemo, useContext, useEffect } from "react";
+import React, { createContext, useMemo, useContext } from "react";
 import { useCompany } from "./companyContext";
 
 interface PermissionsContextType {
