@@ -63,7 +63,7 @@ const App: React.FC = () => {
               {" "}
               {/* Обернули все приложение в CompanyProvider */}
               <Router>
-                <Toaster position="top-right" />
+                <Toaster position="bottom-right" />
                 <Routes>
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/accept-invite" element={<AcceptInvitePage />} />
