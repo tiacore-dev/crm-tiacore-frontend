@@ -97,6 +97,10 @@ export const ActsTable: React.FC<ActsTableProps> = ({
             : false
         }
         onChange={onTableChange}
+        onRow={(record) => ({
+          onClick: () => navigate(`/acts/${record.act_id}`),
+          style: { cursor: "pointer" },
+        })}
       />
     </div>
   );

@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { ITemplate } from "../../../api/templatesApi";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { getCompanyNameById } from "../../../utils/infoById";
-import "../../../components/cards.css";
 import { usePermissions } from "../../../context/permissionsContext";
 
 interface TemplateDetailsCardProps {

@@ -156,13 +156,29 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
         if (menuItems.length === 0) return null;
 
         return (
-          <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-            <Button
-              type="text"
-              icon={<MoreOutlined />}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </Dropdown>
+          <div
+            style={{ display: "flex", height: "100%", alignItems: "center" }}
+          >
+            <Dropdown
+              menu={{ items: menuItems }}
+              trigger={["click"]}
+              overlayStyle={{ minWidth: 120 }}
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={<MoreOutlined style={{ fontSize: 16 }} />}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Dropdown>
+          </div>
         );
       },
     },

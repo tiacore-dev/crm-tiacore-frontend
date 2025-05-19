@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { ExportOutlined, DownloadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IContract } from "../../../api/contractsApi";
-import "../../../components/cards.css";
 import { usePermissions } from "../../../context/permissionsContext";
 
 interface ContractDetailsCardProps {

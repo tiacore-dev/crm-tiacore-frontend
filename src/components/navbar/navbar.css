@@ -106,7 +106,6 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-  background-color: #ff4d4f;
   font-size: 14px;
   color: white;
 }
@@ -216,4 +215,32 @@
 
 .animated-settings-btn:active {
   transform: translateY(1px);
+}
+
+.navbar-logo {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000000;
+  margin-right: 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.navbar-logo:hover {
+  color: #0f00df;
+}
+
+/* Для мобильной версии */
+.mobile-logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.mobile-logo {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+  margin-left: 16px;
+  cursor: pointer;
 }

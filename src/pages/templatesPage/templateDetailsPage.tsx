@@ -58,7 +58,7 @@ export const TemplateDetailsPage: React.FC = () => {
 
   const handleDelete = () => {
     deleteMutation.mutate();
-    setShowDeleteConfirm(false); // Можно оставить здесь или перенести в onMutate
+    setShowDeleteConfirm(false);
   };
 
   const handleEditClick = () => {

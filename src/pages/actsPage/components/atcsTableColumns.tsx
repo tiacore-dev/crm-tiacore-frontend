@@ -73,11 +73,13 @@ export const getActsTableColumns = ({
       title: "Номер акта",
       dataIndex: "act_number",
       key: "act_number",
-      render: (text: string, record: IAct) => (
-        <Button type="link" onClick={() => navigate(`/acts/${record.act_id}`)}>
-          {text}
-        </Button>
-      ),
+      // render: (text: string, record: IAct) => (
+      //   <Button type="link" onClick={() => navigate(`/acts/${record.act_id}`)}>
+      //     {text}
+      //   </Button>
+      // ),
+      render: (text: string) => text, // Просто отображаем текст без кнопки
+
       sorter: true,
       sortOrder: getSortOrder("act_number"),
       onHeaderCell: () => ({

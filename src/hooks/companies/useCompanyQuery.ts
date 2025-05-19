@@ -5,7 +5,6 @@ import {
   fetchCompanyDetails,
   ICompany,
 } from "../../api/companiesApi";
-// import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
 import { useCompany } from "../../context/companyContext";
 
 export interface useCompanyQueryResponse {

@@ -106,11 +106,8 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       title: "Услуга",
       dataIndex: "service",
       key: "service",
-      render: (serviceId: string) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
-          {getServiceNameById(serviceId, servicesData) || serviceId}
-        </div>
-      ),
+      render: (serviceId: string) =>
+        getServiceNameById(serviceId, servicesData) || serviceId,
       sorter: (a: IActDetail, b: IActDetail) => {
         const nameA = getServiceNameById(a.service, servicesData) || a.service;
         const nameB = getServiceNameById(b.service, servicesData) || b.service;
@@ -121,30 +118,20 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       title: "Количество",
       dataIndex: "quantity",
       key: "quantity",
-      render: (value: number) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>{value}</div>
-      ),
+      render: (value: number) => value,
     },
     {
       title: "Цена",
       dataIndex: "price",
       key: "price",
-      render: (value: number) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
-          {`${value.toLocaleString()} ₽`}
-        </div>
-      ),
+      render: (value: number) => `${value.toLocaleString()} ₽`,
       sorter: (a: IActDetail, b: IActDetail) => a.price - b.price,
     },
     {
       title: "Сумма",
       dataIndex: "summ",
       key: "summ",
-      render: (value: number) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
-          {`${value.toLocaleString()} ₽`}
-        </div>
-      ),
+      render: (value: number) => `${value.toLocaleString()} ₽`,
       sorter: (a: IActDetail, b: IActDetail) => a.summ - b.summ,
     },
     {
@@ -156,13 +143,29 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         if (menuItems.length === 0) return null;
 
         return (
-          <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-            <Button
-              type="text"
-              icon={<MoreOutlined />}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </Dropdown>
+          <div
+            style={{ display: "flex", height: "100%", alignItems: "center" }}
+          >
+            <Dropdown
+              menu={{ items: menuItems }}
+              trigger={["click"]}
+              overlayStyle={{ minWidth: 120 }}
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={<MoreOutlined style={{ fontSize: 16 }} />}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Dropdown>
+          </div>
         );
       },
     },

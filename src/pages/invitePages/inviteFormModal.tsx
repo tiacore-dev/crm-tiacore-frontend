@@ -7,6 +7,7 @@ interface InviteFormModalProps {
   onCancel: () => void;
   onSuccess?: () => void;
   roles: Array<{ role_id: string; role_name: string }>;
+  companyId: string;
 }
 
 export const InviteFormModal = ({
@@ -14,6 +15,7 @@ export const InviteFormModal = ({
   onCancel,
   onSuccess,
   roles,
+  companyId,
 }: InviteFormModalProps) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,12 +25,12 @@ export const InviteFormModal = ({
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
-      const companyId = localStorage.getItem("selectedCompanyId");
+      // const companyId = localStorage.getItem("selectedCompanyId");
 
-      if (!companyId) {
-        message.error("Не выбрана компания");
-        return;
-      }
+      // if (!companyId) {
+      //   message.error("Не выбрана компания");
+      //   return;
+      // }
 
       await inviteMutation.mutateAsync({
         email: values.email,

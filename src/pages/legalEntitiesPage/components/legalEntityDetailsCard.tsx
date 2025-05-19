@@ -1,7 +1,6 @@
 import React from "react";
 import { Descriptions } from "antd";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
-import "../../../components/cards.css";
 
 interface LegalEntityDetailsCardProps {
   legal_entity: ILegalEntity;

@@ -31,21 +31,17 @@ export const AccountPage: React.FC = () => {
   }
   return (
     <div className="main-container">
-      <UserDetailsCard userDetails={userDetails} />
-      <UserCompanyRelationsTable
-        userId={userId}
-        companyId={selectedCompanyId}
-        fromAccount={true}
-      />
       <Button
         onClick={() => {
           setShowEditModal(true);
         }}
-        style={{ marginTop: 16 }}
+        style={{ marginBottom: 16 }}
       >
         <EditOutlined />
         Редактировать
       </Button>
+      <UserDetailsCard userDetails={userDetails} />
+      <UserCompanyRelationsTable userId={userId} fromAccount={true} />
       {showEditModal && (
         <UserFormModal
           visible={showEditModal}

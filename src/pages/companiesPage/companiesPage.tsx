@@ -23,7 +23,7 @@ export const CompaniesPage: React.FC = () => {
     //  page, page_size
   } = useSelector((state: RootState) => state.companies);
   const { hasPermission } = usePermissions(); // Добавьте этот хук
-
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
@@ -49,7 +49,7 @@ export const CompaniesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_company") && (
+                  {(hasPermission("add_company") || !selectedCompanyId) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

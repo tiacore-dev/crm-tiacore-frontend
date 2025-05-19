@@ -44,6 +44,7 @@ export const UserCompanyRelationsTable = ({
   // Получаем список всех компаний
   const { data: companiesData, isLoading: companiesLoading } =
     useCompanyQuery();
+
   const { hasPermission } = usePermissions(); // Добавьте этот хук
 
   const { data: usersData, isLoading: usersLoading } = useUserQueryAll();
@@ -283,6 +284,7 @@ export const UserCompanyRelationsTable = ({
           onCancel={() => setIsInviteModalVisible(false)}
           onSuccess={handleSuccess}
           roles={rolesData?.roles || []}
+          companyId={companyId || ""}
         />
       )}
       {isEditModalVisible && (
