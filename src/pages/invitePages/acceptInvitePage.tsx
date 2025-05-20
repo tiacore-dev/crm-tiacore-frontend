@@ -21,7 +21,7 @@ export const AcceptInvitePage: React.FC = () => {
       toast.error("Приглашение отсутствует");
       navigate("/login");
     }
-  }, [token, acceptInviteMutation, navigate]);
+  }, []);
 
   return (
     <div className="login_container">

@@ -66,7 +66,7 @@ const App: React.FC = () => {
                 <Toaster position="bottom-right" />
                 <Routes>
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/accept-invite" element={<AcceptInvitePage />} />
+                  <Route path="/invite" element={<AcceptInvitePage />} />
                   <Route element={<ProtectedRoute />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/account" element={<AccountPage />} />
