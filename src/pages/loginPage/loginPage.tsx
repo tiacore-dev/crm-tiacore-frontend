@@ -18,8 +18,8 @@ declare global {
     verificationExecuted?: boolean;
   }
 }
-
-type FormData = {
+//api.crm-dev.tiacore.com/api/verify-email?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MDM1NmM3My1kNzg5LTQ1ZmEtOGJmYS0wMjIyYjNkYzFlMmQiLCJleHAiOjE3NDc4MDIxMzV9.wVw3tToFlzINFjCFp3y8-7M-IPWPp2IjvPBg_RYRS2g
+https: type FormData = {
   email: string;
   password: string;
 };
@@ -59,7 +59,7 @@ export const LoginPage: React.FC = () => {
     return () => {
       window.verificationExecuted = false;
     };
-  }, [location.search, verifyEmailMutation]);
+  }, []);
 
   const onSubmit = useCallback(
     (data: FormData) => {
