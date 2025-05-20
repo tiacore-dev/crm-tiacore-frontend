@@ -18,8 +18,8 @@ declare global {
     verificationExecuted?: boolean;
   }
 }
-//api.crm-dev.tiacore.com/api/verify-email?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MDM1NmM3My1kNzg5LTQ1ZmEtOGJmYS0wMjIyYjNkYzFlMmQiLCJleHAiOjE3NDc4MDIxMzV9.wVw3tToFlzINFjCFp3y8-7M-IPWPp2IjvPBg_RYRS2g
-https: type FormData = {
+
+type FormData = {
   email: string;
   password: string;
 };
