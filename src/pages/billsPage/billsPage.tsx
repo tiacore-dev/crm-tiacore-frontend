@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { BackButton } from "../../components/buttons/backButton";
@@ -11,13 +11,14 @@ import { BillsTable } from "./components/billsTable";
 import { BillCreateModal } from "./components/billsFormModal";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import {
-  // billsSelector,
   setPage,
   setPageSize,
   setSortBy,
   setOrder,
   setBankAccount,
   setContract,
+  setBuyer,
+  setSeller,
   setDateFrom,
   setDateTo,
   resetState,
@@ -34,6 +35,8 @@ export const BillsPage: React.FC = () => {
     order,
     bank_account,
     contract,
+    buyer,
+    seller,
     bill_date_from,
     bill_date_to,
   } = useSelector((state: RootState) => state.bills);
@@ -60,6 +63,8 @@ export const BillsPage: React.FC = () => {
     order,
     bank_account,
     contract,
+    buyer,
+    seller,
     bill_date_from,
     bill_date_to,
   });
@@ -89,6 +94,12 @@ export const BillsPage: React.FC = () => {
       case "contract":
         dispatch(setContract(value || undefined));
         break;
+      case "buyer":
+        dispatch(setBuyer(value || undefined));
+        break;
+      case "seller":
+        dispatch(setSeller(value || undefined));
+        break;
       case "bill_date_from":
         dispatch(setDateFrom(value || undefined));
         break;
@@ -105,13 +116,17 @@ export const BillsPage: React.FC = () => {
   };
 
   // Проверяем, есть ли активные фильтры
-  const hasActiveFilters =
-    bank_account !== undefined ||
-    contract !== undefined ||
-    bill_date_from !== undefined ||
-    bill_date_to !== undefined ||
-    sort_by !== undefined;
-
+  const hasActiveFilters = useMemo(
+    () =>
+      bank_account !== undefined ||
+      contract !== undefined ||
+      buyer !== undefined ||
+      seller !== undefined ||
+      bill_date_from !== undefined ||
+      bill_date_to !== undefined ||
+      sort_by !== undefined,
+    [contract, buyer, seller, bill_date_from, bill_date_to, sort_by]
+  );
   return (
     <div>
       {isLoading ? (
@@ -153,6 +168,8 @@ export const BillsPage: React.FC = () => {
                   filters={{
                     bank_account,
                     contract,
+                    buyer,
+                    seller,
                     bill_date_from,
                     bill_date_to,
                   }}

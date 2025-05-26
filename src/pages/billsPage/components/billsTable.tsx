@@ -29,6 +29,8 @@ interface BillsTableProps {
   filters?: {
     bank_account?: string;
     contract?: string;
+    buyer?: string;
+    seller?: string;
     bill_date_from?: number;
     bill_date_to?: number;
   };

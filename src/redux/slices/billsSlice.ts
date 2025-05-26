@@ -4,6 +4,8 @@ import { RootState } from "../store";
 interface BillsState {
   bank_account?: string;
   contract?: string;
+  buyer?: string;
+  seller?: string;
   bill_date_to?: number;
   bill_date_from?: number;
   sort_by?: string;
@@ -15,6 +17,8 @@ interface BillsState {
 const initialState: BillsState = {
   bank_account: undefined,
   contract: undefined,
+  buyer: undefined,
+  seller: undefined,
   bill_date_to: undefined,
   bill_date_from: undefined,
   sort_by: undefined,
@@ -33,6 +37,14 @@ export const billsSlice = createSlice({
     },
     setContract: (state, action: PayloadAction<string>) => {
       state.contract = action.payload;
+      state.page = 1;
+    },
+    setBuyer: (state, action: PayloadAction<string>) => {
+      state.buyer = action.payload;
+      state.page = 1;
+    },
+    setSeller: (state, action: PayloadAction<string>) => {
+      state.seller = action.payload;
       state.page = 1;
     },
     setDateTo: (state, action: PayloadAction<number>) => {
@@ -65,6 +77,8 @@ export const billsSlice = createSlice({
 export const {
   setBankAccount,
   setContract,
+  setBuyer,
+  setSeller,
   setDateTo,
   setDateFrom,
   setSortBy,
