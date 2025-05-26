@@ -21,30 +21,37 @@ export const InviteFormModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inviteMutation = useInviteMutation();
 
+  //
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
-      // const companyId = localStorage.getItem("selectedCompanyId");
 
-      // if (!companyId) {
-      //   message.error("Не выбрана компания");
-      //   return;
-      // }
+      await inviteMutation.mutateAsync(
+        {
+          email: values.email,
+          company_id: companyId,
+          role_id: values.role_id,
+        },
+        {
+          onError: (error) => {
+            if (error.message === "Access token is missing") {
+              message.error(
+                "Требуется авторизация. Пожалуйста, войдите снова."
+              );
+              // Перенаправление на страницу входа или обновление токена
+            } else {
+              message.error("Ошибка при отправке приглашения");
+            }
+          },
+        }
+      );
 
-      await inviteMutation.mutateAsync({
-        email: values.email,
-        company_id: companyId,
-        role_id: values.role_id,
-      });
-
-      //   message.success("Приглашение отправлено");
       form.resetFields();
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Error submitting form:", error);
-      //   message.error("Ошибка при отправке приглашения");
     } finally {
       setIsSubmitting(false);
     }

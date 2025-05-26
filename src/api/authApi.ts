@@ -25,8 +25,17 @@ export const inviteUser = async (data: {
   role_id: string;
 }) => {
   const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+
   if (!url) throw new Error("REACT_APP_API_URL is not defined");
-  const response = await axiosInstance.post(`${url}/api/invite`, data);
+  if (!accessToken) throw new Error("Access token is missing");
+
+  const response = await axiosInstance.post(`${url}/api/invite`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
   return response.data;
 };
 
