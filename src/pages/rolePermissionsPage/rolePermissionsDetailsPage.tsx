@@ -146,12 +146,14 @@ export const RolePermissionsDetailsPage: React.FC = () => {
                     }}
                     loading={saveChangesMutation.isPending}
                     style={{ marginBottom: 16, marginRight: 8 }}
+                    type="primary"
                   >
                     Сохранить
                   </Button>
                   <Button
                     onClick={handleCancelClick}
                     style={{ marginBottom: 16, marginRight: 8 }}
+                    danger
                   >
                     Отмена
                   </Button>
