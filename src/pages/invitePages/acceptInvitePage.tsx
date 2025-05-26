@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Typography, Spin, Space, Button } from "antd";
 import { useAcceptInviteMutation } from "../../hooks/auth/useAuthMutations";
 import toast from "react-hot-toast";
+import { refreshToken } from "../../api/authApi";
 
 export const AcceptInvitePage: React.FC = () => {
   const navigate = useNavigate();
@@ -12,16 +13,21 @@ export const AcceptInvitePage: React.FC = () => {
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
 
-  const acceptInviteMutation = useAcceptInviteMutation();
+  const acceptInviteMutation = useAcceptInviteMutation(); // Теперь вызываем без параметров
 
   useEffect(() => {
     if (token) {
-      acceptInviteMutation.mutate(token);
+      acceptInviteMutation.mutate(token); // Передаем token при вызове mutate
     } else {
       toast.error("Приглашение отсутствует");
       navigate("/login");
     }
-  }, []);
+  }, [token]);
+
+  const goToHome = () => {
+    refreshToken();
+    navigate("/home");
+  };
 
   return (
     <div className="login_container">
@@ -42,10 +48,10 @@ export const AcceptInvitePage: React.FC = () => {
             <Title level={3} className="form-title" style={{ color: "green" }}>
               Приглашение успешно принято{" "}
             </Title>
-
             <Button
-              onClick={() => navigate("/home")}
-              style={{ padding: 0, height: "auto" }}
+              type="primary"
+              onClick={() => goToHome()}
+              style={{ marginTop: 16 }}
             >
               Перейти на сайт
             </Button>

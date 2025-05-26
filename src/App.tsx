@@ -44,6 +44,7 @@ import { PermissionsProvider } from "./context/permissionsContext";
 import { AccountPage } from "./pages/accountPage/accountPage";
 import { AcceptInvitePage } from "./pages/invitePages/acceptInvitePage";
 import { themeConfig } from "./theme/themeConfig";
+import { InviteRegistrationPage } from "./pages/invitePages/inviteRegistrationPage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -66,7 +67,8 @@ const App: React.FC = () => {
                 <Toaster position="bottom-right" />
                 <Routes>
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/invite" element={<AcceptInvitePage />} />
+                  <Route path="/accept-invite" element={<AcceptInvitePage />} />
+                  <Route path="/invite" element={<InviteRegistrationPage />} />
                   <Route element={<ProtectedRoute />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/account" element={<AccountPage />} />

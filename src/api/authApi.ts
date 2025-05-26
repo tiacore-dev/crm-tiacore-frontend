@@ -2,6 +2,7 @@
 import axios from "axios";
 import { axiosInstance } from "../axiosConfig";
 import { IUser } from "./usersApi";
+import { AuthResponse } from "../hooks/auth/useAuthMutations";
 
 export const registrationUser = async (newUser: {
   email: string;
@@ -102,6 +103,32 @@ export const acceptInvite = async (token: string) => {
 
   const response = await axiosInstance.get(
     `${url}/api/accept-invite?token=${token}`
+  );
+  return response.data;
+};
+
+// src/api/authApi.ts
+export const registerWithToken = async (data: {
+  token: string;
+  email: string;
+  password: string;
+  full_name: string;
+  position: string;
+}): Promise<AuthResponse> => {
+  const url = process.env.REACT_APP_API_URL;
+  if (!url) throw new Error("REACT_APP_API_URL is not defined");
+
+  // Разделяем данные: токен идет в query, остальное в body
+  const { token, ...bodyData } = data;
+
+  const response = await axiosInstance.post(
+    `${url}/api/register-with-token?token=${encodeURIComponent(token)}`,
+    bodyData,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
   return response.data;
 };
