@@ -7,6 +7,7 @@ export interface ICompany {
   company_id: string;
   company_name: string;
   description?: string;
+  application_id?: string;
 }
 
 // Вспомогательная функция для проверки роли и получения company_id
@@ -35,8 +36,11 @@ export const fetchCompanies = async (selectedCompanyId?: string | null) => {
 export const createCompany = async (newCompany: {
   company_name: string;
   description?: string;
+  application_id?: string;
 }): Promise<ICompany> => {
   const url = process.env.REACT_APP_API_URL;
+  const app_id = process.env.REACT_APP_ID;
+  newCompany.application_id = app_id;
   const accessToken = localStorage.getItem("access_token");
   const response = await axiosInstance.post(
     `${url}/api/companies/add`,
