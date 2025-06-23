@@ -274,3 +274,34 @@ export const fetchBuyers = async (selectedCompanyId?: string | null) => {
   );
   return response.data;
 };
+
+export const createLegalEntityByInn = async (data: {
+  inn: string;
+  kpp?: string;
+  company_id: string;
+  relation_type: "buyer" | "seller";
+  description?: string;
+}): Promise<ILegalEntity> => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  const params: any = {};
+  if (!isSuperadmin && selectedCompanyId) {
+    params.company_id = selectedCompanyId;
+  }
+
+  const response = await axiosInstance.post(
+    `${url}/api/legal-entities/add-by-inn`,
+    data,
+    {
+      params,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};

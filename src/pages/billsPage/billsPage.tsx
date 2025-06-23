@@ -25,6 +25,7 @@ import {
 } from "../../redux/slices/billsSlice";
 import { RootState } from "../../redux/store";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const BillsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ export const BillsPage: React.FC = () => {
       ])
     );
   }, [dispatch]);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const {
     data: bills_data,
@@ -137,7 +138,7 @@ export const BillsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_bill") && (
+                  {currentAppPermissions.includes("add_bill") && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

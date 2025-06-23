@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { getTemplateColumns } from "./templatesTableColumns";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  // templatesSelector,
   setPage,
   setPageSize,
   setSearch,
@@ -13,7 +12,7 @@ import {
 import { downloadTemplate } from "../../../api/templatesApi";
 import { useState } from "react";
 import { RootState } from "../../../redux/store";
-import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface TemplatesTableProps {
   data: ITemplate[];
@@ -35,9 +34,11 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (state: RootState) => state.templates
   );
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const { hasPermission } = usePermissions(); // Добавляем хук
+  const { currentAppPermissions } = useCompany();
 
   const handleDownload = async (template_id: string) => {
+    if (!currentAppPermissions.includes("download_template")) return;
+
     setDownloadingId(template_id);
     try {
       const result = await downloadTemplate(template_id);
@@ -63,10 +64,9 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (value) => dispatch(setCompany(value)),
     downloadingId,
     handleDownload,
-    hasPermission
+    currentAppPermissions // Передаем permissions вместо hasPermission
   );
 
-  // 1. Фильтрация данных
   const filteredData = data.filter((template) => {
     const matchesSearch = search
       ? template.template_name.toLowerCase().includes(search.toLowerCase())
@@ -76,9 +76,6 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
   });
 
   const processedData = [...filteredData];
-
-  // const startIndex = (page - 1) * page_size;
-  // const paginatedData = processedData.slice(startIndex, startIndex + page_size);
 
   return (
     <div>

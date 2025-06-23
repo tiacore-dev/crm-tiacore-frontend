@@ -15,6 +15,7 @@ import { TemplateDetailsCard } from "./components/templateDetailsCard";
 import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const TemplateDetailsPage: React.FC = () => {
   const { template_id } = useParams<{ template_id: string }>();
@@ -28,7 +29,7 @@ export const TemplateDetailsPage: React.FC = () => {
     isError,
     refetch,
   } = useTemplateDetailsQuery(template_id || "");
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const { data: companiesResponse } = useCompaniesForSelection();
 
@@ -93,36 +94,42 @@ export const TemplateDetailsPage: React.FC = () => {
                 <div style={{ marginBottom: 16 }}>
                   {/* Первая строка - основные кнопки */}
                   <Space style={{ marginBottom: isMobile ? 16 : 0 }}>
-                    {hasPermission("edit_template") && (
+                    {currentAppPermissions.includes("edit_template") && (
                       <Button onClick={handleEditClick}>
                         <EditOutlined />
                         Редактировать
                       </Button>
                     )}
 
-                    {hasPermission("delete_template") && (
+                    {currentAppPermissions.includes("delete_template") && (
                       <Button danger onClick={() => setShowDeleteConfirm(true)}>
                         <DeleteOutlined /> Удалить
                       </Button>
                     )}
 
-                    {!isMobile && hasPermission("generate_template") && (
-                      <GenerateTemplateButton
-                        templateId={template_id || ""}
-                        entityType={template?.entity === "act" ? "act" : "bill"}
-                      />
-                    )}
+                    {!isMobile &&
+                      currentAppPermissions.includes("generate_template") && (
+                        <GenerateTemplateButton
+                          templateId={template_id || ""}
+                          entityType={
+                            template?.entity === "act" ? "act" : "bill"
+                          }
+                        />
+                      )}
                   </Space>
 
                   {/* Вторая строка - только для мобильных */}
-                  {isMobile && hasPermission("generate_template") && (
-                    <Space>
-                      <GenerateTemplateButton
-                        templateId={template_id || ""}
-                        entityType={template?.entity === "act" ? "act" : "bill"}
-                      />
-                    </Space>
-                  )}
+                  {isMobile &&
+                    currentAppPermissions.includes("generate_template") && (
+                      <Space>
+                        <GenerateTemplateButton
+                          templateId={template_id || ""}
+                          entityType={
+                            template?.entity === "act" ? "act" : "bill"
+                          }
+                        />
+                      </Space>
+                    )}
                 </div>
                 <TemplateDetailsCard
                   template={template}

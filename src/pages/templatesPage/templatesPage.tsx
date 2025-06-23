@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { resetState } from "../../redux/slices/templatesSlice"; // Импорт нового действия
 import { RootState } from "../../redux/store";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const TemplatesPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ export const TemplatesPage: React.FC = () => {
   const { search, company } = useSelector(
     (state: RootState) => state.templates
   );
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   useEffect(() => {
     dispatch(
@@ -52,7 +53,7 @@ export const TemplatesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_template") && (
+                  {currentAppPermissions.includes("add_template") && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

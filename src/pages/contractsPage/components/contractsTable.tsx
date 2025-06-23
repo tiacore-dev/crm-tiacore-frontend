@@ -1,12 +1,10 @@
-//contractsTable.tsx
 import { Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { IContract } from "../../../api/contractsApi";
 import { useState } from "react";
 import { downloadContract } from "../../../api/contractsApi";
 import { getContractsTableColumns } from "./contractsTableColumns";
-// import { useDispatch } from "react-redux";
-import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface ContractsTableProps {
   data: {
@@ -53,11 +51,12 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
   onFilterChange,
 }) => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const { hasPermission } = usePermissions(); // Добавляем хук
+  const { currentAppPermissions } = useCompany();
 
   const handleDownload = async (contract_id: string) => {
+    if (!currentAppPermissions.includes("download_contract")) return;
+
     setDownloadingId(contract_id);
     try {
       const result = await downloadContract(contract_id);
@@ -87,7 +86,7 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
     onSortChange,
     onFilterChange,
     filters,
-    hasPermission,
+    currentAppPermissions, // Передаем permissions вместо hasPermission
   });
 
   return (

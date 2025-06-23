@@ -18,6 +18,7 @@ import { resetState } from "../../redux/slices/legalEntitiesSlice";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export const LegalEntitiesPage: React.FC = () => {
   const { search, company, entity_type } = useSelector(
     (state: RootState) => state.legalEntities
   );
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const buyersData = useLegalEntitiesBuyers();
   const selectionData = useLegalEntitiesForSelection();
@@ -61,13 +62,15 @@ export const LegalEntitiesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_legal_entity_company_relation") &&
-                    hasPermission("add_legal_entity") && (
+                  {currentAppPermissions.includes(
+                    "add_legal_entity_company_relation"
+                  ) &&
+                    currentAppPermissions.includes("add_legal_entity") && (
                       <Button
                         onClick={() => setIsModalVisible(true)}
                         icon={<PlusOutlined />}
                       >
-                        Добавить контрагента
+                        Добавить контрагента (в доработке)
                       </Button>
                     )}
                   <Button

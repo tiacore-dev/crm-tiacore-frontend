@@ -8,11 +8,12 @@ import { PlusOutlined } from "@ant-design/icons";
 import { ServicesTable } from "./components/servicesTable";
 import { ServiceCreateModal } from "./components/serviceFormModal";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ServicesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   useEffect(() => {
     dispatch(
@@ -35,12 +36,14 @@ export const ServicesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_service") && (
+                  {currentAppPermissions.includes(
+                    "add_user_company_relation"
+                  ) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}
                     >
-                      Добавить новую услугу
+                      Добавить новую услугу (в доработке)
                     </Button>
                   )}
                 </Space>

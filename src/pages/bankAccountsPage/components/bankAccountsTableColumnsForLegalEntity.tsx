@@ -18,7 +18,7 @@ interface BankAccountsTableColumnsForLegalEntityProps {
   onAccountNumberChange: (value: string) => void;
   onEdit: (account: IBankAccount) => void;
   onDelete: (account: IBankAccount) => void;
-  hasPermission: (permission: string) => boolean; // Добавляем параметр
+  currentAppPermissions: string[]; // Заменяем hasPermission на currentAppPermissions
 }
 
 export const getBankAccountsTableColumnsForLegalEntity = ({
@@ -30,12 +30,12 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
   onBankNameChange,
   onEdit,
   onDelete,
-  hasPermission, // Получаем функцию проверки прав
+  currentAppPermissions, // Получаем массив permissions
 }: BankAccountsTableColumnsForLegalEntityProps): ColumnType<IBankAccount>[] => {
   const getMenuItems = (account: IBankAccount) => {
     const items = [];
 
-    if (hasPermission("edit_bank_account")) {
+    if (currentAppPermissions.includes("edit_bank_account")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -44,7 +44,7 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
       });
     }
 
-    if (hasPermission("delete_bank_account")) {
+    if (currentAppPermissions.includes("delete_bank_account")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,
@@ -123,7 +123,7 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
       width: 40,
       render: (_: any, record: IBankAccount) => {
         const menuItems = getMenuItems(record);
-        if (menuItems.length === 0) return null; // Не показываем кнопку, если нет доступных действий
+        if (menuItems.length === 0) return null;
 
         return (
           <Dropdown menu={{ items: menuItems }} trigger={["click"]}>

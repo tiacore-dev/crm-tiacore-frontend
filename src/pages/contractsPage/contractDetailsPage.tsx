@@ -15,6 +15,7 @@ import { ContractDetailsCard } from "./components/contractDetailsCard";
 import { ContractFormModal } from "./components/contractFormModal";
 import { getEntityNameById, getContractStatusById } from "../../utils/infoById";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ContractDetailsPage: React.FC = () => {
   const { contract_id } = useParams<{ contract_id: string }>();
@@ -32,7 +33,7 @@ export const ContractDetailsPage: React.FC = () => {
 
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractStatusesResponse } = useContractStatuses();
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const { deleteMutation } = useContractMutations(
     contract_id || "",
@@ -106,7 +107,7 @@ export const ContractDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("edit_contract") && (
+                  {currentAppPermissions.includes("edit_contract") && (
                     <Button
                       onClick={() => {
                         setShowEditModal(true);
@@ -117,7 +118,7 @@ export const ContractDetailsPage: React.FC = () => {
                     </Button>
                   )}
 
-                  {hasPermission("delete_contract") && (
+                  {currentAppPermissions.includes("delete_contract") && (
                     <Button danger onClick={() => setShowDeleteConfirm(true)}>
                       <DeleteOutlined /> Удалить
                     </Button>

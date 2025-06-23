@@ -25,6 +25,7 @@ import {
 } from "../../redux/slices/contractsSlice";
 import { RootState } from "../../redux/store";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ContractsPage: React.FC = () => {
   const {
@@ -41,7 +42,7 @@ export const ContractsPage: React.FC = () => {
 
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   useEffect(() => {
     dispatch(
@@ -142,7 +143,7 @@ export const ContractsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_contract") && (
+                  {currentAppPermissions.includes("add_contract") && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

@@ -1,4 +1,3 @@
-//contractsTableColumns.tsx
 import { Button, Tag, Select, DatePicker } from "antd";
 import { ColumnType } from "antd/es/table";
 import { IContract } from "../../../api/contractsApi";
@@ -30,7 +29,7 @@ interface ContractsTableColumnsProps {
     contract_date_from?: number;
     contract_date_to?: number;
   };
-  hasPermission: (permission: string) => boolean; // Добавляем параметр
+  currentAppPermissions: string[]; // Заменяем hasPermission на currentAppPermissions
 }
 
 export const getContractsTableColumns = ({
@@ -44,7 +43,7 @@ export const getContractsTableColumns = ({
   onSortChange,
   onFilterChange,
   filters,
-  hasPermission,
+  currentAppPermissions,
 }: ContractsTableColumnsProps): ColumnType<IContract>[] => {
   const getLegalEntityName = (legalEntityId: string): string => {
     const legalEntity = legalEntitiesData.find(
@@ -67,7 +66,7 @@ export const getContractsTableColumns = ({
       case "waiting":
         return "В процессе";
       case "completed":
-        return "Заверщен";
+        return "Завершен";
       default:
         return status;
     }
@@ -99,6 +98,7 @@ export const getContractsTableColumns = ({
         <Button
           type="link"
           onClick={() => navigate(`/contracts/${record.contract_id}`)}
+          disabled={!currentAppPermissions.includes("view_contract")}
         >
           {text}
         </Button>
@@ -267,9 +267,12 @@ export const getContractsTableColumns = ({
       render: (_: string, record: IContract) => {
         if (!record.s3_key) return "-";
         const fileName = record.s3_key.split("/").pop() || "Файл";
-        if (!hasPermission("download_template")) {
-          return <span>{fileName}</span>; // Просто текст без возможности скачать
+
+        // Новая проверка прав
+        if (!currentAppPermissions.includes("download_contract")) {
+          return <span>{fileName}</span>;
         }
+
         return (
           <Button
             type="link"

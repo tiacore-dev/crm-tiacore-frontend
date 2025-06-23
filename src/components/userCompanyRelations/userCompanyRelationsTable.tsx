@@ -1,4 +1,5 @@
 import { Table, Tag, Typography, Spin, Space, Dropdown, Button } from "antd";
+// import { useCompany } from "../../context/companyContext";
 // import {
 //   useUserRelationsQuery,
 //   useCompanyRelationsQuery,
@@ -46,6 +47,7 @@ import { Table, Tag, Typography, Spin, Space, Dropdown, Button } from "antd";
 //     useCompanyQuery();
 
 //   const { hasPermission } = usePermissions(); // Добавьте этот хук
+//   const { currentAppPermissions } = useCompany();
 
 //   const { data: usersData, isLoading: usersLoading } = useUserQueryAll();
 

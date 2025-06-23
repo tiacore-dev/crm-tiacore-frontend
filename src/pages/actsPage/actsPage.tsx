@@ -24,6 +24,7 @@ import {
 } from "../../redux/slices/actsSlice";
 import { RootState } from "../../redux/store";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ActsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ export const ActsPage: React.FC = () => {
       ])
     );
   }, [dispatch]);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const {
     data: acts_data,
@@ -137,7 +138,7 @@ export const ActsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("add_act") && (
+                  {currentAppPermissions.includes("add_act") && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

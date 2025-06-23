@@ -67,11 +67,11 @@ export const UsersPage: React.FC = () => {
                   loading={isLoading}
                 />
               </div>
-              <UserFormModal
+              {/* <UserFormModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 mode="create"
-              />
+              /> */}
             </div>
           )}
           {isError && <BackButton />}

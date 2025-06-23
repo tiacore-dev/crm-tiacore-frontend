@@ -6,6 +6,7 @@ import { ExportOutlined, DownloadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IContract } from "../../../api/contractsApi";
 import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface ContractDetailsCardProps {
   contract: IContract;
@@ -20,7 +21,7 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
   getContractStatusById,
   handleDownload,
 }) => {
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   return (
     <Descriptions bordered column={1}>
@@ -65,7 +66,7 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
           <Space>
             <span>{contract.s3_key.split("/").pop()}</span>
 
-            {hasPermission("download_contract") && (
+            {currentAppPermissions.includes("download_contract") && (
               <DownloadOutlined
                 onClick={handleDownload}
                 style={{

@@ -12,6 +12,7 @@ import { useActDetailMutations } from "../../../hooks/actDetails/actDetailMutati
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { ActDetailFormModal } from "./actDetailsFormModal";
 import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface IActDetailsTableProps {
   data: {
@@ -49,7 +50,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     null
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const handleEdit = (actDetail: IActDetail) => {
     setEditingActDetail(actDetail);
@@ -79,7 +80,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   const getMenuItems = (actDetail: IActDetail) => {
     const items = [];
 
-    if (hasPermission("edit_act_detail")) {
+    if (currentAppPermissions.includes("edit_act_detail")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -88,7 +89,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       });
     }
 
-    if (hasPermission("delete_act_detail")) {
+    if (currentAppPermissions.includes("delete_act_detail")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,
@@ -184,7 +185,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
           Детали акта
         </Typography.Title>
 
-        {hasPermission("add_act_detail") && (
+        {currentAppPermissions.includes("add_act_detail") && (
           <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
             Добавить
           </Button>

@@ -13,6 +13,7 @@ import { useBillDetailMutations } from "../../../hooks/billDetails/billDetailMut
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { BillDetailFormModal } from "./billDetailsFormModal";
 import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface IBillDetailsTableProps {
   data: {
@@ -49,7 +50,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     IBillDetail | undefined
   >(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const handleEdit = (billDetail: IBillDetail) => {
     setEditingBillDetail(billDetail);
@@ -79,7 +80,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
   const getMenuItems = (billDetail: IBillDetail) => {
     const items = [];
 
-    if (hasPermission("edit_bill_detail")) {
+    if (currentAppPermissions.includes("edit_bill_detail")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -88,7 +89,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       });
     }
 
-    if (hasPermission("delete_bill_detail")) {
+    if (currentAppPermissions.includes("delete_bill_detail")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,
@@ -198,7 +199,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
           Детали счета
         </Typography.Title>
 
-        {hasPermission("add_bill_detail") && (
+        {currentAppPermissions.includes("add_bill_detail") && (
           <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
             Добавить
           </Button>

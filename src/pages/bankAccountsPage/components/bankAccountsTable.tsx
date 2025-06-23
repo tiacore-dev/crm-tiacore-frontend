@@ -15,7 +15,8 @@ import { useState } from "react";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { useBankAccountMutations } from "../../../hooks/bankAccounts/useBankAccountMutation";
 import { BankAccountCreateModal } from "./bankAccountFormModal";
-import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
+
 interface BankAccountsTableProps {
   data: {
     total: number;
@@ -37,7 +38,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const { account_number, bank_name, page, page_size } = useSelector(
     (state: RootState) => state.bankAccounts
@@ -80,14 +81,6 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
       });
     }
   };
-  // const handleDelete = () => {
-  //   deleteMutation.mutate(undefined, {
-  //     onSuccess: () => {
-  //       setShowDeleteConfirm(false);
-  //       navigate("/bank_accounts");
-  //     },
-  //   });
-  // };
 
   const columns = getBankAccountsTableColumnsForLegalEntity({
     navigate,
@@ -98,7 +91,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
     onBankNameChange: (value) => dispatch(setBankName(value)),
     onEdit: handleEdit,
     onDelete: handleDelete,
-    hasPermission,
+    currentAppPermissions, // Передаем permissions вместо hasPermission
   });
 
   const filteredData = data.bank_accounts.filter((account) => {
@@ -116,7 +109,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
   return (
     <div>
       {!legalEntitiesData.legal_entity_id &&
-        hasPermission("add_bank_account") && (
+        currentAppPermissions.includes("add_bank_account") && (
           <div style={{ marginBottom: 16 }}>
             <Button
               type="primary"

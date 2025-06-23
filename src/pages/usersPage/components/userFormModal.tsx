@@ -7,7 +7,7 @@ interface UserCreateModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess?: () => void;
-  mode?: "create" | "edit" | "registration";
+  mode?: "edit" | "registration";
   initialData?: IUser | null;
 }
 
@@ -22,13 +22,12 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
-  const { createMutation, updateMutation, registrationMutation } =
-    useUserMutations(
-      initialData?.user_id || "",
-      initialData?.email || "",
-      initialData?.full_name || ""
-      // initialData?.position || ""
-    );
+  const { updateMutation, registrationMutation } = useUserMutations(
+    initialData?.user_id || "",
+    initialData?.email || "",
+    initialData?.full_name || ""
+    // initialData?.position || ""
+  );
 
   useEffect(() => {
     if (visible) {
@@ -64,7 +63,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
       };
 
       if (mode === "create") {
-        await createMutation.mutateAsync(dataToSend);
+        // await createMutation.mutateAsync(dataToSend);
       } else if (mode === "edit" && initialData?.user_id) {
         await updateMutation.mutateAsync(dataToSend);
       } else if (mode === "registration") {

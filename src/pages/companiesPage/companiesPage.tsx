@@ -14,6 +14,7 @@ import {
   resetState,
 } from "../../redux/slices/companiesSlice";
 import { RootState } from "../../redux/store";
+import { useCompany } from "../../context/companyContext";
 
 export const CompaniesPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,8 @@ export const CompaniesPage: React.FC = () => {
     search,
     //  page, page_size
   } = useSelector((state: RootState) => state.companies);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
+
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   useEffect(() => {
     dispatch(
@@ -49,7 +51,8 @@ export const CompaniesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {(hasPermission("add_company") || !selectedCompanyId) && (
+                  {(currentAppPermissions.includes("add_company") ||
+                    !selectedCompanyId) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

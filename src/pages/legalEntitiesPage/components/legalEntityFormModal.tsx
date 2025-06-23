@@ -193,9 +193,9 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     defaultRelationType || form.getFieldValue("relation_type");
   const modalTitle =
     mode === "create" && defaultRelationType === "buyer"
-      ? "Добавить контрагента"
+      ? "Добавить контрагента  (в доработке)"
       : mode === "create" && defaultRelationType === "seller"
-      ? "Добавить организацию к компании"
+      ? "Добавить организацию к компании  (в доработке)"
       : mode === "edit" && defaultRelationType === "buyer"
       ? "Редактировать контрагента"
       : mode === "edit" && defaultRelationType === "seller"

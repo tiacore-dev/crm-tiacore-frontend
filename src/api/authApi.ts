@@ -184,3 +184,27 @@ export const getCurrentPermissions = (): string[] => {
 
   return permissions[appId][selectedCompanyId][0]?.permissions || [];
 };
+
+export const logoutUser = async (): Promise<void> => {
+  const url = process.env.REACT_APP_API_URL;
+  const accessToken = localStorage.getItem("access_token");
+
+  await axiosInstance.post(
+    `${url}/api/auth/logout`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  // Очищаем локальное хранилище
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("permissions");
+  localStorage.removeItem("is_superadmin");
+  localStorage.removeItem("selectedCompanyId");
+  localStorage.removeItem("user_id");
+};

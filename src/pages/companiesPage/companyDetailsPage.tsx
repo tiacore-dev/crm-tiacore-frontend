@@ -15,6 +15,7 @@ import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitie
 import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export const CompanyDetailsPage: React.FC = () => {
   const { company_id } = useParams<{ company_id: string }>();
   const [showEditModal, setShowEditModal] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const {
     data: companyDetails,
@@ -79,7 +80,7 @@ export const CompanyDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("edit_company") && (
+                  {currentAppPermissions.includes("edit_company") && (
                     <Button
                       onClick={() => {
                         setShowEditModal(true);
@@ -90,7 +91,7 @@ export const CompanyDetailsPage: React.FC = () => {
                     </Button>
                   )}
 
-                  {hasPermission("delete_company") && (
+                  {currentAppPermissions.includes("delete_company") && (
                     <Button
                       danger
                       onClick={() => setShowDeleteConfirm(true)}
@@ -110,8 +111,10 @@ export const CompanyDetailsPage: React.FC = () => {
                       Организации
                     </Typography.Title>
 
-                    {hasPermission("add_legal_entity") &&
-                      hasPermission("add_legal_entity_company_relation") && (
+                    {currentAppPermissions.includes("add_legal_entity") &&
+                      currentAppPermissions.includes(
+                        "add_legal_entity_company_relation"
+                      ) && (
                         <Button
                           onClick={() => {
                             setIsModalVisible(true);

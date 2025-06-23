@@ -12,6 +12,7 @@ import "./navbar.css";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
 import { CompanyFormModal } from "../../pages/companiesPage/components/companyFormModal";
+import { logoutUser } from "../../api/authApi";
 
 const LOGO_TEXT = "CRM | Tiacore"; // Замените на ваш текст лого
 
@@ -100,6 +101,7 @@ export const Navbar: React.FC = () => {
 
   const handleUserMenuClick = ({ key }: { key: string }) => {
     if (key === "logout") {
+      logoutUser();
       localStorage.clear();
       window.location.href = "/login";
     } else {

@@ -22,7 +22,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
+
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showCreateBankAccountModal, setShowCreateBankAccountModal] =
@@ -124,7 +125,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {hasPermission("edit_legal_entity") && (
+                  {currentAppPermissions.includes("edit_legal_entity") && (
                     <Button
                       onClick={() => {
                         setIsModalVisible(true);
@@ -134,7 +135,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
                       Редактировать
                     </Button>
                   )}
-                  {hasPermission("delete_legal_entity") && (
+                  {currentAppPermissions.includes("delete_legal_entity") && (
                     <Button danger onClick={() => setShowDeleteConfirm(true)}>
                       <DeleteOutlined /> Удалить
                     </Button>
@@ -148,7 +149,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
 
                 {fromPage === "company" && (
                   <>
-                    {hasPermission("add_bank_account") && (
+                    {currentAppPermissions.includes("add_bank_account") && (
                       <Button
                         style={{ marginBottom: 16 }}
                         onClick={() => setShowCreateBankAccountModal(true)}

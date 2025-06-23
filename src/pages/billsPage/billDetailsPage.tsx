@@ -21,6 +21,7 @@ import { BillDetailsTable } from "./components/billDetailsTable";
 import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
@@ -35,7 +36,7 @@ export const BillDetailsPage: React.FC = () => {
   const { data: companiesResponse } = useCompaniesForSelection();
   const { data: servicesResponse } = useServiceQuery();
   const isMobile = useMobileDetection();
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -107,7 +108,7 @@ export const BillDetailsPage: React.FC = () => {
               <div className="main-container">
                 <div style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 16 }}>
-                    {hasPermission("edit_bill") && (
+                    {currentAppPermissions.includes("edit_bill") && (
                       <Button
                         onClick={() => {
                           setShowEditModal(true);
@@ -118,27 +119,29 @@ export const BillDetailsPage: React.FC = () => {
                       </Button>
                     )}
 
-                    {hasPermission("delete_bill") && (
+                    {currentAppPermissions.includes("delete_bill") && (
                       <Button danger onClick={() => setShowDeleteConfirm(true)}>
                         <DeleteOutlined /> Удалить
                       </Button>
                     )}
-                    {!isMobile && hasPermission("generate_template") && (
-                      <GenerateTemplateButton
-                        billId={bill_id || ""}
-                        entityType={"bill"}
-                      />
-                    )}
+                    {!isMobile &&
+                      currentAppPermissions.includes("generate_template") && (
+                        <GenerateTemplateButton
+                          billId={bill_id || ""}
+                          entityType={"bill"}
+                        />
+                      )}
                   </Space>
-                  {isMobile && hasPermission("generate_template") && (
-                    <Space>
-                      {" "}
-                      <GenerateTemplateButton
-                        billId={bill_id || ""}
-                        entityType={"bill"}
-                      />{" "}
-                    </Space>
-                  )}
+                  {isMobile &&
+                    currentAppPermissions.includes("generate_template") && (
+                      <Space>
+                        {" "}
+                        <GenerateTemplateButton
+                          billId={bill_id || ""}
+                          entityType={"bill"}
+                        />{" "}
+                      </Space>
+                    )}
                 </div>
 
                 <BillDetailsCard

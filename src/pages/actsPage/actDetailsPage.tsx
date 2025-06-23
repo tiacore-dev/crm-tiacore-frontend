@@ -19,6 +19,7 @@ import { createMemoizedHelpers } from "../../utils/infoById";
 import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
 import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -32,7 +33,7 @@ export const ActDetailsPage: React.FC = () => {
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractsResponse } = useContractsForSelection();
   const { data: servicesResponse } = useServiceQuery();
-  const { hasPermission } = usePermissions(); // Добавьте этот хук
+  const { currentAppPermissions } = useCompany();
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -98,34 +99,34 @@ export const ActDetailsPage: React.FC = () => {
               <div className="main-container">
                 <div style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 16 }}>
-                    {hasPermission("edit_act") && (
+                    {currentAppPermissions.includes("edit_act") && (
                       <Button onClick={() => setShowEditModal(true)}>
                         <EditOutlined />
                         Редактировать
                       </Button>
                     )}
-
-                    {hasPermission("delete_act") && (
+                    {currentAppPermissions.includes("delete_act") && (
                       <Button danger onClick={() => setShowDeleteConfirm(true)}>
                         <DeleteOutlined /> Удалить
                       </Button>
                     )}
-
-                    {!isMobile && hasPermission("generate_template") && (
-                      <GenerateTemplateButton
-                        actId={act_id || ""}
-                        entityType={"act"}
-                      />
-                    )}
+                    {!isMobile &&
+                      currentAppPermissions.includes("generate_template") && (
+                        <GenerateTemplateButton
+                          actId={act_id || ""}
+                          entityType={"act"}
+                        />
+                      )}
                   </Space>
-                  {isMobile && hasPermission("generate_template") && (
-                    <Space>
-                      <GenerateTemplateButton
-                        actId={act_id || ""}
-                        entityType={"act"}
-                      />
-                    </Space>
-                  )}
+                  {isMobile &&
+                    currentAppPermissions.includes("generate_template") && (
+                      <Space>
+                        <GenerateTemplateButton
+                          actId={act_id || ""}
+                          entityType={"act"}
+                        />
+                      </Space>
+                    )}
                 </div>
                 <ActDetailsDescriptions
                   act={act}

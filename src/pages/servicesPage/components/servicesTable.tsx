@@ -10,6 +10,7 @@ import { useServiceMutations } from "../../../hooks/services/useServiceMutations
 import { ServiceCreateModal } from "./serviceFormModal";
 import { RootState } from "../../../redux/store";
 import { usePermissions } from "../../../context/permissionsContext"; // Добавляем импорт
+import { useCompany } from "../../../context/companyContext";
 
 interface ServicesTableProps {
   data: {
@@ -30,7 +31,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   const { deleteMutation } = useServiceMutations("", "", "", () => {});
   const [editingService, setEditingService] = useState<IService | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { hasPermission } = usePermissions(); // Получаем функцию проверки прав
+  const { currentAppPermissions } = useCompany();
 
   const handleEdit = (service: IService) => {
     setEditingService(service);
@@ -56,7 +57,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
     const items = [];
 
     // Добавляем пункт "Редактировать" только если есть права
-    if (hasPermission("edit_service")) {
+    if (currentAppPermissions.includes("edit_service")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -66,7 +67,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
     }
 
     // Добавляем пункт "Удалить" только если есть права
-    if (hasPermission("delete_service")) {
+    if (currentAppPermissions.includes("delete_service")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,
