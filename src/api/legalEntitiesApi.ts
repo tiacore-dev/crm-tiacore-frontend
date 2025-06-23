@@ -24,7 +24,7 @@ export const fetchLegalEntities = async (selectedCompanyId?: string | null) => {
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
@@ -40,7 +40,7 @@ export const fetchLegalEntities = async (selectedCompanyId?: string | null) => {
 export const fetchLegalEntitiesFiltred = async (company_id: string) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
-  const params: any = { company: company_id, page: 1, page_size: 100 };
+  const params: any = { company_id: company_id, page: 1, page_size: 100 };
   const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
     params,
     headers: {
@@ -74,7 +74,7 @@ export const createLegalEntity = async (
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.post(
@@ -100,7 +100,7 @@ export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   try {
@@ -148,7 +148,7 @@ export const updateLegalEntity = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/legal-entities/${legal_entity_id}`,
@@ -174,7 +174,7 @@ export const deleteLegalEntity = async (legal_entity_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   await axiosInstance.delete(`${url}/api/legal-entities/${legal_entity_id}`, {
@@ -202,7 +202,7 @@ export const fetchLegalEntityByInnKpp = async (
   const params: {
     inn: string;
     kpp?: string;
-    company?: string;
+    company_id?: string;
   } = { inn };
 
   if (kpp) {
@@ -210,7 +210,7 @@ export const fetchLegalEntityByInnKpp = async (
   }
 
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(
@@ -235,7 +235,7 @@ export const fetchSellers = async (selectedCompanyId?: string | null) => {
 
   const params: any = { page: 1, page_size: 100 };
   // if (!isSuperadmin && selectedCompanyId) {
-  params.company = selectedCompanyId;
+  params.company_id = selectedCompanyId;
   // }
 
   const response = await axiosInstance.get(
@@ -259,7 +259,7 @@ export const fetchBuyers = async (selectedCompanyId?: string | null) => {
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(

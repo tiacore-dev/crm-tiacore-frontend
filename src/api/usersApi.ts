@@ -27,7 +27,7 @@ export const fetchUsers = async (
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(`${url}/api/users/all`, {
@@ -53,7 +53,7 @@ export const createUser = async (newUser: {
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.post(`${url}/api/users/add`, newUser, {
     params,
@@ -77,7 +77,7 @@ export const fetchUserDetails = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.get(`${url}/api/users/${user_id}`, {
@@ -108,7 +108,7 @@ export const updateUser = async (user_id: string, updatedData: any) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/users/${user_id}`,
@@ -134,7 +134,7 @@ export const deleteUser = async (user_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   await axiosInstance.delete(`${url}/api/users/${user_id}`, {
     params,

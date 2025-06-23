@@ -32,7 +32,7 @@ export const fetchContracts = async (
       Object.entries(queryParams).filter(([_, value]) => value !== undefined)
     ),
     ...(!isSuperadmin && selectedCompanyId
-      ? { company: selectedCompanyId }
+      ? { company_id: selectedCompanyId }
       : {}),
   };
 
@@ -57,7 +57,7 @@ export const createContract = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.post(
@@ -92,7 +92,7 @@ export const fetchContractDetails = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   try {
@@ -127,7 +127,7 @@ export const updateContract = async (contract_id: string, updatedData: any) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.patch(
@@ -153,7 +153,7 @@ export const deleteContract = async (contract_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   await axiosInstance.delete(`${url}/api/contracts/${contract_id}`, {
@@ -174,7 +174,7 @@ export const downloadContract = async (contract_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   try {

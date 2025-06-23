@@ -1,7 +1,7 @@
 // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
 import { IUserCompanyRelationsResponse } from "../hooks/userCompanyRelations/useUserCompanyRelationsQuery";
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 export interface IUserCompanyRelation {
   user_company_id: string;
   user_id: string;

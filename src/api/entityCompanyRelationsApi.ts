@@ -12,7 +12,7 @@ interface IEntityCompanyRelation {
 
 export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
   legal_entity: string;
-  company: string;
+  company_id: string;
   relation_type: string;
 }): Promise<IEntityCompanyRelation> => {
   const url = process.env.REACT_APP_API_URL;
@@ -22,7 +22,7 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.post(
     `${url}/api/entity-company-relations/add`,
@@ -40,7 +40,7 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
 
 export const fetchEntityCompanyRelations = async (
   legal_entity?: string,
-  company?: string,
+  company_id?: string,
   relation_type?: string
 ) => {
   const url = process.env.REACT_APP_API_URL;
@@ -50,13 +50,13 @@ export const fetchEntityCompanyRelations = async (
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   if (legal_entity) {
     params.legal_entity = legal_entity;
   }
-  if (company) {
-    params.company = company;
+  if (company_id) {
+    params.company_id = company_id;
   }
   if (relation_type) {
     params.relation_type = relation_type;

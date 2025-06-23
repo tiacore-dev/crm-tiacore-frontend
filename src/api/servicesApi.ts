@@ -17,7 +17,7 @@ export const fetchServices = async (selectedCompanyId?: string | null) => {
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.get(`${url}/api/services/all`, {
     params,
@@ -40,7 +40,7 @@ export const createService = async (newService: {
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.post(
     `${url}/api/services/add`,
@@ -67,7 +67,7 @@ export const fetchServiceDetails = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.get(
@@ -100,7 +100,7 @@ export const updateService = async (service_id: string, updatedData: any) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/services/${service_id}`,
@@ -124,7 +124,7 @@ export const deleteService = async (service_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   await axiosInstance.delete(`${url}/api/services/${service_id}`, {
     params,

@@ -20,7 +20,7 @@ export const fetchCompanies = async (selectedCompanyId?: string | null) => {
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(`${url}/api/companies/all`, {

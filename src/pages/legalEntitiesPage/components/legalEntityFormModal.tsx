@@ -161,7 +161,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
         if (existingEntity?.legal_entity_id) {
           await createRelationMutation.mutateAsync({
             legal_entity: existingEntity.legal_entity_id,
-            company: selectedCompanyId || "",
+            company_id: selectedCompanyId || "",
             relation_type:
               defaultRelationType! || basicFieldsData?.relation_type,
           });

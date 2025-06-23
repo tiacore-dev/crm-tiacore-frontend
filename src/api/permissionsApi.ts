@@ -1,6 +1,6 @@
 // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 export interface IPermission {
   permission_id: string;
   permission_name: string;

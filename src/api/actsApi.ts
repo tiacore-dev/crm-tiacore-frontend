@@ -29,7 +29,7 @@ export const fetchActs = async (
       Object.entries(queryParams).filter(([_, value]) => value !== undefined)
     ),
     ...(!isSuperadmin && selectedCompanyId
-      ? { company: selectedCompanyId }
+      ? { company_id: selectedCompanyId }
       : {}),
   };
   const response = await axiosInstance.get(`${url}/api/acts/all`, {
@@ -58,7 +58,7 @@ export const createAct = async (newAct: {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.post(`${url}/api/acts/add`, newAct, {
     params,
@@ -82,7 +82,7 @@ export const fetchAct = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.get(`${url}/api/acts/${act_id}`, {
@@ -113,7 +113,7 @@ export const updateAct = async (act_id: string, updatedData: any) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/acts/${act_id}`,
@@ -139,7 +139,7 @@ export const deleteAct = async (act_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   await axiosInstance.delete(`${url}/api/acts/${act_id}`, {
     params,

@@ -18,7 +18,7 @@ export const fetchTemplates = async (
     entity?: string;
     page?: number;
     page_size?: number;
-    company?: string;
+    company_id?: string;
   },
   selectedCompanyId?: string | null
 ) => {
@@ -33,7 +33,7 @@ export const fetchTemplates = async (
     page_size: params?.page_size || 100,
     ...(params?.entity && { entity: params.entity }), // Добавляем entity только если он передан
     ...(!isSuperadmin && selectedCompanyId
-      ? { company: selectedCompanyId }
+      ? { company_id: selectedCompanyId }
       : {}),
   };
 
@@ -57,7 +57,7 @@ export const createTemplate = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.post(
@@ -91,7 +91,7 @@ export const fetchTemplateDetails = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.get(
@@ -125,7 +125,7 @@ export const updateTemplate = async (template_id: string, updatedData: any) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.patch(
@@ -151,7 +151,7 @@ export const deleteTemplate = async (template_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   await axiosInstance.delete(`${url}/api/templates/${template_id}`, {
@@ -171,7 +171,7 @@ export const downloadTemplate = async (template_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   try {
@@ -209,7 +209,7 @@ export const generateTemplate = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   try {

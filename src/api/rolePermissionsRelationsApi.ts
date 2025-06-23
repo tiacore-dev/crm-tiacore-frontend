@@ -1,12 +1,12 @@
 // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 export interface IRolePermission {
   role_permission_id: string;
   role_id: string;
   permission_id: string;
 }
-
 // Функция для получения списка с параметрами
 export const fetchRolePermissions = async (params?: {
   role?: string;
