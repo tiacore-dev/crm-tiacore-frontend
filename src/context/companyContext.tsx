@@ -2,14 +2,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-// Определите все возможные разрешения для вашего приложения
-const ALL_APP_PERMISSIONS = [
-  "permission1",
-  "permission2",
-  "permission3",
-  // ... добавьте все возможные разрешения вашего приложения
-];
-
 interface CompanyContextType {
   selectedCompanyId: string | null;
   setSelectedCompanyId: (id: string | null) => void;
@@ -56,18 +48,10 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
 
     setAvailableCompanies(companyIds);
 
-    if (isSuperadmin) {
-      // Для суперпользователя устанавливаем все разрешения
-      setCurrentAppPermissions(ALL_APP_PERMISSIONS);
-      // Суперпользователю не нужно выбирать компанию, но если нужно сохранить логику выбора:
-      if (savedCompanyId) {
-        setSelectedCompanyId(savedCompanyId);
-      } else if (companyIds.length > 0) {
-        setSelectedCompanyId(companyIds[0]);
-      }
-    } else {
+    if (!isSuperadmin) {
       if (savedCompanyId && companyIds.includes(savedCompanyId)) {
         setSelectedCompanyId(savedCompanyId);
+        // Устанавливаем permissions для выбранной компании
         const companyPermissions =
           appCompanies[savedCompanyId]?.[0]?.permissions || [];
         setCurrentAppPermissions(companyPermissions);
@@ -84,19 +68,17 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
     if (selectedCompanyId) {
       localStorage.setItem("selectedCompanyId", selectedCompanyId);
 
-      if (!isSuperadmin) {
-        // Обновляем permissions при изменении выбранной компании только для не-суперпользователей
-        const permissions = JSON.parse(
-          localStorage.getItem("permissions") || "{}"
-        );
-        const appId = process.env.REACT_APP_ID || "crm_app";
-        const appCompanies = permissions[appId] || {};
-        const companyPermissions =
-          appCompanies[selectedCompanyId]?.[0]?.permissions || [];
-        setCurrentAppPermissions(companyPermissions);
-      }
+      // Обновляем permissions при изменении выбранной компании
+      const permissions = JSON.parse(
+        localStorage.getItem("permissions") || "{}"
+      );
+      const appId = process.env.REACT_APP_ID || "crm_app";
+      const appCompanies = permissions[appId] || {};
+      const companyPermissions =
+        appCompanies[selectedCompanyId]?.[0]?.permissions || [];
+      setCurrentAppPermissions(companyPermissions);
     }
-  }, [selectedCompanyId, isSuperadmin]);
+  }, [selectedCompanyId]);
 
   return (
     <CompanyContext.Provider
@@ -106,9 +88,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
         availableCompanies,
         isSuperadmin,
         setAvailableCompanies,
-        currentAppPermissions: isSuperadmin
-          ? ALL_APP_PERMISSIONS
-          : currentAppPermissions,
+        currentAppPermissions,
       }}
     >
       {children}
