@@ -9,11 +9,20 @@ export const registrationUser = async (newUser: {
   position: string;
 }): Promise<IUser> => {
   const url = process.env.REACT_APP_API_URL;
-  const response = await axiosInstance.post(`${url}/api/register`, newUser, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const application_id = process.env.REACT_APP_ID;
+  const requestData = {
+    ...newUser,
+    application_id: application_id,
+  };
+  const response = await axiosInstance.post(
+    `${url}/api/register`,
+    requestData,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return response.data;
 };
 
