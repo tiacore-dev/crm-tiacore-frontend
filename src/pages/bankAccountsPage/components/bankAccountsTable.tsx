@@ -39,6 +39,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const { account_number, bank_name, page, page_size } = useSelector(
     (state: RootState) => state.bankAccounts
@@ -92,6 +93,7 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
     onEdit: handleEdit,
     onDelete: handleDelete,
     currentAppPermissions, // Передаем permissions вместо hasPermission
+    isSuperadmin,
   });
 
   const filteredData = data.bank_accounts.filter((account) => {
@@ -109,7 +111,8 @@ export const BankAccountsTable: React.FC<BankAccountsTableProps> = ({
   return (
     <div>
       {!legalEntitiesData.legal_entity_id &&
-        currentAppPermissions.includes("add_bank_account") && (
+        (isSuperadmin ||
+          currentAppPermissions.includes("add_bank_account")) && (
           <div style={{ marginBottom: 16 }}>
             <Button
               type="primary"

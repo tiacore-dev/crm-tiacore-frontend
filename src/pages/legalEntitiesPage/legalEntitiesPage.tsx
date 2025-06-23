@@ -30,11 +30,11 @@ export const LegalEntitiesPage: React.FC = () => {
     (state: RootState) => state.legalEntities
   );
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const buyersData = useLegalEntitiesBuyers();
   const selectionData = useLegalEntitiesForSelection();
 
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const {
     data: legal_entities_data,
     isLoading,

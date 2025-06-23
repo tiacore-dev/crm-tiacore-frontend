@@ -15,7 +15,8 @@ export const getTemplateColumns = (
   onCompanyChange: (value: string) => void,
   downloadingId: string | null,
   onDownload: (template_id: string) => void,
-  currentAppPermissions: string[] // Заменяем hasPermission на currentAppPermissions
+  currentAppPermissions: string[],
+  isSuperadmin: boolean // Заменяем hasPermission на currentAppPermissions
 ): ColumnType<ITemplate>[] => {
   return [
     {
@@ -32,7 +33,9 @@ export const getTemplateColumns = (
         <Button
           type="link"
           onClick={() => navigate(`/templates/${record.template_id}`)}
-          disabled={!currentAppPermissions.includes("view_template")}
+          disabled={
+            !isSuperadmin && !currentAppPermissions.includes("view_template")
+          }
         >
           {text}
         </Button>
@@ -108,7 +111,10 @@ export const getTemplateColumns = (
         const fileName = record.s3_key.split("/").pop() || "Файл";
 
         // Новая проверка прав
-        if (!currentAppPermissions.includes("download_template")) {
+        if (
+          !isSuperadmin &&
+          !currentAppPermissions.includes("download_template")
+        ) {
           return <span>{fileName}</span>;
         }
 

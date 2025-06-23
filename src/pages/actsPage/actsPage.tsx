@@ -50,6 +50,7 @@ export const ActsPage: React.FC = () => {
     );
   }, [dispatch]);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const {
     data: acts_data,
@@ -138,7 +139,8 @@ export const ActsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {currentAppPermissions.includes("add_act") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("add_act")) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

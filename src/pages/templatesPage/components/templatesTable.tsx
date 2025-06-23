@@ -35,9 +35,11 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
   );
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleDownload = async (template_id: string) => {
-    if (!currentAppPermissions.includes("download_template")) return;
+    if (!isSuperadmin && !currentAppPermissions.includes("download_template"))
+      return;
 
     setDownloadingId(template_id);
     try {
@@ -64,7 +66,8 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (value) => dispatch(setCompany(value)),
     downloadingId,
     handleDownload,
-    currentAppPermissions // Передаем permissions вместо hasPermission
+    currentAppPermissions, // Передаем permissions вместо hasPermission,
+    isSuperadmin
   );
 
   const filteredData = data.filter((template) => {

@@ -51,6 +51,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleEdit = (actDetail: IActDetail) => {
     setEditingActDetail(actDetail);
@@ -80,7 +81,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   const getMenuItems = (actDetail: IActDetail) => {
     const items = [];
 
-    if (currentAppPermissions.includes("edit_act_detail")) {
+    if (isSuperadmin || currentAppPermissions.includes("edit_act_detail")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -89,7 +90,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       });
     }
 
-    if (currentAppPermissions.includes("delete_act_detail")) {
+    if (isSuperadmin || currentAppPermissions.includes("delete_act_detail")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,
@@ -185,7 +186,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
           Детали акта
         </Typography.Title>
 
-        {currentAppPermissions.includes("add_act_detail") && (
+        {(isSuperadmin || currentAppPermissions.includes("add_act_detail")) && (
           <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
             Добавить
           </Button>

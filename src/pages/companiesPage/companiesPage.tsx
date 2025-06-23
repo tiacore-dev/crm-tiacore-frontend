@@ -24,6 +24,7 @@ export const CompaniesPage: React.FC = () => {
     //  page, page_size
   } = useSelector((state: RootState) => state.companies);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   useEffect(() => {
@@ -51,7 +52,8 @@ export const CompaniesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {(currentAppPermissions.includes("add_company") ||
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("add_company") ||
                     !selectedCompanyId) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}

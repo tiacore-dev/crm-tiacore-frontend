@@ -23,6 +23,7 @@ export const TemplatesPage: React.FC = () => {
     (state: RootState) => state.templates
   );
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   useEffect(() => {
     dispatch(
@@ -53,7 +54,8 @@ export const TemplatesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {currentAppPermissions.includes("add_template") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("add_template")) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

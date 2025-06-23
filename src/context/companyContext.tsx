@@ -9,6 +9,7 @@ interface CompanyContextType {
   isSuperadmin: boolean;
   setAvailableCompanies: (companies: string[]) => void;
   currentAppPermissions: string[];
+  hasPermission: (permission: string) => boolean; // Добавляем метод проверки
 }
 
 const CompanyContext = createContext<CompanyContextType>({
@@ -18,6 +19,7 @@ const CompanyContext = createContext<CompanyContextType>({
   isSuperadmin: false,
   setAvailableCompanies: () => {},
   currentAppPermissions: [],
+  hasPermission: () => false,
 });
 
 export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -32,26 +34,35 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
+  // Метод для проверки разрешений
+  const hasPermission = (permission: string) => {
+    return isSuperadmin || currentAppPermissions.includes(permission);
+  };
+
   useEffect(() => {
     const savedCompanyId = localStorage.getItem("selectedCompanyId");
     const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
     const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
     setIsSuperadmin(isSuperadmin);
-
-    // Получаем application_id из .env
     const appId = process.env.REACT_APP_ID || "crm_app";
-
-    // Получаем компании для текущего приложения
     const appCompanies = permissions[appId] || {};
     const companyIds = Object.keys(appCompanies);
 
     setAvailableCompanies(companyIds);
 
-    if (!isSuperadmin) {
+    if (isSuperadmin) {
+      // Для суперпользователя оставляем currentAppPermissions пустым,
+      // так как проверка будет через hasPermission
+      setCurrentAppPermissions([]);
+      if (savedCompanyId) {
+        setSelectedCompanyId(savedCompanyId);
+      } else if (companyIds.length > 0) {
+        setSelectedCompanyId(companyIds[0]);
+      }
+    } else {
       if (savedCompanyId && companyIds.includes(savedCompanyId)) {
         setSelectedCompanyId(savedCompanyId);
-        // Устанавливаем permissions для выбранной компании
         const companyPermissions =
           appCompanies[savedCompanyId]?.[0]?.permissions || [];
         setCurrentAppPermissions(companyPermissions);
@@ -67,18 +78,18 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (selectedCompanyId) {
       localStorage.setItem("selectedCompanyId", selectedCompanyId);
-
-      // Обновляем permissions при изменении выбранной компании
-      const permissions = JSON.parse(
-        localStorage.getItem("permissions") || "{}"
-      );
-      const appId = process.env.REACT_APP_ID || "crm_app";
-      const appCompanies = permissions[appId] || {};
-      const companyPermissions =
-        appCompanies[selectedCompanyId]?.[0]?.permissions || [];
-      setCurrentAppPermissions(companyPermissions);
+      if (!isSuperadmin) {
+        const permissions = JSON.parse(
+          localStorage.getItem("permissions") || "{}"
+        );
+        const appId = process.env.REACT_APP_ID || "crm_app";
+        const appCompanies = permissions[appId] || {};
+        const companyPermissions =
+          appCompanies[selectedCompanyId]?.[0]?.permissions || [];
+        setCurrentAppPermissions(companyPermissions);
+      }
     }
-  }, [selectedCompanyId]);
+  }, [selectedCompanyId, isSuperadmin]);
 
   return (
     <CompanyContext.Provider
@@ -89,6 +100,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
         isSuperadmin,
         setAvailableCompanies,
         currentAppPermissions,
+        hasPermission, // Добавляем метод в контекст
       }}
     >
       {children}

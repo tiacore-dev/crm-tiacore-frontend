@@ -14,6 +14,7 @@ export const ServicesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   useEffect(() => {
     dispatch(
@@ -36,9 +37,10 @@ export const ServicesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {currentAppPermissions.includes(
-                    "add_user_company_relation"
-                  ) && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes(
+                      "add_user_company_relation"
+                    )) && (
                     <Button
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}

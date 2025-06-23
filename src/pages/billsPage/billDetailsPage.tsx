@@ -37,6 +37,7 @@ export const BillDetailsPage: React.FC = () => {
   const { data: servicesResponse } = useServiceQuery();
   const isMobile = useMobileDetection();
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -108,7 +109,8 @@ export const BillDetailsPage: React.FC = () => {
               <div className="main-container">
                 <div style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 16 }}>
-                    {currentAppPermissions.includes("edit_bill") && (
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("edit_bill")) && (
                       <Button
                         onClick={() => {
                           setShowEditModal(true);
@@ -119,13 +121,17 @@ export const BillDetailsPage: React.FC = () => {
                       </Button>
                     )}
 
-                    {currentAppPermissions.includes("delete_bill") && (
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("delete_bill")) && (
                       <Button danger onClick={() => setShowDeleteConfirm(true)}>
                         <DeleteOutlined /> Удалить
                       </Button>
                     )}
                     {!isMobile &&
-                      currentAppPermissions.includes("generate_template") && (
+                      (isSuperadmin ||
+                        currentAppPermissions.includes(
+                          "generate_template"
+                        )) && (
                         <GenerateTemplateButton
                           billId={bill_id || ""}
                           entityType={"bill"}
@@ -133,7 +139,8 @@ export const BillDetailsPage: React.FC = () => {
                       )}
                   </Space>
                   {isMobile &&
-                    currentAppPermissions.includes("generate_template") && (
+                    (isSuperadmin ||
+                      currentAppPermissions.includes("generate_template")) && (
                       <Space>
                         {" "}
                         <GenerateTemplateButton

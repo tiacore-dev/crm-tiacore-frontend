@@ -19,6 +19,7 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
 }) => {
   const { data: companiesResponse } = useCompaniesForSelection();
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   return (
     <Descriptions bordered column={1}>
@@ -42,7 +43,8 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
           <Space>
             <span>{template.s3_key.split("/").pop()}</span>
 
-            {currentAppPermissions.includes("download_template") && (
+            {(isSuperadmin ||
+              currentAppPermissions.includes("download_template")) && (
               <DownloadOutlined
                 onClick={onDownload}
                 style={{

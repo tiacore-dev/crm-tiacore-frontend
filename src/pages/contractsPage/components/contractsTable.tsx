@@ -53,9 +53,11 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
   const navigate = useNavigate();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleDownload = async (contract_id: string) => {
-    if (!currentAppPermissions.includes("download_contract")) return;
+    if (!isSuperadmin && !currentAppPermissions.includes("download_contract"))
+      return;
 
     setDownloadingId(contract_id);
     try {
@@ -87,6 +89,7 @@ export const ContractsTable: React.FC<ContractsTableProps> = ({
     onFilterChange,
     filters,
     currentAppPermissions, // Передаем permissions вместо hasPermission
+    isSuperadmin,
   });
 
   return (

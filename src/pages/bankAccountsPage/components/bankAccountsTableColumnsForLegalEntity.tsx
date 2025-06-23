@@ -19,6 +19,7 @@ interface BankAccountsTableColumnsForLegalEntityProps {
   onEdit: (account: IBankAccount) => void;
   onDelete: (account: IBankAccount) => void;
   currentAppPermissions: string[]; // Заменяем hasPermission на currentAppPermissions
+  isSuperadmin: boolean;
 }
 
 export const getBankAccountsTableColumnsForLegalEntity = ({
@@ -31,11 +32,12 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
   onEdit,
   onDelete,
   currentAppPermissions, // Получаем массив permissions
+  isSuperadmin,
 }: BankAccountsTableColumnsForLegalEntityProps): ColumnType<IBankAccount>[] => {
   const getMenuItems = (account: IBankAccount) => {
     const items = [];
 
-    if (currentAppPermissions.includes("edit_bank_account")) {
+    if (isSuperadmin || currentAppPermissions.includes("edit_bank_account")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -44,7 +46,7 @@ export const getBankAccountsTableColumnsForLegalEntity = ({
       });
     }
 
-    if (currentAppPermissions.includes("delete_bank_account")) {
+    if (isSuperadmin || currentAppPermissions.includes("delete_bank_account")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,

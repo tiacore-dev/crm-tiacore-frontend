@@ -34,6 +34,7 @@ export const ContractDetailsPage: React.FC = () => {
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractStatusesResponse } = useContractStatuses();
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const { deleteMutation } = useContractMutations(
     contract_id || "",
@@ -107,7 +108,8 @@ export const ContractDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {currentAppPermissions.includes("edit_contract") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("edit_contract")) && (
                     <Button
                       onClick={() => {
                         setShowEditModal(true);
@@ -118,7 +120,8 @@ export const ContractDetailsPage: React.FC = () => {
                     </Button>
                   )}
 
-                  {currentAppPermissions.includes("delete_contract") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("delete_contract")) && (
                     <Button danger onClick={() => setShowDeleteConfirm(true)}>
                       <DeleteOutlined /> Удалить
                     </Button>

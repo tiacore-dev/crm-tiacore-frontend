@@ -32,6 +32,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   const [editingService, setEditingService] = useState<IService | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleEdit = (service: IService) => {
     setEditingService(service);
@@ -57,7 +58,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
     const items = [];
 
     // Добавляем пункт "Редактировать" только если есть права
-    if (currentAppPermissions.includes("edit_service")) {
+    if (isSuperadmin || currentAppPermissions.includes("edit_service")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -67,7 +68,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
     }
 
     // Добавляем пункт "Удалить" только если есть права
-    if (currentAppPermissions.includes("delete_service")) {
+    if (isSuperadmin || currentAppPermissions.includes("delete_service")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,

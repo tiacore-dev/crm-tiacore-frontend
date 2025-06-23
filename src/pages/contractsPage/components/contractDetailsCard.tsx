@@ -22,6 +22,7 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
   handleDownload,
 }) => {
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   return (
     <Descriptions bordered column={1}>
@@ -66,7 +67,8 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
           <Space>
             <span>{contract.s3_key.split("/").pop()}</span>
 
-            {currentAppPermissions.includes("download_contract") && (
+            {(isSuperadmin ||
+              currentAppPermissions.includes("download_contract")) && (
               <DownloadOutlined
                 onClick={handleDownload}
                 style={{

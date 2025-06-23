@@ -51,6 +51,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
   >(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleEdit = (billDetail: IBillDetail) => {
     setEditingBillDetail(billDetail);
@@ -80,7 +81,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
   const getMenuItems = (billDetail: IBillDetail) => {
     const items = [];
 
-    if (currentAppPermissions.includes("edit_bill_detail")) {
+    if (isSuperadmin || currentAppPermissions.includes("edit_bill_detail")) {
       items.push({
         key: "edit",
         icon: <EditOutlined />,
@@ -89,7 +90,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       });
     }
 
-    if (currentAppPermissions.includes("delete_bill_detail")) {
+    if (isSuperadmin || currentAppPermissions.includes("delete_bill_detail")) {
       items.push({
         key: "delete",
         icon: <DeleteOutlined />,
@@ -199,7 +200,8 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
           Детали счета
         </Typography.Title>
 
-        {currentAppPermissions.includes("add_bill_detail") && (
+        {(isSuperadmin ||
+          currentAppPermissions.includes("add_bill_detail")) && (
           <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
             Добавить
           </Button>

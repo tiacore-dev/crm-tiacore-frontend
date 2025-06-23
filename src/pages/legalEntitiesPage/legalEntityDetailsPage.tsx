@@ -23,6 +23,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -125,7 +126,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {currentAppPermissions.includes("edit_legal_entity") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("edit_legal_entity")) && (
                     <Button
                       onClick={() => {
                         setIsModalVisible(true);
@@ -135,7 +137,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
                       Редактировать
                     </Button>
                   )}
-                  {currentAppPermissions.includes("delete_legal_entity") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("delete_legal_entity")) && (
                     <Button danger onClick={() => setShowDeleteConfirm(true)}>
                       <DeleteOutlined /> Удалить
                     </Button>
@@ -149,7 +152,8 @@ export const LegalEntityDetailsPage: React.FC = () => {
 
                 {fromPage === "company" && (
                   <>
-                    {currentAppPermissions.includes("add_bank_account") && (
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("add_bank_account")) && (
                       <Button
                         style={{ marginBottom: 16 }}
                         onClick={() => setShowCreateBankAccountModal(true)}

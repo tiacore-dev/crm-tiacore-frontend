@@ -30,6 +30,8 @@ interface ContractsTableColumnsProps {
     contract_date_to?: number;
   };
   currentAppPermissions: string[]; // Заменяем hasPermission на currentAppPermissions
+
+  isSuperadmin: boolean;
 }
 
 export const getContractsTableColumns = ({
@@ -44,6 +46,7 @@ export const getContractsTableColumns = ({
   onFilterChange,
   filters,
   currentAppPermissions,
+  isSuperadmin,
 }: ContractsTableColumnsProps): ColumnType<IContract>[] => {
   const getLegalEntityName = (legalEntityId: string): string => {
     const legalEntity = legalEntitiesData.find(
@@ -98,7 +101,9 @@ export const getContractsTableColumns = ({
         <Button
           type="link"
           onClick={() => navigate(`/contracts/${record.contract_id}`)}
-          disabled={!currentAppPermissions.includes("view_contract")}
+          disabled={
+            !isSuperadmin && !currentAppPermissions.includes("view_contract")
+          }
         >
           {text}
         </Button>
@@ -269,7 +274,10 @@ export const getContractsTableColumns = ({
         const fileName = record.s3_key.split("/").pop() || "Файл";
 
         // Новая проверка прав
-        if (!currentAppPermissions.includes("download_contract")) {
+        if (
+          !isSuperadmin &&
+          !currentAppPermissions.includes("download_contract")
+        ) {
           return <span>{fileName}</span>;
         }
 

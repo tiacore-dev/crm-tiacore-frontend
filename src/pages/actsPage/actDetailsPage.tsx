@@ -34,6 +34,7 @@ export const ActDetailsPage: React.FC = () => {
   const { data: contractsResponse } = useContractsForSelection();
   const { data: servicesResponse } = useServiceQuery();
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -99,19 +100,24 @@ export const ActDetailsPage: React.FC = () => {
               <div className="main-container">
                 <div style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 16 }}>
-                    {currentAppPermissions.includes("edit_act") && (
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("edit_act")) && (
                       <Button onClick={() => setShowEditModal(true)}>
                         <EditOutlined />
                         Редактировать
                       </Button>
                     )}
-                    {currentAppPermissions.includes("delete_act") && (
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("delete_act")) && (
                       <Button danger onClick={() => setShowDeleteConfirm(true)}>
                         <DeleteOutlined /> Удалить
                       </Button>
                     )}
                     {!isMobile &&
-                      currentAppPermissions.includes("generate_template") && (
+                      (isSuperadmin ||
+                        currentAppPermissions.includes(
+                          "generate_template"
+                        )) && (
                         <GenerateTemplateButton
                           actId={act_id || ""}
                           entityType={"act"}
@@ -119,7 +125,8 @@ export const ActDetailsPage: React.FC = () => {
                       )}
                   </Space>
                   {isMobile &&
-                    currentAppPermissions.includes("generate_template") && (
+                    (isSuperadmin ||
+                      currentAppPermissions.includes("generate_template")) && (
                       <Space>
                         <GenerateTemplateButton
                           actId={act_id || ""}

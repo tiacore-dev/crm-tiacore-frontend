@@ -25,6 +25,7 @@ export const CompanyDetailsPage: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const {
     data: companyDetails,
@@ -80,7 +81,8 @@ export const CompanyDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  {currentAppPermissions.includes("edit_company") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("edit_company")) && (
                     <Button
                       onClick={() => {
                         setShowEditModal(true);
@@ -91,7 +93,8 @@ export const CompanyDetailsPage: React.FC = () => {
                     </Button>
                   )}
 
-                  {currentAppPermissions.includes("delete_company") && (
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("delete_company")) && (
                     <Button
                       danger
                       onClick={() => setShowDeleteConfirm(true)}
@@ -111,19 +114,20 @@ export const CompanyDetailsPage: React.FC = () => {
                       Организации
                     </Typography.Title>
 
-                    {currentAppPermissions.includes("add_legal_entity") &&
-                      currentAppPermissions.includes(
-                        "add_legal_entity_company_relation"
-                      ) && (
-                        <Button
-                          onClick={() => {
-                            setIsModalVisible(true);
-                          }}
-                          icon={<PlusOutlined />}
-                        >
-                          Добавить
-                        </Button>
-                      )}
+                    {(isSuperadmin ||
+                      (currentAppPermissions.includes("add_legal_entity") &&
+                        currentAppPermissions.includes(
+                          "add_legal_entity_company_relation"
+                        ))) && (
+                      <Button
+                        onClick={() => {
+                          setIsModalVisible(true);
+                        }}
+                        icon={<PlusOutlined />}
+                      >
+                        Добавить
+                      </Button>
+                    )}
                   </div>
 
                   <LegalEntitiesTable
