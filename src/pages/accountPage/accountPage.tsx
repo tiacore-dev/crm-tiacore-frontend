@@ -7,7 +7,7 @@ import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
 import { UserDetailsCard } from "../usersPage/components/userDetails";
 import { EditOutlined } from "@ant-design/icons";
 import { UserFormModal } from "../usersPage/components/userFormModal";
-import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
+// import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 
 export const AccountPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -41,7 +41,7 @@ export const AccountPage: React.FC = () => {
         Редактировать
       </Button>
       <UserDetailsCard userDetails={userDetails} />
-      <UserCompanyRelationsTable userId={userId} fromAccount={true} />
+      {/* <UserCompanyRelationsTable userId={userId} fromAccount={true} /> */}
       {showEditModal && (
         <UserFormModal
           visible={showEditModal}

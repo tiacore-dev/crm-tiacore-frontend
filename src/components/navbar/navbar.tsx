@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
     ...(isSuperadmin
       ? [
           { label: "Пользователи", key: "/users" },
-          { label: "Управление доступом", key: "/role_permissions_relations" },
+          // { label: "Управление доступом", key: "/role_permissions_relations" },
         ]
       : []),
   ];

@@ -1,146 +1,146 @@
-// src/api/legalEntitiesApi.tsx
+// // src/api/legalEntitiesApi.tsx
 import { axiosInstance } from "../axiosConfig";
-import { IUserCompanyRelationsResponse } from "../hooks/userCompanyRelations/useUserCompanyRelationsQuery";
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-export interface IUserCompanyRelation {
-  user_company_id: string;
-  user_id: string;
-  company_id: string;
-  role_id: string;
-}
+// import { IUserCompanyRelationsResponse } from "../hooks/userCompanyRelations/useUserCompanyRelationsQuery";
+// //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// export interface IUserCompanyRelation {
+//   user_company_id: string;
+//   user_id: string;
+//   company_id: string;
+//   role_id: string;
+// }
 
-// Функция для получения списка с параметрами
-// Функция для получения списка с параметрами
-export const fetchUserCompanyRelations = async (
-  params: {
-    user?: string;
-    company?: string;
-  },
-  selectedCompanyId?: string | null
-) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+// // Функция для получения списка с параметрами
+// // Функция для получения списка с параметрами
+// export const fetchUserCompanyRelations = async (
+//   params: {
+//     user?: string;
+//     company?: string;
+//   },
+//   selectedCompanyId?: string | null
+// ) => {
+//   const url = process.env.REACT_APP_API_URL;
+//   const accessToken = localStorage.getItem("access_token");
+//   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
-  interface RequestParams {
-    page: number;
-    page_size: number;
-    user?: string;
-    company?: string;
-  }
+//   interface RequestParams {
+//     page: number;
+//     page_size: number;
+//     user?: string;
+//     company?: string;
+//   }
 
-  const requestParams: RequestParams = {
-    page: 1,
-    page_size: 100,
-    ...params,
-    ...(!isSuperadmin && selectedCompanyId
-      ? { company: selectedCompanyId }
-      : {}),
-  };
+//   const requestParams: RequestParams = {
+//     page: 1,
+//     page_size: 100,
+//     ...params,
+//     ...(!isSuperadmin && selectedCompanyId
+//       ? { company: selectedCompanyId }
+//       : {}),
+//   };
 
-  const response = await axiosInstance.get<IUserCompanyRelationsResponse>(
-    `${url}/api/user-company-relations/all`,
-    {
-      params: requestParams, // Используем объединенные параметры
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+//   const response = await axiosInstance.get<IUserCompanyRelationsResponse>(
+//     `${url}/api/user-company-relations/all`,
+//     {
+//       params: requestParams, // Используем объединенные параметры
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//         "Content-Type": "application/json",
+//       },
+//     }
+//   );
 
-  return response.data;
-};
+//   return response.data;
+// };
 
-// Функция для создания нового
-export const createUserCompanyRelation = async (
-  newUserCompanyRelation: {
-    user: string;
-    company: string;
-    role: string;
-  },
-  selectedCompanyId?: string | null
-): Promise<IUserCompanyRelation> => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+// // Функция для создания нового
+// export const createUserCompanyRelation = async (
+//   newUserCompanyRelation: {
+//     user: string;
+//     company: string;
+//     role: string;
+//   },
+//   selectedCompanyId?: string | null
+// ): Promise<IUserCompanyRelation> => {
+//   const url = process.env.REACT_APP_API_URL;
+//   const accessToken = localStorage.getItem("access_token");
+//   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
-  const params: any = {};
-  if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
-  }
-  const response = await axiosInstance.post(
-    `${url}/api/user-company-relations/add`,
-    newUserCompanyRelation,
-    {
-      params,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
+//   const params: any = {};
+//   if (!isSuperadmin && selectedCompanyId) {
+//     params.company = selectedCompanyId;
+//   }
+//   const response = await axiosInstance.post(
+//     `${url}/api/user-company-relations/add`,
+//     newUserCompanyRelation,
+//     {
+//       params,
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//         "Content-Type": "application/json",
+//       },
+//     }
+//   );
+//   return response.data;
+// };
 
-//изменить данные
-export const updateUserCompanyRelation = async (
-  user_company_id: string,
-  updatedData: any,
-  selectedCompanyId?: string | null
-) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const params: any = {};
-  if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
-  } else if (!isSuperadmin && !selectedCompanyId) {
-    const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-    params.company = selectedCompanyId;
-  }
-  const response = await axiosInstance.patch(
-    `${url}/api/user-company-relations/${user_company_id}`,
-    updatedData,
-    {
-      params,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
+// //изменить данные
+// export const updateUserCompanyRelation = async (
+//   user_company_id: string,
+//   updatedData: any,
+//   selectedCompanyId?: string | null
+// ) => {
+//   const url = process.env.REACT_APP_API_URL;
+//   const accessToken = localStorage.getItem("access_token");
+//   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+//   const params: any = {};
+//   if (!isSuperadmin && selectedCompanyId) {
+//     params.company = selectedCompanyId;
+//   } else if (!isSuperadmin && !selectedCompanyId) {
+//     const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+//     params.company = selectedCompanyId;
+//   }
+//   const response = await axiosInstance.patch(
+//     `${url}/api/user-company-relations/${user_company_id}`,
+//     updatedData,
+//     {
+//       params,
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//         "Content-Type": "application/json",
+//       },
+//     }
+//   );
+//   return response.data;
+// };
 
-//удалить данные
+// //удалить данные
 
-export const deleteUserCompanyRelation = async (user_company_id: string) => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  const params: any = {};
-  if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
-  }
-  await axiosInstance.delete(
-    `${url}/api/user-company-relations/${user_company_id}`,
-    {
-      params,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-};
+// export const deleteUserCompanyRelation = async (user_company_id: string) => {
+//   const url = process.env.REACT_APP_API_URL;
+//   const accessToken = localStorage.getItem("access_token");
+//   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+//   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+//   const params: any = {};
+//   if (!isSuperadmin && selectedCompanyId) {
+//     params.company = selectedCompanyId;
+//   }
+//   await axiosInstance.delete(
+//     `${url}/api/user-company-relations/${user_company_id}`,
+//     {
+//       params,
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//         "Content-Type": "application/json",
+//       },
+//     }
+//   );
+// };
 
-// Функция для проверки существующей связи
-export const checkExistingRelation = async (params: {
-  user: string;
-  company: string;
-}) => {
-  const response = await fetchUserCompanyRelations(params);
-  return response.relations.length > 0;
-};
+// // Функция для проверки существующей связи
+// export const checkExistingRelation = async (params: {
+//   user: string;
+//   company: string;
+// }) => {
+//   const response = await fetchUserCompanyRelations(params);
+//   return response.relations.length > 0;
+// };

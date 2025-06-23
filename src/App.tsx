@@ -30,7 +30,7 @@ import { ActsPage } from "./pages/actsPage/actsPage";
 import { ActDetailsPage } from "./pages/actsPage/actDetailsPage";
 import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
 import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
-import { RolePermissionsPage } from "./pages/rolePermissionsPage/rolePermissionsPage";
+// import { RolePermissionsPage } from "./pages/rolePermissionsPage/rolePermissionsPage";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -38,7 +38,7 @@ import "./App.css";
 import "antd/dist/reset.css";
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
+// import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
 import { CompanyProvider } from "./context/companyContext";
 import { PermissionsProvider } from "./context/permissionsContext";
 import { AccountPage } from "./pages/accountPage/accountPage";
@@ -118,14 +118,14 @@ const App: React.FC = () => {
                       path="/templates/:template_id"
                       element={<TemplateDetailsPage />}
                     />
-                    <Route
+                    {/* <Route
                       path="/role_permissions_relations"
                       element={<RolePermissionsPage />}
-                    />
-                    <Route
+                    /> */}
+                    {/* <Route
                       path="/role_permissions_relations/:role_id"
                       element={<RolePermissionsDetailsPage />}
-                    />
+                    /> */}
                   </Route>
                   <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>

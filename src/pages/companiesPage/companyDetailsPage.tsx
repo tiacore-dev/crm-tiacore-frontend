@@ -10,7 +10,7 @@ import { useCompanyMutations } from "../../hooks/companies/useCompanyMutation";
 import { CompanyCard } from "./components/companyDetailsCard";
 import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
+// import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
 import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
@@ -101,7 +101,7 @@ export const CompanyDetailsPage: React.FC = () => {
                   )}
                 </Space>
                 <CompanyCard data={companyDetails} loading={isLoading} />
-                <UserCompanyRelationsTable companyId={company_id} />
+                {/* <UserCompanyRelationsTable companyId={company_id} /> */}
                 <div>
                   <div
                     style={{ display: "flex", marginTop: 16, marginBottom: 16 }}
