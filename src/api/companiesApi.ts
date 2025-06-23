@@ -36,15 +36,20 @@ export const fetchCompanies = async (selectedCompanyId?: string | null) => {
 export const createCompany = async (newCompany: {
   company_name: string;
   description?: string;
-  application_id?: string;
 }): Promise<ICompany> => {
   const url = process.env.REACT_APP_API_URL;
-  const app_id = process.env.REACT_APP_ID;
-  newCompany.application_id = app_id;
+  const application_id = process.env.REACT_APP_ID;
   const accessToken = localStorage.getItem("access_token");
+
+  // Создаем объект с данными для отправки, включая application_id
+  const requestData = {
+    ...newCompany,
+    application_id: application_id,
+  };
+
   const response = await axiosInstance.post(
     `${url}/api/companies/add`,
-    newCompany,
+    requestData, // Используем новый объект с application_id
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

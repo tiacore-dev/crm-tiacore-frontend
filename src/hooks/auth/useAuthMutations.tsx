@@ -18,7 +18,14 @@ type FormData = {
 export type AuthResponse = {
   access_token: string;
   refresh_token: string;
-  permissions: Record<string, string[]>;
+  permissions: {
+    [appId: string]: {
+      [companyId: string]: {
+        role: string;
+        permissions: string[];
+      }[];
+    };
+  };
   is_superadmin: boolean;
   user_id: string;
 };
@@ -31,6 +38,7 @@ type ApiError = {
     };
   };
 };
+
 type RegisterWithTokenData = {
   token: string;
   email: string;
@@ -38,23 +46,27 @@ type RegisterWithTokenData = {
   full_name: string;
   position: string;
 };
-export const useLoginMutation = () => {
-  //   const navigate = useNavigate();
 
+export const useLoginMutation = () => {
   return useMutation<AuthResponse, ApiError, FormData>({
     mutationFn: loginUser,
     onSuccess: (data) => {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("is_superadmin", data.is_superadmin.toString());
+      localStorage.setItem("user_id", data.user_id);
+
       if (!data.is_superadmin) {
         localStorage.setItem("permissions", JSON.stringify(data.permissions));
-        const companyIds = Object.keys(data.permissions);
+
+        const appId = process.env.REACT_APP_ID || "crm_app";
+        const appCompanies = data.permissions[appId] || {};
+        const companyIds = Object.keys(appCompanies);
+
         if (companyIds.length > 0) {
           localStorage.setItem("selectedCompanyId", companyIds[0]);
         }
       }
-      localStorage.setItem("user_id", data.user_id);
 
       window.location.href = "/home";
     },
@@ -101,11 +113,10 @@ export const useResendVerificationMutation = () => {
 };
 
 export const useAcceptInviteMutation = () => {
-  // Убрали параметр token здесь
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (token: string) => acceptInvite(token), // Перенесли token сюда
+    mutationFn: (token: string) => acceptInvite(token),
     onSuccess: () => {
       toast.success("Приглашение успешно принято!");
     },
@@ -143,14 +154,19 @@ export const useRegisterWithTokenMutation = () => {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("is_superadmin", data.is_superadmin.toString());
+      localStorage.setItem("user_id", data.user_id);
+
       if (!data.is_superadmin) {
         localStorage.setItem("permissions", JSON.stringify(data.permissions));
-        const companyIds = Object.keys(data.permissions);
+
+        const appId = process.env.REACT_APP_ID || "crm_app";
+        const appCompanies = data.permissions[appId] || {};
+        const companyIds = Object.keys(appCompanies);
+
         if (companyIds.length > 0) {
           localStorage.setItem("selectedCompanyId", companyIds[0]);
         }
       }
-      localStorage.setItem("user_id", data.user_id);
 
       toast.success("Регистрация завершена успешно!");
       navigate("/home");

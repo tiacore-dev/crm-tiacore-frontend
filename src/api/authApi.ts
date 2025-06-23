@@ -2,7 +2,22 @@
 import axios from "axios";
 import { axiosInstance } from "../axiosConfig";
 import { IUser } from "./usersApi";
-import { AuthResponse } from "../hooks/auth/useAuthMutations";
+
+// Обновленный тип AuthResponse
+export type AuthResponse = {
+  access_token: string;
+  refresh_token: string;
+  permissions: {
+    [appId: string]: {
+      [companyId: string]: {
+        role: string;
+        permissions: string[];
+      }[];
+    };
+  };
+  is_superadmin: boolean;
+  user_id: string;
+};
 
 export const registrationUser = async (newUser: {
   email: string;
@@ -50,7 +65,14 @@ export const refreshToken = async (): Promise<string | null> => {
     const response = await axios.post<{
       access_token: string;
       refresh_token: string;
-      permissions?: Record<string, string[]>;
+      permissions?: {
+        [appId: string]: {
+          [companyId: string]: {
+            role: string;
+            permissions: string[];
+          }[];
+        };
+      };
       is_superadmin?: boolean;
     }>(`${url}/api/auth/refresh`, { refresh_token: r_token });
 
@@ -81,11 +103,17 @@ export const refreshToken = async (): Promise<string | null> => {
   }
 };
 
-export const loginUser = async (data: { email: string; password: string }) => {
+export const loginUser = async (data: {
+  email: string;
+  password: string;
+}): Promise<AuthResponse> => {
   const url = process.env.REACT_APP_API_URL;
   if (!url) throw new Error("REACT_APP_API_URL is not defined");
 
-  const response = await axiosInstance.post(`${url}/api/auth/login`, data);
+  const response = await axiosInstance.post<AuthResponse>(
+    `${url}/api/auth/login`,
+    data
+  );
   return response.data;
 };
 
@@ -116,7 +144,6 @@ export const acceptInvite = async (token: string) => {
   return response.data;
 };
 
-// src/api/authApi.ts
 export const registerWithToken = async (data: {
   token: string;
   email: string;
@@ -127,7 +154,6 @@ export const registerWithToken = async (data: {
   const url = process.env.REACT_APP_API_URL;
   if (!url) throw new Error("REACT_APP_API_URL is not defined");
 
-  // Разделяем данные: токен идет в query, остальное в body
   const { token, ...bodyData } = data;
 
   const response = await axiosInstance.post(
@@ -140,4 +166,21 @@ export const registerWithToken = async (data: {
     }
   );
   return response.data;
+};
+
+// Вспомогательная функция для получения текущих разрешений
+export const getCurrentPermissions = (): string[] => {
+  const appId = process.env.REACT_APP_ID || "crm_app";
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
+
+  if (
+    !selectedCompanyId ||
+    !permissions[appId] ||
+    !permissions[appId][selectedCompanyId]
+  ) {
+    return [];
+  }
+
+  return permissions[appId][selectedCompanyId][0]?.permissions || [];
 };
