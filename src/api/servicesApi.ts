@@ -33,6 +33,7 @@ export const fetchServices = async (selectedCompanyId?: string | null) => {
 // Функция для создания новой услуги
 export const createService = async (newService: {
   service_name: string;
+  company: string;
 }): Promise<IService> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
@@ -41,6 +42,7 @@ export const createService = async (newService: {
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
     params.company_id = selectedCompanyId;
+    newService.company = selectedCompanyId;
   }
   const response = await axiosInstance.post(
     `${url}/api/services/add`,

@@ -16,7 +16,7 @@ import { resetState } from "../../redux/slices/legalEntitiesSlice";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { useCompany } from "../../context/companyContext";
-import { AddByInnKppModal } from "./components/aAddByInnKppModal";
+import { AddByInnKppModal } from "./components/addByInnKppModal";
 
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -70,13 +70,13 @@ export const LegalEntitiesPage: React.FC = () => {
                         onClick={() => setIsModalVisible(true)}
                         icon={<PlusOutlined />}
                       >
-                        Добавить контрагента (в доработке)
+                        Добавить контрагента вручную (в доработке)
                       </Button>
                       <Button
                         onClick={() => setIsAddOrganizationModalVisible(true)}
                         icon={<PlusOutlined />}
                       >
-                        Добавить организацию (в доработке)
+                        Добавить организацию вручную (в доработке)
                       </Button>
                     </>
                   )}

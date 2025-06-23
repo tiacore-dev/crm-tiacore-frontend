@@ -45,7 +45,7 @@ export const ServicesPage: React.FC = () => {
                       onClick={() => setIsModalVisible(true)}
                       icon={<PlusOutlined />}
                     >
-                      Добавить новую услугу (в доработке)
+                      Добавить новую услугу
                     </Button>
                   )}
                 </Space>

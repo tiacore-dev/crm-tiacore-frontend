@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Form } from "antd";
+import { Modal, Input, Button, Form, Select } from "antd";
 import { IService } from "../../../api/servicesApi";
 import { useServiceMutations } from "../../../hooks/services/useServiceMutations";
+import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 interface ServiceCreateModalProps {
   visible: boolean;
@@ -21,6 +22,9 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const { data: companiesData } = useCompaniesForSelection();
+  const companies = companiesData?.companies || [];
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const { createMutation, updateMutation } = useServiceMutations(
     initialData?.service_id || "",
@@ -36,23 +40,24 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
           company: initialData.company,
         });
       } else {
-        // Устанавливаем company из localStorage при создании
+        // Устанавливаем company из localStorage при создании (для не-суперадминов)
         form.setFieldsValue({
-          company: selectedCompanyId,
+          service_name: "",
+          company: isSuperadmin ? undefined : selectedCompanyId,
         });
       }
     }
-  }, [visible, initialData, mode, form, selectedCompanyId]);
+  }, [visible, initialData, mode, form, selectedCompanyId, isSuperadmin]);
 
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
       const values = await form.validateFields();
 
-      // Всегда используем company из localStorage при создании
+      // Для суперадмина берем company из формы, для остальных - из localStorage
       const formData = {
-        ...values,
-        company: mode === "create" ? selectedCompanyId : values.company,
+        service_name: values.service_name,
+        company: isSuperadmin ? values.company : selectedCompanyId,
       };
 
       if (mode === "create") {
@@ -65,7 +70,7 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      // console.error("Validation failed:", error);
+      console.error("Validation failed:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,10 +109,26 @@ export const ServiceCreateModal: React.FC<ServiceCreateModalProps> = ({
           <Input placeholder="Введите название услуги" />
         </Form.Item>
 
-        {/* Скрытое поле для company */}
-        <Form.Item name="company" hidden>
-          <Input />
-        </Form.Item>
+        {isSuperadmin && (
+          <Form.Item
+            name="company"
+            label="Компания"
+            rules={[
+              { required: true, message: "Пожалуйста, выберите компанию" },
+            ]}
+          >
+            <Select placeholder="Выберите компанию">
+              {companies.map((company) => (
+                <Select.Option
+                  key={company.company_id}
+                  value={company.company_id}
+                >
+                  {company.company_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

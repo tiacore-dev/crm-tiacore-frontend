@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Input, Button, message, Select } from "antd";
 import { createLegalEntityByInn } from "../../../api/legalEntitiesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 interface AddByInnModalProps {
   visible: boolean;
@@ -17,6 +18,9 @@ export const AddByInnKppModal: React.FC<AddByInnModalProps> = ({
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [kppRequired, setKppRequired] = useState(false);
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const { data: companiesData } = useCompaniesForSelection();
+  const companies = companiesData?.companies || [];
 
   const mutation = useMutation({
     mutationFn: createLegalEntityByInn,
@@ -40,15 +44,19 @@ export const AddByInnKppModal: React.FC<AddByInnModalProps> = ({
     form
       .validateFields()
       .then((values) => {
-        const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-        if (!selectedCompanyId) {
-          message.error("Не выбрана компания");
-          return;
+        let companyId = values.company_id;
+
+        if (!isSuperadmin) {
+          companyId = localStorage.getItem("selectedCompanyId");
+          if (!companyId) {
+            message.error("Не выбрана компания");
+            return;
+          }
         }
 
         mutation.mutate({
           ...values,
-          company_id: selectedCompanyId,
+          company_id: companyId,
           relation_type: relationType,
         });
       })
@@ -79,6 +87,27 @@ export const AddByInnKppModal: React.FC<AddByInnModalProps> = ({
       ]}
     >
       <Form form={form} layout="vertical">
+        {isSuperadmin && (
+          <Form.Item
+            name="company_id"
+            label="Компания"
+            rules={[
+              { required: true, message: "Пожалуйста, выберите компанию" },
+            ]}
+          >
+            <Select placeholder="Выберите компанию">
+              {companies.map((company) => (
+                <Select.Option
+                  key={company.company_id}
+                  value={company.company_id}
+                >
+                  {company.company_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
+
         <Form.Item
           name="inn"
           label="ИНН"

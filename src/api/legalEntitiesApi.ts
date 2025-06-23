@@ -290,6 +290,7 @@ export const createLegalEntityByInn = async (data: {
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
     params.company_id = selectedCompanyId;
+    data.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.post(
