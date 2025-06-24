@@ -28,7 +28,6 @@ export const Navbar: React.FC = () => {
     // selectedCompanyId,
     setSelectedCompanyId,
     availableCompanies,
-    // isSuperadmin,
   } = useCompany();
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const isSuperadmin = localStorage.getItem("is_superadmin");
