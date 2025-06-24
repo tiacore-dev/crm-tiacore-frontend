@@ -17,7 +17,7 @@ const PermissionsContext = createContext<PermissionsContextType>({
 export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const { selectedCompanyId, availableCompanies } = useCompany();
 
   const { isSuperAdmin, permissions } = useMemo(() => {
     const isSuperAdmin = localStorage.getItem("is_superadmin") === "true";
@@ -28,7 +28,10 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!isSuperAdmin && selectedCompanyId && permissionsStr) {
       try {
         const allPermissions = JSON.parse(permissionsStr);
-        const companyPermissions = allPermissions[selectedCompanyId] || [];
+        const appId = process.env.REACT_APP_ID || "crm_app";
+        const appCompanies = allPermissions[appId] || {};
+        const companyPermissions =
+          appCompanies[selectedCompanyId]?.[0]?.permissions || [];
         permissions = new Set(companyPermissions);
       } catch (e) {
         console.error("Error parsing permissions", e);
@@ -36,7 +39,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     return { isSuperAdmin, permissions };
-  }, [selectedCompanyId]); // Теперь зависит от selectedCompanyId
+  }, [selectedCompanyId, availableCompanies]); // Добавляем availableCompanies в зависимости
 
   const hasPermission = (permission: string) => {
     return isSuperAdmin || permissions.has(permission);

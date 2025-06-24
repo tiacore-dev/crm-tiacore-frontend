@@ -9,7 +9,7 @@ interface CompanyContextType {
   isSuperadmin: boolean;
   setAvailableCompanies: (companies: string[]) => void;
   currentAppPermissions: string[];
-  hasPermission: (permission: string) => boolean; // Добавляем метод проверки
+  hasPermission: (permission: string) => boolean;
 }
 
 const CompanyContext = createContext<CompanyContextType>({
@@ -26,15 +26,16 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
-    null
+    localStorage.getItem("selectedCompanyId")
   );
-  const [availableCompanies, setAvailableCompanies] = useState<string[]>([]);
+  const [availableCompanies, setAvailableCompanies] = useState<string[]>(
+    JSON.parse(localStorage.getItem("availableCompanies") || "[]")
+  );
   const [isSuperadmin, setIsSuperadmin] = useState<boolean>(false);
   const [currentAppPermissions, setCurrentAppPermissions] = useState<string[]>(
     []
   );
 
-  // Метод для проверки разрешений
   const hasPermission = (permission: string) => {
     return isSuperadmin || currentAppPermissions.includes(permission);
   };
@@ -49,11 +50,11 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
     const appCompanies = permissions[appId] || {};
     const companyIds = Object.keys(appCompanies);
 
+    // Сохраняем компании в localStorage
+    localStorage.setItem("availableCompanies", JSON.stringify(companyIds));
     setAvailableCompanies(companyIds);
 
     if (isSuperadmin) {
-      // Для суперпользователя оставляем currentAppPermissions пустым,
-      // так как проверка будет через hasPermission
       setCurrentAppPermissions([]);
       if (savedCompanyId) {
         setSelectedCompanyId(savedCompanyId);
@@ -91,6 +92,12 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [selectedCompanyId, isSuperadmin]);
 
+  // Добавляем функцию для обновления availableCompanies с сохранением в localStorage
+  const updateAvailableCompanies = (companies: string[]) => {
+    localStorage.setItem("availableCompanies", JSON.stringify(companies));
+    setAvailableCompanies(companies);
+  };
+
   return (
     <CompanyContext.Provider
       value={{
@@ -98,9 +105,9 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedCompanyId,
         availableCompanies,
         isSuperadmin,
-        setAvailableCompanies,
+        setAvailableCompanies: updateAvailableCompanies, // Используем новую функцию
         currentAppPermissions,
-        hasPermission, // Добавляем метод в контекст
+        hasPermission,
       }}
     >
       {children}

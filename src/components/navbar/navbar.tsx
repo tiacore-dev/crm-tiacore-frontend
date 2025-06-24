@@ -24,14 +24,22 @@ export const Navbar: React.FC = () => {
   const [showSettings, setShowSettings] = useState(true);
   const [companyModalVisible, setCompanyModalVisible] = useState(false);
 
+  // const {
+  //   // selectedCompanyId,
+  //   setSelectedCompanyId,
+  //   // availableCompanies,
+  // } = useCompany();
   const {
-    // selectedCompanyId,
+    selectedCompanyId,
     setSelectedCompanyId,
     availableCompanies,
+    isSuperadmin,
   } = useCompany();
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  const isSuperadmin = localStorage.getItem("is_superadmin");
-
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const isSuperadmin = localStorage.getItem("is_superadmin");
+  // const availableCompanies = JSON.parse(
+  // localStorage.getItem("availableCompanies") || "[]"
+  // );
   const { data: companiesData } = useCompanyQuery();
   const companies = companiesData?.companies || [];
 
@@ -88,7 +96,7 @@ export const Navbar: React.FC = () => {
     setShowSettings(!showSettings);
   };
 
-  const companyMenuItems = availableCompanies.map((companyId) => {
+  const companyMenuItems = availableCompanies.map((companyId: string) => {
     const company = companies.find((c) => c.company_id === companyId);
     return {
       key: companyId,

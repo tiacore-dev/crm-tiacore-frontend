@@ -22,7 +22,7 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company_id = selectedCompanyId;
+    params.company_id = newEntityCompanyRelation.company_id;
   }
   const response = await axiosInstance.post(
     `${url}/api/entity-company-relations/add`,
