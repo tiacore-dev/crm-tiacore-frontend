@@ -1,11 +1,8 @@
-
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  client:
+    image: ${DOCKERHUB_USERNAME}/crm-frontend:${TAG}
     ports:
-      - "${PORT}:80"  # Вы можете оставить это, чтобы тестировать приложение отдельно, но Nginx будет использовать внутреннюю связь
+      - "${PORT}:80"
     restart: always
     networks:
       - crm_network
