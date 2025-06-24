@@ -102,8 +102,8 @@ export const LegalEntitiesBuyersPage: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         onSuccess={handleSuccess}
         relationType="buyer"
-        title="Добавить покупателя"
-        buttonText="Добавить покупателя"
+        title="Добавить контрагента"
+        buttonText="Добавить контрагента"
       />
     </div>
   );

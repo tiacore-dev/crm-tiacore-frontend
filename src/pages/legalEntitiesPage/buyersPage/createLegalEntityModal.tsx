@@ -36,6 +36,7 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
   buttonText,
   companyId,
 }) => {
+  console.log(companyId);
   const [form] = Form.useForm();
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
@@ -137,7 +138,7 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
             kpp: values.kpp,
             company_id:
               companyId ||
-              (isSuperadmin ? values.company_id : selectedCompanyId || ""), // Используем переданный companyId если есть
+              (isSuperadmin ? values.company_id : selectedCompanyId || ""),
             relation_type: relationType,
             description: values.description,
           });
@@ -148,9 +149,9 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
       } else if (innKppData?.legal_entity_id) {
         await createMutation.mutateAsync({
           legal_entity_id: innKppData.legal_entity_id,
-          company_id: isSuperadmin
-            ? values.company_id
-            : selectedCompanyId || "",
+          company_id:
+            companyId ||
+            (isSuperadmin ? values.company_id : selectedCompanyId || ""), // Добавляем company_id здесь
           relation_type: relationType,
         });
       }
