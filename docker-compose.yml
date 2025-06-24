@@ -1,5 +1,6 @@
 services:
-  client:
+  frontend:
+    container_name: crm-frontend-${CONFIG_NAME}
     image: ${DOCKERHUB_USERNAME}/crm-frontend:${TAG}
     ports:
       - "${PORT}:80"
