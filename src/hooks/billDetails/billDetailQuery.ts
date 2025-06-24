@@ -11,7 +11,7 @@ export interface IBillDetailsResponse {
 }
 
 export const useBillDetailsQuery = (billId?: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<IBillDetailsResponse>({
     queryKey: ["billDetails", billId, selectedCompanyId],
     queryFn: () => fetchBillDetails({ bill: billId }, selectedCompanyId),

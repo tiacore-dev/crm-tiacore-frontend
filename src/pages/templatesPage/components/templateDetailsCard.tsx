@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { ITemplate } from "../../../api/templatesApi";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { getCompanyNameById } from "../../../utils/infoById";
-import "../../../components/cards.css";
+import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface TemplateDetailsCardProps {
   template: ITemplate;
@@ -17,6 +18,8 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
   onDownload,
 }) => {
   const { data: companiesResponse } = useCompaniesForSelection();
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   return (
     <Descriptions bordered column={1}>
@@ -39,14 +42,18 @@ export const TemplateDetailsCard: React.FC<TemplateDetailsCardProps> = ({
         {template.s3_key ? (
           <Space>
             <span>{template.s3_key.split("/").pop()}</span>
-            <DownloadOutlined
-              onClick={onDownload}
-              style={{
-                color: "#1890ff",
-                cursor: "pointer",
-              }}
-              title="Скачать"
-            />
+
+            {(isSuperadmin ||
+              currentAppPermissions.includes("download_template")) && (
+              <DownloadOutlined
+                onClick={onDownload}
+                style={{
+                  color: "#1890ff",
+                  cursor: "pointer",
+                }}
+                title="Скачать"
+              />
+            )}
           </Space>
         ) : (
           "Файл отсутствует"

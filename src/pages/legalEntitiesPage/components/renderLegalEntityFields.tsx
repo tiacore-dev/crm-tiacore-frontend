@@ -1,5 +1,5 @@
 import { Form, Input, Select } from "antd";
-import { ILegalEntityType } from "../../../api/baseApi";
+// import { ILegalEntityType } from "../../../api/baseApi";
 
 interface RenderFieldsProps {
   mode: "create" | "edit";

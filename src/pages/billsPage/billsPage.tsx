@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { Button, Spin, Space } from "antd";
 import { useBillsQuery } from "../../hooks/bills/useBillQuery";
 import { useLegalEntitiesForSelection } from "../../hooks/legalEntities/useLegalEntityQuery";
@@ -11,18 +11,21 @@ import { BillsTable } from "./components/billsTable";
 import { BillCreateModal } from "./components/billsFormModal";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import {
-  billsSelector,
   setPage,
   setPageSize,
   setSortBy,
   setOrder,
   setBankAccount,
   setContract,
+  setBuyer,
+  setSeller,
   setDateFrom,
   setDateTo,
   resetState,
 } from "../../redux/slices/billsSlice";
 import { RootState } from "../../redux/store";
+import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const BillsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -33,6 +36,8 @@ export const BillsPage: React.FC = () => {
     order,
     bank_account,
     contract,
+    buyer,
+    seller,
     bill_date_from,
     bill_date_to,
   } = useSelector((state: RootState) => state.bills);
@@ -46,6 +51,8 @@ export const BillsPage: React.FC = () => {
       ])
     );
   }, [dispatch]);
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const {
     data: bills_data,
@@ -58,6 +65,8 @@ export const BillsPage: React.FC = () => {
     order,
     bank_account,
     contract,
+    buyer,
+    seller,
     bill_date_from,
     bill_date_to,
   });
@@ -87,6 +96,12 @@ export const BillsPage: React.FC = () => {
       case "contract":
         dispatch(setContract(value || undefined));
         break;
+      case "buyer":
+        dispatch(setBuyer(value || undefined));
+        break;
+      case "seller":
+        dispatch(setSeller(value || undefined));
+        break;
       case "bill_date_from":
         dispatch(setDateFrom(value || undefined));
         break;
@@ -103,13 +118,17 @@ export const BillsPage: React.FC = () => {
   };
 
   // Проверяем, есть ли активные фильтры
-  const hasActiveFilters =
-    bank_account !== undefined ||
-    contract !== undefined ||
-    bill_date_from !== undefined ||
-    bill_date_to !== undefined ||
-    sort_by !== undefined;
-
+  const hasActiveFilters = useMemo(
+    () =>
+      bank_account !== undefined ||
+      contract !== undefined ||
+      buyer !== undefined ||
+      seller !== undefined ||
+      bill_date_from !== undefined ||
+      bill_date_to !== undefined ||
+      sort_by !== undefined,
+    [contract, buyer, seller, bill_date_from, bill_date_to, sort_by]
+  );
   return (
     <div>
       {isLoading ? (
@@ -120,12 +139,16 @@ export const BillsPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить счет
-                  </Button>
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("add_bill")) && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить счет
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}
@@ -148,6 +171,8 @@ export const BillsPage: React.FC = () => {
                   filters={{
                     bank_account,
                     contract,
+                    buyer,
+                    seller,
                     bill_date_from,
                     bill_date_to,
                   }}

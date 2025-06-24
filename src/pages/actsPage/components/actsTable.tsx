@@ -24,6 +24,8 @@ interface ActsTableProps {
   order?: string;
   filters?: {
     contract?: string;
+    buyer?: string;
+    seller?: string;
     act_date_from?: number;
     act_date_to?: number;
   };
@@ -79,17 +81,26 @@ export const ActsTable: React.FC<ActsTableProps> = ({
         dataSource={data.acts}
         rowKey="act_id"
         loading={loading}
-        pagination={{
-          current: currentPage,
-          pageSize: pageSize,
-          total: data.total,
-          showSizeChanger: true,
-          pageSizeOptions: ["2", "10", "20", "50"],
-          showTotal: (total) => (
-            <Typography.Text>Всего: {total}</Typography.Text>
-          ),
-        }}
+        scroll={{ x: true }}
+        pagination={
+          data.total > 10
+            ? {
+                current: currentPage,
+                pageSize: pageSize,
+                total: data.total,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего: {total}</Typography.Text>
+                ),
+              }
+            : false
+        }
         onChange={onTableChange}
+        onRow={(record) => ({
+          onClick: () => navigate(`/acts/${record.act_id}`),
+          style: { cursor: "pointer" },
+        })}
       />
     </div>
   );

@@ -1,10 +1,9 @@
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 import { ITemplate } from "../../../api/templatesApi";
 import { useNavigate } from "react-router-dom";
 import { getTemplateColumns } from "./templatesTableColumns";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  templatesSelector,
   setPage,
   setPageSize,
   setSearch,
@@ -13,6 +12,7 @@ import {
 import { downloadTemplate } from "../../../api/templatesApi";
 import { useState } from "react";
 import { RootState } from "../../../redux/store";
+import { useCompany } from "../../../context/companyContext";
 
 interface TemplatesTableProps {
   data: ITemplate[];
@@ -34,8 +34,13 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (state: RootState) => state.templates
   );
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleDownload = async (template_id: string) => {
+    if (!isSuperadmin && !currentAppPermissions.includes("download_template"))
+      return;
+
     setDownloadingId(template_id);
     try {
       const result = await downloadTemplate(template_id);
@@ -60,10 +65,11 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
     (value) => dispatch(setSearch(value)),
     (value) => dispatch(setCompany(value)),
     downloadingId,
-    handleDownload
+    handleDownload,
+    currentAppPermissions, // Передаем permissions вместо hasPermission,
+    isSuperadmin
   );
 
-  // 1. Фильтрация данных
   const filteredData = data.filter((template) => {
     const matchesSearch = search
       ? template.template_name.toLowerCase().includes(search.toLowerCase())
@@ -74,9 +80,6 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
 
   const processedData = [...filteredData];
 
-  // const startIndex = (page - 1) * page_size;
-  // const paginatedData = processedData.slice(startIndex, startIndex + page_size);
-
   return (
     <div>
       <Table
@@ -84,22 +87,26 @@ export const TemplatesTable: React.FC<TemplatesTableProps> = ({
         dataSource={processedData}
         rowKey="template_id"
         loading={loading}
-        pagination={{
-          current: page,
-          pageSize: page_size,
-          total: filteredData.length,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => (
-            <Typography.Text>Всего шаблонов: {total}</Typography.Text>
-          ),
-          onChange: (newPage, newPageSize) => {
-            if (newPageSize !== page_size) {
-              dispatch(setPageSize(newPageSize));
-            }
-            dispatch(setPage(newPage));
-          },
-        }}
+        scroll={{ x: true }}
+        pagination={
+          filteredData.length > 10
+            ? {
+                current: page,
+                pageSize: page_size,
+                total: filteredData.length,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50", "100"],
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+                responsive: true,
+                showLessItems: true,
+              }
+            : false
+        }
       />
     </div>
   );

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { fetchBill, fetchBills, IBill } from "../../api/billsApi";
 import { RootState } from "../../redux/store";
-import { useCompany } from "../../context/companyContext";
+// import { useCompany } from "../../context/companyContext";
 
 export interface IBillsResponse {
   total: number;
@@ -12,6 +12,8 @@ export interface IBillsResponse {
 export interface IBillsQueryParams {
   bank_account?: string;
   contract?: string;
+  buyer?: string;
+  seller?: string;
   bill_date_to?: number;
   bill_date_from?: number;
   sort_by?: string;
@@ -24,6 +26,8 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
   const {
     bank_account,
     contract,
+    buyer,
+    seller,
     bill_date_from,
     bill_date_to,
     page,
@@ -41,6 +45,8 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 
     if (bank_account) params.bank_account = bank_account;
     if (contract) params.contract = contract;
+    if (buyer) params.buyer = buyer;
+    if (seller) params.seller = seller;
     if (bill_date_from) params.bill_date_from = bill_date_from;
     if (bill_date_to) params.bill_date_to = bill_date_to;
     if (sort_by) params.sort_by = sort_by;
@@ -48,7 +54,7 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 
     return params;
   };
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<IBillsResponse>({
     queryKey: ["bills", buildQueryParams(), selectedCompanyId],
@@ -57,7 +63,7 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 };
 
 export const useBillQuery = (bill_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["bill", bill_id, selectedCompanyId],
     queryFn: () => fetchBill(bill_id, selectedCompanyId),

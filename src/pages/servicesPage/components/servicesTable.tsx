@@ -9,6 +9,8 @@ import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModa
 import { useServiceMutations } from "../../../hooks/services/useServiceMutations";
 import { ServiceCreateModal } from "./serviceFormModal";
 import { RootState } from "../../../redux/store";
+import { usePermissions } from "../../../context/permissionsContext"; // Добавляем импорт
+import { useCompany } from "../../../context/companyContext";
 
 interface ServicesTableProps {
   data: {
@@ -29,6 +31,8 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
   const { deleteMutation } = useServiceMutations("", "", "", () => {});
   const [editingService, setEditingService] = useState<IService | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleEdit = (service: IService) => {
     setEditingService(service);
@@ -50,21 +54,32 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
     }
   };
 
-  const getMenuItems = (service: IService) => [
-    {
-      key: "edit",
-      icon: <EditOutlined />,
-      label: "Редактировать",
-      onClick: () => handleEdit(service),
-    },
-    {
-      key: "delete",
-      icon: <DeleteOutlined />,
-      label: "Удалить",
-      danger: true,
-      onClick: () => handleDelete(service),
-    },
-  ];
+  const getMenuItems = (service: IService) => {
+    const items = [];
+
+    // Добавляем пункт "Редактировать" только если есть права
+    if (isSuperadmin || currentAppPermissions.includes("edit_service")) {
+      items.push({
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Редактировать",
+        onClick: () => handleEdit(service),
+      });
+    }
+
+    // Добавляем пункт "Удалить" только если есть права
+    if (isSuperadmin || currentAppPermissions.includes("delete_service")) {
+      items.push({
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Удалить",
+        danger: true,
+        onClick: () => handleDelete(service),
+      });
+    }
+
+    return items;
+  };
 
   const columns: ColumnsType<IService> = [
     {
@@ -84,13 +99,18 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
           <div style={{ padding: "4px 8px", lineHeight: "1.7", flexGrow: 1 }}>
             {text}
           </div>
-          <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
-            <Button
-              type="text"
-              icon={<MoreOutlined />}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </Dropdown>
+          {getMenuItems(record).length > 0 && (
+            <Dropdown
+              menu={{ items: getMenuItems(record) }}
+              trigger={["click"]}
+            >
+              <Button
+                type="text"
+                icon={<MoreOutlined />}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </Dropdown>
+          )}
         </Space>
       ),
     },

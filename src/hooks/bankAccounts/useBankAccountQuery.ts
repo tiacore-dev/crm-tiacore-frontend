@@ -4,7 +4,7 @@ import {
   fetchBankAccountDetails,
   IBankAccount,
 } from "../../api/bankAccountsApi";
-import { useCompany } from "../../context/companyContext";
+// import { useCompany } from "../../context/companyContext";
 
 export interface IBankAccountsResponse {
   total: number;
@@ -18,7 +18,7 @@ export interface IBankAccountsQueryParams {
 }
 
 export const useBankAccountQuery = (params?: IBankAccountsQueryParams) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<IBankAccountsResponse>({
     queryKey: ["bank_accounts", params, selectedCompanyId],
     queryFn: () => fetchBankAccounts(params, selectedCompanyId),
@@ -26,7 +26,7 @@ export const useBankAccountQuery = (params?: IBankAccountsQueryParams) => {
 };
 
 export const useBankcAccountDetailsQuery = (bank_account_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["bankAccountDetails", bank_account_id, selectedCompanyId],
     queryFn: () => fetchBankAccountDetails(bank_account_id, selectedCompanyId),
@@ -35,7 +35,7 @@ export const useBankcAccountDetailsQuery = (bank_account_id: string) => {
 };
 
 export const useBankAccountsForSelection = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<IBankAccountsResponse>({
     queryKey: ["bankAccountsForSelection", selectedCompanyId],
     queryFn: () => fetchBankAccounts({}, selectedCompanyId),

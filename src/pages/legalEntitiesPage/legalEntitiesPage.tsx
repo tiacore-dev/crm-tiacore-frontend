@@ -1,35 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { Button, Spin } from "antd";
 import {
   useLegalEntitiesBuyers,
   useLegalEntitiesForSelection,
-  useLegalEntityQuery,
 } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntitiesTable } from "./components/legalEntitiesTable";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { PlusOutlined } from "@ant-design/icons";
-import { legalEntitiesSelector } from "../../redux/slices/legalEntitiesSlice";
 import { Space } from "antd";
 import { ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../redux/slices/legalEntitiesSlice";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
+import { useCompany } from "../../context/companyContext";
+import { AddByInnKppModal } from "./components/addByInnKppModal";
 
 export const LegalEntitiesPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddByInnKppModalVisible, setIsAddByInnKppModalVisible] =
+    useState(false);
+  const [isAddOrganizationModalVisible, setIsAddOrganizationModalVisible] =
+    useState(false);
   const { search, company, entity_type } = useSelector(
     (state: RootState) => state.legalEntities
   );
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const buyersData = useLegalEntitiesBuyers();
   const selectionData = useLegalEntitiesForSelection();
 
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const {
     data: legal_entities_data,
     isLoading,
@@ -59,11 +64,27 @@ export const LegalEntitiesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
+                  {isSuperadmin && (
+                    <>
+                      <Button
+                        onClick={() => setIsModalVisible(true)}
+                        icon={<PlusOutlined />}
+                      >
+                        Добавить контрагента вручную (в доработке)
+                      </Button>
+                      <Button
+                        onClick={() => setIsAddOrganizationModalVisible(true)}
+                        icon={<PlusOutlined />}
+                      >
+                        Добавить организацию вручную (в доработке)
+                      </Button>
+                    </>
+                  )}
                   <Button
-                    onClick={() => setIsModalVisible(true)}
+                    onClick={() => setIsAddByInnKppModalVisible(true)}
                     icon={<PlusOutlined />}
                   >
-                    Добавить контрагента
+                    Добавить контрагента по ИНН/КПП
                   </Button>
                   <Button
                     onClick={handleResetFilters}
@@ -90,6 +111,16 @@ export const LegalEntitiesPage: React.FC = () => {
                 onCancel={() => setIsModalVisible(false)}
                 mode="create"
                 defaultRelationType="buyer"
+              />
+              <AddByInnKppModal
+                visible={isAddByInnKppModalVisible}
+                onCancel={() => setIsAddByInnKppModalVisible(false)}
+                relationType="buyer"
+              />
+              <AddByInnKppModal
+                visible={isAddOrganizationModalVisible}
+                onCancel={() => setIsAddOrganizationModalVisible(false)}
+                relationType="seller"
               />
             </div>
           )}

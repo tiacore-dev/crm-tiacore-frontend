@@ -9,20 +9,20 @@ export const registrationUser = async (newUser: {
   position: string;
 }): Promise<IUser> => {
   const url = process.env.REACT_APP_API_URL;
-  // const accessToken = localStorage.getItem("access_token");
-  // const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  // const params: any = {};
-  // if (!isSuperadmin && selectedCompanyId) {
-  //   params.company = selectedCompanyId;
-  // }
-  const response = await axiosInstance.post(`${url}/api/register`, newUser, {
-    // params,
-    headers: {
-      // Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
+  const application_id = process.env.REACT_APP_ID;
+  const requestData = {
+    ...newUser,
+    application_id: application_id,
+  };
+  const response = await axiosInstance.post(
+    `${url}/api/register`,
+    requestData,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return response.data;
 };
 

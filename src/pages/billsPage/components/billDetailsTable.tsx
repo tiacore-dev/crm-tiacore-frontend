@@ -1,4 +1,4 @@
-import { Table, Typography, Dropdown, Button, Menu, Space } from "antd";
+import { Table, Typography, Dropdown, Button } from "antd";
 import { IBillDetail } from "../../../api/billDetailsApi";
 // import { useNavigate } from "react-router-dom";
 import { getServiceNameById } from "../../../utils/infoById";
@@ -12,6 +12,8 @@ import { useState } from "react";
 import { useBillDetailMutations } from "../../../hooks/billDetails/billDetailMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { BillDetailFormModal } from "./billDetailsFormModal";
+import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface IBillDetailsTableProps {
   data: {
@@ -48,6 +50,8 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     IBillDetail | undefined
   >(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleEdit = (billDetail: IBillDetail) => {
     setEditingBillDetail(billDetail);
@@ -74,21 +78,30 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  const getMenuItems = (billDetail: IBillDetail) => [
-    {
-      key: "edit",
-      icon: <EditOutlined />,
-      label: "Редактировать",
-      onClick: () => handleEdit(billDetail),
-    },
-    {
-      key: "delete",
-      icon: <DeleteOutlined />,
-      label: "Удалить",
-      danger: true,
-      onClick: () => handleDelete(billDetail),
-    },
-  ];
+  const getMenuItems = (billDetail: IBillDetail) => {
+    const items = [];
+
+    if (isSuperadmin || currentAppPermissions.includes("edit_bill_detail")) {
+      items.push({
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Редактировать",
+        onClick: () => handleEdit(billDetail),
+      });
+    }
+
+    if (isSuperadmin || currentAppPermissions.includes("delete_bill_detail")) {
+      items.push({
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Удалить",
+        danger: true,
+        onClick: () => handleDelete(billDetail),
+      });
+    }
+
+    return items;
+  };
 
   const columns = [
     {
@@ -140,15 +153,36 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
       title: "",
       key: "actions",
       width: 48,
-      render: (record: IBillDetail) => (
-        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
-          <Button
-            type="text"
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
+      render: (record: IBillDetail) => {
+        const menuItems = getMenuItems(record);
+        if (menuItems.length === 0) return null;
+
+        return (
+          <div
+            style={{ display: "flex", height: "100%", alignItems: "center" }}
+          >
+            <Dropdown
+              menu={{ items: menuItems }}
+              trigger={["click"]}
+              overlayStyle={{ minWidth: 120 }}
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={<MoreOutlined style={{ fontSize: 16 }} />}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Dropdown>
+          </div>
+        );
+      },
     },
   ];
 
@@ -165,9 +199,13 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
         <Typography.Title level={4} style={{ margin: 0, marginRight: 16 }}>
           Детали счета
         </Typography.Title>
-        <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
-          Добавить
-        </Button>
+
+        {(isSuperadmin ||
+          currentAppPermissions.includes("add_bill_detail")) && (
+          <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
+            Добавить
+          </Button>
+        )}
       </div>
       <Table
         columns={columns}

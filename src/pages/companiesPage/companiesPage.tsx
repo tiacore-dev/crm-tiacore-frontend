@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
 import { Spin, Button, Space } from "antd";
 import { CompanyFormModal } from "./components/companyFormModal";
 import { CompaniesTable } from "./components/companiesTable";
 import { useDispatch, useSelector } from "react-redux";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
+import { usePermissions } from "../../context/permissionsContext";
 
 import {
-  companiesSelector,
+  // companiesSelector,
   resetState,
 } from "../../redux/slices/companiesSlice";
 import { RootState } from "../../redux/store";
+import { useCompany } from "../../context/companyContext";
 
 export const CompaniesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { search, page, page_size } = useSelector(
-    (state: RootState) => state.companies
-  );
+  const {
+    search,
+    //  page, page_size
+  } = useSelector((state: RootState) => state.companies);
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   useEffect(() => {
     dispatch(
       setBreadcrumbs([
@@ -46,12 +52,17 @@ export const CompaniesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить компанию
-                  </Button>
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("add_company") ||
+                    !selectedCompanyId) && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить компанию
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

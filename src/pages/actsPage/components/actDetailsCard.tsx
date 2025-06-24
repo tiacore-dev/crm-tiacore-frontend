@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { ExportOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IAct } from "../../../api/actsApi";
-import "../../../components/cards.css";
 
 interface ActDetailsDescriptionsProps {
   act: IAct;

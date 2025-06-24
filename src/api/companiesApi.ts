@@ -7,6 +7,7 @@ export interface ICompany {
   company_id: string;
   company_name: string;
   description?: string;
+  application_id?: string;
 }
 
 // Вспомогательная функция для проверки роли и получения company_id
@@ -19,7 +20,7 @@ export const fetchCompanies = async (selectedCompanyId?: string | null) => {
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(`${url}/api/companies/all`, {
@@ -37,10 +38,18 @@ export const createCompany = async (newCompany: {
   description?: string;
 }): Promise<ICompany> => {
   const url = process.env.REACT_APP_API_URL;
+  const application_id = process.env.REACT_APP_ID;
   const accessToken = localStorage.getItem("access_token");
+
+  // Создаем объект с данными для отправки, включая application_id
+  const requestData = {
+    ...newCompany,
+    application_id: application_id,
+  };
+
   const response = await axiosInstance.post(
     `${url}/api/companies/add`,
-    newCompany,
+    requestData, // Используем новый объект с application_id
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

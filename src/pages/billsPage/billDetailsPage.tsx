@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useBillQuery } from "../../hooks/bills/useBillQuery";
 import { useBillMutations } from "../../hooks/bills/useBillMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -18,7 +18,10 @@ import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery"
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { useBillDetailsQuery } from "../../hooks/billDetails/billDetailQuery";
 import { BillDetailsTable } from "./components/billDetailsTable";
-import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const BillDetailsPage: React.FC = () => {
   const { bill_id } = useParams<{ bill_id: string }>();
@@ -32,6 +35,9 @@ export const BillDetailsPage: React.FC = () => {
   const { data: contractsResponse } = useContractsForSelection();
   const { data: companiesResponse } = useCompaniesForSelection();
   const { data: servicesResponse } = useServiceQuery();
+  const isMobile = useMobileDetection();
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -42,7 +48,7 @@ export const BillDetailsPage: React.FC = () => {
   const {
     data: billDetails,
     isLoading: isLoadingDetails,
-    isError: isErrorDetails,
+    // isError: isErrorDetails,
   } = useBillDetailsQuery(bill_id);
 
   const { deleteMutation } = useBillMutations(
@@ -101,23 +107,50 @@ export const BillDetailsPage: React.FC = () => {
           {!isError && bill && (
             <>
               <div className="main-container">
-                <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => {
-                      setShowEditModal(true);
-                    }}
-                  >
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
-                  <GenerateTemplateButton
-                    billId={bill_id || ""}
-                    entityType={"bill"}
-                  />
-                </Space>
+                <div style={{ marginBottom: 16 }}>
+                  <Space style={{ marginBottom: 16 }}>
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("edit_bill")) && (
+                      <Button
+                        onClick={() => {
+                          setShowEditModal(true);
+                        }}
+                      >
+                        <EditOutlined />
+                        Редактировать
+                      </Button>
+                    )}
+
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("delete_bill")) && (
+                      <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                        <DeleteOutlined /> Удалить
+                      </Button>
+                    )}
+                    {!isMobile &&
+                      (isSuperadmin ||
+                        currentAppPermissions.includes(
+                          "generate_template"
+                        )) && (
+                        <GenerateTemplateButton
+                          billId={bill_id || ""}
+                          entityType={"bill"}
+                        />
+                      )}
+                  </Space>
+                  {isMobile &&
+                    (isSuperadmin ||
+                      currentAppPermissions.includes("generate_template")) && (
+                      <Space>
+                        {" "}
+                        <GenerateTemplateButton
+                          billId={bill_id || ""}
+                          entityType={"bill"}
+                        />{" "}
+                      </Space>
+                    )}
+                </div>
+
                 <BillDetailsCard
                   bill={bill}
                   getEntityNameById={getEntityNameById}

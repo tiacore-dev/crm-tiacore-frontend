@@ -33,6 +33,8 @@ interface BillsTableColumnsProps {
   filters?: {
     bank_account?: string;
     contract?: string;
+    buyer?: string;
+    seller?: string;
     bill_date_from?: number;
     bill_date_to?: number;
   };
@@ -60,11 +62,6 @@ export const getBillsTableColumns = ({
 
   const getBankAccountNumber = (bankId: string) =>
     getBankAccountNumberById(bankId, bankAccountsData) || bankId;
-
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-
-  // const getCompanyName = (companyId: string) =>
-  //   companiesData?.find(c => c.company_id === companyId)?.company_name || companyId;
 
   const handleSortChange = (key: string) => {
     if (!onSortChange) return;
@@ -197,7 +194,6 @@ export const getBillsTableColumns = ({
       ),
     },
     {
-      //????????????????????????????????????????????????????????????????
       title: "Договор",
       dataIndex: "contract",
       key: "contract",
@@ -228,13 +224,53 @@ export const getBillsTableColumns = ({
       title: "Заказчик",
       dataIndex: "buyer",
       key: "buyer",
-      render: getLegalEntityName,
+      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
+      filterIcon: <SearchOutlined />,
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Выберите заказчика"
+            allowClear
+            showSearch
+            options={legalEntitiesData.map((entity) => ({
+              value: entity.legal_entity_id,
+              label: entity.legal_entity_name,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            onChange={(value) => onFilterChange?.("buyer", value)}
+            value={filters?.buyer}
+          />
+        </div>
+      ),
     },
     {
       title: "Исполнитель",
       dataIndex: "seller",
       key: "seller",
-      render: getLegalEntityName,
+      render: (legalEntityId: string) => getLegalEntityName(legalEntityId),
+      filterIcon: <SearchOutlined />,
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Выберите исполнителя"
+            allowClear
+            showSearch
+            options={legalEntitiesData.map((entity) => ({
+              value: entity.legal_entity_id,
+              label: entity.legal_entity_name,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            onChange={(value) => onFilterChange?.("seller", value)}
+            value={filters?.seller}
+          />
+        </div>
+      ),
     },
   ];
 };

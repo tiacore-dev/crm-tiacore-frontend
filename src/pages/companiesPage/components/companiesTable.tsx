@@ -1,4 +1,4 @@
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 import { ICompany } from "../../../api/companiesApi";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompaniesTableColumns } from "./companiesTableColumns";
@@ -50,22 +50,23 @@ export const CompaniesTable: React.FC<CompaniesTableProps> = ({
         dataSource={filteredData} // Передаем все отфильтрованные данные
         rowKey="company_id"
         loading={loading}
-        pagination={{
-          current: page,
-          pageSize: page_size,
-          total: filteredData.length,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50", "100"],
-          showTotal: (total) => (
-            <Typography.Text>Всего: {total}</Typography.Text>
-          ),
-          onChange: (newPage, newPageSize) => {
-            if (newPageSize !== page_size) {
-              dispatch(setPageSize(newPageSize));
-            }
-            dispatch(setPage(newPage));
-          },
-        }}
+        pagination={
+          filteredData.length > 10
+            ? {
+                current: page,
+                pageSize: page_size,
+                total: filteredData.length,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50", "100"],
+                onChange: (newPage, newPageSize) => {
+                  if (newPageSize !== page_size) {
+                    dispatch(setPageSize(newPageSize));
+                  }
+                  dispatch(setPage(newPage));
+                },
+              }
+            : false
+        }
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import { axiosInstance } from "../axiosConfig";
-import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+// import toast from "react-hot-toast";
+// import { AxiosError } from "axios";
 import { IEntityCompanyRelationsResponse } from "../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
 
 interface IEntityCompanyRelation {
@@ -11,8 +11,8 @@ interface IEntityCompanyRelation {
 }
 
 export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
-  legal_entity: string;
-  company: string;
+  legal_entity_id: string;
+  company_id: string;
   relation_type: string;
 }): Promise<IEntityCompanyRelation> => {
   const url = process.env.REACT_APP_API_URL;
@@ -22,7 +22,7 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = newEntityCompanyRelation.company_id;
   }
   const response = await axiosInstance.post(
     `${url}/api/entity-company-relations/add`,
@@ -39,8 +39,8 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
 };
 
 export const fetchEntityCompanyRelations = async (
-  legal_entity?: string,
-  company?: string,
+  legal_entity_id?: string,
+  company_id?: string,
   relation_type?: string
 ) => {
   const url = process.env.REACT_APP_API_URL;
@@ -50,13 +50,13 @@ export const fetchEntityCompanyRelations = async (
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
-  if (legal_entity) {
-    params.legal_entity = legal_entity;
+  if (legal_entity_id) {
+    params.legal_entity_id = legal_entity_id;
   }
-  if (company) {
-    params.company = company;
+  if (company_id) {
+    params.company_id = company_id;
   }
   if (relation_type) {
     params.relation_type = relation_type;

@@ -3,11 +3,11 @@ import React from "react";
 import type { TableColumnsType } from "antd";
 import { Button, Input, Table, Typography } from "antd";
 import {
-  usersSelector,
+  // usersSelector,
   setFullName,
   setPage,
   setPageSize,
-  setPosition,
+  // setPosition,
   setEmail,
 } from "../../../redux/slices/usersSlice";
 import { useNavigate } from "react-router-dom";
@@ -29,9 +29,13 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { email, full_name, position, page, page_size } = useSelector(
-    (state: RootState) => state.users
-  );
+  const {
+    email,
+    full_name,
+    //  position,
+    page,
+    page_size,
+  } = useSelector((state: RootState) => state.users);
 
   const columns: TableColumnsType<IUser> = [
     {
@@ -86,28 +90,28 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       ),
       filteredValue: email ? [email] : null,
     },
-    {
-      title: "Позиция",
-      dataIndex: "position",
-      key: "position",
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
-      sorter: (a: IUser, b: IUser) => a.position.localeCompare(b.position),
-      sortDirections: ["ascend", "descend"],
-      filterDropdown: () => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Поиск позиции"
-            value={position}
-            onChange={(e) => dispatch(setPosition(e.target.value))}
-            style={{ width: 200 }}
-            allowClear
-          />
-        </div>
-      ),
-      filteredValue: position ? [position] : null,
-    },
+    // {
+    //   title: "Позиция",
+    //   dataIndex: "position",
+    //   key: "position",
+    //   filterIcon: (filtered) => (
+    //     <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    //   ),
+    //   sorter: (a: IUser, b: IUser) => a.position.localeCompare(b.position),
+    //   sortDirections: ["ascend", "descend"],
+    //   filterDropdown: () => (
+    //     <div style={{ padding: 8 }}>
+    //       <Input
+    //         placeholder="Поиск позиции"
+    //         value={position}
+    //         onChange={(e) => dispatch(setPosition(e.target.value))}
+    //         style={{ width: 200 }}
+    //         allowClear
+    //       />
+    //     </div>
+    //   ),
+    //   filteredValue: position ? [position] : null,
+    // },
   ];
 
   // Фильтрация данных
@@ -118,11 +122,11 @@ export const UsersTable: React.FC<UsersTableProps> = ({
     const matchesFullName = full_name
       ? user.full_name.toLowerCase().includes(full_name.toLowerCase())
       : true;
-    const matchesPosition = position
-      ? user.position.toLowerCase().includes(position.toLowerCase())
-      : true;
+    // const matchesPosition = position
+    //   ? user.position.toLowerCase().includes(position.toLowerCase())
+    //   : true;
 
-    return matchesEmail && matchesFullName && matchesPosition;
+    return matchesEmail && matchesFullName;
   });
 
   return (

@@ -6,7 +6,7 @@ import { useLegalEntityMutations } from "../../hooks/legalEntities/useLegalEntit
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Space, Spin } from "antd";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { LegalEntityFormModal } from "./components/legalEntityFormModal";
 import { LegalEntityDetailsCard } from "./components/legalEntityDetailsCard";
@@ -14,18 +14,22 @@ import { BankAccountsTable } from "../bankAccountsPage/components/bankAccountsTa
 import { useBankAccountQuery } from "../../hooks/bankAccounts/useBankAccountQuery";
 import { useCompany } from "../../context/companyContext";
 import { BankAccountCreateModal } from "../bankAccountsPage/components/bankAccountFormModal";
-import { useIsSellerQuery } from "../../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
+// import { useIsSellerQuery } from "../../hooks/entityCompanyRelations/useEntityCompanyRelationsQuery";
+import { usePermissions } from "../../context/permissionsContext";
 
 export const LegalEntityDetailsPage: React.FC = () => {
   const { legal_entity_id } = useParams<{ legal_entity_id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showCreateBankAccountModal, setShowCreateBankAccountModal] =
     useState(false);
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const {
     data: legal_entity,
@@ -34,11 +38,11 @@ export const LegalEntityDetailsPage: React.FC = () => {
     refetch,
   } = useLegalEntityDetailsQuery(legal_entity_id || "");
 
-  const {
-    data: sellers,
-    isLoading: loadingIsSellers,
-    isError: errorEsSellers,
-  } = useIsSellerQuery(legal_entity_id, selectedCompanyId);
+  // const {
+  // data: sellers,
+  // isLoading: loadingIsSellers,
+  // isError: errorEsSellers,
+  // } = useIsSellerQuery(legal_entity_id, selectedCompanyId);
 
   const { deleteMutation } = useLegalEntityMutations(
     legal_entity_id || "",
@@ -103,9 +107,9 @@ export const LegalEntityDetailsPage: React.FC = () => {
     });
   };
 
-  const isSeller = !!sellers?.relations?.length;
+  // const isSeller = !!sellers?.relations?.length;
   const fromPage = location.state?.from;
-  const showAdditionalFields = fromPage === "company" || isSeller;
+  // const showAdditionalFields = fromPage === "company" || isSeller;
 
   const { data: bankAccountsData, isLoading: isBankAccountsLoading } =
     useBankAccountQuery({
@@ -122,17 +126,23 @@ export const LegalEntityDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => {
-                      setIsModalVisible(true);
-                    }}
-                  >
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("edit_legal_entity")) && (
+                    <Button
+                      onClick={() => {
+                        setIsModalVisible(true);
+                      }}
+                    >
+                      <EditOutlined />
+                      Редактировать
+                    </Button>
+                  )}
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("delete_legal_entity")) && (
+                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                      <DeleteOutlined /> Удалить
+                    </Button>
+                  )}
                 </Space>
 
                 <LegalEntityDetailsCard
@@ -142,14 +152,16 @@ export const LegalEntityDetailsPage: React.FC = () => {
 
                 {fromPage === "company" && (
                   <>
-                    <Button
-                      style={{ marginBottom: 16, marginTop: 16 }}
-                      onClick={() => setShowCreateBankAccountModal(true)}
-                      icon={<PlusOutlined />}
-                    >
-                      Добавить банковский счёт
-                    </Button>
-
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("add_bank_account")) && (
+                      <Button
+                        style={{ marginBottom: 16 }}
+                        onClick={() => setShowCreateBankAccountModal(true)}
+                        icon={<PlusOutlined />}
+                      >
+                        Добавить банковский счёт
+                      </Button>
+                    )}
                     <BankAccountsTable
                       data={bankAccountsData || { total: 0, bank_accounts: [] }}
                       loading={isBankAccountsLoading}

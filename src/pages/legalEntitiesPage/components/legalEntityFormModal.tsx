@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form } from "antd";
-import { ILegalEntityType } from "../../../api/baseApi";
+// import { ILegalEntityType } from "../../../api/baseApi";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntityMutation";
 import {
@@ -58,10 +58,12 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   );
 
   const { createMutation: createRelationMutation } =
-    useEntityCompanyRelationsMutations("", "", "", "");
+    useEntityCompanyRelationsMutations("", "", "", "buyer");
 
-  const { data: existingEntity, isFetching: isCheckingExisting } =
-    useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
+  const {
+    data: existingEntity,
+    //  isFetching: isCheckingExisting
+  } = useLegalEntityByInnKppQuery(innForCheck || "", kppForCheck || null);
 
   const { data: entityDetails } = useLegalEntityDetailsQuery(
     existingEntity?.legal_entity_id || ""
@@ -158,8 +160,8 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
       if (mode === "create") {
         if (existingEntity?.legal_entity_id) {
           await createRelationMutation.mutateAsync({
-            legal_entity: existingEntity.legal_entity_id,
-            company: selectedCompanyId || "",
+            legal_entity_id: existingEntity.legal_entity_id,
+            company_id: selectedCompanyId || "",
             relation_type:
               defaultRelationType! || basicFieldsData?.relation_type,
           });
@@ -191,9 +193,9 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
     defaultRelationType || form.getFieldValue("relation_type");
   const modalTitle =
     mode === "create" && defaultRelationType === "buyer"
-      ? "Добавить контрагента"
+      ? "Добавить контрагента  (в доработке)"
       : mode === "create" && defaultRelationType === "seller"
-      ? "Добавить организацию к компании"
+      ? "Добавить организацию к компании  (в доработке)"
       : mode === "edit" && defaultRelationType === "buyer"
       ? "Редактировать контрагента"
       : mode === "edit" && defaultRelationType === "seller"

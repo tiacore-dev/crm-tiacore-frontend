@@ -7,7 +7,7 @@ export interface IUser {
   user_id: string;
   email: string;
   full_name: string;
-  position: string;
+  // position: string;
   is_verified?: boolean; // Добавляем необязательное поле
 }
 
@@ -27,7 +27,7 @@ export const fetchUsers = async (
 
   const params: any = { page: 1, page_size: 100 };
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.get(`${url}/api/users/all`, {
@@ -41,29 +41,29 @@ export const fetchUsers = async (
 };
 
 // Функция для создания нового пользователя
-export const createUser = async (newUser: {
-  email: string;
-  password: string;
-  full_name: string;
-  position: string;
-}): Promise<IUser> => {
-  const url = process.env.REACT_APP_API_URL;
-  const accessToken = localStorage.getItem("access_token");
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  const params: any = {};
-  if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
-  }
-  const response = await axiosInstance.post(`${url}/api/users/add`, newUser, {
-    params,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-  return response.data;
-};
+// export const createUser = async (newUser: {
+//   email: string;
+//   password: string;
+//   full_name: string;
+//   position: string;
+// }): Promise<IUser> => {
+//   const url = process.env.REACT_APP_API_URL;
+//   const accessToken = localStorage.getItem("access_token");
+//   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+//   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+//   const params: any = {};
+//   if (!isSuperadmin && selectedCompanyId) {
+//     params.company_id = selectedCompanyId;
+//   }
+//   const response = await axiosInstance.post(`${url}/api/users/add`, newUser, {
+//     params,
+//     headers: {
+//       Authorization: `Bearer ${accessToken}`,
+//       "Content-Type": "application/json",
+//     },
+//   });
+//   return response.data;
+// };
 
 //получение инфопмации о пользователе
 export const fetchUserDetails = async (
@@ -77,7 +77,7 @@ export const fetchUserDetails = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   try {
     const response = await axiosInstance.get(`${url}/api/users/${user_id}`, {
@@ -108,7 +108,7 @@ export const updateUser = async (user_id: string, updatedData: any) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/users/${user_id}`,
@@ -134,7 +134,7 @@ export const deleteUser = async (user_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   await axiosInstance.delete(`${url}/api/users/${user_id}`, {
     params,

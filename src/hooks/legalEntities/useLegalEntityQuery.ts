@@ -9,7 +9,7 @@ import {
   fetchBuyers,
   fetchLegalEntitiesFiltred,
 } from "../../api/legalEntitiesApi";
-import { useCompany } from "../../context/companyContext";
+// import { useCompany } from "../../context/companyContext";
 
 export interface ILegalEntitiesResponse {
   total: number;
@@ -29,7 +29,7 @@ export const useLegalEntityByInnKppQuery = (
 };
 
 export const useLegalEntityQuery = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntities", selectedCompanyId],
     queryFn: () => fetchLegalEntities(selectedCompanyId),
@@ -38,7 +38,7 @@ export const useLegalEntityQuery = () => {
 };
 
 export const useLegalEntityFiltredQuery = (company_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntities", selectedCompanyId],
     queryFn: () => fetchLegalEntitiesFiltred(company_id),
@@ -47,7 +47,7 @@ export const useLegalEntityFiltredQuery = (company_id: string) => {
 };
 
 export const useLegalEntityDetailsQuery = (legal_entity_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["legalEntityDetails", legal_entity_id, selectedCompanyId],
     queryFn: () => {
@@ -62,7 +62,7 @@ export const useLegalEntityDetailsQuery = (legal_entity_id: string) => {
 };
 
 export const useLegalEntitiesForSelection = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntitiesForSelection", selectedCompanyId],
@@ -71,18 +71,22 @@ export const useLegalEntitiesForSelection = () => {
   });
 };
 
-export const useLegalEntitiesSellers = () => {
-  const { selectedCompanyId } = useCompany();
+export const useLegalEntitiesSellers = (companyId?: string) => {
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   return useQuery<ILegalEntitiesResponse>({
-    queryKey: ["legalEntitiesSellers", selectedCompanyId],
-    queryFn: () => fetchSellers(selectedCompanyId),
+    queryKey: [
+      "legalEntitiesSellers",
+      isSuperadmin ? companyId : selectedCompanyId,
+    ],
+    queryFn: () => fetchSellers(isSuperadmin ? companyId : selectedCompanyId),
     retry: false,
   });
 };
 
 export const useLegalEntitiesBuyers = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<ILegalEntitiesResponse>({
     queryKey: ["legalEntitiesBuyers", selectedCompanyId],

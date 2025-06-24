@@ -26,14 +26,14 @@ export const fetchBillDetails = async (
     page: number;
     page_size: number;
     bill?: string;
-    company?: string;
+    company_id?: string;
   }
   const requestParams: RequestParams = {
     page: 1,
     page_size: 100,
     ...params,
     ...(!isSuperadmin && selectedCompanyId
-      ? { company: selectedCompanyId }
+      ? { company_id: selectedCompanyId }
       : {}),
   };
 
@@ -75,7 +75,7 @@ export const createBillDetail = async (newBillDetail: {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.post(
     `${url}/api/bill-details/add`,
@@ -103,7 +103,7 @@ export const updateBillDetail = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/bill-details/${bill_detail_id}`,
@@ -129,7 +129,7 @@ export const deleteBillDetail = async (bill_detail_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   await axiosInstance.delete(`${url}/api/bill-details/${bill_detail_id}`, {
     params,

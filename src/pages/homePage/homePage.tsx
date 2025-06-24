@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { refreshToken } from "../loginPage/auth";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { Button, Typography } from "antd"; // Импорт компонентов Ant Design
-import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
-import { UserDetailsCard } from "../usersPage/components/userDetails";
-import { EditOutlined } from "@ant-design/icons";
-import { UserFormModal } from "../usersPage/components/userFormModal";
-import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
+// import { useUserDetailsQuery } from "../../hooks/users/useUserQuery";
+// import { UserDetailsCard } from "../usersPage/components/userDetails";
+// import { EditOutlined } from "@ant-design/icons";
+// import { UserFormModal } from "../usersPage/components/userFormModal";
+// import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 
 export const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -18,9 +18,9 @@ export const HomePage: React.FC = () => {
   const tryRefresh = () => {
     refreshToken();
   };
-  const [showEditModal, setShowEditModal] = useState(false);
-  const selectedCompanyId =
-    localStorage.getItem("selectedCompanyId") || undefined;
+  // const [showEditModal, setShowEditModal] = useState(false);
+  // const selectedCompanyId =
+  // localStorage.getItem("selectedCompanyId") || undefined;
 
   // const {
   //   data: userDetails,

@@ -10,7 +10,7 @@ import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
 } from "../../../hooks/legalEntities/useLegalEntityQuery";
-import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
+// import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 interface ActModalProps {
   visible: boolean;
@@ -39,8 +39,8 @@ export const ActFormModal: React.FC<ActModalProps> = ({
   const buyers = buyersResponse?.entities || [];
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  const { data: companiesResponse } = useCompaniesForSelection();
-  const companies = companiesResponse?.companies || [];
+  // const { data: companiesResponse } = useCompaniesForSelection();
+  // const companies = companiesResponse?.companies || [];
   const { createMutation, updateMutation } = useActsMutations(
     initialData?.act_id || "",
     initialData?.act_number || "",
@@ -97,6 +97,8 @@ export const ActFormModal: React.FC<ActModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
+    isSuperadmin,
+    selectedCompanyId,
     form,
     mode,
     initialData,

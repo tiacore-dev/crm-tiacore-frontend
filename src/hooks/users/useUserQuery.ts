@@ -10,7 +10,8 @@ export interface useUserQueryResponse {
 }
 
 export const useUserQueryAll = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
   return useQuery<useUserQueryResponse>({
     queryKey: ["users_all", selectedCompanyId],
     queryFn: () => fetchUsers(selectedCompanyId),
@@ -18,7 +19,7 @@ export const useUserQueryAll = () => {
 };
 
 export const useUserDetailsQuery = (user_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery({
     queryKey: ["userDetails", user_id],

@@ -1,6 +1,6 @@
 import { ColumnType } from "antd/es/table";
 import { ILegalEntity } from "../../../api/legalEntitiesApi";
-import { Button, Input, Select } from "antd";
+import { Button, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
@@ -34,8 +34,8 @@ export const getLegalEntitiesTableColumns = ({
   const baseColumns: ColumnType<ILegalEntity>[] = [
     {
       title: "Название",
-      dataIndex: "legal_entity_name",
-      key: "legal_entity_name",
+      dataIndex: "short_name",
+      key: "short_name",
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
@@ -69,13 +69,13 @@ export const getLegalEntitiesTableColumns = ({
       title: "ИНН",
       dataIndex: "inn",
       key: "inn",
-      width: 150,
+      // width: 150,
     },
     {
       title: "КПП",
       dataIndex: "kpp",
       key: "kpp",
-      width: 130,
+      // width: 130,
       render: (kpp) => kpp || "—",
     },
     {
@@ -97,7 +97,7 @@ export const getLegalEntitiesTableColumns = ({
           key: "vat_rate",
           render: (vat_rate) =>
             vat_rate ? `${vat_rate}%` : "НДС не облагается",
-          width: 200,
+          // width: 200,
         },
         {
           title: "Подписант",

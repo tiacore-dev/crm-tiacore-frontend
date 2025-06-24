@@ -29,6 +29,8 @@ interface BillsTableProps {
   filters?: {
     bank_account?: string;
     contract?: string;
+    buyer?: string;
+    seller?: string;
     bill_date_from?: number;
     bill_date_to?: number;
   };
@@ -73,16 +75,21 @@ export const BillsTable: React.FC<BillsTableProps> = ({
         dataSource={data.bills}
         rowKey="bill_id"
         loading={loading}
-        pagination={{
-          current: currentPage,
-          pageSize: pageSize,
-          total: data.total,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50"],
-          showTotal: (total) => (
-            <Typography.Text>Всего: {total}</Typography.Text>
-          ),
-        }}
+        scroll={{ x: true }}
+        pagination={
+          data.total > 10
+            ? {
+                current: currentPage,
+                pageSize: pageSize,
+                total: data.total,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50"],
+                showTotal: (total) => (
+                  <Typography.Text>Всего: {total}</Typography.Text>
+                ),
+              }
+            : false
+        }
         onChange={onTableChange}
       />
     </div>

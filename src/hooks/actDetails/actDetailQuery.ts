@@ -12,7 +12,7 @@ export interface IActDetailsResponse {
 }
 
 export const useActDetailsQuery = (actId?: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<IActDetailsResponse>({
     queryKey: ["actDetails", actId, selectedCompanyId],
     queryFn: () => fetchActDetails({ act: actId }, selectedCompanyId),

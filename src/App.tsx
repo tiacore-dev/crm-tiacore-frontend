@@ -22,7 +22,7 @@ import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { ContractDetailsPage } from "./pages/contractsPage/contractDetailsPage";
-import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
+// import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
 import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";
@@ -30,7 +30,7 @@ import { ActsPage } from "./pages/actsPage/actsPage";
 import { ActDetailsPage } from "./pages/actsPage/actDetailsPage";
 import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
 import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
-import { RolePermissionsPage } from "./pages/rolePermissionsPage/rolePermissionsPage";
+// import { RolePermissionsPage } from "./pages/rolePermissionsPage/rolePermissionsPage";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -38,10 +38,14 @@ import "./App.css";
 import "antd/dist/reset.css";
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
+// import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
 import { CompanyProvider } from "./context/companyContext";
-import { AccountPage } from "./pages/accountPage/acoountPage";
+import { PermissionsProvider } from "./context/permissionsContext";
+import { AccountPage } from "./pages/accountPage/accountPage";
 import { AcceptInvitePage } from "./pages/invitePages/acceptInvitePage";
+import { themeConfig } from "./theme/themeConfig";
+import { InviteRegistrationPage } from "./pages/invitePages/inviteRegistrationPage";
+import { LegalEntitiesBuyersPage } from "./pages/legalEntitiesPage/buyersPage/buyersPage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -54,69 +58,91 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
     <ConfigProvider locale={ruRU}>
-      <QueryClientProvider client={queryClient}>
-        <CompanyProvider>
-          {" "}
-          {/* Обернули все приложение в CompanyProvider */}
-          <Router>
-            <Toaster position="top-right" />
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/accept-invite" element={<AcceptInvitePage />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/account" element={<AccountPage />} />
+      <ConfigProvider theme={themeConfig}>
+        <QueryClientProvider client={queryClient}>
+          <CompanyProvider>
+            <PermissionsProvider>
+              {" "}
+              {/* Обернули все приложение в CompanyProvider */}
+              <Router>
+                <Toaster position="bottom-right" />
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/accept-invite" element={<AcceptInvitePage />} />
+                  <Route path="/invite" element={<InviteRegistrationPage />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/account" element={<AccountPage />} />
 
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/users" element={<UsersPage />} />
-                <Route path="/users/:user_id" element={<UserDetailsPage />} />
-                <Route path="/companies" element={<CompaniesPage />} />
-                <Route
-                  path="/companies/:company_id"
-                  element={<CompanyDetailsPage />}
-                />
-                <Route path="/legal_entities" element={<LegalEntitiesPage />} />
-                <Route
-                  path="/legal_entities/:legal_entity_id"
-                  element={<LegalEntityDetailsPage />}
-                />
-                <Route
-                  path="/legal_entities/:legal_entity_id/:bank_account_id"
-                  element={<BankAccountDetailsPage />}
-                />
-                <Route path="/contracts" element={<ContractsPage />} />
-                <Route
-                  path="/contracts/:contract_id"
-                  element={<ContractDetailsPage />}
-                />
-                {/* <Route path="/bank_accounts" element={<BankAccountsPage />} />
+                    <Route path="/services" element={<ServicesPage />} />
+                    <Route path="/users" element={<UsersPage />} />
+                    <Route
+                      path="/users/:user_id"
+                      element={<UserDetailsPage />}
+                    />
+                    <Route path="/companies" element={<CompaniesPage />} />
+                    <Route
+                      path="/companies/:company_id"
+                      element={<CompanyDetailsPage />}
+                    />
+                    <Route
+                      path="/legal_entities"
+                      element={<LegalEntitiesPage />}
+                    />
+                    <Route
+                      path="/legal_entities/:legal_entity_id"
+                      element={<LegalEntityDetailsPage />}
+                    />
+                    <Route
+                      path="/legal-entities/buyers"
+                      element={<LegalEntitiesBuyersPage />}
+                    />
+                    <Route
+                      path="/legal_entities/:legal_entity_id/:bank_account_id"
+                      element={<BankAccountDetailsPage />}
+                    />
+                    <Route
+                      path="/buyers"
+                      element={<LegalEntitiesBuyersPage />}
+                    />
+                    <Route path="/contracts" element={<ContractsPage />} />
+                    <Route
+                      path="/contracts/:contract_id"
+                      element={<ContractDetailsPage />}
+                    />
+                    {/* <Route path="/bank_accounts" element={<BankAccountsPage />} />
                 <Route
                   path="/bank_accounts/:bank_account_id"
                   element={<BankAccountDetailsPage />}
                 /> */}
-                <Route path="/bills" element={<BillsPage />} />
-                <Route path="/bills/:bill_id" element={<BillDetailsPage />} />
-                <Route path="/acts" element={<ActsPage />} />
-                <Route path="/acts/:act_id" element={<ActDetailsPage />} />
-                <Route path="/templates" element={<TemplatesPage />} />
-                <Route
-                  path="/templates/:template_id"
-                  element={<TemplateDetailsPage />}
-                />
-                <Route
-                  path="/role_permissions_relations"
-                  element={<RolePermissionsPage />}
-                />
-                <Route
-                  path="/role_permissions_relations/:role_id"
-                  element={<RolePermissionsDetailsPage />}
-                />
-              </Route>
-              <Route path="*" element={<Navigate to="/login" />} />
-            </Routes>
-          </Router>
-        </CompanyProvider>
-      </QueryClientProvider>
+                    <Route path="/bills" element={<BillsPage />} />
+                    <Route
+                      path="/bills/:bill_id"
+                      element={<BillDetailsPage />}
+                    />
+                    <Route path="/acts" element={<ActsPage />} />
+                    <Route path="/acts/:act_id" element={<ActDetailsPage />} />
+                    <Route path="/templates" element={<TemplatesPage />} />
+                    <Route
+                      path="/templates/:template_id"
+                      element={<TemplateDetailsPage />}
+                    />
+                    {/* <Route
+                      path="/role_permissions_relations"
+                      element={<RolePermissionsPage />}
+                    /> */}
+                    {/* <Route
+                      path="/role_permissions_relations/:role_id"
+                      element={<RolePermissionsDetailsPage />}
+                    /> */}
+                  </Route>
+                  <Route path="*" element={<Navigate to="/login" />} />
+                </Routes>
+              </Router>
+            </PermissionsProvider>
+          </CompanyProvider>
+        </QueryClientProvider>
+      </ConfigProvider>
     </ConfigProvider>
   );
 };

@@ -30,7 +30,8 @@ export const fetchBankAccounts = async (
     page: params?.page || 1,
     page_size: params?.page_size || 100,
     ...(params?.legal_entity && { legal_entity: params.legal_entity }),
-    ...(!isSuperadmin && selectedCompanyId && { company: selectedCompanyId }),
+    ...(!isSuperadmin &&
+      selectedCompanyId && { company_id: selectedCompanyId }),
   };
 
   const response = await axiosInstance.get(`${url}/api/bank-accounts/all`, {
@@ -57,7 +58,7 @@ export const createBankAccount = async (newBankAccount: {
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.post(
     `${url}/api/bank-accounts/add`,
@@ -84,7 +85,7 @@ export const fetchBankAccountDetails = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   try {
@@ -122,7 +123,7 @@ export const updateBankAccount = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   const response = await axiosInstance.patch(
     `${url}/api/bank-accounts/${bank_account_id}`,
@@ -148,7 +149,7 @@ export const deleteBankAccount = async (bank_account_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
   await axiosInstance.delete(`${url}/api/bank-accounts/${bank_account_id}`, {
     params,

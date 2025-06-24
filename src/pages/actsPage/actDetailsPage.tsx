@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useActQuery } from "../../hooks/acts/useActsQuery";
 import { useActsMutations } from "../../hooks/acts/useActsMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -16,7 +16,10 @@ import { useActDetailsQuery } from "../../hooks/actDetails/actDetailQuery";
 import { useServiceQuery } from "../../hooks/services/useServiceQuery";
 import { ActDetailsTable } from "./components/actDetailsTable";
 import { createMemoizedHelpers } from "../../utils/infoById";
-import { GenerateTemplateButton } from "../../components/generateTemplateButton";
+import { GenerateTemplateButton } from "../../components/buttons/generateTemplateButton";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ActDetailsPage: React.FC = () => {
   const { act_id } = useParams<{ act_id: string }>();
@@ -24,11 +27,14 @@ export const ActDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const isMobile = useMobileDetection();
 
   const { data: act, isLoading, isError } = useActQuery(act_id || "");
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractsResponse } = useContractsForSelection();
   const { data: servicesResponse } = useServiceQuery();
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const servicesData =
     servicesResponse?.services.map((service) => ({
@@ -39,7 +45,7 @@ export const ActDetailsPage: React.FC = () => {
   const {
     data: actDetails,
     isLoading: isLoadingDetails,
-    isError: isErrorDetails,
+    // isError: isErrorDetails,
   } = useActDetailsQuery(act_id);
 
   const { deleteMutation } = useActsMutations(
@@ -92,20 +98,43 @@ export const ActDetailsPage: React.FC = () => {
           {!isError && act && (
             <>
               <div className="main-container">
-                <Space style={{ marginBottom: 16 }}>
-                  <Button onClick={() => setShowEditModal(true)}>
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
-                  <GenerateTemplateButton
-                    actId={act_id || ""}
-                    entityType={"act"}
-                  />
-                </Space>
-
+                <div style={{ marginBottom: 16 }}>
+                  <Space style={{ marginBottom: 16 }}>
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("edit_act")) && (
+                      <Button onClick={() => setShowEditModal(true)}>
+                        <EditOutlined />
+                        Редактировать
+                      </Button>
+                    )}
+                    {(isSuperadmin ||
+                      currentAppPermissions.includes("delete_act")) && (
+                      <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                        <DeleteOutlined /> Удалить
+                      </Button>
+                    )}
+                    {!isMobile &&
+                      (isSuperadmin ||
+                        currentAppPermissions.includes(
+                          "generate_template"
+                        )) && (
+                        <GenerateTemplateButton
+                          actId={act_id || ""}
+                          entityType={"act"}
+                        />
+                      )}
+                  </Space>
+                  {isMobile &&
+                    (isSuperadmin ||
+                      currentAppPermissions.includes("generate_template")) && (
+                      <Space>
+                        <GenerateTemplateButton
+                          actId={act_id || ""}
+                          entityType={"act"}
+                        />
+                      </Space>
+                    )}
+                </div>
                 <ActDetailsDescriptions
                   act={act}
                   getEntityNameById={getEntityNameById}

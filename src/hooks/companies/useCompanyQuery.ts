@@ -5,8 +5,6 @@ import {
   fetchCompanyDetails,
   ICompany,
 } from "../../api/companiesApi";
-// import { ICompaniesResponse } from "../../pages/legalEntitiesPage/components/legalEntityFormModal";
-import { useCompany } from "../../context/companyContext";
 
 export interface useCompanyQueryResponse {
   total: number;
@@ -18,16 +16,18 @@ export interface ICompaniesResponse {
 }
 
 export const useCompanyQuery = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<useCompanyQueryResponse>({
     queryKey: ["companies", selectedCompanyId],
     queryFn: () => fetchCompanies(selectedCompanyId),
+    staleTime: 5 * 60 * 1000,
+    retry: false, // Отключает повторные попытки
   });
 };
 
 export const useCompanyDetailsQuery = (company_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["companyDetails", company_id, selectedCompanyId],
     queryFn: () => fetchCompanyDetails(company_id),
@@ -36,9 +36,11 @@ export const useCompanyDetailsQuery = (company_id: string) => {
 };
 
 export const useCompaniesForSelection = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<ICompaniesResponse>({
     queryKey: ["companiesForSelection", selectedCompanyId], //??????
     queryFn: () => fetchCompanies(selectedCompanyId),
+    staleTime: 5 * 60 * 1000,
+    retry: false, // Отключает повторные попытки
   });
 };

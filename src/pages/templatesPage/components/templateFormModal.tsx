@@ -94,23 +94,23 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
       if (mode === "create") {
         await createMutation.mutateAsync(formData, {
           onSuccess: () => {
-            message.success("Шаблон успешно создан");
+            // message.success("Шаблон успешно создан");
             onSuccess();
             form.resetFields();
             setFile(null);
           },
           onError: () => {
-            message.error("Ошибка при создании шаблона");
+            // message.error("Ошибка при создании шаблона");
           },
         });
       } else {
         await updateMutation.mutateAsync(formData, {
           onSuccess: () => {
-            message.success("Шаблон успешно обновлен");
+            // message.success("Шаблон успешно обновлен");
             onSuccess();
           },
           onError: () => {
-            message.error("Ошибка при обновлении шаблона");
+            // message.error("Ошибка при обновлении шаблона");
           },
         });
       }
@@ -146,7 +146,9 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
       confirmLoading={
         mode === "create" ? createMutation.isPending : updateMutation.isPending
       }
-      width={700}
+      className="responsive-modal"
+      width="90%"
+      style={{ maxWidth: 700 }}
       destroyOnClose
     >
       <Form form={form} layout="vertical">

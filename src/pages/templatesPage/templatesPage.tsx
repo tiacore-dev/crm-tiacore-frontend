@@ -3,22 +3,27 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { Button, Spin, Space } from "antd"; // Добавлен Space для группировки кнопок
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { useTemplateQuery } from "../../hooks/templates/useTemplateQuery";
 import { TemplatesTable } from "./components/templatesTable";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons"; // Добавлен ClearOutlined
 import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
 import { TemplateFormModal } from "./components/templateFormModal";
-import { templatesSelector } from "../../redux/slices/templatesSlice";
+// import { templatesSelector } from "../../redux/slices/templatesSlice";
 import { useSelector } from "react-redux";
 import { resetState } from "../../redux/slices/templatesSlice"; // Импорт нового действия
 import { RootState } from "../../redux/store";
+import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
+
 export const TemplatesPage: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { search, company } = useSelector(
     (state: RootState) => state.templates
   );
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   useEffect(() => {
     dispatch(
@@ -49,12 +54,16 @@ export const TemplatesPage: React.FC = () => {
             <div>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => setIsModalVisible(true)}
-                    icon={<PlusOutlined />}
-                  >
-                    Добавить шаблон
-                  </Button>
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("add_template")) && (
+                    <Button
+                      onClick={() => setIsModalVisible(true)}
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить шаблон
+                    </Button>
+                  )}
+
                   <Button
                     onClick={handleResetFilters}
                     icon={<ClearOutlined />}

@@ -1,4 +1,4 @@
-import { Table, Typography, Dropdown, Button, Menu, Space } from "antd";
+import { Table, Typography, Dropdown, Button } from "antd";
 import { IActDetail } from "../../../api/actDetailsApi";
 import { getServiceNameById } from "../../../utils/infoById";
 import {
@@ -11,6 +11,8 @@ import { useState } from "react";
 import { useActDetailMutations } from "../../../hooks/actDetails/actDetailMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { ActDetailFormModal } from "./actDetailsFormModal";
+import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface IActDetailsTableProps {
   data: {
@@ -48,6 +50,8 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     null
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const handleEdit = (actDetail: IActDetail) => {
     setEditingActDetail(actDetail);
@@ -74,32 +78,38 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     setIsModalVisible(true);
   };
 
-  const getMenuItems = (actDetail: IActDetail) => [
-    {
-      key: "edit",
-      icon: <EditOutlined />,
-      label: "Редактировать",
-      onClick: () => handleEdit(actDetail),
-    },
-    {
-      key: "delete",
-      icon: <DeleteOutlined />,
-      label: "Удалить",
-      danger: true,
-      onClick: () => handleDelete(actDetail),
-    },
-  ];
+  const getMenuItems = (actDetail: IActDetail) => {
+    const items = [];
+
+    if (isSuperadmin || currentAppPermissions.includes("edit_act_detail")) {
+      items.push({
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Редактировать",
+        onClick: () => handleEdit(actDetail),
+      });
+    }
+
+    if (isSuperadmin || currentAppPermissions.includes("delete_act_detail")) {
+      items.push({
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Удалить",
+        danger: true,
+        onClick: () => handleDelete(actDetail),
+      });
+    }
+
+    return items;
+  };
 
   const columns = [
     {
       title: "Услуга",
       dataIndex: "service",
       key: "service",
-      render: (serviceId: string) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
-          {getServiceNameById(serviceId, servicesData) || serviceId}
-        </div>
-      ),
+      render: (serviceId: string) =>
+        getServiceNameById(serviceId, servicesData) || serviceId,
       sorter: (a: IActDetail, b: IActDetail) => {
         const nameA = getServiceNameById(a.service, servicesData) || a.service;
         const nameB = getServiceNameById(b.service, servicesData) || b.service;
@@ -110,45 +120,56 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
       title: "Количество",
       dataIndex: "quantity",
       key: "quantity",
-      render: (value: number) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>{value}</div>
-      ),
+      render: (value: number) => value,
     },
     {
       title: "Цена",
       dataIndex: "price",
       key: "price",
-      render: (value: number) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
-          {`${value.toLocaleString()} ₽`}
-        </div>
-      ),
+      render: (value: number) => `${value.toLocaleString()} ₽`,
       sorter: (a: IActDetail, b: IActDetail) => a.price - b.price,
     },
     {
       title: "Сумма",
       dataIndex: "summ",
       key: "summ",
-      render: (value: number) => (
-        <div style={{ padding: "4px 8px", lineHeight: "1.7" }}>
-          {`${value.toLocaleString()} ₽`}
-        </div>
-      ),
+      render: (value: number) => `${value.toLocaleString()} ₽`,
       sorter: (a: IActDetail, b: IActDetail) => a.summ - b.summ,
     },
     {
       title: "",
       key: "actions",
       width: 48,
-      render: (record: IActDetail) => (
-        <Dropdown menu={{ items: getMenuItems(record) }} trigger={["click"]}>
-          <Button
-            type="text"
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Dropdown>
-      ),
+      render: (record: IActDetail) => {
+        const menuItems = getMenuItems(record);
+        if (menuItems.length === 0) return null;
+
+        return (
+          <div
+            style={{ display: "flex", height: "100%", alignItems: "center" }}
+          >
+            <Dropdown
+              menu={{ items: menuItems }}
+              trigger={["click"]}
+              overlayStyle={{ minWidth: 120 }}
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={<MoreOutlined style={{ fontSize: 16 }} />}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Dropdown>
+          </div>
+        );
+      },
     },
   ];
 
@@ -164,9 +185,12 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         <Typography.Title level={4} style={{ marginRight: 16 }}>
           Детали акта
         </Typography.Title>
-        <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
-          Добавить
-        </Button>
+
+        {(isSuperadmin || currentAppPermissions.includes("add_act_detail")) && (
+          <Button onClick={handleAddDetail} icon={<PlusOutlined />}>
+            Добавить
+          </Button>
+        )}
       </div>
       <Table
         columns={columns}

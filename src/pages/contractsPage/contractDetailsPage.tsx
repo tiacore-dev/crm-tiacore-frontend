@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Space, Spin } from "antd";
 import { useContractDetailsQuery } from "../../hooks/contracts/useContractQuery";
 import { useContractMutations } from "../../hooks/contracts/useContractMutation";
-import { BackButton } from "../../components/backButton";
+import { BackButton } from "../../components/buttons/backButton";
 import { setBreadcrumbs } from "../../redux/slices/breadcrumbsSlice";
 import { useDispatch } from "react-redux";
 import { ConfirmDeleteModal } from "../../components/modals/confirmDeleteModal";
@@ -14,6 +14,8 @@ import { useContractStatuses } from "../../hooks/base/useBaseQuery";
 import { ContractDetailsCard } from "./components/contractDetailsCard";
 import { ContractFormModal } from "./components/contractFormModal";
 import { getEntityNameById, getContractStatusById } from "../../utils/infoById";
+import { usePermissions } from "../../context/permissionsContext";
+import { useCompany } from "../../context/companyContext";
 
 export const ContractDetailsPage: React.FC = () => {
   const { contract_id } = useParams<{ contract_id: string }>();
@@ -21,7 +23,7 @@ export const ContractDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  // const [downloading, setDownloading] = useState(false);
 
   const {
     data: contract,
@@ -31,6 +33,8 @@ export const ContractDetailsPage: React.FC = () => {
 
   const { data: legalEntitiesResponse } = useLegalEntitiesForSelection();
   const { data: contractStatusesResponse } = useContractStatuses();
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const { deleteMutation } = useContractMutations(
     contract_id || "",
@@ -67,7 +71,7 @@ export const ContractDetailsPage: React.FC = () => {
 
   const handleDownload = async () => {
     if (!contract_id) return;
-    setDownloading(true);
+    // setDownloading(true);
     try {
       const result = await downloadContract(contract_id);
       if (result) {
@@ -79,7 +83,7 @@ export const ContractDetailsPage: React.FC = () => {
         document.body.removeChild(link);
       }
     } finally {
-      setDownloading(false);
+      // setDownloading(false);
     }
   };
 
@@ -104,17 +108,24 @@ export const ContractDetailsPage: React.FC = () => {
             <>
               <div className="main-container">
                 <Space style={{ marginBottom: 16 }}>
-                  <Button
-                    onClick={() => {
-                      setShowEditModal(true);
-                    }}
-                  >
-                    <EditOutlined />
-                    Редактировать
-                  </Button>
-                  <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                    <DeleteOutlined /> Удалить
-                  </Button>
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("edit_contract")) && (
+                    <Button
+                      onClick={() => {
+                        setShowEditModal(true);
+                      }}
+                    >
+                      <EditOutlined />
+                      Редактировать
+                    </Button>
+                  )}
+
+                  {(isSuperadmin ||
+                    currentAppPermissions.includes("delete_contract")) && (
+                    <Button danger onClick={() => setShowDeleteConfirm(true)}>
+                      <DeleteOutlined /> Удалить
+                    </Button>
+                  )}
                 </Space>
 
                 <ContractDetailsCard

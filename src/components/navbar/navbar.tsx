@@ -1,29 +1,52 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, Button, Dropdown } from "antd";
-import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
+import { Menu, Button, Dropdown, Drawer } from "antd";
+import {
+  LogoutOutlined,
+  MenuOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useCompany } from "../../context/companyContext";
 import "./navbar.css";
 import { useCompanyQuery } from "../../hooks/companies/useCompanyQuery";
-import { queryClient } from "../../context/companyContext";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { CompanyFormModal } from "../../pages/companiesPage/components/companyFormModal";
+import { logoutUser } from "../../api/authApi";
+
+const LOGO_TEXT = "CRM | Tiacore"; // Замените на ваш текст лого
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [showSettings, setShowSettings] = useState(false);
+  const isMobile = useMobileDetection();
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [showSettings, setShowSettings] = useState(true);
+  const [companyModalVisible, setCompanyModalVisible] = useState(false);
+
+  // const {
+  //   // selectedCompanyId,
+  //   setSelectedCompanyId,
+  //   // availableCompanies,
+  // } = useCompany();
   const {
     selectedCompanyId,
     setSelectedCompanyId,
     availableCompanies,
     isSuperadmin,
   } = useCompany();
-
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  // const isSuperadmin = localStorage.getItem("is_superadmin");
+  // const availableCompanies = JSON.parse(
+  // localStorage.getItem("availableCompanies") || "[]"
+  // );
   const { data: companiesData } = useCompanyQuery();
   const companies = companiesData?.companies || [];
 
   const mainItems = [
-    { label: "Главная", key: "/home" },
-    { label: "Контрагенты", key: "/legal_entities" },
+    // { label: "Главная", key: "/home" },
+    // { label: "Контрагенты", key: "/legal_entities" },
+    { label: "Контрагенты", key: "/buyers" },
     { label: "Договоры", key: "/contracts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },
@@ -36,26 +59,44 @@ export const Navbar: React.FC = () => {
     ...(isSuperadmin
       ? [
           { label: "Пользователи", key: "/users" },
-          { label: "Управление доступом", key: "/role_permissions_relations" },
+          // { label: "Управление доступом", key: "/role_permissions_relations" },
         ]
       : []),
-    ...(!isSuperadmin ? [{ label: "Аккаунт", key: "/account" }] : []),
+  ];
+
+  // Пункты меню для обычного пользователя (аккаунт и выход)
+  const userMenuItems = [
+    { label: "Аккаунт", key: "/account", icon: <UserOutlined /> },
+    { label: "Выйти", key: "logout", icon: <LogoutOutlined /> },
+  ];
+
+  // Объединяем все пункты меню для мобильной версии
+  const mobileMenuItems = [
+    ...mainItems,
+    ...settingsItems,
+    ...(!isSuperadmin ? userMenuItems : []),
   ];
 
   const getSelectedKeys = () => {
     const currentPath = location.pathname;
-    const allItems = [...mainItems, ...settingsItems];
+    const allItems = isMobile
+      ? mobileMenuItems
+      : [...mainItems, ...(showSettings ? settingsItems : [])];
     const matchedItem = allItems.find((item) =>
       currentPath.startsWith(item.key)
     );
     return matchedItem ? [matchedItem.key] : [];
   };
 
+  const toggleDrawer = () => {
+    setDrawerVisible(!drawerVisible);
+  };
+
   const toggleSettings = () => {
     setShowSettings(!showSettings);
   };
 
-  const companyMenuItems = availableCompanies.map((companyId) => {
+  const companyMenuItems = availableCompanies.map((companyId: string) => {
     const company = companies.find((c) => c.company_id === companyId);
     return {
       key: companyId,
@@ -68,61 +109,180 @@ export const Navbar: React.FC = () => {
     companies.find((c) => c.company_id === selectedCompanyId)?.company_name ||
     selectedCompanyId;
 
+  const handleUserMenuClick = ({ key }: { key: string }) => {
+    if (key === "logout") {
+      logoutUser();
+      localStorage.clear();
+      window.location.href = "/login";
+    } else {
+      navigate(key);
+    }
+  };
   return (
-    <div className={`navbar-container ${showSettings ? "settings-open" : ""}`}>
-      <Menu
-        className="navbar-menu"
-        mode="horizontal"
-        items={mainItems}
-        selectedKeys={getSelectedKeys()}
-        onClick={({ key }) => navigate(key)}
-      />
+    <>
+      {isMobile && (
+        <>
+          <div className="navbar-container">
+            <div className="mobile-logo-container">
+              <Button
+                className="mobile-menu-button"
+                icon={<MenuOutlined />}
+                onClick={toggleDrawer}
+              />
+              <div className="mobile-logo" onClick={() => navigate("/home")}>
+                {LOGO_TEXT}
+              </div>
+            </div>
+            <div className="buttons-container">
+              {!isSuperadmin && (
+                <>
+                  {selectedCompanyId && (
+                    <Dropdown
+                      menu={{ items: companyMenuItems }}
+                      placement="bottomRight"
+                    >
+                      <Button className="company-selector">
+                        {selectedCompanyName}
+                      </Button>
+                    </Dropdown>
+                  )}
+                  {!selectedCompanyId && (
+                    <Button onClick={() => setCompanyModalVisible(true)}>
+                      Добавить компанию
+                    </Button>
+                  )}
+                </>
+              )}
 
-      {showSettings && (
-        <Menu
-          className="settings-menu"
-          mode="horizontal"
-          items={settingsItems}
-          selectedKeys={getSelectedKeys()}
-          onClick={({ key }) => navigate(key)}
-        />
+              {isSuperadmin && (
+                <button
+                  className="animated-btn"
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/login";
+                  }}
+                >
+                  <div className="sign">
+                    <LogoutOutlined />
+                  </div>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <Drawer
+            title="Меню"
+            placement="left"
+            onClose={toggleDrawer}
+            visible={drawerVisible}
+            width={280}
+          >
+            <Menu
+              mode="vertical"
+              items={mobileMenuItems}
+              selectedKeys={getSelectedKeys()}
+              onClick={({ key }) => {
+                if (key === "logout") {
+                  localStorage.clear();
+                  window.location.href = "/login";
+                } else {
+                  navigate(key);
+                }
+                toggleDrawer();
+              }}
+            />
+          </Drawer>
+          {!isSuperadmin && (
+            <CompanyFormModal
+              visible={companyModalVisible}
+              onCancel={() => setCompanyModalVisible(false)}
+              onSuccess={() => {
+                setCompanyModalVisible(false);
+              }}
+              mode="create"
+            />
+          )}
+        </>
       )}
 
-      <div className="buttons-container">
-        {!isSuperadmin && (
-          <Dropdown menu={{ items: companyMenuItems }} placement="bottomRight">
-            <Button className="company-selector">
-              {selectedCompanyName || "Добавьте компанию"}
-            </Button>
-          </Dropdown>
-        )}
-
-        <button className="animated-settings-btn" onClick={toggleSettings}>
-          <div className="sign">
-            <div className="text">Настройки</div>
-            <SettingOutlined
-              className={`rotate-icon ${
-                showSettings
-                  ? "rotate-icon-anticlockwise"
-                  : "rotate-icon-clockwise"
-              }`}
-            />
-          </div>
-        </button>
-
-        <button
-          className="animated-btn"
-          onClick={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
+      {!isMobile && (
+        <div
+          className={`navbar-container ${showSettings ? "settings-open" : ""}`}
         >
-          <div className="sign">
-            <LogoutOutlined />
+          <div className="navbar-logo" onClick={() => navigate("/home")}>
+            {LOGO_TEXT}
           </div>
-          <div className="text">Выйти</div>
-        </button>
-      </div>
-    </div>
+          <Menu
+            className="navbar-menu"
+            mode="horizontal"
+            items={mainItems}
+            selectedKeys={getSelectedKeys()}
+            onClick={({ key }) => navigate(key)}
+          />
+
+          {showSettings && (
+            <Menu
+              className="settings-menu"
+              mode="horizontal"
+              items={settingsItems}
+              selectedKeys={getSelectedKeys()}
+              onClick={({ key }) => navigate(key)}
+            />
+          )}
+          <div className="buttons-container">
+            {/* <button className="animated-settings-btn" onClick={toggleSettings}>
+              <div className="sign">
+                <div className="text">Настройки</div>
+                <SettingOutlined
+                  className={`rotate-icon ${
+                    showSettings
+                      ? "rotate-icon-anticlockwise"
+                      : "rotate-icon-clockwise"
+                  }`}
+                />
+              </div>
+            </button> */}
+            {!isSuperadmin && (
+              <>
+                {selectedCompanyId && (
+                  <Dropdown
+                    menu={{ items: companyMenuItems }}
+                    placement="bottomRight"
+                  >
+                    <Button className="company-selector">
+                      {selectedCompanyName}
+                    </Button>
+                  </Dropdown>
+                )}
+                {!selectedCompanyId && (
+                  <Button onClick={() => setCompanyModalVisible(true)}>
+                    Добавить компанию
+                  </Button>
+                )}
+              </>
+            )}
+            <Dropdown
+              menu={{
+                items: userMenuItems,
+                onClick: handleUserMenuClick,
+              }}
+              placement="bottomRight"
+            >
+              <Button className="user-menu-button" icon={<UserOutlined />} />
+            </Dropdown>
+          </div>
+          {!isSuperadmin && (
+            <CompanyFormModal
+              visible={companyModalVisible}
+              onCancel={() => setCompanyModalVisible(false)}
+              onSuccess={() => {
+                setCompanyModalVisible(false);
+              }}
+              mode="create"
+            />
+          )}
+        </div>
+      )}
+    </>
   );
 };

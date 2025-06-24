@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { ExportOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IBill } from "../../../api/billsApi";
-import "../../../components/cards.css";
 
 interface BillDetailsCardProps {
   bill: IBill;
@@ -30,11 +29,11 @@ export const BillDetailsCard: React.FC<BillDetailsCardProps> = ({
         >
           ({getBankNameById(bill.bank_account)}){" "}
         </span>
-        {bill.bank_account && (
+        {/* {bill.bank_account && (
           <Link to={`/bank_accounts/${bill.bank_account}`}>
             <ExportOutlined />
           </Link>
-        )}
+        )} */}
       </Descriptions.Item>
       <Descriptions.Item label="Номер">{bill.bill_number}</Descriptions.Item>
       <Descriptions.Item label="Дата">

@@ -1,4 +1,3 @@
-//templatestablecolumns
 import { Button, Input, Select } from "antd";
 import { ColumnType } from "antd/es/table";
 import { ITemplate } from "../../../api/templatesApi";
@@ -15,7 +14,9 @@ export const getTemplateColumns = (
   onSearchChange: (value: string) => void,
   onCompanyChange: (value: string) => void,
   downloadingId: string | null,
-  onDownload: (template_id: string) => void
+  onDownload: (template_id: string) => void,
+  currentAppPermissions: string[],
+  isSuperadmin: boolean // Заменяем hasPermission на currentAppPermissions
 ): ColumnType<ITemplate>[] => {
   return [
     {
@@ -32,6 +33,9 @@ export const getTemplateColumns = (
         <Button
           type="link"
           onClick={() => navigate(`/templates/${record.template_id}`)}
+          disabled={
+            !isSuperadmin && !currentAppPermissions.includes("view_template")
+          }
         >
           {text}
         </Button>
@@ -94,7 +98,7 @@ export const getTemplateColumns = (
           case "bill":
             return "Счёт";
           default:
-            return entity; // На случай, если будут другие значения
+            return entity;
         }
       },
     },
@@ -105,6 +109,14 @@ export const getTemplateColumns = (
       render: (_: string, record: ITemplate) => {
         if (!record.s3_key) return "-";
         const fileName = record.s3_key.split("/").pop() || "Файл";
+
+        // Новая проверка прав
+        if (
+          !isSuperadmin &&
+          !currentAppPermissions.includes("download_template")
+        ) {
+          return <span>{fileName}</span>;
+        }
 
         return (
           <Button

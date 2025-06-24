@@ -26,7 +26,7 @@ export const fetchActDetails = async (
     page: number;
     page_size: number;
     act?: string;
-    company?: string;
+    company_id?: string;
   }
 
   const requestParams: RequestParams = {
@@ -34,7 +34,7 @@ export const fetchActDetails = async (
     page_size: 100,
     ...params,
     ...(!isSuperadmin && selectedCompanyId
-      ? { company: selectedCompanyId }
+      ? { company_id: selectedCompanyId }
       : {}),
   };
 
@@ -76,7 +76,7 @@ export const createActDetail = async (newActDetail: {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.post(
@@ -105,7 +105,7 @@ export const updateActDetail = async (
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   const response = await axiosInstance.patch(
@@ -132,7 +132,7 @@ export const deleteActDetail = async (act_detail_id: string) => {
 
   const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
-    params.company = selectedCompanyId;
+    params.company_id = selectedCompanyId;
   }
 
   await axiosInstance.delete(`${url}/api/act-details/${act_detail_id}`, {

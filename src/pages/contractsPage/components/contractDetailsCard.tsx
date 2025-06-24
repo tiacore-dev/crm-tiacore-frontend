@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { ExportOutlined, DownloadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IContract } from "../../../api/contractsApi";
-import "../../../components/cards.css";
+import { usePermissions } from "../../../context/permissionsContext";
+import { useCompany } from "../../../context/companyContext";
 
 interface ContractDetailsCardProps {
   contract: IContract;
@@ -20,6 +21,9 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
   getContractStatusById,
   handleDownload,
 }) => {
+  const { currentAppPermissions } = useCompany();
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+
   return (
     <Descriptions bordered column={1}>
       <Descriptions.Item label="Название">
@@ -62,14 +66,18 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
         {contract.s3_key ? (
           <Space>
             <span>{contract.s3_key.split("/").pop()}</span>
-            <DownloadOutlined
-              onClick={handleDownload}
-              style={{
-                color: "#1890ff",
-                cursor: "pointer",
-              }}
-              title="Скачать"
-            />
+
+            {(isSuperadmin ||
+              currentAppPermissions.includes("download_contract")) && (
+              <DownloadOutlined
+                onClick={handleDownload}
+                style={{
+                  color: "#1890ff",
+                  cursor: "pointer",
+                }}
+                title="Скачать"
+              />
+            )}
           </Space>
         ) : (
           "Файл отсутствует"

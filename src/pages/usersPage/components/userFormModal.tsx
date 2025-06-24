@@ -7,11 +7,9 @@ interface UserCreateModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess?: () => void;
-  mode?: "create" | "edit" | "registration";
+  mode?: "edit" | "registration";
   initialData?: IUser | null;
 }
-
-const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 export const UserFormModal: React.FC<UserCreateModalProps> = ({
   visible,
@@ -24,13 +22,12 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
-  const { createMutation, updateMutation, registrationMutation } =
-    useUserMutations(
-      initialData?.user_id || "",
-      initialData?.email || "",
-      initialData?.full_name || "",
-      initialData?.position || ""
-    );
+  const { updateMutation, registrationMutation } = useUserMutations(
+    initialData?.user_id || "",
+    initialData?.email || "",
+    initialData?.full_name || ""
+    // initialData?.position || ""
+  );
 
   useEffect(() => {
     if (visible) {
@@ -38,7 +35,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         form.setFieldsValue({
           email: initialData.email,
           full_name: initialData.full_name,
-          position: initialData.position,
+          // position: initialData.position,
           is_verified: initialData.is_verified || false, // Добавляем is_verified
         });
       } else {
@@ -66,7 +63,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
       };
 
       if (mode === "create") {
-        await createMutation.mutateAsync(dataToSend);
+        // await createMutation.mutateAsync(dataToSend);
       } else if (mode === "edit" && initialData?.user_id) {
         await updateMutation.mutateAsync(dataToSend);
       } else if (mode === "registration") {
@@ -132,10 +129,10 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
               type: "email",
               message: "Введите корректный email адрес",
             },
-            {
-              pattern: emailRegex,
-              message: "Email должен быть в формате example@domain.com",
-            },
+            // {
+            //   pattern: emailRegex,
+            //   message: "Email должен быть в формате example@domain.com",
+            // },
             { min: 3, message: "Минимум 3 символа" },
           ]}
         >
@@ -184,7 +181,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
         >
           <Input placeholder="Введите Ф.И.О." />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="Должность"
           name="position"
           rules={[
@@ -193,7 +190,7 @@ export const UserFormModal: React.FC<UserCreateModalProps> = ({
           ]}
         >
           <Input placeholder="Введите должность" />
-        </Form.Item>
+        </Form.Item> */}
         {isSuperadmin && mode === "edit" && (
           <Form.Item name="is_verified" valuePropName="checked">
             <Checkbox>Верифицировать пользователя</Checkbox>

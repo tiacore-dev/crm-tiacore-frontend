@@ -1,6 +1,6 @@
 // src/hooks/useServiceMutations.tsx
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUser, updateUser, deleteUser } from "../../api/usersApi";
+import { updateUser, deleteUser } from "../../api/usersApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
@@ -18,31 +18,31 @@ export const useUserMutations = (
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const createMutation = useMutation({
-    mutationFn: createUser,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success(
-        <div>
-          Пользователь успешно добавлен{" "}
-          <Button
-            type="link"
-            onClick={() => navigate(`/users/${data.user_id}`)}
-          >
-            Подробнее
-          </Button>
-        </div>
-      );
-    },
-    onError: (error: AxiosError) => {
-      // Проверяем код ошибки
-      if (error.response?.status === 400) {
-        toast.error("Пользователь с таким email уже существует");
-      } else {
-        toast.error("Ошибка при добавлении пользователя");
-      }
-    },
-  });
+  // const createMutation = useMutation({
+  //   mutationFn: createUser,
+  //   onSuccess: (data) => {
+  //     queryClient.invalidateQueries({ queryKey: ["users"] });
+  //     toast.success(
+  //       <div>
+  //         Пользователь успешно добавлен{" "}
+  //         <Button
+  //           type="link"
+  //           onClick={() => navigate(`/users/${data.user_id}`)}
+  //         >
+  //           Подробнее
+  //         </Button>
+  //       </div>
+  //     );
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     // Проверяем код ошибки
+  //     if (error.response?.status === 400) {
+  //       toast.error("Пользователь с таким email уже существует");
+  //     } else {
+  //       toast.error("Ошибка при добавлении пользователя");
+  //     }
+  //   },
+  // });
 
   const registrationMutation = useMutation({
     mutationFn: registrationUser,
@@ -97,7 +97,7 @@ export const useUserMutations = (
   });
 
   return {
-    createMutation,
+    // createMutation,
     updateMutation,
     deleteMutation,
     registrationMutation,
