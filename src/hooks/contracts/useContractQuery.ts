@@ -55,7 +55,7 @@ export const useContractQuery = (queryParams: IContractsQueryParams) => {
 
     return params;
   };
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<IContractsResponse>({
     queryKey: ["contracts", buildQueryParams(), selectedCompanyId],
@@ -64,7 +64,7 @@ export const useContractQuery = (queryParams: IContractsQueryParams) => {
 };
 
 export const useContractDetailsQuery = (contract_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["contractDetails", contract_id, selectedCompanyId],
     queryFn: () => fetchContractDetails(contract_id, selectedCompanyId),
@@ -73,7 +73,7 @@ export const useContractDetailsQuery = (contract_id: string) => {
 };
 
 export const useContractsForSelection = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<IContractsResponse>({
     queryKey: ["contractsForSelection", selectedCompanyId],
     queryFn: () =>

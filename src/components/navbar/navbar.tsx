@@ -25,18 +25,21 @@ export const Navbar: React.FC = () => {
   const [companyModalVisible, setCompanyModalVisible] = useState(false);
 
   const {
-    selectedCompanyId,
+    // selectedCompanyId,
     setSelectedCompanyId,
     availableCompanies,
-    isSuperadmin,
+    // isSuperadmin,
   } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const isSuperadmin = localStorage.getItem("is_superadmin");
 
   const { data: companiesData } = useCompanyQuery();
   const companies = companiesData?.companies || [];
 
   const mainItems = [
     // { label: "Главная", key: "/home" },
-    { label: "Контрагенты", key: "/legal_entities" },
+    // { label: "Контрагенты", key: "/legal_entities" },
+    { label: "Контрагенты", key: "/buyers" },
     { label: "Договоры", key: "/contracts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },

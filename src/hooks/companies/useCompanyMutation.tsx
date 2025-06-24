@@ -23,9 +23,11 @@ export const useCompanyMutations = (
     setAvailableCompanies,
     // availableCompanies,
     setSelectedCompanyId,
-    isSuperadmin,
-    selectedCompanyId,
+    // isSuperadmin,
+    // selectedCompanyId,
   } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const isSuperadmin = localStorage.getItem("is_superadmin");
 
   const createMutation = useMutation({
     mutationFn: createCompany,

@@ -5,7 +5,7 @@ import {
   fetchServices,
   IService,
 } from "../../api/servicesApi";
-import { useCompany } from "../../context/companyContext";
+// import { useCompany } from "../../context/companyContext";
 
 interface IServicesResponse {
   total: number;
@@ -13,7 +13,7 @@ interface IServicesResponse {
 }
 
 export const useServiceQuery = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<IServicesResponse>({
     queryKey: ["services", selectedCompanyId], // Добавляем companyId в ключ запроса
@@ -22,7 +22,7 @@ export const useServiceQuery = () => {
 };
 
 export const useServiceDetailsQuery = (service_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery({
     queryKey: ["serviceDetails", service_id, selectedCompanyId],

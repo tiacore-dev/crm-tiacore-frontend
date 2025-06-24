@@ -45,6 +45,7 @@ import { AccountPage } from "./pages/accountPage/accountPage";
 import { AcceptInvitePage } from "./pages/invitePages/acceptInvitePage";
 import { themeConfig } from "./theme/themeConfig";
 import { InviteRegistrationPage } from "./pages/invitePages/inviteRegistrationPage";
+import { LegalEntitiesBuyersPage } from "./pages/legalEntitiesPage/buyersPage/buyersPage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -93,8 +94,16 @@ const App: React.FC = () => {
                       element={<LegalEntityDetailsPage />}
                     />
                     <Route
+                      path="/legal-entities/buyers"
+                      element={<LegalEntitiesBuyersPage />}
+                    />
+                    <Route
                       path="/legal_entities/:legal_entity_id/:bank_account_id"
                       element={<BankAccountDetailsPage />}
+                    />
+                    <Route
+                      path="/buyers"
+                      element={<LegalEntitiesBuyersPage />}
                     />
                     <Route path="/contracts" element={<ContractsPage />} />
                     <Route

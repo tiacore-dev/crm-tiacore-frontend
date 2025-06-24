@@ -62,7 +62,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
       items.push({
         key: "edit",
         icon: <EditOutlined />,
-        label: "Редактировать (500 на пользователе)",
+        label: "Редактировать",
         onClick: () => handleEdit(service),
       });
     }

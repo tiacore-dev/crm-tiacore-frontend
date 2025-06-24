@@ -29,7 +29,7 @@ export const LegalEntityDetailsPage: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showCreateBankAccountModal, setShowCreateBankAccountModal] =
     useState(false);
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const {
     data: legal_entity,

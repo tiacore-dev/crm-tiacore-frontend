@@ -34,8 +34,8 @@ export const getLegalEntitiesTableColumns = ({
   const baseColumns: ColumnType<ILegalEntity>[] = [
     {
       title: "Название",
-      dataIndex: "legal_entity_name",
-      key: "legal_entity_name",
+      dataIndex: "short_name",
+      key: "short_name",
       filterIcon: (filtered) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),

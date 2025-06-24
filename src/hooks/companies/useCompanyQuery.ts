@@ -5,7 +5,6 @@ import {
   fetchCompanyDetails,
   ICompany,
 } from "../../api/companiesApi";
-import { useCompany } from "../../context/companyContext";
 
 export interface useCompanyQueryResponse {
   total: number;
@@ -17,7 +16,7 @@ export interface ICompaniesResponse {
 }
 
 export const useCompanyQuery = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<useCompanyQueryResponse>({
     queryKey: ["companies", selectedCompanyId],
@@ -28,7 +27,7 @@ export const useCompanyQuery = () => {
 };
 
 export const useCompanyDetailsQuery = (company_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["companyDetails", company_id, selectedCompanyId],
     queryFn: () => fetchCompanyDetails(company_id),
@@ -37,7 +36,7 @@ export const useCompanyDetailsQuery = (company_id: string) => {
 };
 
 export const useCompaniesForSelection = () => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<ICompaniesResponse>({
     queryKey: ["companiesForSelection", selectedCompanyId], //??????
     queryFn: () => fetchCompanies(selectedCompanyId),

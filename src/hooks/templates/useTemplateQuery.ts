@@ -26,7 +26,7 @@ export interface ITemplatesQueryParams {
 }
 
 export const useTemplateQuery = (params?: ITemplatesQueryParams) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<ITemplatesResponse>({
     queryKey: ["templates", params, selectedCompanyId], // Добавляем параметры в ключ запроса
     queryFn: () => fetchTemplates(params, selectedCompanyId), // Передаем параметры в fetchTemplates
@@ -34,7 +34,7 @@ export const useTemplateQuery = (params?: ITemplatesQueryParams) => {
 };
 
 export const useTemplateDetailsQuery = (template_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery<ITemplate>({
     queryKey: ["templateDetails", template_id, selectedCompanyId],
     queryFn: () => fetchTemplateDetails(template_id, selectedCompanyId),

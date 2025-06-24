@@ -10,6 +10,8 @@ import { bankAccountsReducer } from "./slices/bankAccountsSlice";
 import { billsReducer } from "./slices/billsSlice";
 import { actsReducer } from "./slices/actsSlice";
 import breadcrumbsReducer from "./slices/breadcrumbsSlice";
+import { legalEntitiesBuyersReducer } from "./slices/legalEntityBuyersSlice";
+import { legalEntitiesSellersReducer } from "./slices/legalEntitySellersSlice";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +25,8 @@ export const store = configureStore({
     bills: billsReducer,
     acts: actsReducer,
     breadcrumbs: breadcrumbsReducer,
+    legalEntitiesBuyers: legalEntitiesBuyersReducer,
+    legalEntitiesSellers: legalEntitiesSellersReducer,
   },
 });
 

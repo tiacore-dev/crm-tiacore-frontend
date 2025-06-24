@@ -11,7 +11,7 @@ interface IEntityCompanyRelation {
 }
 
 export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
-  legal_entity: string;
+  legal_entity_id: string;
   company_id: string;
   relation_type: string;
 }): Promise<IEntityCompanyRelation> => {
@@ -39,7 +39,7 @@ export const createEntityCompanyRelation = async (newEntityCompanyRelation: {
 };
 
 export const fetchEntityCompanyRelations = async (
-  legal_entity?: string,
+  legal_entity_id?: string,
   company_id?: string,
   relation_type?: string
 ) => {
@@ -52,8 +52,8 @@ export const fetchEntityCompanyRelations = async (
   if (!isSuperadmin && selectedCompanyId) {
     params.company_id = selectedCompanyId;
   }
-  if (legal_entity) {
-    params.legal_entity = legal_entity;
+  if (legal_entity_id) {
+    params.legal_entity_id = legal_entity_id;
   }
   if (company_id) {
     params.company_id = company_id;

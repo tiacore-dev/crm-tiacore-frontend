@@ -12,10 +12,12 @@ import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 // import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
 import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
-import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
+// import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
 import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
 import { usePermissions } from "../../context/permissionsContext";
 import { useCompany } from "../../context/companyContext";
+import { LegalEntitiesSellersTable } from "../legalEntitiesPage/sellers/sellersTable";
+import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntity_Query";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +28,12 @@ export const CompanyDetailsPage: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
+  const {
+    data: sellersData,
+    isLoading: isLoadingSellers,
+    isError: isErrorSellers,
+    refetch: refetchSellers,
+  } = useLegalEntitiesSellers(company_id);
 
   const {
     data: companyDetails,
@@ -34,7 +42,7 @@ export const CompanyDetailsPage: React.FC = () => {
     refetch,
   } = useCompanyDetailsQuery(company_id!);
 
-  const { data: legalEntitiesData } = useLegalEntitiesSellers(company_id);
+  // const { data: legalEntitiesData } = useLegalEntitiesSellers(company_id);
 
   const { deleteMutation } = useCompanyMutations(
     company_id || "",
@@ -107,30 +115,12 @@ export const CompanyDetailsPage: React.FC = () => {
                 <CompanyCard data={companyDetails} loading={isLoading} />
                 {/* <UserCompanyRelationsTable companyId={company_id} /> */}
                 <div>
-                  <div
-                    style={{ display: "flex", marginTop: 16, marginBottom: 16 }}
-                  >
-                    <Typography.Title level={4} style={{ marginRight: 16 }}>
-                      Организации
-                    </Typography.Title>
-
-                    {(isSuperadmin ||
-                      (currentAppPermissions.includes("add_legal_entity") &&
-                        currentAppPermissions.includes(
-                          "add_legal_entity_company_relation"
-                        ))) && (
-                      <Button
-                        onClick={() => {
-                          setIsModalVisible(true);
-                        }}
-                        icon={<PlusOutlined />}
-                      >
-                        Добавить
-                      </Button>
-                    )}
-                  </div>
-
-                  <LegalEntitiesTable
+                  <LegalEntitiesSellersTable
+                    data={sellersData || { total: 0, entities: [] }}
+                    loading={isLoadingSellers}
+                    companyId={company_id}
+                  />
+                  {/* <LegalEntitiesTable
                     data={legalEntitiesData || { total: 0, entities: [] }}
                     loading={isLoading}
                     isSellers={true}
@@ -143,7 +133,7 @@ export const CompanyDetailsPage: React.FC = () => {
                         },
                       })
                     }
-                  />
+                  /> */}
                 </div>
               </div>
               {showEditModal && (

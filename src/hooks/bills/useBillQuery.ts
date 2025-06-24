@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { fetchBill, fetchBills, IBill } from "../../api/billsApi";
 import { RootState } from "../../redux/store";
-import { useCompany } from "../../context/companyContext";
+// import { useCompany } from "../../context/companyContext";
 
 export interface IBillsResponse {
   total: number;
@@ -54,7 +54,7 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 
     return params;
   };
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<IBillsResponse>({
     queryKey: ["bills", buildQueryParams(), selectedCompanyId],
@@ -63,7 +63,7 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 };
 
 export const useBillQuery = (bill_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["bill", bill_id, selectedCompanyId],
     queryFn: () => fetchBill(bill_id, selectedCompanyId),

@@ -17,7 +17,7 @@ const PermissionsContext = createContext<PermissionsContextType>({
 export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const { isSuperAdmin, permissions } = useMemo(() => {
     const isSuperAdmin = localStorage.getItem("is_superadmin") === "true";

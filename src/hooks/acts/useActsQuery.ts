@@ -51,7 +51,7 @@ export const useActsQuery = (queryParams: IActsQueryParams) => {
 
     return params;
   };
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   return useQuery<IActsResponse>({
     queryKey: ["acts", buildQueryParams(), selectedCompanyId],
@@ -60,7 +60,7 @@ export const useActsQuery = (queryParams: IActsQueryParams) => {
 };
 
 export const useActQuery = (act_id: string) => {
-  const { selectedCompanyId } = useCompany();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   return useQuery({
     queryKey: ["act", act_id, selectedCompanyId],
     queryFn: () => fetchAct(act_id, selectedCompanyId),
