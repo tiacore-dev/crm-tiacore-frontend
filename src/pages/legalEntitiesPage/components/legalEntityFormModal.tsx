@@ -58,7 +58,7 @@ export const LegalEntityFormModal: React.FC<LegalEntityModalProps> = ({
   );
 
   const { createMutation: createRelationMutation } =
-    useEntityCompanyRelationsMutations("", "", "", "");
+    useEntityCompanyRelationsMutations("", "", "", "buyer");
 
   const {
     data: existingEntity,

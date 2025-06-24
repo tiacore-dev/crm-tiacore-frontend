@@ -1,63 +1,69 @@
-// src/hooks/useServiceMutations.tsx
+// src/hooks/entityCompanyRelations/useEntityCompanyRelationMutations.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createEntityCompanyRelation } from "../../api/entityCompanyRelationsApi";
-import toast from "react-hot-toast";
-// import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios"; // Импортируем AxiosError для обработки ошибок
-// import { Button } from "antd";
+import { message } from "antd";
+import { AxiosError } from "axios";
 
 export const useEntityCompanyRelationsMutations = (
   entity_company_relation_id: string,
   legal_entity_id: string,
   company_id: string,
-  relation_type: string,
+  relation_type: "buyer" | "seller",
   setIsEditing?: (val: boolean) => void
 ) => {
   const queryClient = useQueryClient();
-  // const navigate = useNavigate();
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
 
   const createMutation = useMutation({
     mutationFn: createEntityCompanyRelation,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["entity_company_relation"] });
-      queryClient.invalidateQueries({ queryKey: ["legalEntitiesSellers"] });
-      queryClient.invalidateQueries({ queryKey: ["legalEntitiesBuyers"] });
-      toast.success(<div>Успешно добавлено </div>);
+    onSuccess: () => {
+      // Инвалидируем основные запросы
+      queryClient.invalidateQueries({
+        queryKey: ["entity_company_relation"],
+      });
+
+      // Инвалидируем запросы юридических лиц
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntities"],
+      });
+
+      // Инвалидируем запросы в зависимости от типа отношения
+      queryClient.invalidateQueries({
+        queryKey: [
+          relation_type === "buyer"
+            ? "legalEntitiesBuyers"
+            : "legalEntitiesSellers",
+          company_id || selectedCompanyId,
+        ],
+      });
+
+      // Для надежности инвалидируем оба типа
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntitiesSellers"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntitiesBuyers"],
+      });
+
+      message.success(
+        `Связь успешно ${relation_type === "buyer" ? "добавлена" : "обновлена"}`
+      );
+
+      if (setIsEditing) {
+        setIsEditing(false);
+      }
     },
     onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении");
+      message.error(
+        `Ошибка при ${
+          relation_type === "buyer" ? "добавлении" : "обновлении"
+        } связи`
+      );
+      console.error("Error creating relation:", error);
     },
   });
-  //   const updateMutation = useMutation({
-  //     mutationFn: (editedData: any) =>
-  //       user_id ? updateUser(user_id, editedData) : Promise.reject(),
-  //     onSuccess: () => {
-  //       if (user_id) {
-  //         queryClient.invalidateQueries({
-  //           queryKey: ["userDetails", user_id],
-  //         });
-  //       }
-  //       setIsEditing && setIsEditing(false);
-  //       toast.success("Информация обновлена");
-  //     },
-  //     onError: () => {
-  //       toast.error("Ошибка при обновлении данных");
-  //     },
-  //   });
-
-  //   const deleteMutation = useMutation({
-  //     mutationFn: () => (user_id ? deleteUser(user_id) : Promise.reject()),
-  //     onSuccess: () => {
-  //       toast.success("Успешно удалено");
-  //       navigate(-1);
-  //     },
-  //     onError: () => {
-  //       toast.error("Ошибка при удалении");
-  //     },
-  //   });
 
   return {
     createMutation,
-    // , updateMutation, deleteMutation
   };
 };

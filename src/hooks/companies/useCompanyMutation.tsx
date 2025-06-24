@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Button } from "antd";
-import { refreshToken } from "../../pages/loginPage/auth";
+import { refreshToken } from "../../api/authApi";
 import { useCompany } from "../../context/companyContext";
 
 export const useCompanyMutations = (
@@ -19,15 +19,9 @@ export const useCompanyMutations = (
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const {
-    setAvailableCompanies,
-    // availableCompanies,
-    setSelectedCompanyId,
-    // isSuperadmin,
-    // selectedCompanyId,
-  } = useCompany();
+  const { setAvailableCompanies, setSelectedCompanyId } = useCompany();
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  const isSuperadmin = localStorage.getItem("is_superadmin");
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   const createMutation = useMutation({
     mutationFn: createCompany,
@@ -38,7 +32,10 @@ export const useCompanyMutations = (
           const permissions = JSON.parse(
             localStorage.getItem("permissions") || "{}"
           );
-          const newAvailableCompanies = Object.keys(permissions);
+          const appId = process.env.REACT_APP_ID || "crm_app";
+          const appCompanies = permissions[appId] || {};
+          const newAvailableCompanies = Object.keys(appCompanies);
+
           setAvailableCompanies(newAvailableCompanies);
 
           if (!isSuperadmin && newAvailableCompanies.length === 1) {
@@ -95,23 +92,22 @@ export const useCompanyMutations = (
           const permissions = JSON.parse(
             localStorage.getItem("permissions") || "{}"
           );
-          const newAvailableCompanies = Object.keys(permissions);
+          const appId = process.env.REACT_APP_ID || "crm_app";
+          const appCompanies = permissions[appId] || {};
+          const newAvailableCompanies = Object.keys(appCompanies);
+
           setAvailableCompanies(newAvailableCompanies);
 
-          // Если удаленная компания была выбрана
           if (selectedCompanyId === company_id) {
             if (newAvailableCompanies.length > 0) {
-              // Выбираем первую доступную компанию
               setSelectedCompanyId(newAvailableCompanies[0]);
             } else {
-              // Если компаний не осталось
               setSelectedCompanyId(null);
             }
           }
 
           queryClient.invalidateQueries({ queryKey: ["companies"] });
           toast.success("Успешно удалено");
-          // navigate(-1);
         }
       } catch (error) {
         toast.error("Ошибка при обновлении токена");

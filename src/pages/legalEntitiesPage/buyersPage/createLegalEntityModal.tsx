@@ -1,19 +1,9 @@
+// src/components/modals/CreateLegalEntityModal.tsx
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Select, message, Spin } from "antd";
-import { useMutation } from "@tanstack/react-query";
 import { useLegalEntityByInnKppQuery } from "../../../hooks/legalEntities/useLegalEntity_Query";
-import { useEntityCompanyRelationsMutations } from "../../../hooks/entityCompanyRelations/useEntityCompanyRelationMutations";
-import { createLegalEntityByInn } from "../../../api/LegalEntities_Api";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
-
-// src/components/modals/CreateLegalEntityModal.tsx
-// import React, { useState, useEffect } from "react";
-// import { Modal, Form, Input, Select, message, Spin } from "antd";
-// import { useMutation } from "@tanstack/react-query";
-// import { useLegalEntityByInnKppQuery } from "../../hooks/legalEntities/useLegalEntity_Query";
-// import { useEntityCompanyRelationsMutations } from "../../hooks/entityCompanyRelations/useEntityCompanyRelationMutations";
-// import { createLegalEntityByInn } from "../../api/LegalEntities_Api";
-// import { useCompaniesForSelection } from "../../hooks/companies/useCompanyQuery";
+import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntitiesMutations";
 
 const { Option } = Select;
 
@@ -36,10 +26,7 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
   buttonText,
   companyId,
 }) => {
-  console.log(companyId);
   const [form] = Form.useForm();
-  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
   const [inn, setInn] = useState("");
   const [kpp, setKpp] = useState("");
 
@@ -54,44 +41,19 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
       !!inn && ((inn.length === 10 && kpp?.length === 9) || inn.length === 12),
   });
 
+  const {
+    createLegalEntityByInnMutation,
+    handleCreateRelation,
+    isSuperadmin,
+    selectedCompanyId,
+  } = useLegalEntityMutations(relationType, companyId, onSuccess, onCancel);
+
   useEffect(() => {
     if (form.getFieldValue("inn")?.length === 12) {
       form.setFieldsValue({ kpp: undefined });
       setKpp("");
     }
   }, [form.getFieldValue("inn")?.length]);
-
-  const { mutateAsync: createLegalEntityByInnMutation } = useMutation({
-    mutationFn: createLegalEntityByInn,
-    onSuccess: () => {
-      message.success(
-        `${
-          relationType === "buyer"
-            ? "Контрагент успешно добавлен"
-            : "Организация успешно добавлена"
-        }`
-      );
-      onSuccess();
-      onCancel();
-    },
-    onError: () => {
-      message.error(
-        `Ошибка при добавлении ${
-          relationType === "buyer" ? "контрагента" : "организации"
-        }`
-      );
-    },
-  });
-
-  const { createMutation } = useEntityCompanyRelationsMutations(
-    "",
-    innKppData?.legal_entity_id || "",
-    companyId ||
-      (isSuperadmin
-        ? form.getFieldValue("company_id")
-        : selectedCompanyId || ""),
-    relationType
-  );
 
   const validateInn = (_: unknown, value: string): Promise<void> => {
     if (!value) return Promise.reject("Пожалуйста, введите ИНН");
@@ -133,7 +95,7 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
 
       if (isInnKppError) {
         if ((innKppError as any)?.response?.status === 404) {
-          await createLegalEntityByInnMutation({
+          await createLegalEntityByInnMutation.mutateAsync({
             inn: values.inn,
             kpp: values.kpp,
             company_id:
@@ -147,13 +109,11 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
           return;
         }
       } else if (innKppData?.legal_entity_id) {
-        await createMutation.mutateAsync({
-          legal_entity_id: innKppData.legal_entity_id,
-          company_id:
-            companyId ||
-            (isSuperadmin ? values.company_id : selectedCompanyId || ""), // Добавляем company_id здесь
-          relation_type: relationType,
-        });
+        await handleCreateRelation(
+          innKppData.legal_entity_id,
+          companyId ||
+            (isSuperadmin ? values.company_id : selectedCompanyId || "")
+        );
       }
 
       onSuccess();
@@ -180,7 +140,7 @@ export const CreateLegalEntityModal: React.FC<CreateLegalEntityModalProps> = ({
       }}
       okText={buttonText}
       cancelText="Отмена"
-      confirmLoading={createMutation.isPending}
+      confirmLoading={createLegalEntityByInnMutation.isPending}
     >
       <Spin spinning={isCompaniesLoading}>
         <Form form={form} layout="vertical">
