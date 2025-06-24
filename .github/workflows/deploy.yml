@@ -56,17 +56,24 @@ jobs:
 
       - name: Determine Deployment Path and Tag
         run: |
-          if [[ "${{ github.ref_name }}" == "master" ]]; then
-            echo "DEPLOY_PATH=apps/crm-frontend" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "dev" ]]; then
-            echo "DEPLOY_PATH=apps/crm-frontend-dev" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "stage" ]]; then
-            echo "DEPLOY_PATH=apps/crm-tiacore-frontend-stage" >> $GITHUB_ENV
-          else
-            echo "❌ Неизвестная ветка! Прерываем процесс."
-            exit 1
-          fi
-          echo "DEPLOY_TAG=${{ github.sha }}" >> $GITHUB_ENV
+          echo "DEPLOY_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+          case "$GITHUB_REF_NAME" in
+            master)
+              echo "DEPLOY_PATH=apps/crm-frontend" >> $GITHUB_ENV
+              ;;
+            dev)
+              echo "DEPLOY_PATH=apps/crm-frontend-dev" >> $GITHUB_ENV
+              ;;
+            stage)
+              echo "DEPLOY_PATH=apps/crm-tiacore-frontend-stage" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "❌ Неизвестная ветка: $GITHUB_REF_NAME"
+              exit 1
+              ;;
+          esac
+
 
 
       - name: Deploy client
