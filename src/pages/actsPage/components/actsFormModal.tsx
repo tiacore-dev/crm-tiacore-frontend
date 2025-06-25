@@ -178,7 +178,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
       width={700}
     >
       <Form form={form} layout="vertical">
-        {isSuperadmin && (
+        {isSuperadmin && mode === "create" && (
           <Form.Item
             name="company"
             label="Компания"
