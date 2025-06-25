@@ -11,13 +11,14 @@ import { CompanyCard } from "./components/companyDetailsCard";
 import { CompanyFormModal } from "./components/companyFormModal";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 // import { UserCompanyRelationsTable } from "../../components/userCompanyRelations/userCompanyRelationsTable";
-import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
+// import { LegalEntitiesTable } from "../legalEntitiesPage/components/legalEntitiesTable";
 // import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
-import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
-import { usePermissions } from "../../context/permissionsContext";
+// import { LegalEntityFormModal } from "../legalEntitiesPage/components/legalEntityFormModal";
+// import { usePermissions } from "../../context/permissionsContext";
 import { useCompany } from "../../context/companyContext";
 import { LegalEntitiesSellersTable } from "../legalEntitiesPage/sellers/sellersTable";
 import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntity_Query";
+import { CreateLegalEntityModal } from "../legalEntitiesPage/createLegalEntityModal";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -78,7 +79,9 @@ export const CompanyDetailsPage: React.FC = () => {
     setShowEditModal(false);
     refetch();
   }, [refetch]);
-
+  const handleSuccess = () => {
+    refetch();
+  };
   return (
     <div>
       {isLoading ? (
@@ -152,11 +155,19 @@ export const CompanyDetailsPage: React.FC = () => {
                   isDeleteLoading={deleteMutation.isPending}
                 />
               )}
-              <LegalEntityFormModal
+              {/* <CreateLegalEntityModal
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                mode="create"
+                // mode="create"
                 defaultRelationType="seller"
+              /> */}
+              <CreateLegalEntityModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                onSuccess={handleSuccess}
+                relationType="seller"
+                title="Добавить организацию"
+                buttonText="Добавить организацию"
               />
             </>
           )}

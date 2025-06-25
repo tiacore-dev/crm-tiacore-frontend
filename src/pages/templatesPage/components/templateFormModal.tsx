@@ -29,9 +29,9 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
     null
   );
+  const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
 
   useEffect(() => {
-    // Получаем company_id из localStorage при монтировании компонента
     const companyId = localStorage.getItem("selectedCompanyId");
     setSelectedCompanyId(companyId);
   }, []);
@@ -55,14 +55,14 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
           entity: templateData.entity,
         });
       } else {
-        // Устанавливаем company из localStorage при создании
+        // Устанавливаем company из localStorage только если не суперадмин
         form.setFieldsValue({
-          company: selectedCompanyId,
+          company: isSuperadmin ? undefined : selectedCompanyId,
         });
       }
       setFile(null);
     }
-  }, [visible, mode, templateData, form, selectedCompanyId]);
+  }, [visible, mode, templateData, form, selectedCompanyId, isSuperadmin]);
 
   const beforeUpload = (file: RcFile) => {
     setFile(file);
@@ -80,7 +80,12 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
 
       const formData = new FormData();
       formData.append("template_name", values.template_name);
-      formData.append("company", selectedCompanyId || ""); // Используем company из localStorage
+
+      // Добавляем company только если она выбрана или пользователь не суперадмин
+      if (values.company || !isSuperadmin) {
+        formData.append("company", values.company || selectedCompanyId || "");
+      }
+
       formData.append("entity", values.entity);
 
       if (values.description) {
@@ -94,28 +99,20 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
       if (mode === "create") {
         await createMutation.mutateAsync(formData, {
           onSuccess: () => {
-            // message.success("Шаблон успешно создан");
             onSuccess();
             form.resetFields();
             setFile(null);
-          },
-          onError: () => {
-            // message.error("Ошибка при создании шаблона");
           },
         });
       } else {
         await updateMutation.mutateAsync(formData, {
           onSuccess: () => {
-            // message.success("Шаблон успешно обновлен");
             onSuccess();
-          },
-          onError: () => {
-            // message.error("Ошибка при обновлении шаблона");
           },
         });
       }
     } catch (error) {
-      // console.error("Ошибка валидации:", error);
+      console.error("Ошибка валидации:", error);
     }
   };
 
@@ -163,10 +160,23 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
           <Input placeholder="Введите название шаблона" />
         </Form.Item>
 
-        {/* Скрытое поле для company */}
-        <Form.Item name="company" hidden>
-          <Input />
-        </Form.Item>
+        {/* Поле для выбора компании только для суперадмина */}
+        {isSuperadmin && (
+          <Form.Item
+            name="company"
+            label="Компания"
+            rules={[{ required: false }]}
+          >
+            <Select
+              placeholder="Выберите компанию (необязательно)"
+              allowClear
+              options={companiesData.map((company) => ({
+                value: company.company_id,
+                label: company.company_name,
+              }))}
+            />
+          </Form.Item>
+        )}
 
         <Form.Item
           name="entity"

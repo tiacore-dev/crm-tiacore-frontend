@@ -12,8 +12,9 @@ interface IServicesResponse {
   services: IService[];
 }
 
-export const useServiceQuery = () => {
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+export const useServiceQuery = (companyId?: string | undefined) => {
+  let selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  if (companyId != undefined) selectedCompanyId = companyId;
 
   return useQuery<IServicesResponse>({
     queryKey: ["services", selectedCompanyId], // Добавляем companyId в ключ запроса

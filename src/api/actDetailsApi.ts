@@ -13,6 +13,12 @@ export interface IActDetail {
   price: number;
 }
 
+export interface IActDetailUpdate {
+  service?: string;
+  quantity?: number;
+  price?: number;
+}
+
 // Функция для получения списка с параметрами
 export const fetchActDetails = async (
   params?: { act?: string },
@@ -96,7 +102,7 @@ export const createActDetail = async (newActDetail: {
 //изменить данные
 export const updateActDetail = async (
   act_detail_id: string,
-  updatedData: any
+  updatedData: IActDetailUpdate
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

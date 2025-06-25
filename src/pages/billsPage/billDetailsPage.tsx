@@ -163,6 +163,7 @@ export const BillDetailsPage: React.FC = () => {
                   loading={isLoadingDetails}
                   servicesData={servicesData}
                   billId={bill_id || ""}
+                  companyId={bill.company}
                 />
               </div>
 

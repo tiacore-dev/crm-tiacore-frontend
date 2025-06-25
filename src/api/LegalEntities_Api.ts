@@ -17,7 +17,7 @@ export interface ILegalEntity {
   signer?: string; // Expand all( string | null)
 }
 
-interface IUpdateLegalEntity {
+export interface IUpdateLegalEntity {
   full_name?: string;
   short_name: string; //[3, 100] characters
   inn: string; //[10, 12] characters

@@ -10,7 +10,8 @@ interface BillDetailFormModalProps {
   billId: string; // ID акта, к которому относится деталь
   onSuccess?: () => void;
   mode?: "create" | "edit";
-  initialData?: IBillDetail;
+  initialData: IBillDetail | undefined;
+  companyId: string;
 }
 
 export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
@@ -20,10 +21,11 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
   onSuccess,
   mode = "create",
   initialData,
+  companyId,
 }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: servicesResponse } = useServiceQuery();
+  const { data: servicesResponse } = useServiceQuery(companyId);
 
   const { createMutation, updateMutation } = useBillDetailMutations(
     initialData?.bill_detail_id || "",
@@ -61,12 +63,34 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
         await createMutation.mutateAsync({
           ...values,
           bill: billId,
+          summ: values.quantity * values.price, // Calculate summ
         });
       } else if (mode === "edit" && initialData?.bill_detail_id) {
-        await updateMutation.mutateAsync({
-          ...values,
-          bill_detail_id: initialData.bill_detail_id,
-        });
+        // Prepare only changed fields
+        const updatedFields: {
+          service?: string;
+          quantity?: number;
+          price?: number;
+        } = {};
+
+        if (values.service !== initialData.service) {
+          updatedFields.service = values.service;
+        }
+
+        if (values.quantity !== initialData.quantity) {
+          updatedFields.quantity = values.quantity;
+        }
+
+        if (values.price !== initialData.price) {
+          updatedFields.price = values.price;
+        }
+
+        // Only send request if there are changes
+        if (Object.keys(updatedFields).length > 0) {
+          await updateMutation.mutateAsync(updatedFields);
+        } else {
+          // toast.success("Нет изменений для сохранения");
+        }
       }
 
       form.resetFields();
@@ -104,35 +128,44 @@ export const BillDetailFormModal: React.FC<BillDetailFormModalProps> = ({
         <Form.Item name="bill" hidden>
           <Input type="hidden" />
         </Form.Item>
-
-        <Form.Item
-          name="service"
-          label="Услуга"
-          rules={[{ required: true, message: "Пожалуйста, выберите услугу" }]}
-        >
-          <Select
-            placeholder="Выберите услугу"
-            options={servicesResponse?.services.map((service) => ({
-              value: service.service_id,
-              label: service.service_name,
-            }))}
-            showSearch
-            optionFilterProp="label"
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-          />
-        </Form.Item>
-
+        {mode === "create" && (
+          <Form.Item
+            name="service"
+            label="Услуга"
+            rules={[{ required: true, message: "Пожалуйста, выберите услугу" }]}
+          >
+            <Select
+              placeholder="Выберите услугу"
+              options={servicesResponse?.services.map((service) => ({
+                value: service.service_id,
+                label: service.service_name,
+              }))}
+              showSearch
+              optionFilterProp="label"
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+            />
+          </Form.Item>
+        )}
         <Form.Item
           name="quantity"
           label="Количество"
           rules={[
-            { required: true, message: "Пожалуйста, введите количество" },
+            { required: true, message: "Пожалуйста, введите цену" },
             {
-              type: "number",
-              min: 1,
-              message: "Количество должно быть больше 0",
+              validator: (_, value) => {
+                const numValue = Number(value);
+                if (isNaN(numValue)) {
+                  return Promise.reject("Введите корректное число");
+                }
+                if (numValue <= 0) {
+                  return Promise.reject("Цена должна быть больше 0");
+                }
+                return Promise.resolve();
+              },
             },
           ]}
         >

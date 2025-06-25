@@ -14,7 +14,7 @@ import {
 interface BillsTableColumnsProps {
   legalEntitiesData: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   bankAccountsData: {
     bank_account_id: string;
@@ -235,7 +235,7 @@ export const getBillsTableColumns = ({
             showSearch
             options={legalEntitiesData.map((entity) => ({
               value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
+              label: entity.short_name,
             }))}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -261,7 +261,7 @@ export const getBillsTableColumns = ({
             showSearch
             options={legalEntitiesData.map((entity) => ({
               value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
+              label: entity.short_name,
             }))}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())

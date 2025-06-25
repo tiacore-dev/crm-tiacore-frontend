@@ -9,7 +9,7 @@ import { SearchOutlined, CalendarOutlined } from "@ant-design/icons";
 interface ActsTableColumnsProps {
   legalEntitiesData: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   contractsData: {
     contract_id: string;
@@ -43,7 +43,7 @@ export const getActsTableColumns = ({
     const legalEntity = legalEntitiesData.find(
       (c) => c.legal_entity_id === legalEntityId
     );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
+    return legalEntity ? legalEntity.short_name : legalEntityId;
   };
 
   const getContractName = (contractId: string) => {
@@ -178,7 +178,7 @@ export const getActsTableColumns = ({
             showSearch
             options={legalEntitiesData.map((entity) => ({
               value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
+              label: entity.short_name,
             }))}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -204,7 +204,7 @@ export const getActsTableColumns = ({
             showSearch
             options={legalEntitiesData.map((entity) => ({
               value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
+              label: entity.short_name,
             }))}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())

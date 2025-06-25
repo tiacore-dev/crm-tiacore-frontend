@@ -22,15 +22,11 @@ import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { ContractDetailsPage } from "./pages/contractsPage/contractDetailsPage";
-// import { BankAccountsPage } from "./pages/bankAccountsPage/bankAccountsPage";
 import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";
 import { ActsPage } from "./pages/actsPage/actsPage";
 import { ActDetailsPage } from "./pages/actsPage/actDetailsPage";
-import { LegalEntitiesPage } from "./pages/legalEntitiesPage/legalEntitiesPage";
-import { LegalEntityDetailsPage } from "./pages/legalEntitiesPage/legalEntityDetailsPage";
-// import { RolePermissionsPage } from "./pages/rolePermissionsPage/rolePermissionsPage";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -38,7 +34,6 @@ import "./App.css";
 import "antd/dist/reset.css";
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-// import { RolePermissionsDetailsPage } from "./pages/rolePermissionsPage/rolePermissionsDetailsPage";
 import { CompanyProvider } from "./context/companyContext";
 import { PermissionsProvider } from "./context/permissionsContext";
 import { AccountPage } from "./pages/accountPage/accountPage";
@@ -46,6 +41,8 @@ import { AcceptInvitePage } from "./pages/invitePages/acceptInvitePage";
 import { themeConfig } from "./theme/themeConfig";
 import { InviteRegistrationPage } from "./pages/invitePages/inviteRegistrationPage";
 import { LegalEntitiesBuyersPage } from "./pages/legalEntitiesPage/buyersPage/buyersPage";
+import { BuyerDetailsPage } from "./pages/legalEntitiesPage/buyersPage/buyerDetailsPage";
+import { SellerDetailsPage } from "./pages/legalEntitiesPage/sellers/sellerDetailsPage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -86,16 +83,16 @@ const App: React.FC = () => {
                       element={<CompanyDetailsPage />}
                     />
                     <Route
-                      path="/legal_entities"
-                      element={<LegalEntitiesPage />}
-                    />
-                    <Route
-                      path="/legal_entities/:legal_entity_id"
-                      element={<LegalEntityDetailsPage />}
-                    />
-                    <Route
                       path="/legal-entities/buyers"
                       element={<LegalEntitiesBuyersPage />}
+                    />
+                    <Route
+                      path="/legal-entities/buyers/:legal_entity_id"
+                      element={<BuyerDetailsPage />}
+                    />
+                    <Route
+                      path="/legal-entities/:legal_entity_id"
+                      element={<SellerDetailsPage />}
                     />
                     <Route
                       path="/legal_entities/:legal_entity_id/:bank_account_id"
@@ -110,11 +107,6 @@ const App: React.FC = () => {
                       path="/contracts/:contract_id"
                       element={<ContractDetailsPage />}
                     />
-                    {/* <Route path="/bank_accounts" element={<BankAccountsPage />} />
-                <Route
-                  path="/bank_accounts/:bank_account_id"
-                  element={<BankAccountDetailsPage />}
-                /> */}
                     <Route path="/bills" element={<BillsPage />} />
                     <Route
                       path="/bills/:bill_id"

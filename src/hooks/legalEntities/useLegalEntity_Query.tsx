@@ -38,9 +38,11 @@ export const useLegalEntityQuery = () => {
   });
 };
 // export const fetchBuyers = async (selectedCompanyId?: string | null)
-export const useLegalEntitiesBuyers = () => {
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-
+export const useLegalEntitiesBuyers = (company_id?: string | null) => {
+  let selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  if (company_id != null) {
+    selectedCompanyId = company_id;
+  }
   return useQuery<ILegalEtitiesResponse>({
     queryKey: ["legalEntitiesBuyers", selectedCompanyId],
     queryFn: () => fetchBuyers(selectedCompanyId),

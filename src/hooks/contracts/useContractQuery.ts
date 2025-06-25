@@ -72,8 +72,12 @@ export const useContractDetailsQuery = (contract_id: string) => {
   });
 };
 
-export const useContractsForSelection = () => {
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+export const useContractsForSelection = (company_id?: string | null) => {
+  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  let selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  if (company_id != null) {
+    selectedCompanyId = company_id;
+  }
   return useQuery<IContractsResponse>({
     queryKey: ["contractsForSelection", selectedCompanyId],
     queryFn: () =>

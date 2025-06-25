@@ -9,7 +9,7 @@ import { SortOrder } from "antd/es/table/interface";
 interface ContractsTableColumnsProps {
   legalEntitiesData: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   contractStatusesData: {
     contract_status_id: string;
@@ -52,7 +52,7 @@ export const getContractsTableColumns = ({
     const legalEntity = legalEntitiesData.find(
       (c) => c.legal_entity_id === legalEntityId
     );
-    return legalEntity ? legalEntity.legal_entity_name : legalEntityId;
+    return legalEntity ? legalEntity.short_name : legalEntityId;
   };
 
   const getContractStatusName = (contractStatusId: string): string => {
@@ -185,7 +185,7 @@ export const getContractsTableColumns = ({
             showSearch
             options={legalEntitiesData.map((entity) => ({
               value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
+              label: entity.short_name,
             }))}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -213,7 +213,7 @@ export const getContractsTableColumns = ({
             showSearch
             options={legalEntitiesData.map((entity) => ({
               value: entity.legal_entity_id,
-              label: entity.legal_entity_name,
+              label: entity.short_name,
             }))}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())

@@ -19,6 +19,9 @@ export const fetchServices = async (selectedCompanyId?: string | null) => {
   if (!isSuperadmin && selectedCompanyId) {
     params.company_id = selectedCompanyId;
   }
+  if (selectedCompanyId) {
+    params.company = selectedCompanyId;
+  }
   const response = await axiosInstance.get(`${url}/api/services/all`, {
     params,
 

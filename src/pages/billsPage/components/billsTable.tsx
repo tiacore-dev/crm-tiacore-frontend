@@ -11,7 +11,7 @@ interface BillsTableProps {
   loading: boolean;
   legalEntitiesData?: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   bankAccountsData?: {
     bank_account_id: string;

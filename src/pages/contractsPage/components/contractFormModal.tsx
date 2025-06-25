@@ -304,7 +304,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>
@@ -325,7 +325,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>

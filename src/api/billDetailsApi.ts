@@ -13,6 +13,12 @@ export interface IBillDetail {
   price: number;
 }
 
+export interface IBillDetailUpdate {
+  service?: string;
+  quantity?: number;
+  price?: number;
+}
+
 // Функция для получения списка с параметрами
 export const fetchBillDetails = async (
   params?: { bill?: string },
@@ -94,7 +100,7 @@ export const createBillDetail = async (newBillDetail: {
 //изменить данные
 export const updateBillDetail = async (
   bill_detail_id: string,
-  updatedData: any
+  updatedData: IBillDetailUpdate
 ) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");

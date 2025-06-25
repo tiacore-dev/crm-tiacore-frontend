@@ -18,7 +18,7 @@ import {
   setVatRate,
 } from "../../../redux/slices/legalEntitySellersSlice";
 import { useCompany } from "../../../context/companyContext";
-import { CreateLegalEntityModal } from "../buyersPage/createLegalEntityModal";
+import { CreateLegalEntityModal } from "../createLegalEntityModal";
 
 const { Option } = Select;
 
@@ -57,7 +57,7 @@ export const LegalEntitiesSellersTable: React.FC<
         <Button
           type="link"
           onClick={() =>
-            navigate(`/legal-entities/sellers/${record.legal_entity_id}`, {
+            navigate(`/legal-entities/${record.legal_entity_id}`, {
               state: { fromList: true },
             })
           }
@@ -144,37 +144,37 @@ export const LegalEntitiesSellersTable: React.FC<
       ),
       filteredValue: address ? [address] : null,
     },
-    {
-      title: "Ставка НДС",
-      dataIndex: "vat_rate",
-      key: "vat_rate",
-      render: (vatRate: number) =>
-        vatRate === 0 ? "НДС не облагается" : `${vatRate}%`,
-      filterDropdown: () => (
-        <div style={{ padding: 8 }}>
-          <Select
-            placeholder="Выберите ставку НДС"
-            style={{ width: 200 }}
-            value={vat_rate}
-            onChange={(value) => dispatch(setVatRate(value))}
-            allowClear
-          >
-            <Option value="0">0% (не облагается)</Option>
-            <Option value="5">5%</Option>
-            <Option value="7">7%</Option>
-            <Option value="20">20%</Option>
-            <Option value="null">Не указано</Option>
-          </Select>
-        </div>
-      ),
-      filteredValue: vat_rate !== null ? [vat_rate] : null,
-      onFilter: (value, record) => {
-        if (value === "null") {
-          return record.vat_rate === null || record.vat_rate === undefined;
-        }
-        return String(record.vat_rate) === value;
-      },
-    },
+    // {
+    //   title: "Ставка НДС",
+    //   dataIndex: "vat_rate",
+    //   key: "vat_rate",
+    //   render: (vatRate: number) =>
+    //     vatRate === 0 ? "НДС не облагается" : `${vatRate}%`,
+    //   filterDropdown: () => (
+    //     <div style={{ padding: 8 }}>
+    //       <Select
+    //         placeholder="Выберите ставку НДС"
+    //         style={{ width: 200 }}
+    //         value={vat_rate}
+    //         onChange={(value) => dispatch(setVatRate(value))}
+    //         allowClear
+    //       >
+    //         <Option value="0">0% (не облагается)</Option>
+    //         <Option value="5">5%</Option>
+    //         <Option value="7">7%</Option>
+    //         <Option value="20">20%</Option>
+    //         <Option value="null">Не указано</Option>
+    //       </Select>
+    //     </div>
+    //   ),
+    //   filteredValue: vat_rate !== null ? [vat_rate] : null,
+    //   onFilter: (value, record) => {
+    //     if (value === "null") {
+    //       return record.vat_rate === null || record.vat_rate === undefined;
+    //     }
+    //     return String(record.vat_rate) === value;
+    //   },
+    // },
   ];
 
   const filteredData = data.entities.filter((entity) => {
