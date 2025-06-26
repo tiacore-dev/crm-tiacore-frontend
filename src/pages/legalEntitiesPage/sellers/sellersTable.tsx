@@ -6,7 +6,7 @@ import { Button, Input, Table, Typography, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ILegalEntity } from "../../../api/LegalEntities_Api";
+import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useNavigate } from "react-router-dom";
 import {
   setPage,
@@ -29,11 +29,17 @@ interface LegalEntitiesSellersTableProps {
   };
   loading: boolean;
   companyId?: string;
+  companyName: string;
 }
 
 export const LegalEntitiesSellersTable: React.FC<
   LegalEntitiesSellersTableProps
-> = ({ data = { total: 0, entities: [] }, loading, companyId }) => {
+> = ({
+  data = { total: 0, entities: [] },
+  loading,
+  companyId,
+  companyName,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { short_name, inn, ogrn, address, vat_rate, page, page_size } =
@@ -54,11 +60,25 @@ export const LegalEntitiesSellersTable: React.FC<
         a.short_name.localeCompare(b.short_name),
       sortDirections: ["ascend", "descend"],
       render: (text: string, record: ILegalEntity) => (
+        // <Button
+        //   type="link"
+        //   onClick={() =>
+        //     navigate(`/legal-entities/sellers/${record.legal_entity_id}`, {
+        //       state: { fromList: true },
+        //     })
+        //   }
+        // >
+        //   {text}
+        // </Button>
         <Button
           type="link"
           onClick={() =>
-            navigate(`/legal-entities/${record.legal_entity_id}`, {
-              state: { fromList: true },
+            navigate(`/legal-entities/sellers/${record.legal_entity_id}`, {
+              state: {
+                from: "company",
+                companyId: companyId,
+                companyName: companyName, // Здесь нужно передать реальное название компании
+              },
             })
           }
         >

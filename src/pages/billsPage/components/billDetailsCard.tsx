@@ -52,7 +52,14 @@ export const BillDetailsCard: React.FC<BillDetailsCardProps> = ({
         {getEntityNameById(bill.buyer)}
         {"  "}
         {bill.buyer && (
-          <Link to={`/legal_entities/${bill.buyer}`}>
+          <Link
+            to={`/legal-entities/buyers/${bill.buyer}`}
+            state={{
+              from: "bill",
+              billId: bill.bill_id,
+              billNumber: bill.bill_number,
+            }}
+          >
             <ExportOutlined />
           </Link>
         )}
@@ -61,7 +68,14 @@ export const BillDetailsCard: React.FC<BillDetailsCardProps> = ({
         {getEntityNameById(bill.seller)}
         {"  "}
         {bill.seller && (
-          <Link to={`/legal_entities/${bill.seller}`}>
+          <Link
+            to={`/legal-entities/sellers/${bill.seller}`}
+            state={{
+              from: "bill",
+              billId: bill.bill_id,
+              billNumber: bill.bill_number,
+            }}
+          >
             <ExportOutlined />
           </Link>
         )}

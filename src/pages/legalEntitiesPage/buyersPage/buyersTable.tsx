@@ -5,7 +5,7 @@ import { Button, Input, Table, Typography } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ILegalEntity } from "../../../api/LegalEntities_Api";
+import { ILegalEntity } from "../../../api/legalEntitiesApi";
 import { useNavigate } from "react-router-dom";
 import {
   setPage,
@@ -50,7 +50,7 @@ export const LegalEntitiesBuyersTable: React.FC<
           type="link"
           onClick={() =>
             navigate(`/legal-entities/buyers/${record.legal_entity_id}`, {
-              state: { fromList: true },
+              state: { fromList: true }, // или другие данные, если нужно
             })
           }
         >

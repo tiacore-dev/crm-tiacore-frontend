@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { fetchBill, fetchBills, IBill } from "../../api/billsApi";
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 // import { useCompany } from "../../context/companyContext";
 
 export interface IBillsResponse {
@@ -64,9 +65,18 @@ export const useBillsQuery = (queryParams: IBillsQueryParams) => {
 
 export const useBillQuery = (bill_id: string) => {
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const navigate = useNavigate();
+
   return useQuery({
     queryKey: ["bill", bill_id, selectedCompanyId],
-    queryFn: () => fetchBill(bill_id, selectedCompanyId),
+    queryFn: () => {
+      return fetchBill(bill_id, selectedCompanyId).catch((error) => {
+        if (error.response?.status === 404) {
+          navigate("/404", { replace: true }); // Перенаправление с заменой в истории
+        }
+        throw error; // Продолжаем пробрасывать ошибку
+      });
+    },
     retry: false,
   });
 };

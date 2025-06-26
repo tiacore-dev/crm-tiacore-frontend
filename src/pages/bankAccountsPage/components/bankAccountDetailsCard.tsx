@@ -29,7 +29,7 @@ export const BankAccountDetailsDescriptions: React.FC<
         )?.short_name || bank_account.legal_entity}
         {"  "}
         {bank_account.legal_entity && (
-          <Link to={`/legal_entities/${bank_account.legal_entity}`}>
+          <Link to={`/legal-entities/${bank_account.legal_entity}`}>
             <ExportOutlined />
           </Link>
         )} */}

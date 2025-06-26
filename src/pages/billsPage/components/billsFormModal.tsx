@@ -8,11 +8,11 @@ import dayjs from "dayjs";
 import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
-} from "../../../hooks/legalEntities/useLegalEntity_Query";
+} from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useBankAccountQuery } from "../../../hooks/bankAccounts/useBankAccountQuery";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { useContractsForSelection } from "../../../hooks/contracts/useContractQuery";
-import { ILegalEntity } from "../../../api/LegalEntities_Api";
+import { ILegalEntity } from "../../../api/legalEntitiesApi";
 
 interface BillModalProps {
   visible: boolean;

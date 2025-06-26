@@ -6,6 +6,7 @@ import {
   ITemplate,
 } from "../../api/templatesApi";
 import { useCompany } from "../../context/companyContext";
+import { useNavigate } from "react-router-dom";
 
 export interface ITemplatesResponse {
   total: number;
@@ -35,9 +36,23 @@ export const useTemplateQuery = (params?: ITemplatesQueryParams) => {
 
 export const useTemplateDetailsQuery = (template_id: string) => {
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const navigate = useNavigate();
+
   return useQuery<ITemplate>({
     queryKey: ["templateDetails", template_id, selectedCompanyId],
-    queryFn: () => fetchTemplateDetails(template_id, selectedCompanyId),
+    queryFn: () => {
+      if (!template_id) {
+        return Promise.resolve(null);
+      }
+      return fetchTemplateDetails(template_id, selectedCompanyId).catch(
+        (error) => {
+          if (error.response?.status === 404) {
+            navigate("/404", { replace: true }); // Перенаправление с заменой в истории
+          }
+          throw error; // Продолжаем пробрасывать ошибку
+        }
+      );
+    },
     enabled: !!template_id,
   });
 };

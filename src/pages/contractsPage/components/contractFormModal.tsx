@@ -21,7 +21,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
-} from "../../../hooks/legalEntities/useLegalEntity_Query";
+} from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 type ContractFormMode = "create" | "edit";

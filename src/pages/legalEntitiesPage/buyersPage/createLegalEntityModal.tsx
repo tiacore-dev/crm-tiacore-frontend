@@ -1,7 +1,7 @@
 // src/components/modals/CreateLegalEntityModal.tsx
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Select, message, Spin } from "antd";
-import { useLegalEntityByInnKppQuery } from "../../../hooks/legalEntities/useLegalEntity_Query";
+import { useLegalEntityByInnKppQuery } from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { useLegalEntityMutations } from "../../../hooks/legalEntities/useLegalEntitiesMutations";
 

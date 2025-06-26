@@ -4,6 +4,7 @@ import { fetchActs, fetchAct, IAct } from "../../api/actsApi";
 // import { actsSelector } from "../../redux/slices/actsSlice";
 import { RootState } from "../../redux/store";
 import { useCompany } from "../../context/companyContext";
+import { useNavigate } from "react-router-dom";
 
 export interface IActsResponse {
   total: number;
@@ -60,10 +61,19 @@ export const useActsQuery = (queryParams: IActsQueryParams) => {
 };
 
 export const useActQuery = (act_id: string) => {
+  const navigate = useNavigate();
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
   return useQuery({
     queryKey: ["act", act_id, selectedCompanyId],
-    queryFn: () => fetchAct(act_id, selectedCompanyId),
+    queryFn: () => {
+      return fetchAct(act_id, selectedCompanyId).catch((error) => {
+        if (error.response?.status === 404) {
+          navigate("/404", { replace: true });
+        }
+        throw error;
+      });
+    },
     retry: false,
   });
 };

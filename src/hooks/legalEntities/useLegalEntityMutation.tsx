@@ -1,14 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createLegalEntity,
-  updateLegalEntity,
-  deleteLegalEntity,
-} from "../../api/legalEntitiesApi";
+// import {
+// createLegalEntity,
+// updateLegalEntity,
+// deleteLegalEntity,
+// } from "../../api/legalEntitiesApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Button } from "antd";
-import { ILegalEntity, IUpdateLegalEntity } from "../../api/LegalEntities_Api";
+import {
+  deleteLegalEntity,
+  ILegalEntity,
+  IUpdateLegalEntity,
+} from "../../api/legalEntitiesApi";
 
 export const useLegalEntityMutations = (
   legal_entity_id: string,
@@ -26,50 +30,52 @@ export const useLegalEntityMutations = (
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const createMutation = useMutation({
-    mutationFn: createLegalEntity,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["legalEntitiesSellers"] });
-      queryClient.invalidateQueries({ queryKey: ["legalEntitiesBuyers"] });
-      toast.success(
-        <div>
-          Контрагент успешно добавлен{" "}
-          <Button
-            type="link"
-            onClick={() => navigate(`/legal_entities/${data.legal_entity_id}`)}
-          >
-            Подробнее
-          </Button>
-        </div>
-      );
-    },
-    onError: (error: AxiosError) => {
-      toast.error("Ошибка при добавлении контрагента");
-    },
-  });
+  // const createMutation = useMutation({
+  //   mutationFn: createLegalEntity,
+  //   onSuccess: (data) => {
+  //     queryClient.invalidateQueries({ queryKey: ["legalEntitiesSellers"] });
+  //     queryClient.invalidateQueries({ queryKey: ["legalEntitiesBuyers"] });
+  //     toast.success(
+  //       <div>
+  //         Контрагент успешно добавлен{" "}
+  //         <Button
+  //           type="link"
+  //           onClick={() =>
+  //             navigate(`/legal-entities/buyers/${data.legal_entity_id}`)
+  //           }
+  //         >
+  //           Подробнее
+  //         </Button>
+  //       </div>
+  //     );
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     toast.error("Ошибка при добавлении контрагента");
+  //   },
+  // });
 
-  const updateMutation = useMutation({
-    mutationFn: (editedData: any) =>
-      legal_entity_id
-        ? updateLegalEntity(legal_entity_id, editedData)
-        : Promise.reject(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
-      queryClient.invalidateQueries({
-        queryKey: ["legalEntitiesForSelection"],
-      });
-      if (legal_entity_id) {
-        queryClient.invalidateQueries({
-          queryKey: ["legalEntityDetails", legal_entity_id],
-        });
-      }
-      setIsEditing && setIsEditing(false);
-      toast.success("Информация обновлена");
-    },
-    onError: () => {
-      toast.error("Ошибка при обновлении данных");
-    },
-  });
+  // const updateMutation = useMutation({
+  //   mutationFn: (editedData: any) =>
+  //     legal_entity_id
+  //       ? updateLegalEntity(legal_entity_id, editedData)
+  //       : Promise.reject(),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["legalEntities"] });
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["legalEntitiesForSelection"],
+  //     });
+  //     if (legal_entity_id) {
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["legalEntityDetails", legal_entity_id],
+  //       });
+  //     }
+  //     setIsEditing && setIsEditing(false);
+  //     toast.success("Информация обновлена");
+  //   },
+  //   onError: () => {
+  //     toast.error("Ошибка при обновлении данных");
+  //   },
+  // });
 
   const deleteMutation = useMutation({
     mutationFn: () =>
@@ -86,32 +92,32 @@ export const useLegalEntityMutations = (
     },
   });
 
-  return { createMutation, updateMutation, deleteMutation };
+  return { deleteMutation };
 };
 
-export const useUpdateLegalEntity = () => {
-  const queryClient = useQueryClient();
-  return useMutation<
-    ILegalEntity,
-    AxiosError,
-    { legal_entity_id: string; updatedData: IUpdateLegalEntity }
-  >({
-    mutationFn: ({ legal_entity_id, updatedData }) =>
-      updateLegalEntity(legal_entity_id, updatedData),
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["legalEntities"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["legalEntityDetails", variables.legal_entity_id],
-      });
-      toast.success("Успешно изменено");
-    },
-    onError: (error) => {
-      toast.error(`Ошибка при редактировании: ${error.message}`);
-    },
-  });
-};
+// export const useUpdateLegalEntity = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation<
+//     ILegalEntity,
+//     AxiosError,
+//     { legal_entity_id: string; updatedData: IUpdateLegalEntity }
+//   >({
+//     mutationFn: ({ legal_entity_id, updatedData }) =>
+//       updateLegalEntity(legal_entity_id, updatedData),
+//     onSuccess: (data, variables) => {
+//       queryClient.invalidateQueries({
+//         queryKey: ["legalEntities"],
+//       });
+//       queryClient.invalidateQueries({
+//         queryKey: ["legalEntityDetails", variables.legal_entity_id],
+//       });
+//       toast.success("Успешно изменено");
+//     },
+//     onError: (error) => {
+//       toast.error(`Ошибка при редактировании: ${error.message}`);
+//     },
+//   });
+// };
 
 export const useDeleteLegalEntity = () => {
   const queryClient = useQueryClient();

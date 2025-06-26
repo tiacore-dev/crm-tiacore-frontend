@@ -35,7 +35,14 @@ export const ActDetailsDescriptions: React.FC<ActDetailsDescriptionsProps> = ({
         {getEntityNameById(act.buyer)}
         {"  "}
         {act.buyer && (
-          <Link to={`/legal_entities/${act.buyer}`}>
+          <Link
+            to={`/legal-entities/buyers/${act.buyer}`}
+            state={{
+              from: "act",
+              actId: act.act_id,
+              actNumber: act.act_number,
+            }}
+          >
             <ExportOutlined />
           </Link>
         )}
@@ -44,7 +51,14 @@ export const ActDetailsDescriptions: React.FC<ActDetailsDescriptionsProps> = ({
         {getEntityNameById(act.seller)}
         {"  "}
         {act.seller && (
-          <Link to={`/legal_entities/${act.seller}`}>
+          <Link
+            to={`/legal-entities/sellers/${act.seller}`}
+            state={{
+              from: "act",
+              actId: act.act_id,
+              actNumber: act.act_number,
+            }}
+          >
             <ExportOutlined />
           </Link>
         )}

@@ -4,7 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../../redux/slices/breadcrumbsSlice";
 import { Spin, Descriptions, Typography, Button, Space, Card } from "antd";
-import { useLegalEntityDetailsQuery } from "../../../hooks/legalEntities/useLegalEntity_Query";
+import { useLegalEntityDetailsQuery } from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useDeleteLegalEntity } from "../../../hooks/legalEntities/useLegalEntityMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 import { BankAccountsTable } from "../../bankAccountsPage/components/bankAccountsTable";
@@ -41,8 +41,14 @@ export const SellerDetailsPage: React.FC = () => {
   const { state: locationState } = location;
 
   React.useEffect(() => {
-    dispatch(
-      setBreadcrumbs([
+    if (!legalEntity) return;
+
+    let breadcrumbs = [];
+
+    // Определяем источник перехода и формируем крошки
+    if (locationState?.from === "company") {
+      // Переход со страницы компании
+      breadcrumbs = [
         { label: "Главная страница", to: "/home" },
         { label: "Компании", to: "/companies" },
         {
@@ -50,11 +56,64 @@ export const SellerDetailsPage: React.FC = () => {
           to: `/companies/${locationState.companyId}`,
         },
         {
-          label: legalEntity?.short_name || "Детали",
-          to: `/legal-entities/${legal_entity_id}`,
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/sellers/${legal_entity_id}`,
         },
-      ])
-    );
+      ];
+    } else if (locationState?.from === "act") {
+      // Переход со страницы акта
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Акты", to: "/acts" },
+        {
+          label: locationState.actNumber || "Акт",
+          to: `/acts/${locationState.actId}`,
+        },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/sellers/${legal_entity_id}`,
+        },
+      ];
+    } else if (locationState?.from === "bill") {
+      // Переход со страницы счета
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Счета", to: "/bills" },
+        {
+          label: locationState.billNumber || "Счет",
+          to: `/bills/${locationState.billId}`,
+        },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/sellers/${legal_entity_id}`,
+        },
+      ];
+    } else if (locationState?.from === "contract") {
+      // Переход со страницы договора
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Договоры", to: "/contracts" },
+        {
+          label: locationState.contractName || "Договор",
+          to: `/contracts/${locationState.contractId}`,
+        },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/sellers/${legal_entity_id}`,
+        },
+      ];
+    } else {
+      // Дефолтные крошки, если переход не с известной страницы
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/sellers/${legal_entity_id}`,
+        },
+      ];
+    }
+
+    dispatch(setBreadcrumbs(breadcrumbs));
   }, [dispatch, legalEntity, legal_entity_id, locationState]);
 
   const handleDelete = () => {
