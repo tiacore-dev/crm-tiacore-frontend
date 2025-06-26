@@ -7,6 +7,11 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    env:
+      API_URL_PROD: ${{ secrets.API_URL_PROD }}
+      API_URL_DEV: ${{ secrets.API_URL_DEV }}
+      API_URL_STAGE: ${{ secrets.API_URL_STAGE }}
+      API_URL_TEST: ${{ secrets.API_URL_TEST }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -15,13 +20,13 @@ jobs:
         id: set-urls
         run: |
           if [ "${GITHUB_REF_NAME}" = "main" ]; then
-            echo "api_url=${{ secrets.API_URL_PROD }}" >> $GITHUB_OUTPUT
+            echo "api_url=${API_URL_PROD}" >> $GITHUB_OUTPUT
           elif [ "${GITHUB_REF_NAME}" = "dev" ]; then
-            echo "api_url=${{ secrets.API_URL_DEV }}" >> $GITHUB_OUTPUT
+            echo "api_url=${API_URL_DEV}" >> $GITHUB_OUTPUT
           elif [ "${GITHUB_REF_NAME}" = "stage" ]; then
-            echo "api_url=${{ secrets.API_URL_DEV }}" >> $GITHUB_OUTPUT
+            echo "api_url=${API_URL_STAGE}" >> $GITHUB_OUTPUT
           else
-            echo "api_url=${{ secrets.API_URL_TEST }}" >> $GITHUB_OUTPUT
+            echo "api_url=${API_URL_TEST}" >> $GITHUB_OUTPUT
           fi
 
       - name: Set up Docker Buildx
