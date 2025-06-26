@@ -120,7 +120,7 @@ const App: React.FC = () => {
                       path="/templates/:template_id"
                       element={<TemplateDetailsPage />}
                     />
-                    <Route path="/404" element={<NotFoundPage />} />
+                    <Route path="/*" element={<NotFoundPage />} />
                   </Route>
                   <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
