@@ -25,6 +25,7 @@ interface IActDetailsTableProps {
     service_name: string;
   }[];
   actId: string;
+  companyId: string;
 }
 
 export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
@@ -32,6 +33,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   loading,
   servicesData = [],
   actId = "",
+  companyId,
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedActDetail, setSelectedActDetail] = useState<IActDetail | null>(
@@ -46,9 +48,9 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
     0,
     () => {}
   );
-  const [editingActDetail, setEditingActDetail] = useState<IActDetail | null>(
-    null
-  );
+  const [editingActDetail, setEditingActDetail] = useState<
+    IActDetail | undefined
+  >(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentAppPermissions } = useCompany();
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
@@ -74,7 +76,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
   };
 
   const handleAddDetail = () => {
-    setEditingActDetail(null);
+    setEditingActDetail(undefined);
     setIsModalVisible(true);
   };
 
@@ -207,7 +209,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         visible={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
-          setEditingActDetail(null);
+          setEditingActDetail(undefined);
         }}
         actId={actId}
         mode={editingActDetail ? "edit" : "create"}
@@ -215,6 +217,7 @@ export const ActDetailsTable: React.FC<IActDetailsTableProps> = ({
         onSuccess={() => {
           setIsModalVisible(false);
         }}
+        companyId={companyId}
       />
       {showDeleteConfirm && (
         <ConfirmDeleteModal

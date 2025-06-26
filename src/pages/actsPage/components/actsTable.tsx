@@ -12,7 +12,7 @@ interface ActsTableProps {
   loading: boolean;
   legalEntitiesData?: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   contractsData?: {
     contract_id: string;

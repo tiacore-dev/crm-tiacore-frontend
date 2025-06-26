@@ -147,6 +147,7 @@ export const ActDetailsPage: React.FC = () => {
                   loading={isLoadingDetails}
                   servicesData={servicesData}
                   actId={act_id || ""}
+                  companyId={act.company}
                 />
               </div>
 

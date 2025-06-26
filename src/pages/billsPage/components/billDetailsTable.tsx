@@ -1,6 +1,5 @@
 import { Table, Typography, Dropdown, Button } from "antd";
 import { IBillDetail } from "../../../api/billDetailsApi";
-// import { useNavigate } from "react-router-dom";
 import { getServiceNameById } from "../../../utils/infoById";
 import {
   DeleteOutlined,
@@ -26,6 +25,7 @@ interface IBillDetailsTableProps {
     service_name: string;
   }[];
   billId: string;
+  companyId: string;
 }
 
 export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
@@ -33,6 +33,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
   loading,
   servicesData = [],
   billId = "",
+  companyId,
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedBillDetail, setSelectedBillDetail] =
@@ -230,6 +231,7 @@ export const BillDetailsTable: React.FC<IBillDetailsTableProps> = ({
         onSuccess={() => {
           setIsModalVisible(false);
         }}
+        companyId={companyId}
       />
       {showDeleteConfirm && (
         <ConfirmDeleteModal

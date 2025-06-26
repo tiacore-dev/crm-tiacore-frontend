@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Button } from "antd";
 import { useBillMutations } from "../../../hooks/bills/useBillMutation";
-// import { ILegalEntity } from "../../../api/legalEntitiesApi";
-// import { IBankAccount } from "../../../api/bankAccountsApi";
 import { IBill } from "../../../api/billsApi";
 import { IContract } from "../../../api/contractsApi";
 import { DatePicker } from "antd";
@@ -10,9 +8,10 @@ import dayjs from "dayjs";
 import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
-} from "../../../hooks/legalEntities/useLegalEntityQuery";
+} from "../../../hooks/legalEntities/useLegalEntity_Query";
 import { useBankAccountQuery } from "../../../hooks/bankAccounts/useBankAccountQuery";
-// import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
+import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
+import { useContractsForSelection } from "../../../hooks/contracts/useContractQuery";
 
 interface BillModalProps {
   visible: boolean;
@@ -36,20 +35,28 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
   const [fieldsLocked, setFieldsLocked] = useState(false);
   const [bankAccountsDisabled, setBankAccountsDisabled] = useState(true);
   const [selectedSeller, setSelectedSeller] = useState<string | null>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
+    null
+  );
+
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  // const { data: companiesResponse } = useCompaniesForSelection();
-  // const companies = companiesResponse?.companies || [];
-  const { data: sellersResponse } = useLegalEntitiesSellers();
+  const defaultCompanyId = localStorage.getItem("selectedCompanyId");
+
+  // Запросы данных
+  const { data: companiesResponse } = useCompaniesForSelection();
+  const companies = companiesResponse?.companies || [];
+
+  // Запросы данных, зависящих от выбранной компании
+  const { data: sellersResponse } = useLegalEntitiesSellers(selectedCompanyId);
   const sellers = sellersResponse?.entities || [];
-  const { data: buyersResponse } = useLegalEntitiesBuyers();
+  const { data: buyersResponse } = useLegalEntitiesBuyers(selectedCompanyId);
   const buyers = buyersResponse?.entities || [];
+  const { data: contractsResponse } =
+    useContractsForSelection(selectedCompanyId);
+  const filteredContracts = contractsResponse?.contracts || [];
 
   // Запрос банковских счетов с фильтрацией по исполнителю
-  const {
-    data: filteredBankAccounts,
-    // isLoading: isBankAccountsLoading
-  } = useBankAccountQuery({
+  const { data: filteredBankAccounts } = useBankAccountQuery({
     legal_entity: selectedSeller || undefined,
   });
 
@@ -62,6 +69,22 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
     initialData?.buyer || "",
     initialData?.seller || "",
     initialData?.company || ""
+  );
+
+  const handleCompanyChange = useCallback(
+    (companyId: string) => {
+      setSelectedCompanyId(companyId);
+      form.setFieldsValue({
+        buyer: undefined,
+        seller: undefined,
+        contract: undefined,
+        bank_account: undefined,
+      });
+      setFieldsLocked(false);
+      setBankAccountsDisabled(true);
+      setSelectedSeller(null);
+    },
+    [form]
   );
 
   const handleSellerChange = (sellerId: string) => {
@@ -81,7 +104,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
       return;
     }
 
-    const selectedContract = contractsData.find(
+    const selectedContract = filteredContracts.find(
       (c) => c.contract_id === contractId
     );
     if (selectedContract) {
@@ -99,6 +122,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
     if (visible) {
       if (initialData && mode === "edit") {
         const isLocked = !!initialData.contract;
+        setSelectedCompanyId(initialData.company);
         form.setFieldsValue({
           bank_account: initialData.bank_account,
           bill_number: initialData.bill_number,
@@ -108,6 +132,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
           contract: initialData.contract || undefined,
           buyer: initialData.buyer,
           seller: initialData.seller,
+          company: initialData.company,
         });
         setFieldsLocked(isLocked);
         setBankAccountsDisabled(!initialData.seller);
@@ -117,9 +142,13 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
         setFieldsLocked(false);
         setBankAccountsDisabled(true);
         setSelectedSeller(null);
+        setSelectedCompanyId(isSuperadmin ? null : defaultCompanyId);
       }
     }
-  }, [visible, initialData, mode, form]);
+  }, [visible, initialData, mode, form, isSuperadmin, defaultCompanyId]);
+
+  // Определяем, должны ли быть поля заблокированы (для суперадмина - пока компания не выбрана)
+  const fieldsDisabled = isSuperadmin ? !selectedCompanyId : false;
 
   const handleSubmit = async () => {
     try {
@@ -128,7 +157,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
       const formData = {
         ...values,
         bill_date: values.bill_date ? values.bill_date.valueOf() : null,
-        company: isSuperadmin ? values.company : selectedCompanyId, // Автозаполнение для обычных пользователей
+        company: isSuperadmin ? selectedCompanyId : defaultCompanyId,
       };
 
       if (mode === "create") {
@@ -141,7 +170,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      // console.error("Validation failed:", error);
+      console.error("Validation failed:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -161,6 +190,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
           type="primary"
           loading={isSubmitting}
           onClick={handleSubmit}
+          disabled={isSuperadmin && !selectedCompanyId}
         >
           {mode === "create" ? "Создать" : "Сохранить"}
         </Button>,
@@ -168,6 +198,32 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
       width={700}
     >
       <Form form={form} layout="vertical">
+        {isSuperadmin && mode === "create" && (
+          <Form.Item
+            name="company"
+            label="Компания"
+            rules={[
+              { required: true, message: "Пожалуйста, выберите компанию" },
+            ]}
+          >
+            <Select
+              showSearch
+              optionFilterProp="children"
+              placeholder="Выберите компанию"
+              onChange={handleCompanyChange}
+            >
+              {companies.map((company) => (
+                <Select.Option
+                  key={company.company_id}
+                  value={company.company_id}
+                >
+                  {company.company_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
+
         <Form.Item
           name="bill_number"
           label="Номер счета"
@@ -175,15 +231,21 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             { required: true, message: "Пожалуйста, введите номер счета" },
           ]}
         >
-          <Input placeholder="Введите номер счета" />
+          <Input placeholder="Введите номер счета" disabled={fieldsDisabled} />
         </Form.Item>
+
         <Form.Item
           name="bill_date"
           label="Дата"
           rules={[{ required: true, message: "Пожалуйста, выберите дату" }]}
         >
-          <DatePicker style={{ width: "100%" }} format="DD.MM.YYYY" />
+          <DatePicker
+            style={{ width: "100%" }}
+            format="DD.MM.YYYY"
+            disabled={fieldsDisabled}
+          />
         </Form.Item>
+
         <Form.Item name="contract" label="Договор (необязательно)">
           <Select
             showSearch
@@ -191,8 +253,9 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             placeholder="Выберите договор (необязательно)"
             allowClear
             onChange={handleContractChange}
+            disabled={fieldsDisabled || fieldsLocked}
           >
-            {contractsData.map((contract) => (
+            {filteredContracts.map((contract) => (
               <Select.Option
                 key={contract.contract_id}
                 value={contract.contract_id}
@@ -202,6 +265,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             ))}
           </Select>
         </Form.Item>
+
         <Form.Item
           name="seller"
           label="Исполнитель"
@@ -216,7 +280,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Выберите исполнителя"
-            disabled={fieldsLocked}
+            disabled={fieldsDisabled || fieldsLocked}
             onChange={handleSellerChange}
           >
             {sellers.map((entity) => (
@@ -224,11 +288,12 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
+
         <Form.Item
           name="buyer"
           label="Заказчик"
@@ -243,18 +308,19 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Выберите заказчика"
-            disabled={fieldsLocked}
+            disabled={fieldsDisabled || fieldsLocked}
           >
             {buyers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
+
         <Form.Item
           name="bank_account"
           label="Банковский счет"
@@ -273,7 +339,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
                 ? "Сначала выберите исполнителя"
                 : "Выберите банковский счет"
             }
-            disabled={bankAccountsDisabled}
+            disabled={bankAccountsDisabled || fieldsDisabled}
             loading={!filteredBankAccounts && !bankAccountsDisabled}
           >
             {(filteredBankAccounts?.bank_accounts || []).map((bank) => (

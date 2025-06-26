@@ -54,7 +54,7 @@ export const BankAccountDetailsPage: React.FC = () => {
           { label: "Главная страница", to: "/home" },
           { label: "Контрагенты", to: "/legal_entities" },
           {
-            label: legalEntityData.legal_entity_name,
+            label: legalEntityData.short_name,
             to: `/legal_entities/${legal_entity_id}`,
           },
           {
@@ -113,7 +113,7 @@ export const BankAccountDetailsPage: React.FC = () => {
                 onCancel={() => setShowEditModal(false)}
                 legalEntitiesData={{
                   legal_entity_id: legal_entity_id || "",
-                  legal_entity_name: legalEntityData.legal_entity_name,
+                  short_name: legalEntityData.short_name,
                 }}
                 onSuccess={() => {
                   setShowEditModal(false);

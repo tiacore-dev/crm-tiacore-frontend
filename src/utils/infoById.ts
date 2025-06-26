@@ -13,11 +13,10 @@ export const getEmailById = (
 
 export const getEntityNameById = (
   id: string | undefined,
-  entities: { legal_entity_id: string; legal_entity_name: string }[] | undefined
+  entities: { legal_entity_id: string; short_name: string }[] | undefined
 ): string | undefined => {
   if (!id || !entities) return undefined;
-  return entities.find((entity) => entity.legal_entity_id === id)
-    ?.legal_entity_name;
+  return entities.find((entity) => entity.legal_entity_id === id)?.short_name;
 };
 
 export const getContractStatusById = (

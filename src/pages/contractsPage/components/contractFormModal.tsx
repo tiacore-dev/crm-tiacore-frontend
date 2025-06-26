@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Modal,
   Form,
@@ -19,9 +19,9 @@ import { fetchContractStatuses } from "../../../api/baseApi";
 import dayjs from "dayjs";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useLegalEntitiesBuyers,
   useLegalEntitiesSellers,
-} from "../../../hooks/legalEntities/useLegalEntityQuery";
+  useLegalEntitiesBuyers,
+} from "../../../hooks/legalEntities/useLegalEntity_Query";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 
 type ContractFormMode = "create" | "edit";
@@ -44,18 +44,22 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
   const [form] = Form.useForm();
   const [file, setFile] = useState<RcFile | null>(null);
   const [removeExistingFile, setRemoveExistingFile] = useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
+    null
+  );
   const queryClient = useQueryClient();
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const defaultCompanyId = localStorage.getItem("selectedCompanyId");
 
-  const { data: buyersResponse } = useLegalEntitiesBuyers();
-  const buyersData = buyersResponse?.entities || [];
-
-  const { data: sellersResponse } = useLegalEntitiesSellers();
-  const sellersData = sellersResponse?.entities || [];
-
+  // Запросы данных
   const { data: companiesResponse } = useCompaniesForSelection();
-  const companiesData = companiesResponse?.companies || [];
+  const companies = companiesResponse?.companies || [];
+
+  // Запросы данных, зависящих от выбранной компании
+  const { data: buyersResponse } = useLegalEntitiesBuyers(selectedCompanyId);
+  const buyers = buyersResponse?.entities || [];
+  const { data: sellersResponse } = useLegalEntitiesSellers(selectedCompanyId);
+  const sellers = sellersResponse?.entities || [];
 
   const { createMutation, updateMutation } = useContractMutations(
     mode === "edit" ? contractData?.contract_id || "" : "",
@@ -68,6 +72,21 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
     mode === "edit" ? contractData?.status || "" : "",
     mode === "edit" ? contractData?.company || "" : ""
   );
+
+  const handleCompanyChange = useCallback(
+    (companyId: string) => {
+      setSelectedCompanyId(companyId);
+      form.setFieldsValue({
+        buyer: undefined,
+        seller: undefined,
+      });
+    },
+    [form]
+  );
+
+  // Определяем, должны ли быть поля заблокированы (для суперадмина - пока компания не выбрана)
+  const fieldsDisabled =
+    isSuperadmin && mode === "create" ? !selectedCompanyId : false;
 
   useEffect(() => {
     if (visible) {
@@ -83,18 +102,22 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
           status: contractData.status,
           company: contractData.company,
         });
-      } else if (!isSuperadmin && selectedCompanyId) {
-        // Автозаполняем company для обычных пользователей
-        form.setFieldsValue({
-          company: selectedCompanyId,
-        });
-      } else {
+        setSelectedCompanyId(contractData.company);
+      } else if (mode === "create") {
         form.resetFields();
+        setFile(null);
+        setRemoveExistingFile(false);
+        if (!isSuperadmin) {
+          setSelectedCompanyId(defaultCompanyId);
+          form.setFieldsValue({
+            company: defaultCompanyId,
+          });
+        } else {
+          setSelectedCompanyId(null);
+        }
       }
-      setFile(null);
-      setRemoveExistingFile(false);
     }
-  }, [visible, mode, contractData, form, isSuperadmin, selectedCompanyId]);
+  }, [visible, mode, contractData, form, isSuperadmin, defaultCompanyId]);
 
   const beforeUpload = (file: RcFile) => {
     setFile(file);
@@ -131,7 +154,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
       formData.append("status", values.status);
 
       // Добавляем company в зависимости от прав пользователя
-      const companyValue = isSuperadmin ? values.company : selectedCompanyId;
+      const companyValue = isSuperadmin ? selectedCompanyId : defaultCompanyId;
       if (companyValue) {
         formData.append("company", companyValue);
       }
@@ -174,7 +197,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
         });
       }
     } catch (error) {
-      // console.error("Ошибка валидации:", error);
+      console.error("Ошибка валидации:", error);
     }
   };
 
@@ -240,31 +263,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
       destroyOnClose
     >
       <Form form={form} layout="vertical">
-        <Form.Item
-          name="contract_name"
-          label="Название договора"
-          rules={[
-            { required: true, message: "Пожалуйста, введите название" },
-            { min: 3, message: "Минимум 3 символа" },
-          ]}
-        >
-          <Input placeholder="Введите название" />
-        </Form.Item>
-
-        <Form.Item
-          name="contract_date"
-          label="Дата"
-          rules={[
-            {
-              required: true,
-              message: "Пожалуйста, выберите дату",
-            },
-          ]}
-        >
-          <DatePicker style={{ width: "100%" }} format="DD.MM.YYYY" />
-        </Form.Item>
-
-        {isSuperadmin && (
+        {isSuperadmin && mode === "create" && (
           <Form.Item
             name="company"
             label="Компания"
@@ -276,8 +275,9 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
               showSearch
               optionFilterProp="children"
               placeholder="Выберите компанию"
+              onChange={handleCompanyChange}
             >
-              {companiesData.map((company) => (
+              {companies.map((company) => (
                 <Select.Option
                   key={company.company_id}
                   value={company.company_id}
@@ -290,6 +290,34 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
         )}
 
         <Form.Item
+          name="contract_name"
+          label="Название договора"
+          rules={[
+            { required: true, message: "Пожалуйста, введите название" },
+            { min: 3, message: "Минимум 3 символа" },
+          ]}
+        >
+          <Input placeholder="Введите название" disabled={fieldsDisabled} />
+        </Form.Item>
+
+        <Form.Item
+          name="contract_date"
+          label="Дата"
+          rules={[
+            {
+              required: true,
+              message: "Пожалуйста, выберите дату",
+            },
+          ]}
+        >
+          <DatePicker
+            style={{ width: "100%" }}
+            format="DD.MM.YYYY"
+            disabled={fieldsDisabled}
+          />
+        </Form.Item>
+
+        <Form.Item
           name="buyer"
           label="Заказчик"
           rules={[{ required: true, message: "Это поле не может быть пустым" }]}
@@ -298,13 +326,14 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Выберите заказчика"
+            disabled={fieldsDisabled}
           >
-            {buyersData.map((entity) => (
+            {buyers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>
@@ -319,13 +348,14 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Выберите исполнителя"
+            disabled={fieldsDisabled}
           >
-            {sellersData.map((entity) => (
+            {sellers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>
@@ -340,6 +370,7 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
             placeholder="Выберите статус"
             loading={isLoadingContractStatuses}
             options={statusOptions}
+            disabled={fieldsDisabled}
           />
         </Form.Item>
 
@@ -350,15 +381,19 @@ export const ContractFormModal: React.FC<ContractFormModalProps> = ({
             accept=".doc,.docx,.xls,.xlsx,.pdf"
             fileList={file ? [file] : []}
             onRemove={handleRemoveFile}
+            disabled={fieldsDisabled}
           >
-            <Button icon={<UploadOutlined />}>
+            <Button icon={<UploadOutlined />} disabled={fieldsDisabled}>
               {mode === "create" ? "Выберите файл" : "Выберите новый файл"}
             </Button>
           </Upload>
         </Form.Item>
 
         <Form.Item name="comment" label="Комментарий">
-          <Input.TextArea placeholder="Введите коментарий (необязательно)" />
+          <Input.TextArea
+            placeholder="Введите коментарий (необязательно)"
+            disabled={fieldsDisabled}
+          />
         </Form.Item>
       </Form>
     </Modal>

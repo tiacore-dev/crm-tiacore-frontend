@@ -8,7 +8,7 @@ interface BankAccountCreateModalProps {
   onCancel: () => void;
   legalEntitiesData: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   };
   onSuccess?: () => void;
   mode?: "create" | "edit";

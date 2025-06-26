@@ -8,7 +8,7 @@ import { getEntityNameById } from "../../../utils/infoById"; // Добавить
 interface BankAccountsTableColumnsProps {
   legalEntitiesData: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   navigate: NavigateFunction;
   legalEntity: string;
@@ -90,7 +90,7 @@ interface BankAccountsTableColumnsProps {
 //             onChange={(value) => onLegalEntityChange(value || "")}
 //             style={{ width: 200 }}
 //             options={legalEntitiesData.map((c) => ({
-//               label: c.legal_entity_name,
+//               label: c.short_name,
 //               value: c.legal_entity_id,
 //             }))}
 //             filterOption={(input, option) =>

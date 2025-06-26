@@ -9,8 +9,9 @@ import dayjs from "dayjs";
 import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
-} from "../../../hooks/legalEntities/useLegalEntityQuery";
-// import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
+} from "../../../hooks/legalEntities/useLegalEntity_Query";
+import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
+import { useContractsForSelection } from "../../../hooks/contracts/useContractQuery";
 
 interface ActModalProps {
   visible: boolean;
@@ -25,7 +26,6 @@ interface ActModalProps {
 export const ActFormModal: React.FC<ActModalProps> = ({
   visible,
   onCancel,
-  contractsData,
   onSuccess,
   mode = "create",
   initialData = null,
@@ -33,14 +33,23 @@ export const ActFormModal: React.FC<ActModalProps> = ({
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldsLocked, setFieldsLocked] = useState(false);
-  const { data: sellersResponse } = useLegalEntitiesSellers();
-  const sellers = sellersResponse?.entities || [];
-  const { data: buyersResponse } = useLegalEntitiesBuyers();
-  const buyers = buyersResponse?.entities || [];
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
+    null
+  );
+
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-  // const { data: companiesResponse } = useCompaniesForSelection();
-  // const companies = companiesResponse?.companies || [];
+  const { data: companiesResponse } = useCompaniesForSelection();
+  const companies = companiesResponse?.companies || [];
+
+  // Запросы данных, зависящих от выбранной компании
+  const { data: sellersResponse } = useLegalEntitiesSellers(selectedCompanyId);
+  const sellers = sellersResponse?.entities || [];
+  const { data: buyersResponse } = useLegalEntitiesBuyers(selectedCompanyId);
+  const buyers = buyersResponse?.entities || [];
+  const { data: contractsResponse } =
+    useContractsForSelection(selectedCompanyId);
+  const contractsData = contractsResponse?.contracts || [];
+
   const { createMutation, updateMutation } = useActsMutations(
     initialData?.act_id || "",
     initialData?.act_number || "",
@@ -49,6 +58,19 @@ export const ActFormModal: React.FC<ActModalProps> = ({
     initialData?.buyer || "",
     initialData?.seller || "",
     initialData?.company || ""
+  );
+
+  const handleCompanyChange = useCallback(
+    (companyId: string) => {
+      setSelectedCompanyId(companyId);
+      form.setFieldsValue({
+        buyer: undefined,
+        seller: undefined,
+        contract: undefined,
+      });
+      setFieldsLocked(false);
+    },
+    [form]
   );
 
   const handleContractChange = useCallback(
@@ -79,7 +101,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
       const formData = {
         ...values,
         act_date: values.act_date ? values.act_date.valueOf() : null,
-        company: isSuperadmin ? values.company : selectedCompanyId, // Автозаполнение для обычных пользователей
+        company: selectedCompanyId, // Используем выбранную компанию
       };
 
       if (mode === "create") {
@@ -92,13 +114,11 @@ export const ActFormModal: React.FC<ActModalProps> = ({
       onCancel();
       if (onSuccess) onSuccess();
     } catch (error) {
-      // console.error("Validation failed:", error);
+      console.error("Validation failed:", error);
     } finally {
       setIsSubmitting(false);
     }
   }, [
-    isSuperadmin,
-    selectedCompanyId,
     form,
     mode,
     initialData,
@@ -106,26 +126,35 @@ export const ActFormModal: React.FC<ActModalProps> = ({
     updateMutation,
     onCancel,
     onSuccess,
+    selectedCompanyId,
   ]);
 
   useEffect(() => {
     if (visible) {
       if (initialData && mode === "edit") {
         const isLocked = !!initialData.contract;
+        setSelectedCompanyId(initialData.company);
         form.setFieldsValue({
           act_number: initialData.act_number,
           act_date: initialData.act_date ? dayjs(initialData.act_date) : null,
           contract: initialData.contract || undefined,
           buyer: initialData.buyer,
           seller: initialData.seller,
+          company: initialData.company,
         });
         setFieldsLocked(isLocked);
       } else {
         form.resetFields();
         setFieldsLocked(false);
+        setSelectedCompanyId(
+          isSuperadmin ? null : localStorage.getItem("selectedCompanyId")
+        );
       }
     }
-  }, [visible, initialData, mode, form]);
+  }, [visible, initialData, mode, form, isSuperadmin]);
+
+  // Определяем, должны ли быть поля заблокированы (для суперадмина - пока компания не выбрана)
+  const fieldsDisabled = isSuperadmin ? !selectedCompanyId : false;
 
   return (
     <Modal
@@ -141,6 +170,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
           type="primary"
           loading={isSubmitting}
           onClick={handleSubmit}
+          disabled={isSuperadmin && !selectedCompanyId}
         >
           {mode === "create" ? "Создать" : "Сохранить"}
         </Button>,
@@ -148,6 +178,32 @@ export const ActFormModal: React.FC<ActModalProps> = ({
       width={700}
     >
       <Form form={form} layout="vertical">
+        {isSuperadmin && mode === "create" && (
+          <Form.Item
+            name="company"
+            label="Компания"
+            rules={[
+              { required: true, message: "Пожалуйста, выберите компанию" },
+            ]}
+          >
+            <Select
+              showSearch
+              optionFilterProp="children"
+              placeholder="Выберите компанию"
+              onChange={handleCompanyChange}
+            >
+              {companies.map((company) => (
+                <Select.Option
+                  key={company.company_id}
+                  value={company.company_id}
+                >
+                  {company.company_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
+
         <Form.Item
           name="act_number"
           label="Номер акта"
@@ -155,7 +211,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             { required: true, message: "Пожалуйста, введите номер акта" },
           ]}
         >
-          <Input placeholder="Введите номер акта" />
+          <Input placeholder="Введите номер акта" disabled={fieldsDisabled} />
         </Form.Item>
 
         <Form.Item
@@ -163,7 +219,11 @@ export const ActFormModal: React.FC<ActModalProps> = ({
           label="Дата"
           rules={[{ required: true, message: "Пожалуйста, выберите дату" }]}
         >
-          <DatePicker style={{ width: "100%" }} format="DD.MM.YYYY" />
+          <DatePicker
+            style={{ width: "100%" }}
+            format="DD.MM.YYYY"
+            disabled={fieldsDisabled}
+          />
         </Form.Item>
 
         <Form.Item name="contract" label="Договор (необязательно)">
@@ -173,6 +233,7 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             placeholder="Выберите договор (необязательно)"
             allowClear
             onChange={handleContractChange}
+            disabled={fieldsDisabled || fieldsLocked}
           >
             {contractsData.map((contract) => (
               <Select.Option
@@ -199,14 +260,14 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Выберите заказчика"
-            disabled={fieldsLocked}
+            disabled={fieldsDisabled || fieldsLocked}
           >
             {buyers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>
@@ -226,14 +287,14 @@ export const ActFormModal: React.FC<ActModalProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Выберите исполнителя"
-            disabled={fieldsLocked}
+            disabled={fieldsDisabled || fieldsLocked}
           >
             {sellers.map((entity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
               >
-                {entity.legal_entity_name}
+                {entity.short_name}
               </Select.Option>
             ))}
           </Select>

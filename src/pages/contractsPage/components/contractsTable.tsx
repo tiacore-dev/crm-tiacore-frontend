@@ -14,7 +14,7 @@ interface ContractsTableProps {
   loading: boolean;
   legalEntitiesData?: {
     legal_entity_id: string;
-    legal_entity_name: string;
+    short_name: string;
   }[];
   contractStatusesData?: {
     contract_status_id: string;

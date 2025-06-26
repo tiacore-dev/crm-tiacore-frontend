@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 
 export interface ILegalEntity {
   legal_entity_id: string;
-  legal_entity_name: string;
+  short_name: string;
   inn: string;
   kpp?: string;
   vat_rate?: number;
@@ -53,7 +53,7 @@ export const fetchLegalEntitiesFiltred = async (company_id: string) => {
 
 // Функция для создания нового
 interface ICreateLegalEntity {
-  legal_entity_name: string;
+  short_name: string;
   inn: string;
   kpp?: string;
   vat_rate: number;
@@ -128,7 +128,7 @@ export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
 
 //изменить данные
 interface IUpdateLegalEntity {
-  legal_entity_name: string;
+  short_name: string;
   inn: string;
   kpp?: string;
   vat_rate?: number;

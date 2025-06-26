@@ -8,10 +8,11 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Button } from "antd";
+import { ILegalEntity, IUpdateLegalEntity } from "../../api/LegalEntities_Api";
 
 export const useLegalEntityMutations = (
   legal_entity_id: string,
-  legal_entity_name: string,
+  short_name: string,
   inn: string,
   vat_rate: number | null,
   address: string,
@@ -86,4 +87,47 @@ export const useLegalEntityMutations = (
   });
 
   return { createMutation, updateMutation, deleteMutation };
+};
+
+export const useUpdateLegalEntity = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ILegalEntity,
+    AxiosError,
+    { legal_entity_id: string; updatedData: IUpdateLegalEntity }
+  >({
+    mutationFn: ({ legal_entity_id, updatedData }) =>
+      updateLegalEntity(legal_entity_id, updatedData),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntities"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntityDetails", variables.legal_entity_id],
+      });
+      toast.success("Успешно изменено");
+    },
+    onError: (error) => {
+      toast.error(`Ошибка при редактировании: ${error.message}`);
+    },
+  });
+};
+
+export const useDeleteLegalEntity = () => {
+  const queryClient = useQueryClient();
+  return useMutation<void, AxiosError, string>({
+    mutationFn: deleteLegalEntity,
+    onSuccess: (_, legal_entity_id) => {
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntities"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["legalEntityDetails", legal_entity_id],
+      });
+      toast.success("Успешно удалено");
+    },
+    onError: (error) => {
+      toast.error(`Ошибка при удалении: ${error.message}`);
+    },
+  });
 };
