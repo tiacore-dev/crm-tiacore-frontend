@@ -43,6 +43,7 @@ import { InviteRegistrationPage } from "./pages/invitePages/inviteRegistrationPa
 import { LegalEntitiesBuyersPage } from "./pages/legalEntitiesPage/buyersPage/buyersPage";
 import { BuyerDetailsPage } from "./pages/legalEntitiesPage/buyersPage/buyerDetailsPage";
 import { SellerDetailsPage } from "./pages/legalEntitiesPage/sellers/sellerDetailsPage";
+import { NotFoundPage } from "./pages/homePage/notFoundPage";
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -119,14 +120,7 @@ const App: React.FC = () => {
                       path="/templates/:template_id"
                       element={<TemplateDetailsPage />}
                     />
-                    {/* <Route
-                      path="/role_permissions_relations"
-                      element={<RolePermissionsPage />}
-                    /> */}
-                    {/* <Route
-                      path="/role_permissions_relations/:role_id"
-                      element={<RolePermissionsDetailsPage />}
-                    /> */}
+                    <Route path="*" element={<NotFoundPage />} />
                   </Route>
                   <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
