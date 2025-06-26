@@ -5,14 +5,63 @@ import { AxiosError } from "axios";
 
 export interface ILegalEntity {
   legal_entity_id: string;
-  short_name: string;
-  inn: string;
-  kpp?: string;
-  vat_rate?: number;
-  address: string;
-  entity_type?: string;
-  signer?: string;
-  company: string | null;
+  full_name?: string;
+  short_name: string; //[3, 100] characters
+  inn: string; //[10, 12] characters
+  kpp?: string; // 9 characters  Expand all( string | null)
+  opf?: string; // Expand all( string | null)
+  ogrn: string; //[13, 15] characters
+  vat_rate?: number; // Expand all(integer | null) (0/5/7/20)
+  address: string; //[5, 255] characters
+  entity_type_id?: string; // Expand all( string | null)
+  signer?: string; // Expand all( string | null)
+}
+
+export interface IUpdateLegalEntity {
+  full_name?: string;
+  short_name: string; //[3, 100] characters
+  inn: string; //[10, 12] characters
+  kpp?: string; // 9 characters Expand all( string | null)
+  opf?: string; // Expand all( string | null)
+  ogrn: string; //[13, 15] characters
+  vat_rate?: number; // Expand all(integer | null) (0/5/7/20)
+  address: string; //[5, 255] characters
+  entity_type_id?: string; // Expand all( string | null)
+  signer?: string; // Expand all( string | null)
+}
+// Функция для создания нового
+interface ICreateLegalEntity {
+  full_name?: string;
+  short_name: string; //[3, 100] characters
+  inn: string; //[10, 12] characters
+  kpp?: string; // 9 characters Expand all( string | null)
+  opf?: string; // Expand all( string | null)
+  ogrn: string; //[13, 15] characters
+  vat_rate?: number; // Expand all(integer | null)
+  address: string; //[5, 255] characters
+  entity_type_id?: string; // Expand all( string | null)
+  signer?: string; // Expand all( string | null)
+  company_id: string; // Expand all stringuuid4
+  relation_type: "buyer" | "seller";
+  // description?: string | null;
+}
+
+export interface ICreateLegalEntityINN {
+  inn: string; //[10, 12] characters
+  kpp?: string; // 9 characters Expand all(string | null)
+  company_id: string; // Expand allstringuuid4
+  relation_type: "buyer" | "seller"; // Expand allstring
+  description?: string;
+}
+
+export interface IInnKppResponse {
+  legal_entity_id: string;
+  legal_entity_name?: string;
+}
+
+export interface ILegalEtitiesResponse {
+  total: number;
+  entities: ILegalEntity[];
 }
 
 // Функция для получения списка пользователей с параметрами
@@ -26,7 +75,6 @@ export const fetchLegalEntities = async (selectedCompanyId?: string | null) => {
   if (!isSuperadmin && selectedCompanyId) {
     params.company_id = selectedCompanyId;
   }
-
   const response = await axiosInstance.get(`${url}/api/legal-entities/all`, {
     params,
     headers: {
@@ -50,20 +98,6 @@ export const fetchLegalEntitiesFiltred = async (company_id: string) => {
   });
   return response.data;
 };
-
-// Функция для создания нового
-interface ICreateLegalEntity {
-  short_name: string;
-  inn: string;
-  kpp?: string;
-  vat_rate: number;
-  address: string;
-  entity_type?: string;
-  signer?: string;
-  // company: string;
-  relation_type: "buyer" | "seller";
-  // description?: string | null;
-}
 
 export const createLegalEntity = async (
   newLegalEntity: ICreateLegalEntity
@@ -127,15 +161,6 @@ export const fetchLegalEntityDetails = async (legal_entity_id: string) => {
 };
 
 //изменить данные
-interface IUpdateLegalEntity {
-  short_name: string;
-  inn: string;
-  kpp?: string;
-  vat_rate?: number;
-  address: string;
-  entity_type?: string;
-  signer?: string;
-}
 
 export const updateLegalEntity = async (
   legal_entity_id: string,
@@ -185,10 +210,6 @@ export const deleteLegalEntity = async (legal_entity_id: string) => {
     },
   });
 };
-
-export interface IInnKppResponse {
-  legal_entity_id: string;
-}
 
 export const fetchLegalEntityByInnKpp = async (
   inn: string,
@@ -255,13 +276,10 @@ export const fetchBuyers = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-
-  const params: any = { page: 1, page_size: 100 };
+  const params: any = {};
   if (!isSuperadmin && selectedCompanyId) {
     params.company_id = selectedCompanyId;
   }
-
   const response = await axiosInstance.get(
     `${url}/api/legal-entities/get-buyers`,
     {
@@ -275,13 +293,9 @@ export const fetchBuyers = async (selectedCompanyId?: string | null) => {
   return response.data;
 };
 
-export const createLegalEntityByInn = async (data: {
-  inn: string;
-  kpp?: string;
-  company_id: string;
-  relation_type: "buyer" | "seller";
-  description?: string;
-}): Promise<ILegalEntity> => {
+export const createLegalEntityByInn = async (
+  data: ICreateLegalEntityINN
+): Promise<ILegalEntity> => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";

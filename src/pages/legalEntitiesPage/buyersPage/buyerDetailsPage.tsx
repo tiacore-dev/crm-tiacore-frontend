@@ -5,12 +5,12 @@ import { useDispatch } from "react-redux";
 import { setBreadcrumbs } from "../../../redux/slices/breadcrumbsSlice";
 // import { BackButton } from "../../components/buttons/backButton";
 import { Spin, Descriptions, Button, Space } from "antd";
-import { useLegalEntityDetailsQuery } from "../../../hooks/legalEntities/useLegalEntity_Query";
+import { useLegalEntityDetailsQuery } from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useDeleteLegalEntity } from "../../../hooks/legalEntities/useLegalEntityMutation";
-import { useUpdateLegalEntity } from "../../../hooks/legalEntities/useLegalEntityMutation";
+// import { useUpdateLegalEntity } from "../../../hooks/legalEntities/useLegalEntityMutation";
 import { ConfirmDeleteModal } from "../../../components/modals/confirmDeleteModal";
 // import { EditBuyerModal } from "./components/editBuyerModal";
-import { IUpdateLegalEntity } from "../../../api/LegalEntities_Api";
+import { IUpdateLegalEntity } from "../../../api/legalEntitiesApi";
 
 export const BuyerDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,40 +28,71 @@ export const BuyerDetailsPage: React.FC = () => {
   });
 
   const deleteMutation = useDeleteLegalEntity();
-  const updateMutation = useUpdateLegalEntity();
+  // const updateMutation = useUpdateLegalEntity();
   const location = useLocation();
   const { state: locationState } = location;
 
   React.useEffect(() => {
-    if (locationState?.fromCompany) {
-      // Хлебные крошки для перехода из компании
-      dispatch(
-        setBreadcrumbs([
-          { label: "Главная страница", to: "/home" },
-          { label: "Компании", to: "/companies" },
-          {
-            label: locationState.companyName || "Компания",
-            to: `/companies/${locationState.companyId}`,
-          },
-          {
-            label: legalEntity?.short_name || "Детали",
-            to: `/legal-entities/buyers/${legal_entity_id}`,
-          },
-        ])
-      );
+    if (!legalEntity) return;
+
+    let breadcrumbs = [];
+
+    // Определяем источник перехода и формируем крошки
+    if (locationState?.from === "act") {
+      // Переход со страницы акта
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Акты", to: "/acts" },
+        {
+          label: locationState.actNumber || "Акт",
+          to: `/acts/${locationState.actId}`,
+        },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/buyers/${legal_entity_id}`,
+        },
+      ];
+    } else if (locationState?.from === "bill") {
+      // Переход со страницы счета
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Счета", to: "/bills" },
+        {
+          label: locationState.billNumber || "Счет",
+          to: `/bills/${locationState.billId}`,
+        },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/buyers/${legal_entity_id}`,
+        },
+      ];
+    } else if (locationState?.from === "contract") {
+      // Переход со страницы договора
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Договоры", to: "/contracts" },
+        {
+          label: locationState.contractName || "Договор",
+          to: `/contracts/${locationState.contractId}`,
+        },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/buyers/${legal_entity_id}`,
+        },
+      ];
     } else {
-      // Хлебные крошки для перехода из списка
-      dispatch(
-        setBreadcrumbs([
-          { label: "Главная страница", to: "/home" },
-          { label: "Контрагенты", to: "/legal-entities/buyers" },
-          {
-            label: legalEntity?.short_name || "Детали",
-            to: `/legal-entities/buyers/${legal_entity_id}`,
-          },
-        ])
-      );
+      // Дефолтные крошки (например, из списка покупателей)
+      breadcrumbs = [
+        { label: "Главная страница", to: "/home" },
+        { label: "Контрагенты", to: "/legal-entities/buyers" },
+        {
+          label: legalEntity.short_name || "Детали",
+          to: `/legal-entities/buyers/${legal_entity_id}`,
+        },
+      ];
     }
+
+    dispatch(setBreadcrumbs(breadcrumbs));
   }, [dispatch, legalEntity, legal_entity_id, locationState]);
 
   const handleDelete = () => {

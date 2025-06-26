@@ -45,8 +45,8 @@ export const Navbar: React.FC = () => {
 
   const mainItems = [
     // { label: "Главная", key: "/home" },
-    // { label: "Контрагенты", key: "/legal_entities" },
-    { label: "Контрагенты", key: "/buyers" },
+    // { label: "Контрагенты", key: "/legal-entities" },
+    { label: "Контрагенты", key: "/legal-entities/buyers" },
     { label: "Договоры", key: "/contracts" },
     { label: "Счета", key: "/bills" },
     { label: "Акты", key: "/acts" },

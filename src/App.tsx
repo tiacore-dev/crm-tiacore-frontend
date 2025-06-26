@@ -22,7 +22,7 @@ import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { ContractDetailsPage } from "./pages/contractsPage/contractDetailsPage";
-import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
+// import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";
 import { ActsPage } from "./pages/actsPage/actsPage";
@@ -92,13 +92,13 @@ const App: React.FC = () => {
                       element={<BuyerDetailsPage />}
                     />
                     <Route
-                      path="/legal-entities/:legal_entity_id"
+                      path="/legal-entities/sellers/:legal_entity_id"
                       element={<SellerDetailsPage />}
                     />
-                    <Route
-                      path="/legal_entities/:legal_entity_id/:bank_account_id"
+                    {/* <Route
+                      path="/legal-entities/sellers/:legal_entity_id/:bank_account_id"
                       element={<BankAccountDetailsPage />}
-                    />
+                    /> */}
                     <Route
                       path="/buyers"
                       element={<LegalEntitiesBuyersPage />}
@@ -120,7 +120,7 @@ const App: React.FC = () => {
                       path="/templates/:template_id"
                       element={<TemplateDetailsPage />}
                     />
-                    <Route path="*" element={<NotFoundPage />} />
+                    <Route path="/404" element={<NotFoundPage />} />
                   </Route>
                   <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>

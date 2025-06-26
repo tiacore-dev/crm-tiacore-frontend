@@ -5,6 +5,7 @@ import {
   fetchCompanyDetails,
   ICompany,
 } from "../../api/companiesApi";
+import { useNavigate } from "react-router-dom";
 
 export interface useCompanyQueryResponse {
   total: number;
@@ -27,10 +28,19 @@ export const useCompanyQuery = () => {
 };
 
 export const useCompanyDetailsQuery = (company_id: string) => {
+  const navigate = useNavigate();
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
   return useQuery({
     queryKey: ["companyDetails", company_id, selectedCompanyId],
-    queryFn: () => fetchCompanyDetails(company_id),
+    queryFn: () => {
+      return fetchCompanyDetails(company_id).catch((error) => {
+        if (error.response?.status === 404) {
+          navigate("/404", { replace: true }); // Перенаправление с заменой в истории
+        }
+        throw error; // Продолжаем пробрасывать ошибку
+      });
+    },
     retry: false,
   });
 };

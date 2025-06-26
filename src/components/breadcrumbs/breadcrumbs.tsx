@@ -1,13 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { Breadcrumb } from "antd"; // Импорт компонента Ant Design
+import { Breadcrumb } from "antd";
 
 export const Breadcrumbs: React.FC = () => {
+  const location = useLocation();
   const breadcrumbs = useSelector(
     (state: RootState) => state.breadcrumbs.paths
   );
+
+  // Скрываем крошки на странице 404
+  if (location.pathname === "/404") {
+    return null;
+  }
 
   const breadcrumbItems = breadcrumbs.map((path, index) => ({
     title:

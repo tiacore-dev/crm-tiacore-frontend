@@ -36,7 +36,14 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
         {getEntityNameById(contract.buyer)}
         {"  "}
         {contract.buyer && (
-          <Link to={`/legal_entities/${contract.buyer}`}>
+          <Link
+            to={`/legal-entities/buyers/${contract.buyer}`}
+            state={{
+              from: "contract",
+              contractId: contract.contract_id,
+              contractName: contract.contract_name,
+            }}
+          >
             <ExportOutlined />
           </Link>
         )}
@@ -45,7 +52,14 @@ export const ContractDetailsCard: React.FC<ContractDetailsCardProps> = ({
         {getEntityNameById(contract.seller)}
         {"  "}
         {contract.seller && (
-          <Link to={`/legal_entities/${contract.seller}`}>
+          <Link
+            to={`/legal-entities/sellers/${contract.seller}`}
+            state={{
+              from: "contract",
+              contractId: contract.contract_id,
+              contractName: contract.contract_name,
+            }}
+          >
             <ExportOutlined />
           </Link>
         )}

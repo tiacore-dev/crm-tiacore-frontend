@@ -1,6 +1,6 @@
 // src/hooks/legalEntities/useLegalEntityMutations.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createLegalEntityByInn } from "../../api/LegalEntities_Api";
+import { createLegalEntityByInn } from "../../api/legalEntitiesApi";
 import { message } from "antd";
 import { useEntityCompanyRelationsMutations } from "../entityCompanyRelations/useEntityCompanyRelationMutations";
 import { AxiosError } from "axios";

@@ -8,6 +8,7 @@ import {
 } from "../../api/contractsApi";
 import { RootState } from "../../redux/store";
 import { useCompany } from "../../context/companyContext";
+import { useNavigate } from "react-router-dom";
 
 export interface IContractsResponse {
   total: number;
@@ -65,9 +66,20 @@ export const useContractQuery = (queryParams: IContractsQueryParams) => {
 
 export const useContractDetailsQuery = (contract_id: string) => {
   const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const navigate = useNavigate();
+
   return useQuery({
     queryKey: ["contractDetails", contract_id, selectedCompanyId],
-    queryFn: () => fetchContractDetails(contract_id, selectedCompanyId),
+    queryFn: () => {
+      return fetchContractDetails(contract_id, selectedCompanyId).catch(
+        (error) => {
+          if (error.response?.status === 404) {
+            navigate("/404", { replace: true }); // Перенаправляем с заменой в истории
+          }
+          throw error; // Продолжаем пробрасывать ошибку
+        }
+      );
+    },
     retry: false,
   });
 };

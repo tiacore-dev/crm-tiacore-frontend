@@ -17,8 +17,8 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 // import { usePermissions } from "../../context/permissionsContext";
 import { useCompany } from "../../context/companyContext";
 import { LegalEntitiesSellersTable } from "../legalEntitiesPage/sellers/sellersTable";
-import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntity_Query";
-import { CreateLegalEntityModal } from "../legalEntitiesPage/createLegalEntityModal";
+import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
+import { CreateLegalEntityModal } from "../legalEntitiesPage/buyersPage/createLegalEntityModal";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -122,6 +122,7 @@ export const CompanyDetailsPage: React.FC = () => {
                     data={sellersData || { total: 0, entities: [] }}
                     loading={isLoadingSellers}
                     companyId={company_id}
+                    companyName={companyDetails.company_name}
                   />
                   {/* <LegalEntitiesTable
                     data={legalEntitiesData || { total: 0, entities: [] }}

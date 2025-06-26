@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import {
   useLegalEntitiesSellers,
   useLegalEntitiesBuyers,
-} from "../../../hooks/legalEntities/useLegalEntity_Query";
+} from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { useContractsForSelection } from "../../../hooks/contracts/useContractQuery";
 

@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../../../redux/slices/breadcrumbsSlice";
 // import { BackButton } from "../../components/buttons/backButton";
 import { Button, Space, Spin } from "antd";
-import { useLegalEntitiesBuyers } from "../../../hooks/legalEntities/useLegalEntity_Query";
+import { useLegalEntitiesBuyers } from "../../../hooks/legalEntities/useLegalEntityQuery";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../../redux/slices/legalEntityBuyersSlice";
 import { RootState } from "../../../redux/store";
 import { LegalEntitiesBuyersTable } from "./buyersTable";
-import { CreateLegalEntityModal } from "../createLegalEntityModal";
+import { CreateLegalEntityModal } from "./createLegalEntityModal";
 import { useCompany } from "../../../context/companyContext";
 // import { CreateBuyerModal } from "./components/createBuyerModal";
 

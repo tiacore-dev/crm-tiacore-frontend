@@ -18,7 +18,7 @@ const initialState: LegalEntitiesState = {
 };
 
 export const legalEntitiesSlice = createSlice({
-  name: "legal_entities",
+  name: "legal-entities",
   initialState,
   reducers: {
     setPage: (state, action: PayloadAction<number>) => {
