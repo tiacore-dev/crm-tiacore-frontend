@@ -1,12 +1,11 @@
 services:
-  client:
+  frontend:
     image: ${DOCKERHUB_USERNAME}/crm-frontend:${TAG}
     ports:
       - "${PORT}:80"
     restart: always
     networks:
       - crm_network
-
 
 networks:
   crm_network:
