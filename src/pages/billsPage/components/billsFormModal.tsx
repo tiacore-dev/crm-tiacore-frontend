@@ -12,6 +12,7 @@ import {
 import { useBankAccountQuery } from "../../../hooks/bankAccounts/useBankAccountQuery";
 import { useCompaniesForSelection } from "../../../hooks/companies/useCompanyQuery";
 import { useContractsForSelection } from "../../../hooks/contracts/useContractQuery";
+import { ILegalEntity } from "../../../api/LegalEntities_Api";
 
 interface BillModalProps {
   visible: boolean;
@@ -283,7 +284,7 @@ export const BillCreateModal: React.FC<BillModalProps> = ({
             disabled={fieldsDisabled || fieldsLocked}
             onChange={handleSellerChange}
           >
-            {sellers.map((entity) => (
+            {sellers.map((entity: ILegalEntity) => (
               <Select.Option
                 key={entity.legal_entity_id}
                 value={entity.legal_entity_id}
