@@ -51,6 +51,8 @@ export const useLoginMutation = () => {
   return useMutation<AuthResponse, ApiError, FormData>({
     mutationFn: loginUser,
     onSuccess: (data) => {
+      localStorage.removeItem("selectedCompanyId");
+      localStorage.clear();
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("is_superadmin", data.is_superadmin.toString());
