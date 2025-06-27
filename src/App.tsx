@@ -7,6 +7,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import ruRU from "antd/lib/locale/ru_RU";
@@ -22,7 +23,6 @@ import { TemplatesPage } from "./pages/templatesPage/templatesPage";
 import { TemplateDetailsPage } from "./pages/templatesPage/templateDetailsPage";
 import { ContractsPage } from "./pages/contractsPage/contractsPage";
 import { ContractDetailsPage } from "./pages/contractsPage/contractDetailsPage";
-// import { BankAccountDetailsPage } from "./pages/bankAccountsPage/bankAccountDetailsPage";
 import { BillsPage } from "./pages/billsPage/billsPage";
 import { BillDetailsPage } from "./pages/billsPage/billDetailsPage";
 import { ActsPage } from "./pages/actsPage/actsPage";
@@ -44,6 +44,7 @@ import { LegalEntitiesBuyersPage } from "./pages/legalEntitiesPage/buyersPage/bu
 import { BuyerDetailsPage } from "./pages/legalEntitiesPage/buyersPage/buyerDetailsPage";
 import { SellerDetailsPage } from "./pages/legalEntitiesPage/sellers/sellerDetailsPage";
 import { NotFoundPage } from "./pages/homePage/notFoundPage";
+
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -53,6 +54,61 @@ dayjs.locale("ru", {
 
 const queryClient = new QueryClient();
 
+const AuthWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const accessToken = localStorage.getItem("access_token");
+
+  if (!accessToken) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const ProtectedRoutes: React.FC = () => {
+  return (
+    <Routes>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/account" element={<AccountPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/users/:user_id" element={<UserDetailsPage />} />
+        <Route path="/companies" element={<CompaniesPage />} />
+        <Route path="/companies/:company_id" element={<CompanyDetailsPage />} />
+        <Route
+          path="/legal-entities/buyers"
+          element={<LegalEntitiesBuyersPage />}
+        />
+        <Route
+          path="/legal-entities/buyers/:legal_entity_id"
+          element={<BuyerDetailsPage />}
+        />
+        <Route
+          path="/legal-entities/sellers/:legal_entity_id"
+          element={<SellerDetailsPage />}
+        />
+        <Route path="/buyers" element={<LegalEntitiesBuyersPage />} />
+        <Route path="/contracts" element={<ContractsPage />} />
+        <Route
+          path="/contracts/:contract_id"
+          element={<ContractDetailsPage />}
+        />
+        <Route path="/bills" element={<BillsPage />} />
+        <Route path="/bills/:bill_id" element={<BillDetailsPage />} />
+        <Route path="/acts" element={<ActsPage />} />
+        <Route path="/acts/:act_id" element={<ActDetailsPage />} />
+        <Route path="/templates" element={<TemplatesPage />} />
+        <Route
+          path="/templates/:template_id"
+          element={<TemplateDetailsPage />}
+        />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
+  );
+};
+
 const App: React.FC = () => {
   return (
     <ConfigProvider locale={ruRU}>
@@ -60,69 +116,31 @@ const App: React.FC = () => {
         <QueryClientProvider client={queryClient}>
           <CompanyProvider>
             <PermissionsProvider>
-              {" "}
-              {/* Обернули все приложение в CompanyProvider */}
               <Router>
                 <Toaster position="bottom-right" />
                 <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      localStorage.getItem("access_token") ? (
+                        <Navigate to="/home" replace />
+                      ) : (
+                        <Navigate to="/login" replace />
+                      )
+                    }
+                  />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/accept-invite" element={<AcceptInvitePage />} />
                   <Route path="/invite" element={<InviteRegistrationPage />} />
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="/account" element={<AccountPage />} />
 
-                    <Route path="/services" element={<ServicesPage />} />
-                    <Route path="/users" element={<UsersPage />} />
-                    <Route
-                      path="/users/:user_id"
-                      element={<UserDetailsPage />}
-                    />
-                    <Route path="/companies" element={<CompaniesPage />} />
-                    <Route
-                      path="/companies/:company_id"
-                      element={<CompanyDetailsPage />}
-                    />
-                    <Route
-                      path="/legal-entities/buyers"
-                      element={<LegalEntitiesBuyersPage />}
-                    />
-                    <Route
-                      path="/legal-entities/buyers/:legal_entity_id"
-                      element={<BuyerDetailsPage />}
-                    />
-                    <Route
-                      path="/legal-entities/sellers/:legal_entity_id"
-                      element={<SellerDetailsPage />}
-                    />
-                    {/* <Route
-                      path="/legal-entities/sellers/:legal_entity_id/:bank_account_id"
-                      element={<BankAccountDetailsPage />}
-                    /> */}
-                    <Route
-                      path="/buyers"
-                      element={<LegalEntitiesBuyersPage />}
-                    />
-                    <Route path="/contracts" element={<ContractsPage />} />
-                    <Route
-                      path="/contracts/:contract_id"
-                      element={<ContractDetailsPage />}
-                    />
-                    <Route path="/bills" element={<BillsPage />} />
-                    <Route
-                      path="/bills/:bill_id"
-                      element={<BillDetailsPage />}
-                    />
-                    <Route path="/acts" element={<ActsPage />} />
-                    <Route path="/acts/:act_id" element={<ActDetailsPage />} />
-                    <Route path="/templates" element={<TemplatesPage />} />
-                    <Route
-                      path="/templates/:template_id"
-                      element={<TemplateDetailsPage />}
-                    />
-                    <Route path="/*" element={<NotFoundPage />} />
-                  </Route>
-                  <Route path="*" element={<Navigate to="/login" />} />
+                  <Route
+                    path="*"
+                    element={
+                      <AuthWrapper>
+                        <ProtectedRoutes />
+                      </AuthWrapper>
+                    }
+                  />
                 </Routes>
               </Router>
             </PermissionsProvider>

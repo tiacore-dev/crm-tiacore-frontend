@@ -252,11 +252,13 @@ export const fetchSellers = async (selectedCompanyId?: string | null) => {
   const url = process.env.REACT_APP_API_URL;
   const accessToken = localStorage.getItem("access_token");
   const isSuperadmin = localStorage.getItem("is_superadmin") === "true";
-  // const selectedCompanyId = localStorage.getItem("selectedCompanyId");
-
-  const params: any = { page: 1, page_size: 100 };
+  let companyId = localStorage.getItem("selectedCompanyId");
+  if (selectedCompanyId != null) {
+    companyId = selectedCompanyId;
+  }
+  const params: any = {};
   // if (!isSuperadmin && selectedCompanyId) {
-  params.company_id = selectedCompanyId;
+  params.company_id = companyId;
   // }
 
   const response = await axiosInstance.get(

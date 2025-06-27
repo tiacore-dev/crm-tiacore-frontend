@@ -18,7 +18,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCompany } from "../../context/companyContext";
 import { LegalEntitiesSellersTable } from "../legalEntitiesPage/sellers/sellersTable";
 import { useLegalEntitiesSellers } from "../../hooks/legalEntities/useLegalEntityQuery";
-import { CreateLegalEntityModal } from "../legalEntitiesPage/buyersPage/createLegalEntityModal";
+import { CreateLegalEntityModal } from "../legalEntitiesPage/createLegalEntityModal";
 
 export const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate();

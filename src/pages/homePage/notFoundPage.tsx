@@ -8,11 +8,13 @@ export const NotFoundPage: React.FC = () => {
   return (
     <div
       style={{
-        position: "relative", // Добавляем относительное позиционирование
+        position: "relative",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
+        minHeight: "calc(100vh - 64px)", // Учитываем высоту навбара
+        marginTop: "-24px", // Компенсируем стандартные отступы
+        // padding: "16px", // Добавляем небольшой внутренний отступ
       }}
     >
       {/* Кнопка "Назад" в левом верхнем углу */}
@@ -35,6 +37,7 @@ export const NotFoundPage: React.FC = () => {
           maxWidth: "600px",
           width: "100%",
           borderRadius: "8px",
+          marginTop: "0", // Убираем стандартный отступ Result
         }}
       />
     </div>
