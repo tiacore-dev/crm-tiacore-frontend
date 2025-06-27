@@ -112,7 +112,6 @@ jobs:
     name: 📬 Telegram Notify
     runs-on: ubuntu-latest
     needs: [build-and-push,deploy]
-    needs: [build-and-push,deploy]
     if: always()
     steps:
       - name: 📬 Telegram Notification
