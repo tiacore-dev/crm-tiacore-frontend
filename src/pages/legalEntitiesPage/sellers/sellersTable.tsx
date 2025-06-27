@@ -18,7 +18,7 @@ import {
   setVatRate,
 } from "../../../redux/slices/legalEntitySellersSlice";
 import { useCompany } from "../../../context/companyContext";
-import { CreateLegalEntityModal } from "../createLegalEntityModal";
+import { CreateLegalEntityModal } from "../buyersPage/createLegalEntityModal";
 
 const { Option } = Select;
 

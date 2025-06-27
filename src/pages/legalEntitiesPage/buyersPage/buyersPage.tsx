@@ -9,7 +9,7 @@ import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import { resetState } from "../../../redux/slices/legalEntityBuyersSlice";
 import { RootState } from "../../../redux/store";
 import { LegalEntitiesBuyersTable } from "./buyersTable";
-import { CreateLegalEntityModal } from "../createLegalEntityModal";
+import { CreateLegalEntityModal } from "./createLegalEntityModal";
 import { useCompany } from "../../../context/companyContext";
 // import { CreateBuyerModal } from "./components/createBuyerModal";
 

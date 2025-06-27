@@ -21,12 +21,12 @@ jobs:
       - name: Set API URLs from secrets
         id: set-urls
         run: |
-          if [ "${GITHUB_REF_NAME}" = "main" ]; then
-            echo "api_url=${API_URL_PROD}" >> $GITHUB_OUTPUT
+          if [ "${GITHUB_REF_NAME}" = "master" ]; then
+            echo "api_url=${{ secrets.API_URL_PROD }}" >> $GITHUB_OUTPUT
           elif [ "${GITHUB_REF_NAME}" = "dev" ]; then
             echo "api_url=${API_URL_DEV}" >> $GITHUB_OUTPUT
           elif [ "${GITHUB_REF_NAME}" = "stage" ]; then
-            echo "api_url=${API_URL_STAGE}" >> $GITHUB_OUTPUT
+            echo "api_url=${{ secrets.API_URL_STAGE }}" >> $GITHUB_OUTPUT
           else
             echo "api_url=${API_URL_TEST}" >> $GITHUB_OUTPUT
           fi
