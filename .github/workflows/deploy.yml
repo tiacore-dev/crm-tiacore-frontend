@@ -3,10 +3,8 @@ name: Deploy to Server
 on:
   push:
     branches: [master, stage, dev]
-    branches: [master, stage, dev]
 
 jobs:
-  build-and-push:
   build-and-push:
     runs-on: ubuntu-latest
     env:
